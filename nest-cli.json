@@ -1,22 +1,22 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/myin-gram-monorep/src",
+  "sourceRoot": "apps/payments/src",
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
-    "tsConfigPath": "apps/myin-gram-monorep/tsconfig.app.json"
+    "tsConfigPath": "apps/payments/tsconfig.app.json"
   },
   "monorepo": true,
-  "root": "apps/myin-gram-monorep",
+  "root": "apps/payments",
   "projects": {
-    "myin-gram-monorep": {
+    "payments": {
       "type": "application",
-      "root": "apps/myin-gram-monorep",
+      "root": "apps/payments",
       "entryFile": "main",
-      "sourceRoot": "apps/myin-gram-monorep/src",
+      "sourceRoot": "apps/payments/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/myin-gram-monorep/tsconfig.app.json"
+        "tsConfigPath": "apps/payments/tsconfig.app.json"
       }
     },
     "app-test": {
