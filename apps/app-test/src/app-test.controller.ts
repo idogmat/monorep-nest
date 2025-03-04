@@ -5,6 +5,11 @@ import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 export class AppTestController {
   constructor() { }
 
+  @Get()
+  getHello() {
+    return 'Hello World!'
+  }
+  
   @MessagePattern('get_data')
   getData(@Payload() data: any) {
     console.log('Service B received:', data);

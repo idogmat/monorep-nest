@@ -6,6 +6,11 @@ import { firstValueFrom, timeout } from 'rxjs';
 @Controller()
 export class AppController {
   constructor(@Inject('TCP_SERVICE') private readonly client: ClientProxy) { }
+  
+  @Get()
+  getHello() {
+    return 'Hello World!'
+  }
 
   @Get('get-data')
   async getData() {
