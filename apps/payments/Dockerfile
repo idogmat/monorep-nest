@@ -2,8 +2,8 @@
 FROM node:22.12-alpine
 ARG port
 ARG service
-ENV SERVICE=payments
-ENV PORT=3000
+ENV SERVICE=$service
+ENV PORT=$port
 
 # Set to a non-root built-in user `node`
 
