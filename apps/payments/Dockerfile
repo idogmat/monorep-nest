@@ -4,7 +4,6 @@ ARG port
 ARG service
 ENV SERVICE=$service
 ENV PORT=$port
-ENV DATABASE_URL=$DATABASE_URL
 # Set to a non-root built-in user `node`
 
 USER node
@@ -22,17 +21,15 @@ WORKDIR /home/node/dist/${SERVICE}
 
 COPY --chown=node package*.json ./
 
-RUN yarn
-
-RUN npx prisma init
+RUN npm install
 
 # Bundle app source code
 COPY --chown=node . .
 
-RUN yarn build:${SERVICE}
+RUN npm run build:${SERVICE}
 
 # Bind to all network interfaces so that it can be mapped to the host OS
 
 EXPOSE ${PORT}
 
-CMD ['yarn', 'start:payments'] 
+CMD npm run 'start:payments'
