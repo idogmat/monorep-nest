@@ -1,9 +1,7 @@
 import { Module } from "@nestjs/common";
 
 @Module({
-  providers: [
-    
-  ],
+  providers: [],
   controllers: []
 })
 export class EmptyModule { }

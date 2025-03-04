@@ -2,8 +2,8 @@
 FROM node:22.12-alpine
 ARG port
 ARG service
-ENV SERVICE=$service
-ENV PORT=$port
+ENV SERVICE=payments
+ENV PORT=3000
 
 # Set to a non-root built-in user `node`
 
@@ -23,8 +23,9 @@ WORKDIR /home/node/dist/${SERVICE}
 COPY --chown=node package.json ./
 
 COPY --chown=node yarn.lock ./
-
+# RUN ls -la
 RUN yarn
+
 
 
 # Bundle app source code
