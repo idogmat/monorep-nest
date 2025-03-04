@@ -1,17 +1,9 @@
 export class PrismaServiceMock {
-  prisma= {
-    user:{
-
-    }
+  async $connect() {
+    
   }
-  constructor() { }
-  create(data) {
 
-  }
-  findUnique(data) {
-
-  }
-  findMany(data) {
-
+  async $disconnect() {
+  
   }
 }
