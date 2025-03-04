@@ -25,6 +25,8 @@ COPY --chown=node yarn.lock ./
 
 RUN yarn
 
+RUN npx prisma migrate dev --name init
+
 # Bundle app source code
 COPY --chown=node . .
 
