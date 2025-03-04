@@ -23,7 +23,7 @@ import { getConfiguration } from '../settings/getConfiguration';
         },
       },
     ]),
-    // UsersModule
+    UsersModule
   ],
   controllers: [AppController],
   providers: [AppService],
