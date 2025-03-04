@@ -4,6 +4,7 @@ ARG port
 ARG service
 ENV SERVICE=$service
 ENV PORT=$port
+
 # Set to a non-root built-in user `node`
 
 USER node
@@ -25,7 +26,6 @@ COPY --chown=node yarn.lock ./
 
 RUN yarn
 
-RUN npx prisma migrate dev --name init
 
 # Bundle app source code
 COPY --chown=node . .

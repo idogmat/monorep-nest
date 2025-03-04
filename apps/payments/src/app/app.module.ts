@@ -4,12 +4,14 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from '../feature/users/users.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { getConfiguration } from '../settings/getConfiguration';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: './.env',
+      envFilePath: '.env',
+      load: [getConfiguration]
     }),
     ClientsModule.register([
       {
