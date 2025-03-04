@@ -15,7 +15,6 @@ lerna-debug.log*
 # OS
 .DS_Store
 yarn.lock
-/apps/payments/prisma/migrations/*
 # Tests
 /coverage
 /.nyc_output
