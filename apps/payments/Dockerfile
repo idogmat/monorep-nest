@@ -22,11 +22,10 @@ WORKDIR /home/node/dist/${SERVICE}
 COPY --chown=node package*.json ./
 
 RUN yarn
+RUN npx prisma migrate dev --name init
 
 # Bundle app source code
 COPY --chown=node . .
-
-RUN npx prisma migrate dev --name init
 
 RUN yarn build:${SERVICE}
 
