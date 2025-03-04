@@ -1,9 +1,10 @@
 # Check out https://hub.docker.com/_/node to select a new base image
-FROM node:20.11-alpine
+FROM node:22.12-alpine
 ARG port
 ARG service
 ENV SERVICE=$service
 ENV PORT=$port
+ENV DATABASE_URL=$DATABASE_URL
 # Set to a non-root built-in user `node`
 
 USER node
@@ -23,7 +24,7 @@ COPY --chown=node package*.json ./
 
 RUN yarn
 
-RUN npx prisma migrate dev --name init
+RUN npx prisma init
 
 # Bundle app source code
 COPY --chown=node . .
