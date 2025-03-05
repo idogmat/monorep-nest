@@ -20,7 +20,10 @@
     "test:e2e": "jest --config ./apps/payments/test/jest-e2e.json",
     "build:payments": "nest build payments",
     "start:payments": "node dist/apps/payments/main",
-    "start:dev:payments": "nest start payment --watch"
+    "start:dev:payments": "nest start payments --watch",
+    "build:app-test": "nest build app-test",
+    "start:app-test": "node dist/apps/app-test/main",
+    "start:dev:app-test": "nest start app-test --watch"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
