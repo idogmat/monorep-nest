@@ -10,7 +10,6 @@ import { getConfiguration } from '../settings/getConfiguration';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
       load: [getConfiguration]
     }),
     ClientsModule.registerAsync([
@@ -23,8 +22,10 @@ import { getConfiguration } from '../settings/getConfiguration';
         return {
           transport: Transport.TCP,
           options: {
-            host: configService.get('HOST_TCP'),
-            port: configService.get('CONNECT_PORT'),  // Порт, на который отправляется запрос в Service B
+            // host: configService.get('HOST_TCP'),
+            // port: configService.get('CONNECT_PORT'),  // Порт, на который отправляется запрос в Service B
+            host: 'app-test-service',
+            port: 3783,  // Порт, на который отправляется запрос в Service B
           },
         };
       },

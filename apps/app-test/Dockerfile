@@ -37,4 +37,4 @@ RUN yarn build:${SERVICE}
 
 EXPOSE ${PORT}
 
-CMD yarn 'start:payments'
+CMD yarn 'start:app-test'
