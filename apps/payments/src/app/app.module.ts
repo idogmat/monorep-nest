@@ -2,9 +2,11 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UsersModule } from '../feature/users/users.module';
+import { UsersAccountsModule } from '../feature/user-accounts/users.accounts.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { getConfiguration } from '../settings/getConfiguration';
+import { CqrsModule } from '@nestjs/cqrs';
+
 
 @Module({
   imports: [
@@ -12,6 +14,7 @@ import { getConfiguration } from '../settings/getConfiguration';
       isGlobal: true,
       load: [getConfiguration]
     }),
+    CqrsModule,
     ClientsModule.registerAsync([
     {
       imports: [ConfigModule],
@@ -42,7 +45,8 @@ import { getConfiguration } from '../settings/getConfiguration';
     //     },
     //   },
     // ]),
-    UsersModule
+    UsersAccountsModule,
+
   ],
   controllers: [AppController],
   providers: [AppService],
