@@ -22,6 +22,26 @@ spec:
              - containerPort: PORT_CONTAINER
 
            env:
+             - name: CONNECT_PORT
+               valueFrom:
+                 secretKeyRef:
+                   name: myin-payments-production-config-secret
+                   key: CONNECT_PORT
+             - name: HOST_TCP
+               valueFrom:
+                 secretKeyRef:
+                   name: myin-payments-production-config-secret
+                   key: HOST_TCP
+             - name: PASSWORD_FOR_EMAIL
+               valueFrom:
+                 secretKeyRef:
+                   name: myin-payments-production-config-secret
+                   key: PASSWORD_FOR_EMAIL
+             - name: EMAIL_FOR_SENDING
+               valueFrom:
+                 secretKeyRef:
+                   name: myin-payments-production-config-secret
+                   key: EMAIL_FOR_SENDING
              - name: DATABASE_URL
                valueFrom:
                  secretKeyRef:
