@@ -7,22 +7,22 @@ import { ENTITY_USER } from '../../../../../common/entities.constants';
 import { BcryptService } from '../../infrastructure/bcrypt.service';
 import { UserEntity } from '../../../users/domain/entites/user.entity';
 import { EmailService } from '../../../../../common/email/email.service';
-export class SignupCommand{
-  constructor(public createInputUser: UserCreateModel) {}
+export class SignupCommand {
+  constructor(public createInputUser: UserCreateModel) { }
 }
 
 @CommandHandler(SignupCommand)
-export class SignupUseCase implements ICommandHandler<SignupCommand>{
+export class SignupUseCase implements ICommandHandler<SignupCommand> {
   constructor(private userPrismaRepository: UsersPrismaRepository,
-              private bcryptService: BcryptService,
-              private emailService: EmailService) {
+    private bcryptService: BcryptService,
+    private emailService: EmailService) {
   }
 
-  async execute(command: SignupCommand){
+  async execute(command: SignupCommand) {
 
-    const {login, password, email} = command.createInputUser;
+    const { login, password, email } = command.createInputUser;
     const foundUser = await this.userPrismaRepository.findUserByEmail(email);
-    if(foundUser) {
+    if (foundUser) {
       return InterlayerNotice.createErrorNotice(
         AuthError.EMAIL_ALREADY_REGISTERED,
         ENTITY_USER,
@@ -35,7 +35,7 @@ export class SignupUseCase implements ICommandHandler<SignupCommand>{
       password,
     );
 
-    const user = await this.userPrismaRepository.createUser(new UserEntity({name: login, email, passwordHash}));
+    const user = await this.userPrismaRepository.createUser(new UserEntity({ name: login, email, passwordHash }));
 
     //TODO move send email to event handler
     try {

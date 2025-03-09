@@ -125,8 +125,9 @@ exports.Prisma.UserScalarFieldEnum = {
   email: 'email',
   name: 'name',
   confirmationCode: 'confirmationCode',
-  passwordHash: 'passwordHash',
+  codeExpiration: 'codeExpiration',
   isConfirmed: 'isConfirmed',
+  passwordHash: 'passwordHash',
   expirationDate: 'expirationDate'
 };
 

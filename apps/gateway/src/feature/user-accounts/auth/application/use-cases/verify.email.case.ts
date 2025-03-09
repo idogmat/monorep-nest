@@ -1,0 +1,39 @@
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/users.prisma.repository';
+import { VerifyEmailToken } from '../../api/models/input/email.model';
+import { InterlayerNotice } from '../../../../../common/error-handling/interlayer.notice';
+import { ENTITY_USER } from '../../../../../common/entities.constants';
+import { AuthError } from '../../../../../common/error-handling/auth.error';
+
+export class VerifyEmailCommand {
+  constructor(public confirmToken: VerifyEmailToken) { }
+}
+
+@CommandHandler(VerifyEmailCommand)
+export class VerifyEmailUseCase implements ICommandHandler<VerifyEmailCommand> {
+  constructor(private userPrismaRepository: UsersPrismaRepository) {
+  }
+
+  async execute(command: VerifyEmailCommand) {
+    try {
+      const { token } = command.confirmToken;
+      const u = await this.userPrismaRepository.findUserByConfirmationCode(token);
+      if (u.codeExpiration && new Date(u.codeExpiration) <= new Date())
+        return InterlayerNotice.createErrorNotice(
+          AuthError.CONFIRMATION_EXPIRED,
+          ENTITY_USER,
+          400
+        );
+      if (!u)
+        return InterlayerNotice.createErrorNotice(
+          AuthError.CONFIRMATION_ERROR,
+          ENTITY_USER,
+          400
+        );
+      u.isConfirmed = true
+      await this.userPrismaRepository.updateUserById(u.id, u)
+    } catch (error: unknown) {
+      console.error('Send email error', error);
+    }
+  }
+}

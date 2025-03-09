@@ -4,15 +4,33 @@ import { UserEntity } from '../../domain/entites/user.entity';
 import { User } from '../../../../../../prisma/generated';
 
 @Injectable()
-export class UsersPrismaRepository{
+export class UsersPrismaRepository {
   constructor(private prisma: PrismaService) { }
-    async findUserByEmail(email: string): Promise<User|null>{
-      return this.prisma.user.findUnique({
-        where: {email},
-      })
-    }
+  async findUserByEmail(email: string): Promise<User | null> {
+    return this.prisma.user.findUnique({
+      where: { email },
+    })
+  }
 
-    async createUser(user: UserEntity ): Promise<User>{
+  async findUserByConfirmationCode(confirmationCode: string): Promise<User | null> {
+    return this.prisma.user.findFirst({
+      where: {
+        AND: [
+          { confirmationCode },
+          { isConfirmed: false }
+        ]
+      },
+    })
+  }
+
+  async updateUserById(id: string, data: Partial<User>): Promise<User> {
+    return this.prisma.user.update({
+      where: { id },
+      data,
+    });
+  }
+
+  async createUser(user: UserEntity): Promise<User> {
 
     return this.prisma.user.create({
       data: {
@@ -21,7 +39,7 @@ export class UsersPrismaRepository{
         passwordHash: user.passwordHash,
         createdAt: user.createdAt,
         confirmationCode: user.confirmationCode,
-        expirationDate: user.expirationDate,
+        codeExpiration: user.codeExpiration,
         isConfirmed: user.isConfirmed,
         updatedAt: user.updatedAt,
       }

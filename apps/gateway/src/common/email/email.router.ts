@@ -16,6 +16,18 @@ export class EmailRouter {
       html: textMessage,
     };
   }
+  getDataMailVerify(
+    email: string,
+    confirmationCode: string,
+  ): DataMailType {
+    const textMessage = `<h1>Your new Verify code</h1><p>To finish registration please follow the link below:<a href='https://somesite.com/confirm-email?code=${confirmationCode}'>complete registration</a></p>`;
+    return {
+      from: '"In-gram"',
+      to: email,
+      subject: 'Your new Verify code',
+      html: textMessage,
+    };
+  }
   getDataMailForRecoveryPassword(
     email: string,
     confirmationCode: string,
