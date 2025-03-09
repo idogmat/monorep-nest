@@ -19,13 +19,13 @@
         "tsConfigPath": "apps/gateway/tsconfig.app.json"
       }
     },
-    "app-test": {
+    "files": {
       "type": "application",
-      "root": "apps/app-test",
+      "root": "apps/files",
       "entryFile": "main",
-      "sourceRoot": "apps/app-test/src",
+      "sourceRoot": "apps/files/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/app-test/tsconfig.app.json"
+        "tsConfigPath": "apps/files/tsconfig.app.json"
       }
     }
   }

@@ -144,7 +144,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/jack/projects/monorep-nest/apps/gateway/prisma/generated",
+      "value": "C:\\Users\\idogm\\OneDrive\\Desktop\\instagram\\myin-gram-monorep\\apps\\gateway\\prisma\\generated",
       "fromEnvVar": null
     },
     "config": {
@@ -153,16 +153,20 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "debian-openssl-3.0.x",
+        "value": "windows",
         "native": true
       },
       {
         "fromEnvVar": null,
         "value": "debian-openssl-3.0.x"
+      },
+      {
+        "fromEnvVar": null,
+        "value": "windows"
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/jack/projects/monorep-nest/apps/gateway/prisma/schema.prisma",
+    "sourceFilePath": "C:\\Users\\idogm\\OneDrive\\Desktop\\instagram\\myin-gram-monorep\\apps\\gateway\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -183,8 +187,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "datasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  output        = \"./generated\"\n  binaryTargets = [\"native\", \"debian-openssl-3.0.x\"]\n}\n\nmodel User {\n  id               String    @id @default(uuid())\n  createdAt        DateTime  @default(now()) @map(\"created_at\")\n  updatedAt        DateTime  @updatedAt\n  deletedAt        DateTime?\n  email            String    @unique\n  name             String?\n  confirmationCode String?\n  passwordHash     String?\n  isConfirmed      Boolean   @default(false)\n  expirationDate   DateTime\n  posts            Post[]\n\n  @@map(\"users\")\n}\n\nmodel Post {\n  id        String    @id @default(uuid())\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  deletedAt DateTime?\n  published Boolean   @default(false)\n  title     String    @db.VarChar(255)\n  author    User?     @relation(fields: [authorId], references: [id])\n  authorId  String?\n\n  @@map(\"posts\")\n}\n",
-  "inlineSchemaHash": "6d3139a547be12184aa6248cf693a707a5245850d0f617bf12f6e9cc08fbf7ee",
+  "inlineSchema": "datasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  output        = \"./generated\"\n  binaryTargets = [\"native\", \"debian-openssl-3.0.x\", \"windows\"]\n}\n\nmodel User {\n  id               String    @id @default(uuid())\n  createdAt        DateTime  @default(now()) @map(\"created_at\")\n  updatedAt        DateTime  @updatedAt\n  deletedAt        DateTime?\n  email            String    @unique\n  name             String?\n  confirmationCode String?\n  passwordHash     String?\n  isConfirmed      Boolean   @default(false)\n  expirationDate   DateTime\n  posts            Post[]\n\n  @@map(\"users\")\n}\n\nmodel Post {\n  id        String    @id @default(uuid())\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  deletedAt DateTime?\n  published Boolean   @default(false)\n  title     String    @db.VarChar(255)\n  author    User?     @relation(fields: [authorId], references: [id])\n  authorId  String?\n\n  @@map(\"posts\")\n}\n",
+  "inlineSchemaHash": "65da4bf8e46da044a59c92076e3a9c6648c19f15438608bad4fe3fefc2aec019",
   "copyEngine": true
 }
 
@@ -221,6 +225,10 @@ warnEnvConflicts({
 const PrismaClient = getPrismaClient(config)
 exports.PrismaClient = PrismaClient
 Object.assign(exports, Prisma)
+
+// file annotations for bundling tools to include these files
+path.join(__dirname, "query_engine-windows.dll.node");
+path.join(process.cwd(), "prisma/generated/query_engine-windows.dll.node")
 
 // file annotations for bundling tools to include these files
 path.join(__dirname, "libquery_engine-debian-openssl-3.0.x.so.node");

@@ -21,9 +21,9 @@
     "build:gateway": "nest build gateway",
     "start:gateway": "node dist/apps/gateway/main",
     "start:dev:gateway": "nest start gateway --watch",
-    "build:app-test": "nest build app-test",
-    "start:app-test": "node dist/apps/app-test/main",
-    "start:dev:app-test": "nest start app-test --watch"
+    "build:files": "nest build files",
+    "start:files": "node dist/apps/files/main",
+    "start:dev:files": "nest start files --watch"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

@@ -27,11 +27,11 @@ spec:
                  secretKeyRef:
                    name: gate-production-config-secret
                    key: CONNECT_PORT
-             - name: HOST_TCP
+             - name: FILES_TCP
                valueFrom:
                  secretKeyRef:
                    name: gate-production-config-secret
-                   key: HOST_TCP
+                   key: FILES_TCP
              - name: PASSWORD_FOR_EMAIL
                valueFrom:
                  secretKeyRef:
