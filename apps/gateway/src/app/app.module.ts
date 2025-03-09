@@ -6,8 +6,6 @@ import { UsersAccountsModule } from '../feature/user-accounts/users.accounts.mod
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { getConfiguration } from '../settings/getConfiguration';
 import { CqrsModule } from '@nestjs/cqrs';
-import { JwtModule } from '@nestjs/jwt';
-
 
 @Module({
   imports: [
@@ -36,15 +34,7 @@ import { JwtModule } from '@nestjs/jwt';
         inject: [ConfigService],
       },
     ]),
-    JwtModule.registerAsync({
-      useFactory: (configService: ConfigService) => {
-        return {
-          secret: configService.get('ACCESS_TOKEN'),
-          signOptions: { expiresIn: configService.get('ACCESS_TOKEN_EXPIRATION') },
-        };
-      },
-      inject: [ConfigService]
-    }),
+
     UsersAccountsModule,
 
   ],

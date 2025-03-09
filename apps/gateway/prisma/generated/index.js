@@ -156,10 +156,6 @@ const config = {
         "fromEnvVar": null,
         "value": "windows",
         "native": true
-      },
-      {
-        "fromEnvVar": null,
-        "value": "debian-openssl-3.0.x"
       }
     ],
     "previewFeatures": [],
@@ -167,7 +163,7 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null
+    "rootEnvPath": "../../../../.env"
   },
   "relativePath": "..",
   "clientVersion": "6.4.1",
@@ -184,8 +180,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "datasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  output        = \"./generated\"\n  binaryTargets = [\"native\", \"debian-openssl-3.0.x\"]\n}\n\nmodel User {\n  id               String    @id @default(uuid())\n  createdAt        DateTime  @default(now()) @map(\"created_at\")\n  updatedAt        DateTime  @updatedAt\n  deletedAt        DateTime?\n  email            String    @unique\n  name             String?\n  confirmationCode String?\n  codeExpiration   DateTime?\n  isConfirmed      Boolean   @default(false)\n  passwordHash     String?\n  expirationDate   DateTime?\n  posts            Post[]\n\n  @@map(\"users\")\n}\n\nmodel Post {\n  id        String    @id @default(uuid())\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  deletedAt DateTime?\n  published Boolean   @default(false)\n  title     String    @db.VarChar(255)\n  author    User?     @relation(fields: [authorId], references: [id])\n  authorId  String?\n\n  @@map(\"posts\")\n}\n",
-  "inlineSchemaHash": "4c7d326e34cd327e003d7f5f8f017d39391f0da316ea978069fb63a2ed99af37",
+  "inlineSchema": "datasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated\"\n  // binaryTargets = [\"native\", \"debian-openssl-3.0.x\"]\n}\n\nmodel User {\n  id               String    @id @default(uuid())\n  createdAt        DateTime  @default(now()) @map(\"created_at\")\n  updatedAt        DateTime  @updatedAt\n  deletedAt        DateTime?\n  email            String    @unique\n  name             String?\n  confirmationCode String?\n  codeExpiration   DateTime?\n  isConfirmed      Boolean   @default(false)\n  passwordHash     String?\n  expirationDate   DateTime?\n  posts            Post[]\n\n  @@map(\"users\")\n}\n\nmodel Post {\n  id        String    @id @default(uuid())\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  deletedAt DateTime?\n  published Boolean   @default(false)\n  title     String    @db.VarChar(255)\n  author    User?     @relation(fields: [authorId], references: [id])\n  authorId  String?\n\n  @@map(\"posts\")\n}\n",
+  "inlineSchemaHash": "bbe3b8551e5e2c3ab239dfb7e2e413aa1cd4d49805e8fee97f4dd45bdd808622",
   "copyEngine": true
 }
 
@@ -226,10 +222,6 @@ Object.assign(exports, Prisma)
 // file annotations for bundling tools to include these files
 path.join(__dirname, "query_engine-windows.dll.node");
 path.join(process.cwd(), "prisma/generated/query_engine-windows.dll.node")
-
-// file annotations for bundling tools to include these files
-path.join(__dirname, "libquery_engine-debian-openssl-3.0.x.so.node");
-path.join(process.cwd(), "prisma/generated/libquery_engine-debian-openssl-3.0.x.so.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
 path.join(process.cwd(), "prisma/generated/schema.prisma")
