@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 @Injectable()
 export class EmailAdapter {
-  constructor(private configService: ConfigService) {}
+  constructor(private configService: ConfigService) { }
   async sandMail(dataMail: DataMailType) {
 
 

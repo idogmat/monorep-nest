@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { EmailService } from '@gateway/src/common/email/email.service';
+import { EmailService } from '../../../../common/email/email.service';
 import { UsersPrismaRepository } from '../../users/infrastructure/prisma/users.prisma.repository';
-import { InterlayerNotice } from '@gateway/src/common/error-handling/interlayer.notice';
-import { AuthError } from '@gateway/src/common/error-handling/auth.error';
-import { ENTITY_USER } from '@gateway/src/common/entities.constants';
+import { InterlayerNotice } from '../../../../common/error-handling/interlayer.notice';
+import { AuthError } from '../../../../common/error-handling/auth.error';
+import { ENTITY_USER } from '../../../../common/entities.constants';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 

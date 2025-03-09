@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Query, UseGuards, HttpCode, Req, Res } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query, HttpCode, Req, Res } from '@nestjs/common';
 import { AuthService } from '../application/auth.service';
 import { UserCreateModel } from './models/input/user.create.model';
 import { CommandBus } from '@nestjs/cqrs';
@@ -7,7 +7,7 @@ import { ErrorProcessor } from '../../../../common/error-handling/error.processo
 import { EmailRecovery, VerifyEmailToken } from './models/input/email.model';
 import { VerifyEmailCommand } from '../application/use-cases/verify.email.case';
 import { ApiResponse } from '@nestjs/swagger';
-import { AuthError } from '@gateway/src/common/error-handling/auth.error';
+import { AuthError } from '../../../../common/error-handling/auth.error';
 import { LoginModel } from './models/input/login.model';
 import { LoginCommand } from '../application/use-cases/login.case';
 
