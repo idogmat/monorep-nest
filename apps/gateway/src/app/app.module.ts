@@ -6,6 +6,7 @@ import { UsersAccountsModule } from '../feature/user-accounts/users.accounts.mod
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { getConfiguration } from '../settings/getConfiguration';
 import { CqrsModule } from '@nestjs/cqrs';
+import { JwtModule } from '@nestjs/jwt';
 
 
 @Module({
@@ -35,16 +36,15 @@ import { CqrsModule } from '@nestjs/cqrs';
         inject: [ConfigService],
       },
     ]),
-    // ClientsModule.registerAsync([
-    //   {
-    //     name: 'TCP_SERVICE',
-    //     transport: Transport.TCP,
-    //     options: {
-    //       host: '127.0.0.1',
-    //       port: 3001,  // Порт, на который отправляется запрос в Service B
-    //     },
-    //   },
-    // ]),
+    JwtModule.registerAsync({
+      useFactory: (configService: ConfigService) => {
+        return {
+          secret: configService.get('ACCESS_TOKEN'),
+          signOptions: { expiresIn: configService.get('ACCESS_TOKEN_EXPIRATION') },
+        };
+      },
+      inject: [ConfigService]
+    }),
     UsersAccountsModule,
 
   ],
