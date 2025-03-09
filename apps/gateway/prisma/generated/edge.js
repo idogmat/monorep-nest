@@ -155,6 +155,10 @@ const config = {
         "fromEnvVar": null,
         "value": "windows",
         "native": true
+      },
+      {
+        "fromEnvVar": null,
+        "value": "debian-openssl-3.0.x"
       }
     ],
     "previewFeatures": [],
@@ -179,8 +183,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "datasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated\"\n  // binaryTargets = [\"native\", \"debian-openssl-3.0.x\", \"windows\"]\n}\n\nmodel User {\n  id               String    @id @default(uuid())\n  createdAt        DateTime  @default(now()) @map(\"created_at\")\n  updatedAt        DateTime  @updatedAt\n  deletedAt        DateTime?\n  email            String    @unique\n  name             String?\n  confirmationCode String?\n  codeExpiration   DateTime?\n  isConfirmed      Boolean   @default(false)\n  passwordHash     String?\n  expirationDate   DateTime?\n  posts            Post[]\n\n  @@map(\"users\")\n}\n\nmodel Post {\n  id        String    @id @default(uuid())\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  deletedAt DateTime?\n  published Boolean   @default(false)\n  title     String    @db.VarChar(255)\n  author    User?     @relation(fields: [authorId], references: [id])\n  authorId  String?\n\n  @@map(\"posts\")\n}\n",
-  "inlineSchemaHash": "02f01bc51a1b2094ff80a84c3dc2272e90813a557854bf6a744f18ceba824269",
+  "inlineSchema": "datasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  output        = \"./generated\"\n  binaryTargets = [\"native\", \"debian-openssl-3.0.x\"]\n}\n\nmodel User {\n  id               String    @id @default(uuid())\n  createdAt        DateTime  @default(now()) @map(\"created_at\")\n  updatedAt        DateTime  @updatedAt\n  deletedAt        DateTime?\n  email            String    @unique\n  name             String?\n  confirmationCode String?\n  codeExpiration   DateTime?\n  isConfirmed      Boolean   @default(false)\n  passwordHash     String?\n  expirationDate   DateTime?\n  posts            Post[]\n\n  @@map(\"users\")\n}\n\nmodel Post {\n  id        String    @id @default(uuid())\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  deletedAt DateTime?\n  published Boolean   @default(false)\n  title     String    @db.VarChar(255)\n  author    User?     @relation(fields: [authorId], references: [id])\n  authorId  String?\n\n  @@map(\"posts\")\n}\n",
+  "inlineSchemaHash": "4c7d326e34cd327e003d7f5f8f017d39391f0da316ea978069fb63a2ed99af37",
   "copyEngine": true
 }
 config.dirname = '/'
