@@ -8,8 +8,7 @@ export class VerifyEmailToken {
 }
 
 export class EmailRecovery {
-
+  @ApiProperty({ type: String })
   @IsEmail()
   email: string;
-
 }
