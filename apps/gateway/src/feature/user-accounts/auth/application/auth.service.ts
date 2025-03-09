@@ -42,8 +42,8 @@ export class AuthService {
 
   async createToken(payload: any, type: 'ACCESS' | 'REFRESH') {
     const signOptions = {
-      secret: this.configService.get(`${type}_TOKEN`),
-      expiresIn: this.configService.get(`${type}_TOKEN_EXPIRATION`)
+      secret: this.configService.get(`${type}_TOKEN`) || 'TEST',
+      expiresIn: this.configService.get(`${type}_TOKEN_EXPIRATION`) || 'TEST'
     }
     const token = await this.jwtService.sign(
       payload,
