@@ -38,6 +38,6 @@ const useCasesForAuth = [
     ...useCasesForAuth
   ],
   controllers: [UsersController, AuthController],
-  exports: [JwtService]
+  exports: []
 })
 export class UsersAccountsModule { }
