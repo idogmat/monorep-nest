@@ -3,13 +3,15 @@ import { add } from 'date-fns';
 
 
 export class UserEntity {
+  _id: string;
   name: string;
   email: string;
   passwordHash: string;
   createdAt: Date;
   updatedAt: Date;
   confirmationCode: string;
-  expirationDate: Date;
+  expirationDate?: Date;
+  codeExpiration?: Date;
   isConfirmed: boolean;
 
   constructor(data: { name: string; email: string; passwordHash: string }) {
@@ -19,7 +21,7 @@ export class UserEntity {
     this.createdAt = new Date();
     this.updatedAt = new Date();
     this.confirmationCode = this.generateConfirmationCode();
-    this.expirationDate = add(new Date(), { hours: 99, minutes: 3 });
+    this.codeExpiration = add(new Date(), { hours: 24 });
     this.isConfirmed = false;
   }
 
@@ -36,7 +38,7 @@ export class UserEntity {
   //     createdAt: this.createdAt,
   //     updatedAt: this.updatedAt,
   //     confirmationCode: this.confirmationCode,
-  //     expirationDate: this.expirationDate,
+  //     codeExpiration: this.codeExpiration,
   //     isConfirmed: this.isConfirmed,
   //     posts: []
   //   };

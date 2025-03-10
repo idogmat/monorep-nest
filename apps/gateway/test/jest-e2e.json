@@ -3,6 +3,16 @@
   "rootDir": ".",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
+  "roots": [
+    "<rootDir>",
+    "<rootDir>/../"
+  ],
+  "modulePaths": [
+    ".",
+    "node_modules",
+    "<rootDir>",
+    "<rootDir>/../"
+  ],
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   }

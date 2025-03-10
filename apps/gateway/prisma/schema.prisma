@@ -6,7 +6,7 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
   output   = "./generated"
-  binaryTargets = ["native", "debian-openssl-3.0.x", "windows"]
+  // binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 model User {
@@ -17,9 +17,10 @@ model User {
   email     String   @unique
   name      String?
   confirmationCode String?
-  passwordHash String?
+  codeExpiration DateTime?
   isConfirmed Boolean @default(false)
-  expirationDate DateTime
+  passwordHash String?
+  expirationDate DateTime?
   posts     Post[]
   @@map("users")
 }

@@ -7,7 +7,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { getConfiguration } from '../settings/getConfiguration';
 import { CqrsModule } from '@nestjs/cqrs';
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -35,16 +34,7 @@ import { CqrsModule } from '@nestjs/cqrs';
         inject: [ConfigService],
       },
     ]),
-    // ClientsModule.registerAsync([
-    //   {
-    //     name: 'TCP_SERVICE',
-    //     transport: Transport.TCP,
-    //     options: {
-    //       host: '127.0.0.1',
-    //       port: 3001,  // Порт, на который отправляется запрос в Service B
-    //     },
-    //   },
-    // ]),
+
     UsersAccountsModule,
 
   ],
