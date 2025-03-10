@@ -22,10 +22,10 @@ export class EmailService {
     );
     await this.emailAdapter.sandMail(dataMail);
   }
-  async sendRecoveryPassword(email: string, confirmationCode: string) {
-    const dataMail = this.emailRouter.getDataMailForRecoveryPassword(
+  async sendRecoveryCode(email: string, recoveryCode: string) {
+    const dataMail = this.emailRouter.getDataRecoveryPassword(
       email,
-      confirmationCode,
+      recoveryCode,
     );
     await this.emailAdapter.sandMail(dataMail);
   }

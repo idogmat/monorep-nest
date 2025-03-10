@@ -1,4 +1,5 @@
 // src/entities/UserEntity.ts
+import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
 
 
@@ -12,6 +13,7 @@ export class UserEntity {
   confirmationCode: string;
   expirationDate?: Date;
   codeExpiration?: Date;
+  recoveryCode?: string
   isConfirmed: boolean;
 
   constructor(data: { name: string; email: string; passwordHash: string }) {
@@ -20,14 +22,14 @@ export class UserEntity {
     this.passwordHash = data.passwordHash;
     this.createdAt = new Date();
     this.updatedAt = new Date();
-    this.confirmationCode = this.generateConfirmationCode();
+    this.confirmationCode = randomUUID();
     this.codeExpiration = add(new Date(), { hours: 24 });
     this.isConfirmed = false;
   }
 
-  private generateConfirmationCode(): string {
-    return Math.random().toString(36).substring(2, 15); // Простенький пример генерации
-  }
+  // private generateConfirmationCode(): string {
+  //   return Math.random().toString(36).substring(2, 15); // Простенький пример генерации
+  // }
 
   // Метод для преобразования в формат Prisma
   // toPrisma(): Partial <Prisma.UserCreateInput> {
