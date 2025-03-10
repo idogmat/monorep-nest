@@ -28,6 +28,18 @@ export class EmailRouter {
       html: textMessage,
     };
   }
+  getDataRecoveryPassword(
+    email: string,
+    recoveryCode: string,
+  ): DataMailType {
+    const textMessage = `<h1>Your new Recovery link </h1><p>For recovery password follow the link below:<a href='https://somesite.com/recovery-password?code=${recoveryCode}'>Recovery</a></p>`;
+    return {
+      from: '"In-gram"',
+      to: email,
+      subject: 'Your new Recovery code',
+      html: textMessage,
+    };
+  }
   getDataMailForRecoveryPassword(
     email: string,
     confirmationCode: string,

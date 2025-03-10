@@ -6,6 +6,8 @@ import { AuthError } from '../../../../common/error-handling/auth.error';
 import { ENTITY_USER } from '../../../../common/entities.constants';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { randomUUID } from 'crypto';
+import { BcryptService } from '../infrastructure/bcrypt.service';
 
 
 @Injectable()
@@ -14,23 +16,72 @@ export class AuthService {
     private userPrismaRepository: UsersPrismaRepository,
     private emailService: EmailService,
     private jwtService: JwtService,
+    private bcryptService: BcryptService,
     private configService: ConfigService,
   ) { }
   async sendVerifyEmail(email) {
     try {
-      const user = await this.userPrismaRepository.findUserByEmail(email);
-      if (user.isConfirmed)
+      const u = await this.userPrismaRepository.findUserByEmail(email);
+      if (u.isConfirmed)
         return InterlayerNotice.createErrorNotice(
           AuthError.CONFIRMATION_ERROR,
           ENTITY_USER,
           400
         );
-      user.confirmationCode = Math.random().toString(36).substring(2, 15)
-      await this.userPrismaRepository.updateUserById(user.id, user)
+      u.confirmationCode = randomUUID()
+      await this.userPrismaRepository.updateUserById(u.id, u)
       this.emailService.sendVerifyEmail(
-        user.email,
-        user.confirmationCode,
+        u.email,
+        u.confirmationCode,
       );
+    } catch (error) {
+      return InterlayerNotice.createErrorNotice(
+        error,
+        ENTITY_USER,
+        400
+      );
+    }
+  }
+
+  async sendRecoveryCode(email) {
+    try {
+      const u = await this.userPrismaRepository.findUserByEmail(email);
+      if (!u)
+        return InterlayerNotice.createErrorNotice(
+          AuthError.CONFIRMATION_ERROR,
+          ENTITY_USER,
+          400
+        );
+      u.recoveryCode = randomUUID();
+      await this.userPrismaRepository.updateUserById(u.id, u)
+      this.emailService.sendRecoveryCode(
+        u.email,
+        u.recoveryCode,
+      );
+    } catch (error) {
+      return InterlayerNotice.createErrorNotice(
+        error,
+        ENTITY_USER,
+        400
+      );
+    }
+  }
+
+  async setNewPassword(recoveryCode: string, password: string) {
+    try {
+      const u = await this.userPrismaRepository.findUserByRecoveryCode(recoveryCode);
+      console.log(u)
+      if (!u)
+        return InterlayerNotice.createErrorNotice(
+          AuthError.CONFIRMATION_ERROR,
+          ENTITY_USER,
+          400
+        );
+      u.passwordHash = await this.bcryptService.generationHash(
+        password,
+      );
+      u.recoveryCode = null
+      await this.userPrismaRepository.updateUserById(u.id, u)
     } catch (error) {
       return InterlayerNotice.createErrorNotice(
         error,

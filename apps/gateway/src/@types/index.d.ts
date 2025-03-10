@@ -4,5 +4,6 @@ declare global {
       userId: string;
       login: string;
     }
+
   }
 }

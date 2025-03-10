@@ -1007,6 +1007,7 @@ export namespace Prisma {
     confirmationCode: string | null
     codeExpiration: Date | null
     isConfirmed: boolean | null
+    recoveryCode: string | null
     passwordHash: string | null
     expirationDate: Date | null
   }
@@ -1021,6 +1022,7 @@ export namespace Prisma {
     confirmationCode: string | null
     codeExpiration: Date | null
     isConfirmed: boolean | null
+    recoveryCode: string | null
     passwordHash: string | null
     expirationDate: Date | null
   }
@@ -1035,6 +1037,7 @@ export namespace Prisma {
     confirmationCode: number
     codeExpiration: number
     isConfirmed: number
+    recoveryCode: number
     passwordHash: number
     expirationDate: number
     _all: number
@@ -1051,6 +1054,7 @@ export namespace Prisma {
     confirmationCode?: true
     codeExpiration?: true
     isConfirmed?: true
+    recoveryCode?: true
     passwordHash?: true
     expirationDate?: true
   }
@@ -1065,6 +1069,7 @@ export namespace Prisma {
     confirmationCode?: true
     codeExpiration?: true
     isConfirmed?: true
+    recoveryCode?: true
     passwordHash?: true
     expirationDate?: true
   }
@@ -1079,6 +1084,7 @@ export namespace Prisma {
     confirmationCode?: true
     codeExpiration?: true
     isConfirmed?: true
+    recoveryCode?: true
     passwordHash?: true
     expirationDate?: true
     _all?: true
@@ -1166,6 +1172,7 @@ export namespace Prisma {
     confirmationCode: string | null
     codeExpiration: Date | null
     isConfirmed: boolean
+    recoveryCode: string | null
     passwordHash: string | null
     expirationDate: Date | null
     _count: UserCountAggregateOutputType | null
@@ -1197,6 +1204,7 @@ export namespace Prisma {
     confirmationCode?: boolean
     codeExpiration?: boolean
     isConfirmed?: boolean
+    recoveryCode?: boolean
     passwordHash?: boolean
     expirationDate?: boolean
     posts?: boolean | User$postsArgs<ExtArgs>
@@ -1213,6 +1221,7 @@ export namespace Prisma {
     confirmationCode?: boolean
     codeExpiration?: boolean
     isConfirmed?: boolean
+    recoveryCode?: boolean
     passwordHash?: boolean
     expirationDate?: boolean
   }, ExtArgs["result"]["user"]>
@@ -1227,6 +1236,7 @@ export namespace Prisma {
     confirmationCode?: boolean
     codeExpiration?: boolean
     isConfirmed?: boolean
+    recoveryCode?: boolean
     passwordHash?: boolean
     expirationDate?: boolean
   }, ExtArgs["result"]["user"]>
@@ -1241,11 +1251,12 @@ export namespace Prisma {
     confirmationCode?: boolean
     codeExpiration?: boolean
     isConfirmed?: boolean
+    recoveryCode?: boolean
     passwordHash?: boolean
     expirationDate?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "deletedAt" | "email" | "name" | "confirmationCode" | "codeExpiration" | "isConfirmed" | "passwordHash" | "expirationDate", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "deletedAt" | "email" | "name" | "confirmationCode" | "codeExpiration" | "isConfirmed" | "recoveryCode" | "passwordHash" | "expirationDate", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     posts?: boolean | User$postsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -1268,6 +1279,7 @@ export namespace Prisma {
       confirmationCode: string | null
       codeExpiration: Date | null
       isConfirmed: boolean
+      recoveryCode: string | null
       passwordHash: string | null
       expirationDate: Date | null
     }, ExtArgs["result"]["user"]>
@@ -1703,6 +1715,7 @@ export namespace Prisma {
     readonly confirmationCode: FieldRef<"User", 'String'>
     readonly codeExpiration: FieldRef<"User", 'DateTime'>
     readonly isConfirmed: FieldRef<"User", 'Boolean'>
+    readonly recoveryCode: FieldRef<"User", 'String'>
     readonly passwordHash: FieldRef<"User", 'String'>
     readonly expirationDate: FieldRef<"User", 'DateTime'>
   }
@@ -3262,6 +3275,7 @@ export namespace Prisma {
     confirmationCode: 'confirmationCode',
     codeExpiration: 'codeExpiration',
     isConfirmed: 'isConfirmed',
+    recoveryCode: 'recoveryCode',
     passwordHash: 'passwordHash',
     expirationDate: 'expirationDate'
   };
@@ -3376,6 +3390,7 @@ export namespace Prisma {
     confirmationCode?: StringNullableFilter<"User"> | string | null
     codeExpiration?: DateTimeNullableFilter<"User"> | Date | string | null
     isConfirmed?: BoolFilter<"User"> | boolean
+    recoveryCode?: StringNullableFilter<"User"> | string | null
     passwordHash?: StringNullableFilter<"User"> | string | null
     expirationDate?: DateTimeNullableFilter<"User"> | Date | string | null
     posts?: PostListRelationFilter
@@ -3391,6 +3406,7 @@ export namespace Prisma {
     confirmationCode?: SortOrderInput | SortOrder
     codeExpiration?: SortOrderInput | SortOrder
     isConfirmed?: SortOrder
+    recoveryCode?: SortOrderInput | SortOrder
     passwordHash?: SortOrderInput | SortOrder
     expirationDate?: SortOrderInput | SortOrder
     posts?: PostOrderByRelationAggregateInput
@@ -3409,6 +3425,7 @@ export namespace Prisma {
     confirmationCode?: StringNullableFilter<"User"> | string | null
     codeExpiration?: DateTimeNullableFilter<"User"> | Date | string | null
     isConfirmed?: BoolFilter<"User"> | boolean
+    recoveryCode?: StringNullableFilter<"User"> | string | null
     passwordHash?: StringNullableFilter<"User"> | string | null
     expirationDate?: DateTimeNullableFilter<"User"> | Date | string | null
     posts?: PostListRelationFilter
@@ -3424,6 +3441,7 @@ export namespace Prisma {
     confirmationCode?: SortOrderInput | SortOrder
     codeExpiration?: SortOrderInput | SortOrder
     isConfirmed?: SortOrder
+    recoveryCode?: SortOrderInput | SortOrder
     passwordHash?: SortOrderInput | SortOrder
     expirationDate?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -3444,6 +3462,7 @@ export namespace Prisma {
     confirmationCode?: StringNullableWithAggregatesFilter<"User"> | string | null
     codeExpiration?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     isConfirmed?: BoolWithAggregatesFilter<"User"> | boolean
+    recoveryCode?: StringNullableWithAggregatesFilter<"User"> | string | null
     passwordHash?: StringNullableWithAggregatesFilter<"User"> | string | null
     expirationDate?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   }
@@ -3523,6 +3542,7 @@ export namespace Prisma {
     confirmationCode?: string | null
     codeExpiration?: Date | string | null
     isConfirmed?: boolean
+    recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
     posts?: PostCreateNestedManyWithoutAuthorInput
@@ -3538,6 +3558,7 @@ export namespace Prisma {
     confirmationCode?: string | null
     codeExpiration?: Date | string | null
     isConfirmed?: boolean
+    recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
@@ -3553,6 +3574,7 @@ export namespace Prisma {
     confirmationCode?: NullableStringFieldUpdateOperationsInput | string | null
     codeExpiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isConfirmed?: BoolFieldUpdateOperationsInput | boolean
+    recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     posts?: PostUpdateManyWithoutAuthorNestedInput
@@ -3568,6 +3590,7 @@ export namespace Prisma {
     confirmationCode?: NullableStringFieldUpdateOperationsInput | string | null
     codeExpiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isConfirmed?: BoolFieldUpdateOperationsInput | boolean
+    recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
@@ -3583,6 +3606,7 @@ export namespace Prisma {
     confirmationCode?: string | null
     codeExpiration?: Date | string | null
     isConfirmed?: boolean
+    recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
   }
@@ -3597,6 +3621,7 @@ export namespace Prisma {
     confirmationCode?: NullableStringFieldUpdateOperationsInput | string | null
     codeExpiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isConfirmed?: BoolFieldUpdateOperationsInput | boolean
+    recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -3611,6 +3636,7 @@ export namespace Prisma {
     confirmationCode?: NullableStringFieldUpdateOperationsInput | string | null
     codeExpiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isConfirmed?: BoolFieldUpdateOperationsInput | boolean
+    recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -3766,6 +3792,7 @@ export namespace Prisma {
     confirmationCode?: SortOrder
     codeExpiration?: SortOrder
     isConfirmed?: SortOrder
+    recoveryCode?: SortOrder
     passwordHash?: SortOrder
     expirationDate?: SortOrder
   }
@@ -3780,6 +3807,7 @@ export namespace Prisma {
     confirmationCode?: SortOrder
     codeExpiration?: SortOrder
     isConfirmed?: SortOrder
+    recoveryCode?: SortOrder
     passwordHash?: SortOrder
     expirationDate?: SortOrder
   }
@@ -3794,6 +3822,7 @@ export namespace Prisma {
     confirmationCode?: SortOrder
     codeExpiration?: SortOrder
     isConfirmed?: SortOrder
+    recoveryCode?: SortOrder
     passwordHash?: SortOrder
     expirationDate?: SortOrder
   }
@@ -4197,6 +4226,7 @@ export namespace Prisma {
     confirmationCode?: string | null
     codeExpiration?: Date | string | null
     isConfirmed?: boolean
+    recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
   }
@@ -4211,6 +4241,7 @@ export namespace Prisma {
     confirmationCode?: string | null
     codeExpiration?: Date | string | null
     isConfirmed?: boolean
+    recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
   }
@@ -4241,6 +4272,7 @@ export namespace Prisma {
     confirmationCode?: NullableStringFieldUpdateOperationsInput | string | null
     codeExpiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isConfirmed?: BoolFieldUpdateOperationsInput | boolean
+    recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -4255,6 +4287,7 @@ export namespace Prisma {
     confirmationCode?: NullableStringFieldUpdateOperationsInput | string | null
     codeExpiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isConfirmed?: BoolFieldUpdateOperationsInput | boolean
+    recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }

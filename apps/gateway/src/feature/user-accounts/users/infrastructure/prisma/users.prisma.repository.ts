@@ -23,12 +23,19 @@ export class UsersPrismaRepository {
     })
   }
 
+  async findUserByRecoveryCode(recoveryCode: string): Promise<User | null> {
+    return this.prisma.user.findFirst({
+      where: { recoveryCode },
+    })
+  }
+
   async updateUserById(id: string, data: Partial<User>): Promise<User> {
     return this.prisma.user.update({
       where: { id },
       data,
     });
   }
+
 
   async createUser(user: UserEntity): Promise<User> {
 

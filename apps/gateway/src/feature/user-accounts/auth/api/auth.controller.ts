@@ -10,6 +10,7 @@ import { ApiResponse } from '@nestjs/swagger';
 import { AuthError } from '../../../../common/error-handling/auth.error';
 import { LoginModel } from './models/input/login.model';
 import { LoginCommand } from '../application/use-cases/login.case';
+import { RecoveryModel } from './models/input/recovery.model';
 
 @Controller('auth')
 export class AuthController {
@@ -66,5 +67,33 @@ export class AuthController {
   async resendVerifyCode(@Body() recovery: EmailRecovery) {
     const { email } = recovery
     await this.authService.sendVerifyEmail(email)
+  }
+
+  @ApiResponse({ status: 200, description: 'Your Email has a recovery code.', type: VerifyEmailToken })
+  @ApiResponse({ status: 400, description: AuthError.CONFIRMATION_ERROR })
+  @HttpCode(200)
+  @Post('forgot-password')
+  async recoveryPassword(@Body() recovery: EmailRecovery) {
+    const { email } = recovery
+    await this.authService.sendRecoveryCode(email)
+  }
+
+  @ApiResponse({ status: 200, description: 'Your new password is set.', type: VerifyEmailToken })
+  @ApiResponse({ status: 400, description: AuthError.CONFIRMATION_ERROR })
+  @HttpCode(200)
+  @Post('reset-password')
+  async setNewPassword(@Body() newCreds: RecoveryModel) {
+    const { recoveryCode, password } = newCreds
+    await this.authService.setNewPassword(recoveryCode, password)
+  }
+
+  @Post('logout')
+  @HttpCode(204)
+  async logout(
+    @Req() req,
+    @Res() res
+  ) {
+    res.clearCookie("refreshToken", { httpOnly: true, secure: true });
+    res.sendStatus(204);
   }
 }
