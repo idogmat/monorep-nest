@@ -7,8 +7,17 @@ export class VerifyEmailToken {
   token: string
 }
 
+export class EmailVerify {
+  @ApiProperty({ type: String })
+  @IsEmail()
+  email: string;
+}
+
 export class EmailRecovery {
   @ApiProperty({ type: String })
   @IsEmail()
   email: string;
+
+  @IsString()
+  recaptchaToken: string
 }

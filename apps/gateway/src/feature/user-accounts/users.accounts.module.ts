@@ -15,6 +15,7 @@ import { VerifyEmailUseCase } from './auth/application/use-cases/verify.email.ca
 import { LoginUseCase } from './auth/application/use-cases/login.case';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { HttpModule } from '@nestjs/axios';
 
 const useCasesForAuth = [
   SignupUseCase,
@@ -23,6 +24,7 @@ const useCasesForAuth = [
 ];
 @Module({
   imports: [
+    HttpModule,
     CqrsModule,
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => {
@@ -47,6 +49,6 @@ const useCasesForAuth = [
     ...useCasesForAuth
   ],
   controllers: [UsersController, AuthController],
-  exports: []
+  exports: [HttpModule]
 })
 export class UsersAccountsModule { }

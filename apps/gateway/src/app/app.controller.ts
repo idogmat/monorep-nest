@@ -1,12 +1,11 @@
 import { Controller, Get, Inject } from '@nestjs/common';
-import { AppService } from './app.service';
 import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom, timeout } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 @Controller()
 export class AppController {
   constructor(@Inject('TCP_SERVICE') private readonly client: ClientProxy) { }
-  
+
   @Get()
   getHello() {
     return 'Hello World!'

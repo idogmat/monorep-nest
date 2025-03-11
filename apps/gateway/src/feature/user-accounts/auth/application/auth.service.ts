@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { EmailService } from '../../../../common/email/email.service';
 import { UsersPrismaRepository } from '../../users/infrastructure/prisma/users.prisma.repository';
 import { InterlayerNotice } from '../../../../common/error-handling/interlayer.notice';
@@ -8,6 +8,8 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { randomUUID } from 'crypto';
 import { BcryptService } from '../infrastructure/bcrypt.service';
+import { firstValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
 
 
 @Injectable()
@@ -18,6 +20,7 @@ export class AuthService {
     private jwtService: JwtService,
     private bcryptService: BcryptService,
     private configService: ConfigService,
+    private readonly httpService: HttpService,
   ) { }
   async sendVerifyEmail(email) {
     try {
@@ -43,7 +46,10 @@ export class AuthService {
     }
   }
 
-  async sendRecoveryCode(email) {
+  async sendRecoveryCode(email, recaptchaToken) {
+    const RECAPTCHA_SECRET_KEY = this.configService.get('RECAPTCHA_SECRET_KEY')
+    const recaptchaResponse = await firstValueFrom(this.httpService.post(`https://www.google.com/recaptcha/api/siteverify?secret=${RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`));
+    if (!recaptchaResponse.data.success) throw new BadRequestException('reCAPTCHA verification failed')
     try {
       const u = await this.userPrismaRepository.findUserByEmail(email);
       if (!u)

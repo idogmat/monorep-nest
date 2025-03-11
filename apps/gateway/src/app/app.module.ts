@@ -6,6 +6,7 @@ import { UsersAccountsModule } from '../feature/user-accounts/users.accounts.mod
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { getConfiguration } from '../settings/getConfiguration';
 import { CqrsModule } from '@nestjs/cqrs';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -14,6 +15,10 @@ import { CqrsModule } from '@nestjs/cqrs';
       load: [getConfiguration]
     }),
     CqrsModule,
+    ThrottlerModule.forRoot([{
+      ttl: 10000,
+      limit: 5,
+    }]),
     ClientsModule.registerAsync([
       {
         imports: [ConfigModule],
@@ -34,7 +39,6 @@ import { CqrsModule } from '@nestjs/cqrs';
         inject: [ConfigService],
       },
     ]),
-
     UsersAccountsModule,
 
   ],
