@@ -8,6 +8,7 @@ export class AppController {
 
   @Get()
   getHello() {
+    console.log('Hello World route is being called');
     return 'Hello World!'
   }
 
