@@ -42,6 +42,31 @@ spec:
                  secretKeyRef:
                    name: gate-production-config-secret
                    key: EMAIL_FOR_SENDING
+             - name: ACCESS_TOKEN
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: ACCESS_TOKEN
+             - name: REFRESH_TOKEN
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: REFRESH_TOKEN
+             - name: ACCESS_TOKEN_EXPIRATION
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: ACCESS_TOKEN_EXPIRATION
+             - name: REFRESH_TOKEN_EXPIRATION
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: REFRESH_TOKEN_EXPIRATION
+             - name: RECAPTCHA_SECRET_KEY
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: RECAPTCHA_SECRET_KEY
              - name: DATABASE_URL
                valueFrom:
                  secretKeyRef:

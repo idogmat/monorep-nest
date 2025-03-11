@@ -31,6 +31,7 @@ export class VerifyEmailUseCase implements ICommandHandler<VerifyEmailCommand> {
           400
         );
       u.isConfirmed = true
+      u.confirmationCode = null
       await this.userPrismaRepository.updateUserById(u.id, u)
     } catch (error: unknown) {
       console.error('Send email error', error);

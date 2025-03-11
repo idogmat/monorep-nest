@@ -19,6 +19,7 @@ model User {
   confirmationCode String?
   codeExpiration DateTime?
   isConfirmed Boolean @default(false)
+  recoveryCode String?
   passwordHash String?
   expirationDate DateTime?
   posts     Post[]
