@@ -7,6 +7,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { getConfiguration } from '../settings/getConfiguration';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { PrismaService } from '../feature/prisma/prisma.service';
 
 @Module({
   imports: [
@@ -43,6 +44,6 @@ import { ThrottlerModule } from '@nestjs/throttler';
 
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, PrismaService],
 })
 export class AppModule { }
