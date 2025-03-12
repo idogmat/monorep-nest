@@ -18,7 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "dotenv -e .env.test -- npx prisma generate --schema=apps/gateway/prisma/schema.prisma && dotenv -e .env.test -- npx prisma migrate dev --schema=apps/gateway/prisma/schema.prisma && dotenv -e .env.test -- jest --config ./apps/gateway/test/jest-e2e.json",
-    "prisma:gateway": "cd apps/gateway && npx prisma generate",
+    "prisma": "node prisma-script.js",
     "build:gateway": "nest build gateway",
     "start:gateway": "node dist/apps/gateway/main",
     "start:dev:gateway": "nest start gateway --watch",
