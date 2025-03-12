@@ -18,6 +18,7 @@ export class EmailRecovery {
   @IsEmail()
   email: string;
 
+  @ApiProperty({ type: String })
   @IsString()
   recaptchaToken: string
 }
