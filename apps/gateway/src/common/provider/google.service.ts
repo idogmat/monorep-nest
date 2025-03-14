@@ -4,13 +4,17 @@ import { TokenPayload } from 'google-auth-library/build/src/auth/loginticket';
 import { InterlayerNotice } from '../error-handling/interlayer.notice';
 import { AuthError } from '../error-handling/auth.error';
 import { ENTITY_USER } from '../entities.constants';
+import { ConfigService } from '@nestjs/config';
 
 
 @Injectable()
 export class GoogleService{
-  private client: OAuth2Client;
-  private googleClientId: string = process.env.GOOGLE_CLIENT_ID;
-  constructor() {
+  private readonly client: OAuth2Client;
+  private readonly googleClientId: string;
+  constructor(
+    private configService: ConfigService,
+  ) {
+    this.googleClientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
     this.client = new OAuth2Client(this.googleClientId);
   }
   async validate(code: string):Promise<TokenPayload>{
@@ -19,7 +23,7 @@ export class GoogleService{
         idToken: code,
         audience: this.googleClientId
       });
-      const payload = ticket.getPayload();
+      const payload: TokenPayload | null = ticket.getPayload();
 
       if(!payload){
         throw InterlayerNotice.createErrorNotice(
