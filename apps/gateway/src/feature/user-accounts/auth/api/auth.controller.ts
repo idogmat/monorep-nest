@@ -12,6 +12,9 @@ import { LoginModel } from './models/input/login.model';
 import { LoginCommand } from '../application/use-cases/login.case';
 import { RecoveryModel } from './models/input/recovery.model';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { GoogleTokenModel } from './models/input/google.token.model';
+import { OauthGoogleCommand } from '../application/use-cases/oauth.google.use.case';
+
 
 @Controller('auth')
 export class AuthController {
@@ -103,4 +106,26 @@ export class AuthController {
     res.clearCookie("refreshToken", { httpOnly: true, secure: true });
     res.sendStatus(204);
   }
+  @Post('google')
+  @HttpCode(204)
+  async oauth(
+    @Res() res,
+    @Body() googleToken: GoogleTokenModel
+  ) {
+
+    const result = await this.commandBus.execute(
+      new OauthGoogleCommand(googleToken),
+    );
+    if (result.hasError?.()) {
+      new ErrorProcessor(result).handleError();
+    }
+    // const { accessToken, refreshToken } = result.data;
+    // res.cookie("refreshToken", refreshToken, {
+    //   httpOnly: true,
+    //   secure: true,
+    // });
+    // res.status(200).send({ accessToken });
+
+  }
+
 }

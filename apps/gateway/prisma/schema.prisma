@@ -23,9 +23,18 @@ model User {
   passwordHash String?
   expirationDate DateTime?
   posts     Post[]
+  providers  Provider? @relation("UserProvider")
   @@map("users")
 }
 
+model Provider {
+  id        String   @id @default(uuid())
+  user      User     @relation("UserProvider", fields: [userId], references: [id])
+  userId    String   @unique
+  googleId String?
+  githubId String?
+  @@map("providers")
+}
 model Post {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())

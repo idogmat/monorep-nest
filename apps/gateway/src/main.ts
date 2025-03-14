@@ -9,13 +9,21 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.use(cookieParser());
-  app.enableCors();
+  // app.enableCors();
 
+  app.enableCors({
+    origin: 'http://localhost:5173', // URL вашего фронтенда
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   const { port, env } = applyAppSettings(app)
+
   await app.listen(port, () => {
     console.log('App starting listen port: ', port);
     console.log('ENV: ', env);
   });
+
 }
 bootstrap();

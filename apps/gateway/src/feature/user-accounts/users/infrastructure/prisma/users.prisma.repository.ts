@@ -1,7 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable} from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
-import { UserEntity } from '../../domain/entites/user.entity';
-import { User } from '@prisma/client';
+import { User, Provider } from '@prisma/client';
 
 
 @Injectable()
@@ -38,18 +37,60 @@ export class UsersPrismaRepository {
   }
 
 
-  async createUser(user: UserEntity): Promise<User> {
+  async createUser(userDTO: CreateUserData): Promise<User> {
 
     return this.prisma.user.create({
       data: {
-        email: user.email,
-        name: user.name,
-        passwordHash: user.passwordHash,
-        createdAt: user.createdAt,
-        confirmationCode: user.confirmationCode,
-        codeExpiration: user.codeExpiration,
-        isConfirmed: user.isConfirmed,
-        updatedAt: user.updatedAt,
+        email: userDTO.email,
+        name: userDTO.name,
+        passwordHash: userDTO.passwordHash,
+        createdAt: userDTO.createdAt,
+        confirmationCode: userDTO.confirmationCode,
+        codeExpiration: userDTO.codeExpiration,
+        isConfirmed: userDTO.isConfirmed,
+        updatedAt: userDTO.updatedAt,
+      }
+    })
+  }
+
+  async createUserFromProvider(email: string, name: string): Promise<User>{
+    return this.prisma.user.create({
+      data: {
+        email: email,
+        name: name,
+        isConfirmed: true
+      }
+    })
+  }
+
+  async createProvider(user: User, providerData: Partial<Pick<Provider, 'googleId' | 'githubId'>>): Promise<Provider>{
+     return this.prisma.provider.create({
+       data: {
+         user: {
+           connect: { id: user.id }
+         },
+         googleId: providerData.googleId || null,
+         githubId: providerData.githubId || null
+       }
+
+     })
+  }
+
+  async createUserWithProvider(email: string, name: string, providerData: Partial<Pick<Provider, 'googleId' | 'githubId'>>): Promise<User>{
+    return this.prisma.user.create({
+      data: {
+        email: email,
+        name: name,
+        isConfirmed: true,
+        providers: {
+          create: {
+            googleId: providerData.googleId || null,
+            githubId: providerData.githubId || null
+          }
+        }
+      },
+      include: {
+        providers: false
       }
     })
   }

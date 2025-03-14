@@ -16,11 +16,14 @@ import { LoginUseCase } from './auth/application/use-cases/login.case';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
+import { OauthGoogleUseCase } from './auth/application/use-cases/oauth.google.use.case';
+import { GoogleService } from '../../common/provider/google.service';
 
 const useCasesForAuth = [
   SignupUseCase,
   VerifyEmailUseCase,
-  LoginUseCase
+  LoginUseCase,
+  OauthGoogleUseCase
 ];
 @Module({
   imports: [
@@ -46,6 +49,7 @@ const useCasesForAuth = [
     EmailService,
     EmailAdapter,
     EmailRouter,
+    GoogleService,
     ...useCasesForAuth
   ],
   controllers: [UsersController, AuthController],
