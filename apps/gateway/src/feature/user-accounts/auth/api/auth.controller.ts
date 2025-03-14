@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Query, HttpCode, Req, Res, UseGuards, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query, HttpCode, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from '../application/auth.service';
 import { UserCreateModel } from './models/input/user.create.model';
 import { CommandBus } from '@nestjs/cqrs';
@@ -12,6 +12,8 @@ import { LoginModel } from './models/input/login.model';
 import { LoginCommand } from '../application/use-cases/login.case';
 import { RecoveryModel } from './models/input/recovery.model';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { AuthGuard } from 'apps/gateway/src/common/guard/authGuard';
+import { AuthMeOutputMapper, AuthMeOutputModel } from './models/input/output/auth-me.model';
 import { GoogleTokenModel } from './models/input/google.token.model';
 import { OauthGoogleCommand } from '../application/use-cases/oauth.google.use.case';
 
@@ -52,6 +54,16 @@ export class AuthController {
       secure: true,
     });
     res.status(200).send({ accessToken });
+  }
+
+  @ApiResponse({ status: 200, type: AuthMeOutputModel })
+  @UseGuards(AuthGuard)
+  @Get('me')
+  async authMe(
+    @Req() req,
+  ) {
+    const u = await this.authService.getById(req.user.userId)
+    return AuthMeOutputMapper(u)
   }
 
   @ApiResponse({ status: 204, description: 'Email has been successfully confirmed.' })
