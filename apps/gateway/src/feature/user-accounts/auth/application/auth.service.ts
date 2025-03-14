@@ -113,4 +113,16 @@ export class AuthService {
     return await this.userPrismaRepository.getById(id);
   }
 
+  async createPairTokens(userId: string): Promise<[accessToken: string, refreshToken: string]>{
+    return Promise.all(
+      [
+        await this.createToken({
+          userId,
+        }, 'ACCESS'),
+        await this.createToken({
+          userId,
+        }, 'REFRESH'),
+      ]);
+
+  }
 }

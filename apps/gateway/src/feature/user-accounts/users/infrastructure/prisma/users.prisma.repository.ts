@@ -1,6 +1,6 @@
 import { Injectable} from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
-import { User, Provider } from '@prisma/client';
+import { User, Provider, Prisma } from '@prisma/client';
 
 
 @Injectable()
@@ -69,11 +69,11 @@ export class UsersPrismaRepository {
     })
   }
 
-  async createProvider(user: User, providerData: Partial<Pick<Provider, 'googleId' | 'githubId'>>): Promise<Provider>{
+  async createProvider(userId: string, providerData: Partial<Pick<Provider, 'googleId' | 'githubId'>>): Promise<Provider>{
      return this.prisma.provider.create({
        data: {
          user: {
-           connect: { id: user.id }
+           connect: { id: userId }
          },
          googleId: providerData.googleId || null,
          githubId: providerData.githubId || null
@@ -100,4 +100,35 @@ export class UsersPrismaRepository {
       }
     })
   }
+
+  async findUserByProviderIdOrEmail(
+    param: { providerId: string; email: string }
+  ) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: param.email },
+          {
+            providers: {
+              OR: [
+                { googleId: param.providerId },
+                { githubId: param.providerId }
+              ]
+            }
+          }
+        ]
+      },
+      include: { providers: true }
+    });
+
+    return user as User & { providers: Provider | null };
+    // & { providers: Provider | null };
+  }
+
+  async updateProvider( id: string, data: Partial<Pick<Provider, 'googleId' | 'githubId'>>) {
+      return this.prisma.provider.update({
+        where: { id },
+        data,
+      });
+    }
 }

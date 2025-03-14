@@ -131,12 +131,12 @@ export class AuthController {
     if (result.hasError?.()) {
       new ErrorProcessor(result).handleError();
     }
-    // const { accessToken, refreshToken } = result.data;
-    // res.cookie("refreshToken", refreshToken, {
-    //   httpOnly: true,
-    //   secure: true,
-    // });
-    // res.status(200).send({ accessToken });
+    const { accessToken, refreshToken } = result.data;
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+    });
+    res.status(200).send({ accessToken });
 
   }
 
