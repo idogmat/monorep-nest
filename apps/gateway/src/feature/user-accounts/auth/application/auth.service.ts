@@ -109,4 +109,8 @@ export class AuthService {
     return token;
   }
 
+  async getById(id: string) {
+    return await this.userPrismaRepository.getById(id);
+  }
+
 }
