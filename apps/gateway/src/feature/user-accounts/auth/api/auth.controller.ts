@@ -106,7 +106,10 @@ export class AuthController {
   @Post('reset-password')
   async setNewPassword(@Body() newCreds: RecoveryModel) {
     const { recoveryCode, password } = newCreds
-    await this.authService.setNewPassword(recoveryCode, password)
+    const result = await this.authService.setNewPassword(recoveryCode, password)
+    if (result.hasError?.()) {
+      new ErrorProcessor(result).handleError();
+    }
   }
 
   @Post('logout')
@@ -118,6 +121,7 @@ export class AuthController {
     res.clearCookie("refreshToken", { httpOnly: true, secure: true });
     res.sendStatus(204);
   }
+
   @Post('google')
   @HttpCode(204)
   async oauth(
