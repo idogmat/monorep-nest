@@ -4,6 +4,8 @@ import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/user
 import { GoogleService } from '../../../../../common/provider/google.service';
 import { InterlayerNotice } from '../../../../../common/error-handling/interlayer.notice';
 import { AuthService } from '../auth.service';
+import { Provider, User } from '@prisma/client';
+import { GoogleAuthResponseModel } from '../../api/models/shared/google.auth.response.model';
 
 export class OauthGoogleCommand {
   constructor(public googleTokenModel: GoogleTokenModel) {
@@ -28,29 +30,28 @@ export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
       const { sub, email } = payload;
 
       //find user by provider Id or email Id
-      const foundUser = await this.userPrismaRepository.findUserByProviderIdOrEmail({ providerId: sub, email });
+      let user = await this.userPrismaRepository.findUserByProviderIdOrEmail({ providerId: sub, email });
 
-      let user;
-      if (!foundUser) {
+      if (!user) {
         //create user and provider from google
-        user = await this.userPrismaRepository.createUserWithProvider(email, email.split('@')[0], { googleId: sub });
+         user = await this.userPrismaRepository.createUserWithProvider(email, email.split('@')[0], { googleId: sub });
       } else {
-        user = foundUser;
-        if (!foundUser.providers) {
-          await this.userPrismaRepository.createProvider(foundUser.id, { googleId: sub });
-        } else if (!foundUser.providers.googleId) {
-          await this.userPrismaRepository.updateProvider(foundUser.providers.id, { googleId: sub });
-        }
+        await this.linkGoogleProvider(user, sub);
       }
       const [accessToken, refreshToken] = await this.authService.createPairTokens(user.id);
-      console.log("user", user);
-      console.log("accessToken", accessToken);
-      console.log("refreshToken", refreshToken);
-      return new InterlayerNotice({ accessToken, refreshToken });
+
+      return new InterlayerNotice(new GoogleAuthResponseModel(accessToken, refreshToken));
     } catch (error) {
       console.error('Error during Google OAuth execution:', error);
       throw new Error('Failed to authenticate with Google');
     }
 
+  }
+  private async linkGoogleProvider(user: User & { providers: Provider | null }, providerId: string) {
+    if (!user.providers) {
+      await this.userPrismaRepository.createProvider(user.id, { googleId: providerId });
+    } else if (!user.providers.googleId) {
+      await this.userPrismaRepository.updateProvider(user.providers.id, { googleId: providerId });
+    }
   }
 }

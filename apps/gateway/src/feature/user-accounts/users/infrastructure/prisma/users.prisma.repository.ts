@@ -82,8 +82,8 @@ export class UsersPrismaRepository {
      })
   }
 
-  async createUserWithProvider(email: string, name: string, providerData: Partial<Pick<Provider, 'googleId' | 'githubId'>>): Promise<User>{
-    return this.prisma.user.create({
+  async createUserWithProvider(email: string, name: string, providerData: Partial<Pick<Provider, 'googleId' | 'githubId'>>): Promise<User& { providers: Provider | null }>{
+    const user = await this.prisma.user.create({
       data: {
         email: email,
         name: name,
@@ -96,9 +96,10 @@ export class UsersPrismaRepository {
         }
       },
       include: {
-        providers: false
+        providers: true
       }
     })
+    return user as User & { providers: Provider | null };
   }
 
   async findUserByProviderIdOrEmail(

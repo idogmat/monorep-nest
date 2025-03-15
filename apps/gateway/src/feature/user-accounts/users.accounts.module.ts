@@ -18,12 +18,15 @@ import { ConfigService } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 import { OauthGoogleUseCase } from './auth/application/use-cases/oauth.google.use.case';
 import { GoogleService } from '../../common/provider/google.service';
+import { GithubService } from '../../common/provider/github.service';
+import { GithubAuthCallbackUseCase } from './auth/application/use-cases/github.auth.callback.use.case';
 
 const useCasesForAuth = [
   SignupUseCase,
   VerifyEmailUseCase,
   LoginUseCase,
-  OauthGoogleUseCase
+  OauthGoogleUseCase,
+  GithubAuthCallbackUseCase
 ];
 @Module({
   imports: [
@@ -50,6 +53,7 @@ const useCasesForAuth = [
     EmailAdapter,
     EmailRouter,
     GoogleService,
+    GithubService,
     ...useCasesForAuth
   ],
   controllers: [UsersController, AuthController],

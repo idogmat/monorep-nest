@@ -16,13 +16,17 @@ import { AuthGuard } from 'apps/gateway/src/common/guard/authGuard';
 import { AuthMeOutputMapper, AuthMeOutputModel } from './models/input/output/auth-me.model';
 import { GoogleTokenModel } from './models/input/google.token.model';
 import { OauthGoogleCommand } from '../application/use-cases/oauth.google.use.case';
+import { GithubService } from '../../../../common/provider/github.service';
+import { GithubTokenModel } from './models/input/github.token.model';
+import { GithubAuthCallbackCommand } from '../application/use-cases/github.auth.callback.use.case';
 
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private commandBus: CommandBus,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly githubService:GithubService,
   ) { }
 
   @Post('signup')
@@ -120,7 +124,7 @@ export class AuthController {
   }
   @Post('google')
   @HttpCode(204)
-  async oauth(
+  async oauthGoogle(
     @Res() res,
     @Body() googleToken: GoogleTokenModel
   ) {
@@ -140,4 +144,34 @@ export class AuthController {
 
   }
 
+  @Get('github')
+  @HttpCode(204)
+  async oauthGithub(
+    @Res() res,
+  ) {
+      return res.redirect(this.githubService.githubAuth())
+
+  }
+
+  @Get('github/callback')
+  async githubAuthCallback(
+    @Res() res,
+    @Query() queryDto: GithubTokenModel
+  ) {
+
+    const result = await this.commandBus.execute(
+      new GithubAuthCallbackCommand(queryDto),
+    );
+    if (result.hasError?.()) {
+      new ErrorProcessor(result).handleError();
+    }
+    const { accessToken, refreshToken,  baseURL} = result.data;
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+    });
+    res.redirect(`${baseURL}?accessToken=${accessToken}`);
+
+  }
 }
