@@ -1,6 +1,6 @@
-import { Injectable} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
-import { User, Provider, Prisma } from '@prisma/client';
+import { User, Provider } from '@prisma/client';
 
 
 @Injectable()
@@ -59,7 +59,7 @@ export class UsersPrismaRepository {
     })
   }
 
-  async createUserFromProvider(email: string, name: string): Promise<User>{
+  async createUserFromProvider(email: string, name: string): Promise<User> {
     return this.prisma.user.create({
       data: {
         email: email,
@@ -69,20 +69,20 @@ export class UsersPrismaRepository {
     })
   }
 
-  async createProvider(userId: string, providerData: Partial<Pick<Provider, 'googleId' | 'githubId'>>): Promise<Provider>{
-     return this.prisma.provider.create({
-       data: {
-         user: {
-           connect: { id: userId }
-         },
-         googleId: providerData.googleId || null,
-         githubId: providerData.githubId || null
-       }
+  async createProvider(userId: string, providerData: Partial<Pick<Provider, 'googleId' | 'githubId'>>): Promise<Provider> {
+    return this.prisma.provider.create({
+      data: {
+        user: {
+          connect: { id: userId }
+        },
+        googleId: providerData.googleId || null,
+        githubId: providerData.githubId || null
+      }
 
-     })
+    })
   }
 
-  async createUserWithProvider(email: string, name: string, providerData: Partial<Pick<Provider, 'googleId' | 'githubId'>>): Promise<User& { providers: Provider | null }>{
+  async createUserWithProvider(email: string, name: string, providerData: Partial<Pick<Provider, 'googleId' | 'githubId'>>): Promise<User & { providers: Provider | null }> {
     const user = await this.prisma.user.create({
       data: {
         email: email,
@@ -126,10 +126,10 @@ export class UsersPrismaRepository {
     // & { providers: Provider | null };
   }
 
-  async updateProvider( id: string, data: Partial<Pick<Provider, 'googleId' | 'githubId'>>) {
-      return this.prisma.provider.update({
-        where: { id },
-        data,
-      });
-    }
+  async updateProvider(id: string, data: Partial<Pick<Provider, 'googleId' | 'githubId'>>) {
+    return this.prisma.provider.update({
+      where: { id },
+      data,
+    });
+  }
 }

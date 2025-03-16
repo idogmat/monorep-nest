@@ -13,7 +13,11 @@ export class EmailRouter {
     email: string,
     confirmationCode: string,
   ): DataMailType {
-    const textMessage = `<h1>Thank for your registration</h1><p>To finish registration please follow the link below:<a href='${this.baseUrl}/confirm-email?code=${confirmationCode}'>complete registration</a></p>`;
+    const textMessage = `
+    <h1>Thank for your registration</h1>
+    <p>To finish registration please follow the link below:
+    <a href='${this.baseUrl}/confirm-email?code=${confirmationCode}'>complete registration</a>
+    </p>`;
     return {
       from: '"In-gram"',
       to: email,
@@ -25,7 +29,11 @@ export class EmailRouter {
     email: string,
     confirmationCode: string,
   ): DataMailType {
-    const textMessage = `<h1>Your new Verify code</h1><p>To finish registration please follow the link below:<a href='${this.baseUrl}/confirm-email?code=${confirmationCode}'>complete registration</a></p>`;
+    const textMessage = `
+    <h1>Your new Verify code</h1>
+    <p>To finish registration please follow the link below:
+    <a href='${this.baseUrl}/confirm-email?code=${confirmationCode}'>complete registration</a>
+    </p>`;
     return {
       from: '"In-gram"',
       to: email,
@@ -37,7 +45,11 @@ export class EmailRouter {
     email: string,
     recoveryCode: string,
   ): DataMailType {
-    const textMessage = `<h1>Your new Recovery link </h1><p>For recovery password follow the link below:<a href='${this.baseUrl}/reset-password?token=${recoveryCode}'>Recovery</a></p>`;
+    const textMessage = `
+    <h1>Your new Recovery link </h1>
+    <p>For recovery password follow the link below:
+    <a href='${this.baseUrl}/reset-password?token=${recoveryCode}'>Recovery</a>
+    </p>`;
     return {
       from: '"In-gram"',
       to: email,
