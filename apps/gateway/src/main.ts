@@ -9,10 +9,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.use(cookieParser());
-  // app.enableCors();
+
+  // remove localhost after test
 
   app.enableCors({
-    origin: 'http://localhost:5173', // URL вашего фронтенда
+    origin: [
+      'https://myin-gram.ru',
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true

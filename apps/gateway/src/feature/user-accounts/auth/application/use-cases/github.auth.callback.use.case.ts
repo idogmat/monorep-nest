@@ -12,25 +12,26 @@ import { GithubAuthResponseModel } from '../../api/models/shared/github.auth.res
 import { Provider, User } from '@prisma/client';
 
 export class GithubAuthCallbackCommand {
-  constructor(public queryDto: GithubTokenModel,
-             ) {
+  constructor(
+    public queryDto: GithubTokenModel,
+  ) {
   }
 
 }
 
 @CommandHandler(GithubAuthCallbackCommand)
 export class GithubAuthCallbackUseCase implements ICommandHandler<GithubAuthCallbackCommand> {
-  constructor( private githubService: GithubService,
-               private userPrismaRepository: UsersPrismaRepository,
-               private authService: AuthService,
-               private configService: ConfigService) {
+  constructor(private githubService: GithubService,
+    private userPrismaRepository: UsersPrismaRepository,
+    private authService: AuthService,
+    private configService: ConfigService) {
   }
-  async execute(command: GithubAuthCallbackCommand): Promise<InterlayerNotice<GithubAuthResponseModel>>{
+  async execute(command: GithubAuthCallbackCommand): Promise<InterlayerNotice<GithubAuthResponseModel>> {
 
     try {
       const result = await this.githubService.githubAuthCallback(command.queryDto.code as string);
       const userInfo = await this.githubService.getGitHubUserInfo(result.access_token);
-      if(!userInfo.email){
+      if (!userInfo.email) {
         return InterlayerNotice.createErrorNotice(
           AuthError.GITHUB_USER_DOESNT_HAVE_EMAIL,
           ENTITY_USER,
@@ -48,7 +49,7 @@ export class GithubAuthCallbackUseCase implements ICommandHandler<GithubAuthCall
       }
 
       const [accessToken, refreshToken] = await this.authService.createPairTokens(user.id);
-      const baseURL =  this.configService.get<string>('BASE_URL')
+      const baseURL = this.configService.get<string>('BASE_URL')
       return new InterlayerNotice(new GithubAuthResponseModel(accessToken, refreshToken, baseURL));
 
     } catch (error) {

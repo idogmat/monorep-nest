@@ -1,5 +1,6 @@
-import { Controller, Get, Inject } from '@nestjs/common';
+import { Controller, Get, Inject, Req, Res } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { Request, Response } from 'express';
 import { firstValueFrom } from 'rxjs';
 
 @Controller()
@@ -31,5 +32,16 @@ export class AppController {
     console.log('Emitting event to Service B via TCP...');
     this.client.emit('emit_data', { text: 'Hello, Service B!' });
     return 'Data emitted to Service B!';
+  }
+
+  @Get('redirect')
+  async loh(
+    @Req() req: Request,
+    @Res() res: Response
+  ) {
+    res.cookie('front', 'ya vertel')
+    res.redirect('http://localhost:5173?tvoyToken=13412312')
+
+
   }
 }

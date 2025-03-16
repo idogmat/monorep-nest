@@ -67,6 +67,26 @@ spec:
                  secretKeyRef:
                    name: gate-production-config-secret
                    key: RECAPTCHA_SECRET_KEY
+             - name: BASE_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: BASE_URL
+             - name: GOOGLE_CLIENT_ID
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: GOOGLE_CLIENT_ID
+             - name: GITHUB_CLIENT_ID
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: GITHUB_CLIENT_ID
+             - name: GITHUB_CLIENT_SECRET
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: GITHUB_CLIENT_SECRET
              - name: DATABASE_URL
                valueFrom:
                  secretKeyRef:

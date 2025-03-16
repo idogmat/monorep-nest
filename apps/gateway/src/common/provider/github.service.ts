@@ -9,22 +9,23 @@ interface GitHubUserInfo {
   email: string | null;
 }
 @Injectable()
-export class GithubService{
+export class GithubService {
   private readonly githubClientId: string;
   private readonly githubClientSecret: string;
+  private readonly baseUrl: string;
 
   constructor(
     private configService: ConfigService,
     private readonly httpService: HttpService,
-  ){
+  ) {
     this.githubClientId = this.configService.get<string>('GITHUB_CLIENT_ID');
     this.githubClientSecret = this.configService.get<string>('GITHUB_CLIENT_SECRET');
-
+    this.baseUrl = this.configService.get<string>('BASE_URL');
 
   }
 
   githubAuth() {
-    const redirectUri = 'http://localhost:3000/api/v1/auth/github/callback'; // URL callback
+    const redirectUri = `${this.baseUrl}/api/v1/auth/github/callback`; // URL callback
     return `https://github.com/login/oauth/authorize?client_id=${this.githubClientId}&redirect_uri=${redirectUri}`;
 
   }
@@ -49,7 +50,7 @@ export class GithubService{
     return { access_token };
   }
 
-  async getGitHubUserInfo(token: string):Promise<GitHubUserInfo> {
+  async getGitHubUserInfo(token: string): Promise<GitHubUserInfo> {
     const response = await axios.get('https://api.github.com/user', {
       headers: {
         Authorization: `token ${token}`,
@@ -64,7 +65,7 @@ export class GithubService{
       },
     });
 
-    const email = emailResponse.data.find((emailInfo: any) => emailInfo?.primary)?.email||'';
-    return {login:data.login, providerId: data.id,  email};
+    const email = emailResponse.data.find((emailInfo: any) => emailInfo?.primary)?.email || '';
+    return { login: data.login, providerId: data.id, email };
   }
 }
