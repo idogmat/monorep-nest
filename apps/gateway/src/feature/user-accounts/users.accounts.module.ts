@@ -7,7 +7,6 @@ import { AuthController } from './auth/api/auth.controller';
 import { CqrsModule } from '@nestjs/cqrs';
 import { SignupUseCase } from './auth/application/use-cases/signup.use.case';
 import { BcryptService } from './auth/infrastructure/bcrypt.service';
-import { UsersPrismaRepository } from './users/infrastructure/prisma/users.prisma.repository';
 import { EmailService } from '../../common/email/email.service';
 import { EmailAdapter } from '../../common/email/email.adapter';
 import { EmailRouter } from '../../common/email/email.router';
@@ -20,6 +19,8 @@ import { OauthGoogleUseCase } from './auth/application/use-cases/oauth.google.us
 import { GoogleService } from '../../common/provider/google.service';
 import { GithubService } from '../../common/provider/github.service';
 import { GithubAuthCallbackUseCase } from './auth/application/use-cases/github.auth.callback.use.case';
+import { UsersPrismaQueryRepository } from './users/infrastructure/prisma/users.prisma.query-repository';
+import { UsersPrismaRepository } from './users/infrastructure/prisma/users.prisma.repository';
 
 const useCasesForAuth = [
   SignupUseCase,
@@ -48,6 +49,7 @@ const useCasesForAuth = [
     PrismaService,
     BcryptService,
     UsersPrismaRepository,
+    UsersPrismaQueryRepository,
     BcryptService,
     EmailService,
     EmailAdapter,

@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { EmailService } from '../../../../common/email/email.service';
-import { UsersPrismaRepository } from '../../users/infrastructure/prisma/users.prisma.repository';
 import { InterlayerNotice } from '../../../../common/error-handling/interlayer.notice';
 import { AuthError } from '../../../../common/error-handling/auth.error';
 import { ENTITY_USER } from '../../../../common/entities.constants';
@@ -10,6 +9,7 @@ import { randomUUID } from 'crypto';
 import { BcryptService } from '../infrastructure/bcrypt.service';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
+import { UsersPrismaRepository } from '../../users/infrastructure/prisma/users.prisma.repository';
 
 
 @Injectable()

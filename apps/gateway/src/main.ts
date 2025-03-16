@@ -4,7 +4,6 @@ import cookieParser from 'cookie-parser';
 
 import { useContainer } from 'class-validator';
 import { applyAppSettings } from './settings/main.settings';
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 

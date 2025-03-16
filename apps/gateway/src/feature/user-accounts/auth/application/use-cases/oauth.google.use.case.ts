@@ -1,11 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { GoogleTokenModel } from '../../api/models/input/google.token.model';
-import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/users.prisma.repository';
 import { GoogleService } from '../../../../../common/provider/google.service';
 import { InterlayerNotice } from '../../../../../common/error-handling/interlayer.notice';
 import { AuthService } from '../auth.service';
 import { Provider, User } from '@prisma/client';
 import { GoogleAuthResponseModel } from '../../api/models/shared/google.auth.response.model';
+import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/users.prisma.repository';
 
 export class OauthGoogleCommand {
   constructor(public googleTokenModel: GoogleTokenModel) {
@@ -16,8 +16,8 @@ export class OauthGoogleCommand {
 @CommandHandler(OauthGoogleCommand)
 export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
   constructor(private userPrismaRepository: UsersPrismaRepository,
-              private googleService: GoogleService,
-              private authService: AuthService) {
+    private googleService: GoogleService,
+    private authService: AuthService) {
   }
 
 
@@ -34,7 +34,7 @@ export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
 
       if (!user) {
         //create user and provider from google
-         user = await this.userPrismaRepository.createUserWithProvider(email, email.split('@')[0], { googleId: sub });
+        user = await this.userPrismaRepository.createUserWithProvider(email, email.split('@')[0], { googleId: sub });
       } else {
         await this.linkGoogleProvider(user, sub);
       }

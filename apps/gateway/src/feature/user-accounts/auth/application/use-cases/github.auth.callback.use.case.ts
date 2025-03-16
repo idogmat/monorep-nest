@@ -1,8 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-
 import { GithubTokenModel } from '../../api/models/input/github.token.model';
 import { GithubService } from '../../../../../common/provider/github.service';
-import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/users.prisma.repository';
 import { InterlayerNotice } from '../../../../../common/error-handling/interlayer.notice';
 import { AuthError } from '../../../../../common/error-handling/auth.error';
 import { ENTITY_USER } from '../../../../../common/entities.constants';
@@ -10,6 +8,7 @@ import { AuthService } from '../auth.service';
 import { ConfigService } from '@nestjs/config';
 import { GithubAuthResponseModel } from '../../api/models/shared/github.auth.response.model';
 import { Provider, User } from '@prisma/client';
+import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/users.prisma.repository';
 
 export class GithubAuthCallbackCommand {
   constructor(
