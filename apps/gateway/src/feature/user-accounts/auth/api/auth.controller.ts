@@ -12,7 +12,7 @@ import { LoginModel } from './models/input/login.model';
 import { LoginCommand } from '../application/use-cases/login.case';
 import { RecoveryModel } from './models/input/recovery.model';
 import { ThrottlerGuard } from '@nestjs/throttler';
-import { AuthGuard } from 'apps/gateway/src/common/guard/authGuard';
+import { AuthGuard } from '../../../../common/guard/authGuard';
 import { AuthMeOutputMapper, AuthMeOutputModel } from './models/input/output/auth-me.model';
 import { GoogleTokenModel } from './models/input/google.token.model';
 import { OauthGoogleCommand } from '../application/use-cases/oauth.google.use.case';
@@ -26,7 +26,7 @@ export class AuthController {
   constructor(
     private commandBus: CommandBus,
     private readonly authService: AuthService,
-    private readonly githubService:GithubService,
+    private readonly githubService: GithubService,
   ) { }
 
   @Post('signup')
@@ -153,7 +153,7 @@ export class AuthController {
   async oauthGithub(
     @Res() res,
   ) {
-      return res.redirect(this.githubService.githubAuth())
+    return res.redirect(this.githubService.githubAuth())
 
   }
 
@@ -169,7 +169,7 @@ export class AuthController {
     if (result.hasError?.()) {
       new ErrorProcessor(result).handleError();
     }
-    const { accessToken, refreshToken,  baseURL} = result.data;
+    const { accessToken, refreshToken, baseURL } = result.data;
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
