@@ -90,7 +90,10 @@ export class AuthController {
   @Post('verify-resend')
   async resendVerifyCode(@Body() recovery: EmailVerify) {
     const { email } = recovery
-    await this.authService.sendVerifyEmail(email)
+    const result = await this.authService.sendVerifyEmail(email)
+    if (result?.hasError()) {
+      new ErrorProcessor(result).handleError();
+    }
   }
 
   @ApiResponse({ status: 204, description: 'Your Email has a recovery code.' })
@@ -100,7 +103,10 @@ export class AuthController {
   @Post('forgot-password')
   async recoveryPassword(@Body() recovery: EmailRecovery) {
     const { email, recaptchaToken } = recovery
-    await this.authService.sendRecoveryCode(email, recaptchaToken)
+    const result = await this.authService.sendRecoveryCode(email, recaptchaToken)
+    if (result?.hasError()) {
+      new ErrorProcessor(result).handleError();
+    }
   }
 
   @ApiResponse({ status: 204, description: 'Your new password is set.' })
@@ -117,6 +123,7 @@ export class AuthController {
   }
 
   @Post('logout')
+  @UseGuards(AuthGuard)
   @HttpCode(204)
   async logout(
     @Req() req,
