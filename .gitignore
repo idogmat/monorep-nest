@@ -41,6 +41,7 @@ yarn.lock
 .env.test.local
 .env.production.local
 .env.local
+apps\gateway\prisma\migrations
 
 # temp directory
 .temp
