@@ -1,14 +1,13 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UserCreateModel } from '../../api/models/input/user.create.model';
-import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/users.prisma.repository';
 import { InterlayerNotice } from '../../../../../common/error-handling/interlayer.notice';
 import { AuthError } from '../../../../../common/error-handling/auth.error';
 import { ENTITY_USER } from '../../../../../common/entities.constants';
 import { BcryptService } from '../../infrastructure/bcrypt.service';
-
 import { EmailService } from '../../../../../common/email/email.service';
 import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
+import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/users.prisma.repository';
 export class SignupCommand {
   constructor(public createInputUser: UserCreateModel) { }
 }
@@ -56,7 +55,7 @@ export class SignupUseCase implements ICommandHandler<SignupCommand> {
   private createUserDTO(login: string, email: string, passwordHash: string): CreateUserData {
     return {
       name: login,
-      email:email,
+      email: email,
       passwordHash: passwordHash,
       createdAt: new Date(),
       updatedAt: new Date(),

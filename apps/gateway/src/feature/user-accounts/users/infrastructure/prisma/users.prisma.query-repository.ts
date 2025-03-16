@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
-import { PaginationSearchUserTerm } from 'apps/gateway/src/common/pagination';
+import { PaginationSearchUserTerm } from '../../../../../common/pagination';
 
 
 @Injectable()

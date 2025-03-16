@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { UsersService } from '../application/users.service';
-import { PaginationSearchUserTerm } from 'apps/gateway/src/common/pagination';
+import { PaginationSearchUserTerm } from '../../../../common/pagination';
 import { UsersPrismaQueryRepository } from '../infrastructure/prisma/users.prisma.query-repository';
 import { ApiResponse } from '@nestjs/swagger';
 import { ValidationUserModel } from '../infrastructure/prisma/dto/validation.user.model';
