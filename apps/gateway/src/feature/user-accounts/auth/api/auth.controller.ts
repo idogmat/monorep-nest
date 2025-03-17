@@ -6,21 +6,21 @@ import { SignupCommand } from '../application/use-cases/signup.use.case';
 import { ErrorProcessor } from '../../../../common/error-handling/error.processor';
 import { EmailRecovery, EmailVerify, VerifyEmailToken } from './models/input/email.model';
 import { VerifyEmailCommand } from '../application/use-cases/verify.email.case';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthError } from '../../../../common/error-handling/auth.error';
 import { LoginModel } from './models/input/login.model';
 import { LoginCommand } from '../application/use-cases/login.case';
 import { RecoveryModel } from './models/input/recovery.model';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { AuthGuard } from '../../../../common/guard/authGuard';
-import { AuthMeOutputMapper, AuthMeOutputModel } from './models/input/output/auth-me.model';
+import { AuthMeOutputMapper, AuthMeOutputModel } from './models/output/auth-me.model';
 import { GoogleTokenModel } from './models/input/google.token.model';
 import { OauthGoogleCommand } from '../application/use-cases/oauth.google.use.case';
 import { GithubService } from '../../../../common/provider/github.service';
 import { GithubTokenModel } from './models/input/github.token.model';
 import { GithubAuthCallbackCommand } from '../application/use-cases/github.auth.callback.use.case';
 
-
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -46,8 +46,11 @@ export class AuthController {
     @Res() res,
     @Body() loginModel: LoginModel
   ) {
+    const browser = (req.get("user-agent") || 'null').toString();
+    const ip = (req.ip || req.headers["x-forwarded-for"] || 'null').toString();
+
     const result = await this.commandBus.execute(
-      new LoginCommand(loginModel),
+      new LoginCommand({ ...loginModel, title: browser, ip }),
     );
     if (result?.hasError?.()) {
       new ErrorProcessor(result).handleError();

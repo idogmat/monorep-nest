@@ -2,9 +2,14 @@ import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { Request } from "express";
+import { DeviceService } from "../../feature/user-accounts/devices/application/device.service";
 
-interface IAuthUser {
-  id: string
+export interface IAuthUser {
+  userId: string;
+  deviceId: string;
+  updatedAt: string;
+  iat: number;
+  exp: number;
 }
 
 @Injectable()
@@ -12,6 +17,7 @@ export class AuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly deviceService: DeviceService,
   ) { }
   async canActivate(
     context: ExecutionContext,
@@ -25,7 +31,18 @@ export class AuthGuard implements CanActivate {
     } catch {
       console.log('fail');
     }
-    Object.assign(request, { user: res })
-    return true;
+
+    const device = await this.deviceService.findById(res.deviceId)
+
+    if (device &&
+      device.updatedAt?.toISOString() === res?.updatedAt
+      && res.exp * 1000 > new Date().getTime()
+    ) {
+      Object.assign(request, { user: res })
+      return true;
+    } else {
+      return false
+    }
+
   }
 }

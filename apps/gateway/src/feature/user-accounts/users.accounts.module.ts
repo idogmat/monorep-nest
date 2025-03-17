@@ -21,6 +21,9 @@ import { GithubService } from '../../common/provider/github.service';
 import { GithubAuthCallbackUseCase } from './auth/application/use-cases/github.auth.callback.use.case';
 import { UsersPrismaQueryRepository } from './users/infrastructure/prisma/users.prisma.query-repository';
 import { UsersPrismaRepository } from './users/infrastructure/prisma/users.prisma.repository';
+import { DeviceService } from './devices/application/device.service';
+import { DevicesController } from './devices/api/devices.controller';
+import { DeviceQueryRepository } from './devices/infrastructure/device.prisma.query-repository';
 
 const useCasesForAuth = [
   SignupUseCase,
@@ -56,9 +59,11 @@ const useCasesForAuth = [
     EmailRouter,
     GoogleService,
     GithubService,
+    DeviceService,
+    DeviceQueryRepository,
     ...useCasesForAuth
   ],
-  controllers: [UsersController, AuthController],
+  controllers: [UsersController, AuthController, DevicesController],
   exports: [HttpModule]
 })
 export class UsersAccountsModule { }

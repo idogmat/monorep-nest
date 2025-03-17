@@ -45,7 +45,7 @@ export class UsersPrismaQueryRepository {
         skip: (pageNumber - 1) * pageSize,
         take: pageSize,
         orderBy: {
-          createdAt: 'desc', // пример сортировки
+          createdAt: 'desc',
         },
       }),
       this.prisma.user.count({ where }),
