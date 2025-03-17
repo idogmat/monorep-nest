@@ -1,7 +1,7 @@
 import { Controller, Delete, Get, HttpCode, Param, Req, UseGuards } from '@nestjs/common';
 import { DeviceService } from '../application/device.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from 'apps/gateway/src/common/guard/authGuard';
+import { AuthGuard } from '../../../../common/guard/authGuard';
 import { Request } from 'express';
 import { DeviceQueryRepository } from '../infrastructure/device.prisma.query-repository';
 import { Device } from '@prisma/client';
