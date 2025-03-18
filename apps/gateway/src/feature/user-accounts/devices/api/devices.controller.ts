@@ -1,8 +1,7 @@
 import { Controller, Delete, Get, HttpCode, Param, Req, UseGuards } from '@nestjs/common';
 import { DeviceService } from '../application/device.service';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../../../common/guard/authGuard';
-import { Request } from 'express';
 import { DeviceQueryRepository } from '../infrastructure/device.prisma.query-repository';
 import { Device } from '@prisma/client';
 import { DeviceModel } from './models/device.model';
@@ -16,6 +15,7 @@ export class DevicesController {
   ) { }
 
   @ApiResponse({ status: 204, description: 'Delete all device connections' })
+  @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @HttpCode(204)
   @Delete('all-except-current')
@@ -26,6 +26,7 @@ export class DevicesController {
   }
 
   @ApiResponse({ status: 204, description: 'Delete device connection' })
+  @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @Delete(':id')
   async removeSession(
@@ -36,6 +37,7 @@ export class DevicesController {
   }
 
   @ApiResponse({ status: 200, description: 'Your devices', type: DeviceModel, isArray: true })
+  @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @Get()
   async getAll(

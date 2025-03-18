@@ -13,7 +13,7 @@ export interface IAuthUser {
 }
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class AuthRefreshGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
@@ -23,12 +23,11 @@ export class AuthGuard implements CanActivate {
     context: ExecutionContext,
   ): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
-    if (!request.headers?.authorization) return false;
-
+    if (!request.cookies?.refreshToken) return false
+    const token = request.cookies.refreshToken
     let res: IAuthUser | null = null;
     try {
-      const token = request.headers?.authorization?.split(" ");
-      res = await this.jwtService.verify(token[1], { secret: this.configService.get('ACCESS_SECRET_TOKEN') });
+      res = await this.jwtService.verify(token, { secret: this.configService.get('REFRESH_TOKEN') });
     } catch {
       console.log('fail');
     }
