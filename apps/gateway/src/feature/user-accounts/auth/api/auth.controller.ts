@@ -38,12 +38,12 @@ export class AuthController {
     private readonly githubService: GithubService,
     private readonly configService: ConfigService,
   ) {
-    const isLocal = this.configService.get<string>('NODE_ENV') === 'DEVELOPMENT'
+    // const isLocal = this.configService.get<string>('NODE_ENV') === 'DEVELOPMENT'
     this.COOKIE_SETTINGS = {
       httpOnly: true,
-      secure: !isLocal,
-      sameSite: isLocal ? 'lax' : 'none',
-      domain: isLocal ? undefined : '.myin-gram.ru',
+      secure: true,
+      sameSite: 'none',
+      domain: '.myin-gram.ru',
       path: '/'
     }
   }
