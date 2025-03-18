@@ -19,7 +19,8 @@ import { GithubService } from '../../../../common/provider/github.service';
 import { GithubTokenModel } from './models/input/github.token.model';
 import { GithubAuthCallbackCommand } from '../application/use-cases/github.auth.callback.use.case';
 import { ConfigService } from '@nestjs/config';
-import { AuthGuard } from 'apps/gateway/src/common/guard/authGuard';
+import { AuthGuard } from '../../../../common/guard/authGuard';
+
 interface ICookieSettings {
   httpOnly: boolean,
   secure: boolean,
