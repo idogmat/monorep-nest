@@ -19,23 +19,34 @@ import { OauthGoogleCommand } from '../application/use-cases/oauth.google.use.ca
 import { GithubService } from '../../../../common/provider/github.service';
 import { GithubTokenModel } from './models/input/github.token.model';
 import { GithubAuthCallbackCommand } from '../application/use-cases/github.auth.callback.use.case';
-
-const COOKIE_SETTINGS = {
-  httpOnly: true,
-  secure: true,
-  sameSite: 'none',
-  domain: '.myin-gram.ru',
-  path: '/'
+import { ConfigService } from '@nestjs/config';
+interface ICookieSettings {
+  httpOnly: boolean,
+  secure: boolean,
+  sameSite: string,
+  domain: string,
+  path: string
 }
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
+  COOKIE_SETTINGS: ICookieSettings
   constructor(
     private commandBus: CommandBus,
     private readonly authService: AuthService,
     private readonly githubService: GithubService,
-  ) { }
+    private readonly configService: ConfigService,
+  ) {
+    const isLocal = this.configService.get<string>('NODE_ENV') === 'DEVELOPMENT'
+    this.COOKIE_SETTINGS = {
+      httpOnly: true,
+      secure: !isLocal,
+      sameSite: isLocal ? 'lax' : 'none',
+      domain: isLocal ? undefined : '.myin-gram.ru',
+      path: '/'
+    }
+  }
 
   @Post('signup')
   async signup(@Body() createInputUser: UserCreateModel) {
@@ -64,7 +75,7 @@ export class AuthController {
       new ErrorProcessor(result).handleError();
     }
     const { accessToken, refreshToken } = result
-    res.cookie("refreshToken", refreshToken, COOKIE_SETTINGS);
+    res.cookie("refreshToken", refreshToken, this.COOKIE_SETTINGS);
     res.status(200).send({ accessToken });
   }
 
@@ -137,25 +148,28 @@ export class AuthController {
     @Req() req,
     @Res() res
   ) {
-    res.clearCookie("refreshToken", COOKIE_SETTINGS);
+    res.clearCookie("refreshToken", this.COOKIE_SETTINGS);
     res.sendStatus(204);
   }
 
   @Post('google')
   @HttpCode(204)
   async oauthGoogle(
+    @Req() req,
     @Res() res,
     @Body() googleToken: GoogleTokenModel
   ) {
 
+    const browser = (req.get("user-agent") || 'null').toString();
+    const ip = (req.ip || req.headers["x-forwarded-for"] || 'null').toString();
     const result = await this.commandBus.execute(
-      new OauthGoogleCommand(googleToken),
+      new OauthGoogleCommand({ ...googleToken, title: browser, ip }),
     );
     if (result.hasError?.()) {
       new ErrorProcessor(result).handleError();
     }
     const { accessToken, refreshToken } = result.data;
-    res.cookie("refreshToken", refreshToken, COOKIE_SETTINGS);
+    res.cookie("refreshToken", refreshToken, this.COOKIE_SETTINGS);
     res.status(200).send({ accessToken });
 
   }
@@ -183,7 +197,7 @@ export class AuthController {
     }
     const { accessToken, refreshToken, baseURL } = result.data;
 
-    res.cookie("refreshToken", refreshToken, COOKIE_SETTINGS);
+    res.cookie("refreshToken", refreshToken, this.COOKIE_SETTINGS);
     res.redirect(`${baseURL}?accessToken=${accessToken}`);
 
   }

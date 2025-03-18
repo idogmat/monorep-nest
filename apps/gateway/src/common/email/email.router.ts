@@ -16,7 +16,7 @@ export class EmailRouter {
     const textMessage = `
     <h1>Thank for your registration</h1>
     <p>To finish registration please follow the link below:
-    <a href='${this.baseUrl}/confirm-email?code=${confirmationCode}'>complete registration</a>
+    <a href='${this.baseUrl}confirm-email?token=${confirmationCode}'>complete registration</a>
     </p>`;
     return {
       from: '"In-gram"',
@@ -32,7 +32,7 @@ export class EmailRouter {
     const textMessage = `
     <h1>Your new Verify code</h1>
     <p>To finish registration please follow the link below:
-    <a href='${this.baseUrl}/confirm-email?code=${confirmationCode}'>complete registration</a>
+    <a href='${this.baseUrl}confirm-email?token=${confirmationCode}'>complete registration</a>
     </p>`;
     return {
       from: '"In-gram"',
@@ -48,7 +48,7 @@ export class EmailRouter {
     const textMessage = `
     <h1>Your new Recovery link </h1>
     <p>For recovery password follow the link below:
-    <a href='${this.baseUrl}/reset-password?token=${recoveryCode}'>Recovery</a>
+    <a href='${this.baseUrl}reset-password?token=${recoveryCode}'>Recovery</a>
     </p>`;
     return {
       from: '"In-gram"',

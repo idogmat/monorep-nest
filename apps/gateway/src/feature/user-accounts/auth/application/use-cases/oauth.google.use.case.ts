@@ -6,6 +6,7 @@ import { AuthService } from '../auth.service';
 import { Provider, User } from '@prisma/client';
 import { GoogleAuthResponseModel } from '../../api/models/shared/google.auth.response.model';
 import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/users.prisma.repository';
+import { DeviceService } from '../../../devices/application/device.service';
 
 export class OauthGoogleCommand {
   constructor(public googleTokenModel: GoogleTokenModel) {
@@ -15,15 +16,18 @@ export class OauthGoogleCommand {
 
 @CommandHandler(OauthGoogleCommand)
 export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
-  constructor(private userPrismaRepository: UsersPrismaRepository,
+  constructor(
+    private userPrismaRepository: UsersPrismaRepository,
     private googleService: GoogleService,
-    private authService: AuthService) {
+    private authService: AuthService,
+    private deviceService: DeviceService,
+  ) {
   }
 
 
   async execute(command: OauthGoogleCommand) {
 
-    const { token } = command.googleTokenModel;
+    const { token, ip, title } = command.googleTokenModel;
 
     try {
       const payload = await this.googleService.validate(token);
@@ -31,14 +35,25 @@ export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
 
       //find user by provider Id or email Id
       let user = await this.userPrismaRepository.findUserByProviderIdOrEmail({ providerId: sub, email });
-
+      let d = null
       if (!user) {
         //create user and provider from google
         user = await this.userPrismaRepository.createUserWithProvider(email, email.split('@')[0], { googleId: sub });
       } else {
         await this.linkGoogleProvider(user, sub);
       }
-      const [accessToken, refreshToken] = await this.authService.createPairTokens(user.id);
+
+      const updatedAt = new Date()
+      d = await this.deviceService.find({ ip, title, userId: user.id, updatedAt })
+      if (!d) {
+        d = await this.deviceService.createDevice({ ip, title, userId: user.id })
+      }
+      d = await this.deviceService.update({ ...d, updatedAt })
+      const [accessToken, refreshToken] = await this.authService.createPairTokens({
+        userId: user.id,
+        deviceId: d.id,
+        updatedAt
+      });
 
       return new InterlayerNotice(new GoogleAuthResponseModel(accessToken, refreshToken));
     } catch (error) {

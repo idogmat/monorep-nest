@@ -25,15 +25,12 @@ import { PrismaService } from '../feature/prisma/prisma.service';
         imports: [ConfigModule],
         name: 'TCP_SERVICE',
         useFactory: (configService: ConfigService) => {
-          console.log(configService.get('FILES_TCP'));
-          console.log(configService.get('CONNECT_PORT'));
           return {
             transport: Transport.TCP,
             options: {
               host: configService.get('FILES_TCP'),
               port: configService.get('CONNECT_PORT'),  // Порт, на который отправляется запрос в Service B
-              // host: 'app-test-service',
-              // port: 3795,  // Порт, на который отправляется запрос в Service B
+
             },
           };
         },

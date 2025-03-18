@@ -119,7 +119,7 @@ export class UsersPrismaRepository {
           }
         ]
       },
-      include: { providers: true }
+      include: { providers: true, devices: true }
     });
 
     return user as User & { providers: Provider | null };

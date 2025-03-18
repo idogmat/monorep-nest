@@ -45,6 +45,7 @@ const setSwagger = (app: INestApplication, prefix: string) => {
     .setDescription('API for control in-gram')
     .setVersion('1.1')
     // .addBearerAuth()
+    // .addCookieAuth()
     // .addBasicAuth()
     .build();
 
