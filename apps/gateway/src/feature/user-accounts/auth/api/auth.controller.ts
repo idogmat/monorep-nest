@@ -59,6 +59,9 @@ export class AuthController {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
+      sameSite: 'none',
+      domain: '.myin-gram.ru',
+      path: '/'
     });
     res.status(200).send({ accessToken });
   }

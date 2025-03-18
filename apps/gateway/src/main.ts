@@ -13,7 +13,7 @@ async function bootstrap() {
 
   app.enableCors({
     origin: [
-      'https://myin-gram.ru',
+      '/\myin-gram\.ru$',
       'http://localhost:3000'
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
