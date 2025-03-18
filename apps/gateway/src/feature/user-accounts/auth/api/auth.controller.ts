@@ -20,6 +20,14 @@ import { GithubService } from '../../../../common/provider/github.service';
 import { GithubTokenModel } from './models/input/github.token.model';
 import { GithubAuthCallbackCommand } from '../application/use-cases/github.auth.callback.use.case';
 
+const COOKIE_SETTINGS = {
+  httpOnly: true,
+  secure: true,
+  sameSite: 'none',
+  domain: '.myin-gram.ru',
+  path: '/'
+}
+
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
@@ -56,13 +64,7 @@ export class AuthController {
       new ErrorProcessor(result).handleError();
     }
     const { accessToken, refreshToken } = result
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: true,
-      // sameSite: 'none',
-      // domain: '.myin-gram.ru',
-      // path: '/'
-    });
+    res.cookie("refreshToken", refreshToken, COOKIE_SETTINGS);
     res.status(200).send({ accessToken });
   }
 
@@ -135,7 +137,7 @@ export class AuthController {
     @Req() req,
     @Res() res
   ) {
-    res.clearCookie("refreshToken", { httpOnly: true, secure: true });
+    res.clearCookie("refreshToken", COOKIE_SETTINGS);
     res.sendStatus(204);
   }
 
@@ -153,10 +155,7 @@ export class AuthController {
       new ErrorProcessor(result).handleError();
     }
     const { accessToken, refreshToken } = result.data;
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: true,
-    });
+    res.cookie("refreshToken", refreshToken, COOKIE_SETTINGS);
     res.status(200).send({ accessToken });
 
   }
@@ -184,10 +183,7 @@ export class AuthController {
     }
     const { accessToken, refreshToken, baseURL } = result.data;
 
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: true,
-    });
+    res.cookie("refreshToken", refreshToken, COOKIE_SETTINGS);
     res.redirect(`${baseURL}?accessToken=${accessToken}`);
 
   }
