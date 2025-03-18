@@ -13,11 +13,11 @@ async function bootstrap() {
 
   app.enableCors({
     origin: [
-      '/\myin-gram\.ru$',
+      'https://myin-gram.ru',
       'http://localhost:3000'
     ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    // methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    // allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
   });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
