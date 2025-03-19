@@ -125,7 +125,7 @@ export class AuthController {
   async recoveryPassword(@Body() recovery: EmailRecovery) {
     const { email, recaptchaToken } = recovery
     const result = await this.authService.sendRecoveryCode(email, recaptchaToken)
-    if (result?.hasError()) {
+    if (result?.hasError?.()) {
       new ErrorProcessor(result).handleError();
     }
   }
@@ -138,7 +138,7 @@ export class AuthController {
   async setNewPassword(@Body() newCreds: RecoveryModel) {
     const { recoveryCode, password } = newCreds
     const result = await this.authService.setNewPassword(recoveryCode, password)
-    if (result.hasError?.()) {
+    if (result?.hasError?.()) {
       new ErrorProcessor(result).handleError();
     }
   }
