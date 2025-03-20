@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { EmailService } from '../../../../common/email/email.service';
-import { UsersPrismaRepository } from '../../users/infrastructure/prisma/users.prisma.repository';
 import { InterlayerNotice } from '../../../../common/error-handling/interlayer.notice';
 import { AuthError } from '../../../../common/error-handling/auth.error';
 import { ENTITY_USER } from '../../../../common/entities.constants';
@@ -10,6 +9,7 @@ import { randomUUID } from 'crypto';
 import { BcryptService } from '../infrastructure/bcrypt.service';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
+import { UsersPrismaRepository } from '../../users/infrastructure/prisma/users.prisma.repository';
 
 
 @Injectable()
@@ -76,7 +76,6 @@ export class AuthService {
   async setNewPassword(recoveryCode: string, password: string) {
     try {
       const u = await this.userPrismaRepository.findUserByRecoveryCode(recoveryCode);
-      console.log(u)
       if (!u)
         return InterlayerNotice.createErrorNotice(
           AuthError.CONFIRMATION_ERROR,
@@ -109,4 +108,20 @@ export class AuthService {
     return token;
   }
 
+  async getById(id: string) {
+    return await this.userPrismaRepository.getById(id);
+  }
+
+  async createPairTokens(payload: any): Promise<[accessToken: string, refreshToken: string]> {
+    return Promise.all(
+      [
+        await this.createToken({
+          ...payload,
+        }, 'ACCESS'),
+        await this.createToken({
+          ...payload,
+        }, 'REFRESH'),
+      ]);
+
+  }
 }

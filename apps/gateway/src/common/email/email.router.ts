@@ -1,14 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { DataMailType } from './types/data.mail.types';
 import { registrationEmail } from './const/registration.email';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class EmailRouter {
+  readonly baseUrl: string
+  constructor(private readonly configService: ConfigService) {
+    this.baseUrl = this.configService.get<string>('BASE_URL')
+  }
   getDataMailForRegisrtation(
     email: string,
     confirmationCode: string,
   ): DataMailType {
-    const textMessage = `<h1>Thank for your registration</h1><p>To finish registration please follow the link below:<a href='https://somesite.com/confirm-email?code=${confirmationCode}'>complete registration</a></p>`;
+    const textMessage = `
+    <h1>Thank for your registration</h1>
+    <p>To finish registration please follow the link below:
+    <a href='${this.baseUrl}confirm-email?token=${confirmationCode}'>complete registration</a>
+    </p>`;
     return {
       from: '"In-gram"',
       to: email,
@@ -20,7 +29,11 @@ export class EmailRouter {
     email: string,
     confirmationCode: string,
   ): DataMailType {
-    const textMessage = `<h1>Your new Verify code</h1><p>To finish registration please follow the link below:<a href='https://somesite.com/confirm-email?code=${confirmationCode}'>complete registration</a></p>`;
+    const textMessage = `
+    <h1>Your new Verify code</h1>
+    <p>To finish registration please follow the link below:
+    <a href='${this.baseUrl}confirm-email?token=${confirmationCode}'>complete registration</a>
+    </p>`;
     return {
       from: '"In-gram"',
       to: email,
@@ -32,23 +45,15 @@ export class EmailRouter {
     email: string,
     recoveryCode: string,
   ): DataMailType {
-    const textMessage = `<h1>Your new Recovery link </h1><p>For recovery password follow the link below:<a href='https://somesite.com/recovery-password?code=${recoveryCode}'>Recovery</a></p>`;
+    const textMessage = `
+    <h1>Your new Recovery link </h1>
+    <p>For recovery password follow the link below:
+    <a href='${this.baseUrl}reset-password?token=${recoveryCode}'>Recovery</a>
+    </p>`;
     return {
       from: '"In-gram"',
       to: email,
       subject: 'Your new Recovery code',
-      html: textMessage,
-    };
-  }
-  getDataMailForRecoveryPassword(
-    email: string,
-    confirmationCode: string,
-  ): DataMailType {
-    const textMessage = `<h1>Password recovery</h1><p>To finish password recovery please follow the link below:<a href='https://somesite.com/password-recovery?recoveryCode=${confirmationCode}'>recovery password</a></p>`;
-    return {
-      from: '"In-gram"',
-      to: email,
-      subject: registrationEmail,
       html: textMessage,
     };
   }

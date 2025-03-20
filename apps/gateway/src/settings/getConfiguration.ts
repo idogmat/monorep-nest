@@ -12,6 +12,7 @@ export const EnvironmentMode = {
 export const Environments = Object.keys(EnvironmentMode);
 
 export const getConfiguration = () => {
+  console.log(process.env.NODE_ENV?.trim(), 'NODE_ENV')
   return {
     NODE_ENV: (Environments.includes(process.env.NODE_ENV?.trim())
       ? process.env.NODE_ENV.trim()

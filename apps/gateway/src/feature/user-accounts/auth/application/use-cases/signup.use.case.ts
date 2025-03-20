@@ -1,12 +1,13 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UserCreateModel } from '../../api/models/input/user.create.model';
-import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/users.prisma.repository';
 import { InterlayerNotice } from '../../../../../common/error-handling/interlayer.notice';
 import { AuthError } from '../../../../../common/error-handling/auth.error';
 import { ENTITY_USER } from '../../../../../common/entities.constants';
 import { BcryptService } from '../../infrastructure/bcrypt.service';
-import { UserEntity } from '../../../users/domain/entites/user.entity';
 import { EmailService } from '../../../../../common/email/email.service';
+import { randomUUID } from 'crypto';
+import { add } from 'date-fns';
+import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/users.prisma.repository';
 export class SignupCommand {
   constructor(public createInputUser: UserCreateModel) { }
 }
@@ -34,8 +35,9 @@ export class SignupUseCase implements ICommandHandler<SignupCommand> {
     const passwordHash = await this.bcryptService.generationHash(
       password,
     );
+    const userDto = this.createUserDTO(login, email, passwordHash);
 
-    const user = await this.userPrismaRepository.createUser(new UserEntity({ name: login, email, passwordHash }));
+    const user = await this.userPrismaRepository.createUser(userDto);
 
     //TODO move send email to event handler
     try {
@@ -48,5 +50,18 @@ export class SignupUseCase implements ICommandHandler<SignupCommand> {
     }
 
     return new InterlayerNotice(null);
+  }
+
+  private createUserDTO(login: string, email: string, passwordHash: string): CreateUserData {
+    return {
+      name: login,
+      email: email,
+      passwordHash: passwordHash,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      confirmationCode: randomUUID(),
+      codeExpiration: add(new Date(), { hours: 24 }),
+      isConfirmed: false,
+    }
   }
 }

@@ -31,7 +31,7 @@ RUN yarn
 # Bundle app source code
 COPY --chown=node . .
 
-RUN yarn prisma:gateway
+RUN yarn prisma generate gateway
 
 RUN yarn build:${SERVICE}
 

@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Query, HttpCode, Req, Res, UseGuards, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query, HttpCode, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from '../application/auth.service';
 import { UserCreateModel } from './models/input/user.create.model';
 import { CommandBus } from '@nestjs/cqrs';
@@ -6,19 +6,48 @@ import { SignupCommand } from '../application/use-cases/signup.use.case';
 import { ErrorProcessor } from '../../../../common/error-handling/error.processor';
 import { EmailRecovery, EmailVerify, VerifyEmailToken } from './models/input/email.model';
 import { VerifyEmailCommand } from '../application/use-cases/verify.email.case';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthError } from '../../../../common/error-handling/auth.error';
 import { LoginModel } from './models/input/login.model';
 import { LoginCommand } from '../application/use-cases/login.case';
 import { RecoveryModel } from './models/input/recovery.model';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { AuthMeOutputMapper, AuthMeOutputModel } from './models/output/auth-me.model';
+import { GoogleTokenModel } from './models/input/google.token.model';
+import { OauthGoogleCommand } from '../application/use-cases/oauth.google.use.case';
+import { GithubService } from '../../../../common/provider/github.service';
+import { GithubTokenModel } from './models/input/github.token.model';
+import { GithubAuthCallbackCommand } from '../application/use-cases/github.auth.callback.use.case';
+import { ConfigService } from '@nestjs/config';
+import { AuthGuard } from '../../../../common/guard/authGuard';
 
+interface ICookieSettings {
+  httpOnly: boolean,
+  secure: boolean,
+  sameSite: string,
+  domain: string,
+  path: string
+}
+
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
+  COOKIE_SETTINGS: ICookieSettings
   constructor(
     private commandBus: CommandBus,
-    private readonly authService: AuthService
-  ) { }
+    private readonly authService: AuthService,
+    private readonly githubService: GithubService,
+    private readonly configService: ConfigService,
+  ) {
+    // const isLocal = this.configService.get<string>('NODE_ENV') === 'DEVELOPMENT'
+    this.COOKIE_SETTINGS = {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      domain: '.myin-gram.ru',
+      path: '/'
+    }
+  }
 
   @Post('signup')
   async signup(@Body() createInputUser: UserCreateModel) {
@@ -37,18 +66,29 @@ export class AuthController {
     @Res() res,
     @Body() loginModel: LoginModel
   ) {
+    const browser = (req.get("user-agent") || 'null').toString();
+    const ip = (req.ip || req.headers["x-forwarded-for"] || 'null').toString();
+
     const result = await this.commandBus.execute(
-      new LoginCommand(loginModel),
+      new LoginCommand({ ...loginModel, title: browser, ip }),
     );
     if (result?.hasError?.()) {
       new ErrorProcessor(result).handleError();
     }
     const { accessToken, refreshToken } = result
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: true,
-    });
+    res.cookie("refreshToken", refreshToken, this.COOKIE_SETTINGS);
     res.status(200).send({ accessToken });
+  }
+
+  @ApiResponse({ status: 200, type: AuthMeOutputModel })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Get('me')
+  async authMe(
+    @Req() req,
+  ) {
+    const u = await this.authService.getById(req.user.userId)
+    return AuthMeOutputMapper(u)
   }
 
   @ApiResponse({ status: 204, description: 'Email has been successfully confirmed.' })
@@ -71,7 +111,10 @@ export class AuthController {
   @Post('verify-resend')
   async resendVerifyCode(@Body() recovery: EmailVerify) {
     const { email } = recovery
-    await this.authService.sendVerifyEmail(email)
+    const result = await this.authService.sendVerifyEmail(email)
+    if (result?.hasError()) {
+      new ErrorProcessor(result).handleError();
+    }
   }
 
   @ApiResponse({ status: 204, description: 'Your Email has a recovery code.' })
@@ -81,7 +124,10 @@ export class AuthController {
   @Post('forgot-password')
   async recoveryPassword(@Body() recovery: EmailRecovery) {
     const { email, recaptchaToken } = recovery
-    await this.authService.sendRecoveryCode(email, recaptchaToken)
+    const result = await this.authService.sendRecoveryCode(email, recaptchaToken)
+    if (result?.hasError?.()) {
+      new ErrorProcessor(result).handleError();
+    }
   }
 
   @ApiResponse({ status: 204, description: 'Your new password is set.' })
@@ -91,16 +137,71 @@ export class AuthController {
   @Post('reset-password')
   async setNewPassword(@Body() newCreds: RecoveryModel) {
     const { recoveryCode, password } = newCreds
-    await this.authService.setNewPassword(recoveryCode, password)
+    const result = await this.authService.setNewPassword(recoveryCode, password)
+    if (result?.hasError?.()) {
+      new ErrorProcessor(result).handleError();
+    }
   }
 
   @Post('logout')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @HttpCode(204)
   async logout(
     @Req() req,
     @Res() res
   ) {
-    res.clearCookie("refreshToken", { httpOnly: true, secure: true });
+    res.clearCookie("refreshToken", this.COOKIE_SETTINGS);
     res.sendStatus(204);
+  }
+
+  @Post('google')
+  @HttpCode(204)
+  async oauthGoogle(
+    @Req() req,
+    @Res() res,
+    @Body() googleToken: GoogleTokenModel
+  ) {
+
+    const browser = (req.get("user-agent") || 'null').toString();
+    const ip = (req.ip || req.headers["x-forwarded-for"] || 'null').toString();
+    const result = await this.commandBus.execute(
+      new OauthGoogleCommand({ ...googleToken, title: browser, ip }),
+    );
+    if (result.hasError?.()) {
+      new ErrorProcessor(result).handleError();
+    }
+    const { accessToken, refreshToken } = result.data;
+    res.cookie("refreshToken", refreshToken, this.COOKIE_SETTINGS);
+    res.status(200).send({ accessToken });
+
+  }
+
+  @Get('github')
+  @HttpCode(204)
+  async oauthGithub(
+    @Res() res,
+  ) {
+    return res.redirect(this.githubService.githubAuth())
+
+  }
+
+  @Get('github/callback')
+  async githubAuthCallback(
+    @Res() res,
+    @Query() queryDto: GithubTokenModel
+  ) {
+
+    const result = await this.commandBus.execute(
+      new GithubAuthCallbackCommand(queryDto),
+    );
+    if (result.hasError?.()) {
+      new ErrorProcessor(result).handleError();
+    }
+    const { accessToken, refreshToken, baseURL } = result.data;
+
+    res.cookie("refreshToken", refreshToken, this.COOKIE_SETTINGS);
+    res.redirect(`${baseURL}?accessToken=${accessToken}`);
+
   }
 }

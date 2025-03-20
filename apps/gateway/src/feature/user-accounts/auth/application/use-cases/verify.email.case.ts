@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/users.prisma.repository';
 import { VerifyEmailToken } from '../../api/models/input/email.model';
 import { InterlayerNotice } from '../../../../../common/error-handling/interlayer.notice';
 import { ENTITY_USER } from '../../../../../common/entities.constants';
 import { AuthError } from '../../../../../common/error-handling/auth.error';
+import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/users.prisma.repository';
 
 export class VerifyEmailCommand {
   constructor(public confirmToken: VerifyEmailToken) { }

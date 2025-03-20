@@ -6,14 +6,20 @@ import { ENTITY_USER } from '../../../../../common/entities.constants';
 import { BcryptService } from '../../infrastructure/bcrypt.service';
 import { LoginModel } from '../../api/models/input/login.model';
 import { AuthService } from '../auth.service';
+import { DeviceService } from '../../../devices/application/device.service';
 
 const throwError = InterlayerNotice.createErrorNotice(
   AuthError.WRONG_CRED,
   ENTITY_USER,
   400
 )
+interface LoginWithDevice extends LoginModel {
+  ip: string,
+  title: string
+}
+
 export class LoginCommand {
-  constructor(public loginModel: LoginModel) { }
+  constructor(public loginModel: LoginWithDevice) { }
 }
 
 @CommandHandler(LoginCommand)
@@ -21,25 +27,38 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
   constructor(
     private userPrismaRepository: UsersPrismaRepository,
     private bcryptService: BcryptService,
-    private authService: AuthService
+    private authService: AuthService,
+    private deviceService: DeviceService
   ) {
   }
 
   async execute(command: LoginCommand) {
-    const { email, password } = command.loginModel;
+    const { email, password, ip, title } = command.loginModel;
     const u = await this.userPrismaRepository.findUserByEmail(email);
     if (!u) return throwError
 
     const checkPassword = await this.bcryptService.checkPassword(password, u.passwordHash)
     if (!checkPassword) return throwError;
+    let d = null
+    const updatedAt = new Date()
+    d = await this.deviceService.find({ ip, title, userId: u.id, updatedAt })
+    if (!d) {
+      d = await this.deviceService.createDevice({ ip, title, userId: u.id })
+    }
+
+    d = await this.deviceService.update({ ...d, updatedAt })
 
     const [accessToken, refreshToken] = await Promise.all(
       [
         await this.authService.createToken({
           userId: u.id,
+          deviceId: d.id,
+          updatedAt
         }, 'ACCESS'),
         await this.authService.createToken({
           userId: u.id,
+          deviceId: d.id,
+          updatedAt
         }, 'REFRESH')
       ])
 
