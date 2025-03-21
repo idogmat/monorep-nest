@@ -32,7 +32,7 @@ export class UsersPrismaQueryRepository {
 
   ) {
     const where: Prisma.UserWhereInput = {};
-    const { name, pageNumber, pageSize, sortBy, sortDirection } = pagination
+    const { name, pageNumber, pageSize, sortBy, sortDirection } = pagination;
     if (name) {
       where.name = {
         contains: name,
