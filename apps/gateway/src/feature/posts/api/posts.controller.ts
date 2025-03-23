@@ -56,22 +56,22 @@ export class PostsController {
     try {
       const postId = randomUUID();
       // Отправляем массив файлов на микросервис files через TCP
-      const result = await firstValueFrom<InterlayerNotice<UploadSummaryResponse>>(
+      const result = await firstValueFrom(
         this.client.send('upload_files', { files, postId, userId: req.user.userId })
       );
 
-      if (result.hasError()) {
-        new ErrorProcessor(result).handleError();
+      if (result.error) {
+        new ErrorProcessor(InterlayerNotice.createErrorNotice(result.text, "Files", 422)).handleError();
       }
 
       await this.commandBus.execute(
         new CreatePostCommand(postCreateModel.title, req.user.userId, postId)
       );
 
-      if (result.data.files.length > 0) {
-        return { status: 207, message: result.data.text, files: result.data.files };
+      if(result.files.length > 0){
+        return { status: 207, message: result.text, files: result.files };
       }
-      return { status: 201, message: result.data.text };
+      return { status: 201, message: result.text };
     } catch (error) {
       console.error('Error while uploading files:', error);
       return { message: 'Error uploading files', error: error.message };

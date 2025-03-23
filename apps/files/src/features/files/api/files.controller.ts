@@ -13,7 +13,8 @@ export class FilesController {
   }
 
   @MessagePattern('upload_files')
-  async handleFilesUpload( @Payload() data: { files: Express.Multer.File[], postId: string, userId: string }) : Promise<InterlayerNotice<UploadSummaryResponse>>{
+  async handleFilesUpload( @Payload() data: { files: Express.Multer.File[], postId: string, userId: string }) : Promise<UploadSummaryResponse>{
+    console.log("Hi");
     const { files, postId, userId } = data;
     return this.filesService.sendPhoto(userId, postId, files);
   }

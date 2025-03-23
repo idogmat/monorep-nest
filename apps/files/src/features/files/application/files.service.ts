@@ -14,7 +14,7 @@ export class FilesService {
   }
 
 
-  async sendPhoto(userId: string, postId: string, files: Express.Multer.File[]) : Promise<InterlayerNotice<UploadSummaryResponse>>{
+  async sendPhoto(userId: string, postId: string, files: Express.Multer.File[]) : Promise<UploadSummaryResponse>{
 
     //TODO обработать память
 
@@ -47,13 +47,14 @@ export class FilesService {
     //   .map(res => res.value);
 
     if (successfulUploads.length === files.length) {
-      return new InterlayerNotice({text: "All files uploaded successfully", files: []});
+      return {text: "All files uploaded successfully", files: [], error: false};
     }
 
     if (successfulUploads.length > 0) {
-      return new InterlayerNotice({text: "Some files uploaded successfully", files: [...successfulUploads] });
+      return {text: "Some files uploaded successfully", files: [...successfulUploads], error: false };
     }
 
-    return InterlayerNotice.createErrorNotice( "No files could be uploaded", 'files', 422);
+    return {text: "No files could be uploaded", files: [], error: true};
+    // return InterlayerNotice.createErrorNotice( "No files could be uploaded", 'files', 422);
   }
 }
