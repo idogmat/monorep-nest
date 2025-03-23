@@ -22,7 +22,7 @@ model User {
   recoveryCode String?
   passwordHash String?
   expirationDate DateTime?
-  posts     Post[]
+  posts     Post[] @relation("UserPost")
   providers  Provider? @relation("UserProvider")
   devices  Device[] @relation("UserDevice")
   @@map("users")
@@ -54,7 +54,7 @@ model Post {
   deletedAt DateTime?
   published Boolean  @default(false)
   title     String   @db.VarChar(255)
-  author    User?    @relation(fields: [authorId], references: [id])
+  author    User?    @relation("UserPost", fields: [authorId], references: [id])
   authorId  String?
   @@map("posts")
 }

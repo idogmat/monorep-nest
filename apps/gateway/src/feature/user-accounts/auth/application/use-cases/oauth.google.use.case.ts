@@ -25,7 +25,7 @@ export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
   }
 
 
-  async execute(command: OauthGoogleCommand) {
+  async execute(command: OauthGoogleCommand): Promise<InterlayerNotice<GoogleAuthResponseModel>> {
 
     const { token, ip, title } = command.googleTokenModel;
 
@@ -55,7 +55,8 @@ export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
         updatedAt
       });
 
-      return new InterlayerNotice(new GoogleAuthResponseModel(accessToken, refreshToken));
+      return
+      new InterlayerNotice(new GoogleAuthResponseModel(accessToken, refreshToken));
     } catch (error) {
       console.error('Error during Google OAuth execution:', error);
       throw new Error('Failed to authenticate with Google');

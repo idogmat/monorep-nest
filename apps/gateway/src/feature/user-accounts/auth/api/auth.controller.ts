@@ -99,7 +99,7 @@ export class AuthController {
     const result = await this.commandBus.execute(
       new VerifyEmailCommand(query),
     );
-    if (result?.hasError()) {
+    if (result.hasError()) {
       new ErrorProcessor(result).handleError();
     }
   }

@@ -1,0 +1,1 @@
+export type UploadResult = { fileName: string; status: "success" | "error"; error: string| null};

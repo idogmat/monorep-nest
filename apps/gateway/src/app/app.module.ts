@@ -8,6 +8,8 @@ import { getConfiguration } from '../settings/getConfiguration';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { PrismaService } from '../feature/prisma/prisma.service';
+import { PostsModule } from '../feature/posts/posts.module';
+import { ProfileModule } from '../feature/profile/profile.module';
 
 @Module({
   imports: [
@@ -29,8 +31,7 @@ import { PrismaService } from '../feature/prisma/prisma.service';
             transport: Transport.TCP,
             options: {
               host: configService.get('FILES_TCP'),
-              port: configService.get('CONNECT_PORT'),  // Порт, на который отправляется запрос в Service B
-
+              port: configService.get('CONNECT_PORT'),
             },
           };
         },
@@ -38,6 +39,8 @@ import { PrismaService } from '../feature/prisma/prisma.service';
       },
     ]),
     UsersAccountsModule,
+    PostsModule,
+    ProfileModule
 
   ],
   controllers: [AppController],
