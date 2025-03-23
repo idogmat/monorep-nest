@@ -5,8 +5,13 @@ import { PostsController } from './api/posts.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PostsPrismaRepository } from './infrastructure/posts.prisma.repository';
+import { CreatePostUseCases } from './application/use-cases/create.post.use.cases';
+import { PrismaService } from '../prisma/prisma.service';
+import { JwtModule } from '@nestjs/jwt';
+import { DeviceService } from '../user-accounts/devices/application/device.service';
 
-const useCasesForPost = []
+const useCasesForPost = [CreatePostUseCases]
 @Module({
   imports: [
     HttpModule,
@@ -30,10 +35,22 @@ const useCasesForPost = []
         },
         inject: [ConfigService],
       },
-    ])
+    ]),
+    JwtModule.registerAsync({
+      useFactory: (configService: ConfigService) => {
+        return {
+          secret: configService.get('ACCESS_TOKEN'),
+          signOptions: { expiresIn: configService.get('ACCESS_TOKEN_EXPIRATION') },
+        };
+      },
+      inject: [ConfigService]
+    }),
 
   ],
   providers: [
+    PostsPrismaRepository,
+    PrismaService,
+    DeviceService,
     ...useCasesForPost
   ],
   controllers: [PostsController],

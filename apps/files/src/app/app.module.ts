@@ -1,11 +1,16 @@
 // src/app.module.ts
 import { Module } from '@nestjs/common';
-import { FilesController } from './files.controller';
+import { FilesController } from '../features/files/api/files.controller';
 import {  ClientsModule, Transport } from '@nestjs/microservices';
-import { ConfigModule,  } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getConfiguration } from '../../../gateway/src/settings/getConfiguration';
 import { CqrsModule } from '@nestjs/cqrs';
 import { S3StorageAdapter } from '../common/s3/s3.storage.adapter';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Configuration } from '@nestjs/cli/lib/configuration';
+import { FilesService } from '../features/files/application/files.service';
+import { AppController } from './app.controller';
+import { FileModule } from '../features/file.module';
 
 @Module({
   imports: [
@@ -13,7 +18,6 @@ import { S3StorageAdapter } from '../common/s3/s3.storage.adapter';
       isGlobal: true,
       load: [getConfiguration]
     }),
-    CqrsModule,
     ClientsModule.register([  // Здесь правильно используется ClientsModule для регистрации микросервисов
       {
         name: 'TCP_SERVICE',  // Имя микросервиса
@@ -24,11 +28,10 @@ import { S3StorageAdapter } from '../common/s3/s3.storage.adapter';
         },
       },
     ]),
+    FileModule
   ],
-  controllers: [FilesController],
-  providers: [
-    S3StorageAdapter
-  ],
-  exports: [S3StorageAdapter],
+  controllers: [AppController,],
+  providers: [],
+  exports: [],
 })
 export class AppModule {}

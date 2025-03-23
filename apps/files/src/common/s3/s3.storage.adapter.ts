@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { ConfigService } from '@nestjs/config';
 declare const Buffer;
+import { randomUUID } from 'crypto';
+import sharp from 'sharp';
+import { UploadPhotoResponse } from '../types/upload.photo.response';
 @Injectable()
 export class S3StorageAdapter{
   s3Client: S3Client;
@@ -21,33 +24,64 @@ export class S3StorageAdapter{
 
   }
 
-  async savePhoto(userId: string, postId:string, originalName: string, buffer: any){
+  async savePhoto(userId: string, postId:string, file: Express.Multer.File): Promise<UploadPhotoResponse>{
 
-    const realBuffer = Buffer.from(buffer.data);
+    const extension = file.mimetype.split('/')[1];
 
-    const key = `uploads/user_${userId}/post_${postId}/${Date.now()}_${postId}.png`;
-    const params = {
+    const realBuffer = Buffer.from(file.buffer);
+    const fileExtension = this.getFullExtension(file.originalname);
+    const originalName = `${randomUUID()}.${fileExtension}`;
+    const compressedName = `${randomUUID()}_compressed.${fileExtension}`;
+
+    const originalKey = `uploads/user_${userId}/post_${postId}/${originalName}`;
+    const compressedKey = `uploads/user_${userId}/post_${postId}/${compressedName}`;
+
+    //send original photo
+    const originalParams = {
       Bucket: this.bucketName,
-      Key: key,
+      Key: originalKey,
       Body: realBuffer,
-      // Body: buffer,
-      ContentType: 'image/png',
+      ContentType: file.mimetype,
 
     };
 
-    const command = new PutObjectCommand(params);
-    try {
-      const uploadResult = await this.s3Client.send(command);
-      console.log("uploadResult", uploadResult);
-      console.log(`https://storage.yandexcloud.net/${this.bucketName}/${key}`);
-      return{
-        url: `https://storage.yandexcloud.net/${this.bucketName}/${key}`,
-        field: 'relativePath'
-      }
+    //create compressed version
+    const compressedBuffer =  await sharp(realBuffer)
+      .resize({width: 800})
+      .toFormat(extension === 'png' ? 'png' : 'jpeg', { quality: 80 })
+      .toBuffer();
+
+    //send compressed photo
+    const compressedParams = {
+      Bucket: this.bucketName,
+      Key: compressedKey,
+      Body: compressedBuffer,
+      ContentType: file.mimetype,
+
+    };
+
+    try{
+
+      const [originalUpload, compressedUpload] = await Promise.all([
+          this.s3Client.send(new PutObjectCommand(originalParams)),
+        this.s3Client.send(new PutObjectCommand(compressedParams)),
+        ]);
+        return{
+          // originalUrl: `https://storage.yandexcloud.net/${this.bucketName}/${originalKey}`,
+          // compressedUrl: `https://storage.yandexcloud.net/${this.bucketName}/${compressedKey}`,
+          originalKey: originalKey,
+          compressedKey: compressedKey,
+          originalFileId: originalUpload.ETag,
+          compressedFileId: compressedUpload.ETag,
+        }
     }catch (exception){
       console.error("Ошибка при загрузке файла в S3:", exception)
       throw exception;
     }
 
+  }
+  getFullExtension(filename: string): string | null {
+    const parts = filename.split('.');
+    return parts.length > 1 ? parts.slice(-2).join('.') : null;
   }
 }

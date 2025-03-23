@@ -29,10 +29,8 @@ import { PostsModule } from '../feature/posts/posts.module';
           return {
             transport: Transport.TCP,
             options: {
-              host: 'localhost',
-              port: 3795
-              // host: configService.get('FILES_TCP'),
-              // port: configService.get('CONNECT_PORT'),  // Порт, на который отправляется запрос в Service B
+               host: configService.get('FILES_TCP'),
+               port: configService.get('CONNECT_PORT'),  // Порт, на который отправляется запрос в Service B
 
             },
           };
