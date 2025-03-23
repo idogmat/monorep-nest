@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { getConfiguration } from '../../../gateway/src/settings/getConfiguration';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FilesController } from './files/api/files.controller';
 import { S3StorageAdapter } from '../common/s3/s3.storage.adapter';
 import { FilesService } from './files/application/files.service';
 import { FilesRepository } from './files/infrastructure/files.repository';
 import { FilesSchema } from './files/domain/file.entity';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { getConfiguration } from '../settings/getConfiguration';
 
 @Module({
   imports: [
@@ -27,10 +28,27 @@ import { FilesSchema } from './files/domain/file.entity';
       inject: [ConfigService],
     }),
     MongooseModule.forFeature([{ name: File.name, schema: FilesSchema }]),
+    ClientsModule.registerAsync([
+      {
+        imports: [ConfigModule],
+        name: 'RABBITMQ_SERVICE',
+        useFactory: (configService: ConfigService) => {
+          return {
+            transport: Transport.RMQ,
+            options: {
+              urls: configService.get<string[]>('RABBIT_URLS'),
+              queue: 'test_queue',
+              queueOptions: { durable: false },
+            },
+          }
+        },
+        inject: [ConfigService],
+      },
+    ]),
   ],
-  providers:[S3StorageAdapter,FilesService, FilesRepository],
+  providers: [S3StorageAdapter, FilesService, FilesRepository],
   controllers: [FilesController],
-  exports:[]
+  exports: []
 })
 
-export class FileModule {}
+export class FileModule { }

@@ -9,6 +9,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { PrismaService } from '../feature/prisma/prisma.service';
 import { PostsModule } from '../feature/posts/posts.module';
+import { ProfileModule } from '../feature/profile/profile.module';
 
 @Module({
   imports: [
@@ -38,7 +39,8 @@ import { PostsModule } from '../feature/posts/posts.module';
       },
     ]),
     UsersAccountsModule,
-    PostsModule
+    PostsModule,
+    ProfileModule
 
   ],
   controllers: [AppController],

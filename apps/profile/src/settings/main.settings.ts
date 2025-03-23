@@ -1,12 +1,10 @@
 import {
   BadRequestException,
   INestApplication,
-  INestMicroservice,
   ValidationPipe,
 } from '@nestjs/common';
 import { EnvironmentsTypes } from './getConfiguration';
 import { ConfigService } from '@nestjs/config';
-// import { LoggingInterceptor } from '../utils/interceptors/logging.interceptor';
 
 
 export const applyAppSettings = (app: INestApplication): {
@@ -15,7 +13,6 @@ export const applyAppSettings = (app: INestApplication): {
   host: string
 } => {
   const { port, env, host } = getEnv(app)
-
 
   setAppPipes(app);
 
@@ -27,12 +24,11 @@ const getEnv = (app: INestApplication) => {
   const env = configService.get<EnvironmentsTypes>('NODE_ENV')
   const port = configService.get<number>(checkEnv(env)) || 3000;
   const host = env !== 'DEVELOPMENT' ? '0.0.0.0' : 'localhost';
-  const rabbit = configService.get<string>('RABBIT_URLS');
   return { port, env, host }
 }
 
 const checkEnv = (envMode: string) => {
-  return envMode !== 'DEVELOPMENT' ? 'PORT' : 'FILE_LOCAL_PORT'
+  return envMode !== 'DEVELOPMENT' ? 'PORT' : 'PROFILE_LOCAL_PORT'
 }
 
 

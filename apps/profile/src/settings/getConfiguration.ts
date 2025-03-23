@@ -18,10 +18,11 @@ export const getConfiguration = () => {
       ? process.env.NODE_ENV.trim()
       : 'DEVELOPMENT') as EnvironmentsTypes,
     PORT: process.env.PORT,
+    PROFILE_LOCAL_PORT: process.env.PROFILE_LOCAL_PORT,
+    RABBIT_URLS: process.env.RABBIT_URLS.split(','),
     DATABASE_URL: process.env.DATABASE_URL,
     CONNECT_PORT: process.env.CONNECT_PORT,
     FILES_TCP: process.env.FILES_TCP,
-    RABBIT_URLS: process.env.RABBIT_URLS.split(','),
     DB: {
       type: 'postgres',
       host: process.env.DB_HOST,
