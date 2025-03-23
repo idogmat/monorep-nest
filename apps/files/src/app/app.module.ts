@@ -1,16 +1,10 @@
 // src/app.module.ts
 import { Module } from '@nestjs/common';
-import { FilesController } from '../features/files/api/files.controller';
-import {  ClientsModule, Transport } from '@nestjs/microservices';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 import { getConfiguration } from '../../../gateway/src/settings/getConfiguration';
-import { CqrsModule } from '@nestjs/cqrs';
-import { S3StorageAdapter } from '../common/s3/s3.storage.adapter';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Configuration } from '@nestjs/cli/lib/configuration';
-import { FilesService } from '../features/files/application/files.service';
 import { AppController } from './app.controller';
 import { FileModule } from '../features/file.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -34,4 +28,4 @@ import { FileModule } from '../features/file.module';
   providers: [],
   exports: [],
 })
-export class AppModule {}
+export class AppModule { }

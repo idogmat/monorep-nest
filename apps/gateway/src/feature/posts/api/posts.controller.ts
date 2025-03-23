@@ -17,7 +17,7 @@ import { CreatePostCommand } from '../application/use-cases/create.post.use.case
 
 @ApiTags('Posts')
 @Controller('posts')
-export class PostsController{
+export class PostsController {
   constructor(
     private commandBus: CommandBus,
     @Inject('TCP_SERVICE') private readonly client: ClientProxy
@@ -35,7 +35,7 @@ export class PostsController{
         cb(null, true);
       },
       limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
-    })as any)
+    }) as any)
   @ApiOperation({ summary: 'Creating a post with image upload' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -68,7 +68,7 @@ export class PostsController{
         new CreatePostCommand(postCreateModel.title, req.user.userId, postId)
       );
 
-      if(result.data.files.length > 0){
+      if (result.data.files.length > 0) {
         return { status: 207, message: result.data.text, files: result.data.files };
       }
       return { status: 201, message: result.data.text };
