@@ -1,15 +1,15 @@
 import { ApiTags } from '@nestjs/swagger';
-import { BadRequestException, Controller, Get, Header, Headers, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { createReadStream, createWriteStream, statSync, unlinkSync } from 'fs';
+import { createReadStream, statSync, unlinkSync } from 'fs';
 import { diskStorage } from 'multer';
 import { ProfileService } from '../application/profile.service';
 import { HttpService } from '@nestjs/axios';
 import { mkdir } from 'fs/promises';
 import { FileValidationPipe } from '../../../../../libs/check.file';
-import { join } from 'path';
 import { lastValueFrom } from 'rxjs';
 import { AuthGuard } from 'apps/gateway/src/common/guard/authGuard';
+import { Response } from 'express';
 
 
 @ApiTags('Profile')
@@ -25,22 +25,21 @@ export class ProfileController {
     mkdir(this.uploadsDir, { recursive: true });
   }
 
-  @Get('send')
-  async sendMessage() {
-    await this.profileService.sendMessage()
-  }
-
-  @Post('localSave')
-  @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: './tmp',
-      filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`);
-      },
-    }),
-  }))
-  async uploadStream(@UploadedFile() file: Express.Multer.File) {
-    await this.profileService.localSaveFile(file)
+  @Get()
+  async getProfiles(
+    @Req() req: Request,
+    // @Res() res: Response
+  ) {
+    const response = await lastValueFrom(this.httpService.get(
+      'http://localhost:3796',
+      {
+        headers: {
+          'x-user': 'req.user.userId'
+        },
+      }
+    ));
+    return response.data
+    // return await this.profileService.
   }
 
   @Post()
@@ -64,9 +63,9 @@ export class ProfileController {
     try {
       //   // 2. Читаем файл после успешной записи
       const readStream = createReadStream(`./tmp/${file.originalname}`);
-
+      // FIXME env на урл
       //   // 3. Отправляем файл
-      const response = await this.httpService.post(
+      const response = await await lastValueFrom(this.httpService.post(
         'http://localhost:3795/receive',
         readStream,
         {
@@ -76,8 +75,8 @@ export class ProfileController {
             'x-user': req.user.userId
           },
         }
-      ).toPromise();
-
+      ));
+      console.log(response)
       return response.data;
     } catch (error) {
       // Обработка ошибок
@@ -90,6 +89,19 @@ export class ProfileController {
 
   }
 
+
+  @Post('localSave')
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './tmp',
+      filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`);
+      },
+    }),
+  }))
+  async uploadStream(@UploadedFile() file: Express.Multer.File) {
+    await this.profileService.localSaveFile(file)
+  }
 
   @Post('chunk')
   // @UseInterceptors(FileInterceptor('file'))

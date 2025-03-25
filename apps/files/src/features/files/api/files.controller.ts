@@ -1,14 +1,14 @@
 // src/files.controller.ts
 
-import { Body, Controller, Get, Headers, HttpStatus, Inject, Post, Req, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
-import { ClientProxy, EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
+import { Controller, Headers, Inject, Post, Req, Res } from '@nestjs/common';
+import { ClientProxy, MessagePattern, Payload } from '@nestjs/microservices';
 import { FilesService } from '../application/files.service';
 import { UploadSummaryResponse } from '../../../common/types/upload.summary.response';
 import path, { join } from 'path';
 import { createReadStream, createWriteStream, existsSync, mkdirSync, readdirSync, unlinkSync } from 'fs';
 import { Request } from 'express';
 import { ProfileService } from '../application/profile.service';
-import { readFile } from 'fs/promises';
+import { readFile, unlink } from 'fs/promises';
 
 @Controller()
 export class FilesController {
@@ -35,42 +35,55 @@ export class FilesController {
   @Post('receive')
   async uploadStream(
     @Req() req: Request,
+    @Res() res,
     @Headers('x-filename') filename: string,
     @Headers('x-user') userId: string
   ) {
-    const filePath = `./uploads/${filename}`
+    const filePath = `./uploads/${filename}`;
     const writeStream = createWriteStream(filePath, { highWaterMark: 64 * 1024 });
-    console.log(userId)
-    // Направляем поток запроса в поток записи файла
+
     try {
-      await req
-        .on('error', console.log)
-        .pipe(writeStream)
-        .on('error', console.log)
-        .on('finish', async () => {
-          const buffer = await readFile(filePath);
-          // console.log(buffer)
-          const fileInfo = {
-            originalname: path.basename(filePath),
-            buffer: buffer,
-            mimetype: 'application/octet-stream',
-          };
-          const folder = `profile/${userId}`
-          // 3. Загружаем в S3
-          const uploadResult = await this.profileService.uploadImage(fileInfo, folder);
-          console.log(uploadResult)
+      // Ожидаем завершения записи файла
+      await new Promise((resolve, reject) => {
+        req
+          .pipe(writeStream)
+          .on('error', reject)
+          .on('finish', resolve as any)
+          .on('error', reject);
+      });
 
-          // 4. Получаем URL загруженного файла
-          const fileUrl = await this.profileService.getFileUrl(uploadResult.Key);
-          const message = { fileUrl, userId, timestamp: new Date() };
-          this.rabbitClient.emit('load_profile_photo', message); // Отправляем сообщение в очередь
-          // return { message: 'Message sent to RabbitMQ', payload: message };
-        })
+      // Читаем файл после записи
+      const buffer = await readFile(filePath);
+      const fileInfo = {
+        originalname: path.basename(filePath),
+        buffer,
+        mimetype: 'application/octet-stream',
+      };
 
+      // Загружаем в S3
+      const folder = `profile/${userId}`;
+      const uploadResult = await this.profileService.uploadImage(fileInfo, folder);
+      const fileUrl = await this.profileService.getFileUrl(uploadResult.Key);
 
-      return 'ok'
-    } catch (e) {
+      // Отправляем сообщение в RabbitMQ
+      const message = { fileUrl, userId, timestamp: new Date() };
+      this.rabbitClient.emit('load_profile_photo', message);
 
+      return res.status(200).send({ url: fileUrl });
+
+    } catch (error) {
+      console.error('Upload failed:', error);
+      return res.status(500).send('File processing error');
+
+    } finally {
+      // Удаляем временный файл в любом случае
+      try {
+        if (existsSync(filePath)) {
+          await unlink(filePath);
+        }
+      } catch (unlinkError) {
+        console.warn('Temp file cleanup failed:', unlinkError);
+      }
     }
   }
 
