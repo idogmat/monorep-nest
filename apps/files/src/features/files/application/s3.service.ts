@@ -16,7 +16,6 @@ export class S3StorageAdapterJ {
       endpoint: this.configService.get<string>('S3_ENDPOINT'),
       s3ForcePathStyle: true,
     };
-    console.log(s3Config)
     this.bucketName = bucketName || this.configService.get<string>('AWS_BUCKET_NAME');
     this.s3 = new AWS.S3(s3Config);
   }
