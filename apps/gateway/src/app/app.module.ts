@@ -41,7 +41,6 @@ import { ProfileModule } from '../feature/profile/profile.module';
     UsersAccountsModule,
     PostsModule,
     ProfileModule
-
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

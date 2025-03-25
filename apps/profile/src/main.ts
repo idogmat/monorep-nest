@@ -1,9 +1,9 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app/app.module';
 import { useContainer } from 'class-validator';
 import { applyAppSettings } from './settings/main.settings';
 import { INestApplication } from '@nestjs/common';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { AppModule } from './app/app.module';
 
 async function bootstrap() {
   // const port = 3795

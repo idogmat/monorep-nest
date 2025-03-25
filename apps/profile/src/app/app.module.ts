@@ -30,7 +30,7 @@ import { getConfiguration } from '../settings/getConfiguration';
     ]),
 
   ],
-  controllers: [AppController,],
+  controllers: [AppController],
   providers: [],
   exports: [],
 })

@@ -9,10 +9,12 @@ import { FilesRepository } from './files/infrastructure/files.repository';
 import { FilesSchema } from './files/domain/file.entity';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { getConfiguration } from '../settings/getConfiguration';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
     CqrsModule,
+    MulterModule.register(),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [getConfiguration]
@@ -37,7 +39,7 @@ import { getConfiguration } from '../settings/getConfiguration';
             transport: Transport.RMQ,
             options: {
               urls: configService.get<string[]>('RABBIT_URLS'),
-              queue: 'test_queue',
+              queue: 'file_queue',
               queueOptions: { durable: false },
             },
           }
