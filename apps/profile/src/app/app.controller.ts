@@ -17,6 +17,6 @@ export class AppController {
 
   @EventPattern('test_event')
   handleTestEvent(data: any) {
-    console.log('📩 Received event:', data);
+    console.log('📩 Received event: PROFILE', data);
   }
 }

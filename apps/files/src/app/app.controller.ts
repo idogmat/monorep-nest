@@ -7,4 +7,5 @@ export class AppController {
   healthCheck() {
     return { status: 'ok' };  // Возвращаем статус микросервиса
   }
+
 }
