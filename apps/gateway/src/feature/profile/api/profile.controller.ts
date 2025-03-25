@@ -1,5 +1,5 @@
 import { ApiTags } from '@nestjs/swagger';
-import { BadRequestException, Controller, Get, Header, Headers, Post, Req, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Header, Headers, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { createReadStream, createWriteStream, statSync, unlinkSync } from 'fs';
 import { diskStorage } from 'multer';
@@ -9,6 +9,7 @@ import { mkdir } from 'fs/promises';
 import { FileValidationPipe } from '../../../../../libs/check.file';
 import { join } from 'path';
 import { lastValueFrom } from 'rxjs';
+import { AuthGuard } from 'apps/gateway/src/common/guard/authGuard';
 
 
 @ApiTags('Profile')
@@ -43,6 +44,7 @@ export class ProfileController {
   }
 
   @Post()
+  @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
       destination: './tmp',
@@ -71,6 +73,7 @@ export class ProfileController {
           headers: {
             'Content-Type': file.mimetype,
             'X-Filename': file.originalname,
+            'x-user': req.user.userId
           },
         }
       ).toPromise();

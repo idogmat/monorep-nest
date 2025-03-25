@@ -15,7 +15,7 @@ async function bootstrap() {
     transport: Transport.RMQ,
     options: {
       urls: ['amqp://user:password@localhost:5672'], // Подключение к RabbitMQ
-      queue: 'test_queue', // Очередь, в которую будут отправляться сообщения
+      queue: 'file_queue', // Очередь, в которую будут отправляться сообщения
       queueOptions: { durable: false }, // Очередь не сохраняет сообщения после перезапуска
     },
   });
