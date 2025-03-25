@@ -10,6 +10,8 @@ import { FilesSchema } from './files/domain/file.entity';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { getConfiguration } from '../settings/getConfiguration';
 import { MulterModule } from '@nestjs/platform-express';
+import { S3StorageAdapterJ } from './files/application/s3.service';
+import { ProfileService } from './files/application/profile.service';
 
 @Module({
   imports: [
@@ -48,7 +50,22 @@ import { MulterModule } from '@nestjs/platform-express';
       },
     ]),
   ],
-  providers: [S3StorageAdapter, FilesService, FilesRepository],
+  providers: [
+    S3StorageAdapter,
+    FilesService,
+    FilesRepository,
+    ProfileService,
+    {
+      provide: 'PROFILE_BUCKET_ADAPTER',
+      useFactory: (configService: ConfigService) => {
+        return new S3StorageAdapterJ(
+          configService,
+          'profile', // Укажите имя бакета из конфига
+        );
+      },
+      inject: [ConfigService],
+    },
+  ],
   controllers: [FilesController],
   exports: []
 })

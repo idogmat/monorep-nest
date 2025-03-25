@@ -20,7 +20,7 @@ import { getConfiguration } from '../settings/getConfiguration';
             transport: Transport.RMQ,
             options: {
               urls: configService.get<string[]>('RABBIT_URLS'),
-              queue: 'test_queue',
+              queue: 'file_queue',
               queueOptions: { durable: false },
             },
           }

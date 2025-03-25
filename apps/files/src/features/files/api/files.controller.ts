@@ -4,22 +4,20 @@ import { Body, Controller, Get, Headers, HttpStatus, Inject, Post, Req, Res, Upl
 import { ClientProxy, EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { FilesService } from '../application/files.service';
 import { UploadSummaryResponse } from '../../../common/types/upload.summary.response';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { join } from 'path';
-import { createReadStream, createWriteStream, existsSync, mkdirSync, readdirSync, unlinkSync, writeFile } from 'fs';
-import { memoryStorage } from 'multer';
-import { pipeline } from 'stream/promises';
-import { unlink } from 'fs/promises';
+import path, { join } from 'path';
+import { createReadStream, createWriteStream, existsSync, mkdirSync, readdirSync, unlinkSync } from 'fs';
 import { Request } from 'express';
-import { promisify } from 'util';
-const pipelineAsync = promisify(pipeline);
+import { ProfileService } from '../application/profile.service';
+import { readFile } from 'fs/promises';
+
 @Controller()
 export class FilesController {
   private chunkDir = './uploads/chunks';
   private readonly localFileName = 'test.png';
   constructor(
-    // @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy,
-    private readonly filesService: FilesService
+    @Inject('RABBITMQ_SERVICE') private readonly rabbitClient: ClientProxy,
+    private readonly profileService: ProfileService,
+    private readonly filesService: FilesService,
   ) {
     if (!existsSync(this.chunkDir)) {
       mkdirSync(this.chunkDir, { recursive: true });
@@ -35,31 +33,45 @@ export class FilesController {
   }
 
   @Post('receive')
-  // @UseInterceptors(FileInterceptor('file'))
   async uploadStream(
-    // @UploadedFile() file: Express.Multer.File,
     @Req() req: Request,
-    @Headers('x-filename') filename: string
+    @Headers('x-filename') filename: string,
+    @Headers('x-user') userId: string
   ) {
-    const writeStream = createWriteStream(`./uploads/${filename}`, { highWaterMark: 10000 });
-
+    const filePath = `./uploads/${filename}`
+    const writeStream = createWriteStream(filePath, { highWaterMark: 64 * 1024 });
+    console.log(userId)
     // Направляем поток запроса в поток записи файла
-    await req
-      .on('error', console.log)
-      .pipe(writeStream)
-      .on('error', console.log);
+    try {
+      await req
+        .on('error', console.log)
+        .pipe(writeStream)
+        .on('error', console.log)
+        .on('finish', async () => {
+          const buffer = await readFile(filePath);
+          // console.log(buffer)
+          const fileInfo = {
+            originalname: path.basename(filePath),
+            buffer: buffer,
+            mimetype: 'application/octet-stream',
+          };
+          const folder = `profile/${userId}`
+          // 3. Загружаем в S3
+          const uploadResult = await this.profileService.uploadImage(fileInfo, folder);
+          console.log(uploadResult)
+
+          // 4. Получаем URL загруженного файла
+          const fileUrl = await this.profileService.getFileUrl(uploadResult.Key);
+          const message = { fileUrl, userId, timestamp: new Date() };
+          this.rabbitClient.emit('load_profile_photo', message); // Отправляем сообщение в очередь
+          // return { message: 'Message sent to RabbitMQ', payload: message };
+        })
 
 
-    return 'ok'
-    // console.log(file)
-    // console.log(filename)
-    // console.log(req)
-    // const writeStream = createWriteStream('./uploads/' + file.originalname);
-    // file.stream.pipe(writeStream);
+      return 'ok'
+    } catch (e) {
 
-    // return new Promise((resolve) => {
-    //   writeStream.on('finish', () => resolve({ status: 'ok' }));
-    // });
+    }
   }
 
 

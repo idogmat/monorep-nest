@@ -15,7 +15,12 @@ export class AppController {
   //   // return { message: 'Message sent to RabbitMQ', payload: message };
   // }
 
-  @EventPattern('test_event')
+  // @EventPattern('test_event')
+  // handleTestEvent(data: any) {
+  //   console.log('📩 Received event: PROFILE', data);
+  // }
+
+  @EventPattern('load_profile_photo')
   handleTestEvent(data: any) {
     console.log('📩 Received event: PROFILE', data);
   }
