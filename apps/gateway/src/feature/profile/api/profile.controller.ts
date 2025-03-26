@@ -8,8 +8,8 @@ import { HttpService } from '@nestjs/axios';
 import { mkdir } from 'fs/promises';
 import { FileValidationPipe } from '../../../../../libs/check.file';
 import { lastValueFrom } from 'rxjs';
-import { AuthGuard } from 'apps/gateway/src/common/guard/authGuard';
-import { Response } from 'express';
+import { AuthGuard } from '../../../common/guard/authGuard';
+import { GateService } from '../../../common/gate.service';
 
 
 @ApiTags('Profile')
@@ -20,6 +20,8 @@ export class ProfileController {
   constructor(
     readonly profileService: ProfileService,
     private readonly httpService: HttpService,
+    readonly gateService: GateService,
+
 
   ) {
     mkdir(this.uploadsDir, { recursive: true });
@@ -30,19 +32,12 @@ export class ProfileController {
     @Req() req: Request,
     // @Res() res: Response
   ) {
-    const response = await lastValueFrom(this.httpService.get(
-      'http://localhost:3796',
-      {
-        headers: {
-          'x-user': 'req.user.userId'
-        },
-      }
-    ));
-    return response.data
+    const result = await this.gateService.profileServiceGet('', '')
+    return result
     // return await this.profileService.
   }
 
-  @Post()
+  @Post('edit')
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({

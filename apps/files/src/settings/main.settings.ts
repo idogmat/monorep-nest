@@ -8,6 +8,7 @@ import { EnvironmentsTypes } from './getConfiguration';
 import { ConfigService } from '@nestjs/config';
 // import { LoggingInterceptor } from '../utils/interceptors/logging.interceptor';
 
+const APP_PREFIX = '/api/v1';
 
 export const applyAppSettings = (app: INestApplication): {
   port: number;
@@ -15,7 +16,7 @@ export const applyAppSettings = (app: INestApplication): {
   host: string
 } => {
   const { port, env, host } = getEnv(app)
-
+  setAppPrefix(app, APP_PREFIX);
 
   setAppPipes(app);
 
@@ -27,14 +28,16 @@ const getEnv = (app: INestApplication) => {
   const env = configService.get<EnvironmentsTypes>('NODE_ENV')
   const port = configService.get<number>(checkEnv(env)) || 3000;
   const host = env !== 'DEVELOPMENT' ? '0.0.0.0' : 'localhost';
-  const rabbit = configService.get<string>('RABBIT_URLS');
+  // const rabbit = configService.get<string>('RABBIT_URLS');
   return { port, env, host }
 }
 
 const checkEnv = (envMode: string) => {
   return envMode !== 'DEVELOPMENT' ? 'PORT' : 'FILE_LOCAL_PORT'
 }
-
+const setAppPrefix = (app: INestApplication, prefix: string) => {
+  app.setGlobalPrefix(prefix);
+};
 
 const setAppPipes = (app: INestApplication) => {
   app.useGlobalPipes(

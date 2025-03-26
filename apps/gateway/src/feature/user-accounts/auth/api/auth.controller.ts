@@ -168,7 +168,7 @@ export class AuthController {
     const result = await this.commandBus.execute(
       new OauthGoogleCommand({ ...googleToken, title: browser, ip }),
     );
-    if (result.hasError?.()) {
+    if (result?.hasError?.()) {
       new ErrorProcessor(result).handleError();
     }
     const { accessToken, refreshToken } = result.data;

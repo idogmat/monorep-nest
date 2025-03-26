@@ -3,13 +3,13 @@ pipeline {
     agent any
     environment {
         ENV_TYPE = "production"
-        PORT = 3795
+        PORT = 3814
         NAMESPACE = "myin-gram-ru"
         REGISTRY_HOSTNAME = "idogmat"
-        PROJECT = "files-myingram"
-        SERVICE="files"
+        PROJECT = "profile"
+        SERVICE="profile"
         REGISTRY = "registry.hub.docker.com"
-        DEPLOYMENT_NAME = "files-myingram-deployment"
+        DEPLOYMENT_NAME = "profile-deployment"
         IMAGE_NAME = "${env.BUILD_ID}_${env.ENV_TYPE}_${env.GIT_COMMIT}"
         DOCKER_BUILD_NAME = "${env.REGISTRY_HOSTNAME}/${env.PROJECT}:${env.IMAGE_NAME}"
     }

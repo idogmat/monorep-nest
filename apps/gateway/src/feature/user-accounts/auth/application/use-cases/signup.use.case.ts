@@ -8,15 +8,19 @@ import { EmailService } from '../../../../../common/email/email.service';
 import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
 import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/users.prisma.repository';
+import { GateService } from '../../../../../common/gate.service';
 export class SignupCommand {
   constructor(public createInputUser: UserCreateModel) { }
 }
 
 @CommandHandler(SignupCommand)
 export class SignupUseCase implements ICommandHandler<SignupCommand> {
-  constructor(private userPrismaRepository: UsersPrismaRepository,
+  constructor(
+    private userPrismaRepository: UsersPrismaRepository,
     private bcryptService: BcryptService,
-    private emailService: EmailService) {
+    private emailService: EmailService,
+    readonly gateService: GateService,
+  ) {
   }
 
   async execute(command: SignupCommand) {
@@ -38,7 +42,9 @@ export class SignupUseCase implements ICommandHandler<SignupCommand> {
     const userDto = this.createUserDTO(login, email, passwordHash);
 
     const user = await this.userPrismaRepository.createUser(userDto);
-
+    const profile = await this.gateService.profileServicePost('', {}, {
+      userId: user.id, userName: login, email
+    })
     //TODO move send email to event handler
     try {
       this.emailService.sendRegisrtationEmail(

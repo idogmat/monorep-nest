@@ -1,4 +1,4 @@
-import { Controller, Get, Inject } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
 import { ClientProxy, EventPattern } from '@nestjs/microservices';
 import { ProfileService } from '../features/profile.service';
 
@@ -10,12 +10,13 @@ export class AppController {
   healthCheck() {
     return this.profileService.findMany({});  // Возвращаем статус микросервиса
   }
-  // @Get('send')
-  // sendMessage() {
-  //   const message = { text: 'Hello, RabbitMQ!', timestamp: new Date() };
-  //   this.client.emit('test_event', message); // Отправляем сообщение в очередь
-  //   // return { message: 'Message sent to RabbitMQ', payload: message };
-  // }
+  @Post()
+  async createProfile(
+    @Body() data: any
+  ) {
+    console.log(data, 'profile-data')
+    this.profileService.createProfile(data)
+  }
 
   // @EventPattern('test_event')
   // handleTestEvent(data: any) {
@@ -25,7 +26,7 @@ export class AppController {
   @EventPattern('load_profile_photo')
   handleTestEvent(data: any) {
     console.log('📩 Received event: PROFILE', data);
-    this.profileService.createDevice(data)
+    // 
 
   }
 }
