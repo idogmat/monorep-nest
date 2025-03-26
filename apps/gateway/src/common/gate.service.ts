@@ -29,7 +29,7 @@ export class GateService {
     console.log(this.profileService)
 
     const response = await lastValueFrom(this.httpService.post(
-      [this.profileService, path].join('/'),
+      this.profileService,
       payload,
       {
         headers
