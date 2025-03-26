@@ -37,6 +37,18 @@ import { ProfileModule } from '../feature/profile/profile.module';
         },
         inject: [ConfigService],
       },
+      {
+        name: 'GATE-SERVICE',
+        imports: [ConfigModule], // Импорт з
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.TCP,
+          options: {
+            host: 'gate-service', // Или IP-адрес сервера
+            port: Number(configService.get('PROFILE_SERVICE_PORT')),
+          },
+        }),
+        inject: [ConfigService]
+      }
     ]),
     UsersAccountsModule,
     PostsModule,

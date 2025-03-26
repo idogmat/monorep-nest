@@ -13,7 +13,7 @@ import { EmailRouter } from '../../common/email/email.router';
 import { VerifyEmailUseCase } from './auth/application/use-cases/verify.email.case';
 import { LoginUseCase } from './auth/application/use-cases/login.case';
 import { JwtModule, JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 import { OauthGoogleUseCase } from './auth/application/use-cases/oauth.google.use.case';
 import { GoogleService } from '../../common/provider/google.service';
@@ -25,6 +25,7 @@ import { DeviceService } from './devices/application/device.service';
 import { DevicesController } from './devices/api/devices.controller';
 import { DeviceQueryRepository } from './devices/infrastructure/device.prisma.query-repository';
 import { GateService } from '../../common/gate.service';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 const useCasesForAuth = [
   SignupUseCase,
@@ -47,6 +48,7 @@ const useCasesForAuth = [
       inject: [ConfigService]
     }),
   ],
+
   providers: [
     AuthService,
     UsersService,
