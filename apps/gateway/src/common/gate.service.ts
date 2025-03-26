@@ -22,7 +22,7 @@ export class GateService {
       : 'https://files.myin-gram.ru/api/v1'
     this.profileService = this.env
       ? `http://localhost:${this.configService.get('PROFILE_LOCAL_PORT')}/api/v1`
-      : 'http://0.0.0.0:3814/api/v1'
+      : 'http://profile-service.myin-gram-ru:3814/api/v1'
   }
 
   async profileServicePost(path, headers, payload) {
