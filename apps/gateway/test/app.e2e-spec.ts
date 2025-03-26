@@ -16,7 +16,7 @@ import { GateServiceMock } from './mock/gate.service.mock';
 describe('AppController (e2e)', () => {
   let app: INestApplication;
   let authTestManager: AuthTestManager;
-  const globalPrefix = "/api";
+  const globalPrefix = "/api/v1";
   let prisma: PrismaService;  // Служба Prisma
 
 

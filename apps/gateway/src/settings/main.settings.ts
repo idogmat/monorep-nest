@@ -9,7 +9,7 @@ import { HttpExceptionFilter } from './exception-filter';
 import { ConfigService } from '@nestjs/config';
 // import { LoggingInterceptor } from '../utils/interceptors/logging.interceptor';
 
-const APP_PREFIX = '/api';
+const APP_PREFIX = '/api/v1';
 
 export const applyAppSettings = (app: INestApplication): { port: number; env: string } => {
   const { port, env } = getEnv(app)
