@@ -10,20 +10,25 @@ import { userTestSeeder } from './utils/users/user.test.seeder';
 import dotenv from 'dotenv';
 import { PrismaService } from '../src/feature/prisma/prisma.service';
 import { clearDatabase } from './utils/clear.database';
+import { GateService } from '../src/common/gate.service';
+import { GateServiceMock } from './mock/gate.service.mock';
+
 describe('AppController (e2e)', () => {
   let app: INestApplication;
   let authTestManager: AuthTestManager;
-  const globalPrefix = "/api/v1";
+  const globalPrefix = "/api";
   let prisma: PrismaService;  // Служба Prisma
 
 
-  beforeAll(async () =>{
+  beforeAll(async () => {
     dotenv.config({ path: '.env.test' });
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })
       .overrideProvider(EmailService)
       .useClass(EmailServiceMock)
+      .overrideProvider(GateService)
+      .useClass(GateServiceMock)
       .compile();
 
     app = moduleFixture.createNestApplication();
@@ -40,7 +45,7 @@ describe('AppController (e2e)', () => {
   });
   it('/ (GET)', async () => {
     const response = await request(app.getHttpServer())
-      .get( globalPrefix+'/')
+      .get(globalPrefix + '/')
       .expect(200);
 
     expect(response.text).toBe('Hello World!');
