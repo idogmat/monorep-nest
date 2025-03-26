@@ -19,13 +19,13 @@ async function bootstrap() {
       queueOptions: { durable: false }, // Очередь не сохраняет сообщения после перезапуска
     },
   });
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.TCP,
-    options: {
-      host: host,
-      port: port,
-    },
-  });
+  // app.connectMicroservice<MicroserviceOptions>({
+  //   transport: Transport.TCP,
+  //   options: {
+  //     host: host,
+  //     port: port,
+  //   },
+  // });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   await app.startAllMicroservices();
