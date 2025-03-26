@@ -55,6 +55,7 @@ export class GithubAuthCallbackUseCase implements ICommandHandler<GithubAuthCall
         userId: user.id, userName: user.name, email: user.email
       })
       const [accessToken, refreshToken] = await this.authService.createPairTokens({ userId: user.id });
+      console.log(accessToken)
       const baseURL = this.configService.get<string>('BASE_URL')
       return new InterlayerNotice(new GithubAuthResponseModel(accessToken, refreshToken, baseURL));
 

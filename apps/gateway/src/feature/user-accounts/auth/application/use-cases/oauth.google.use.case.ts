@@ -46,9 +46,9 @@ export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
         await this.linkGoogleProvider(user, sub);
       }
 
-      const profile = await this.gateService.profileServicePost('', {}, {
-        userId: user.id, userName: user.name, email: user.email
-      })
+      // const profile = await this.gateService.profileServicePost('', {}, {
+      //   userId: user.id, userName: user.name, email: user.email
+      // })
 
       const updatedAt = new Date()
       d = await this.deviceService.find({ ip, title, userId: user.id, updatedAt })
@@ -62,8 +62,7 @@ export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
         updatedAt
       });
 
-      return
-      new InterlayerNotice(new GoogleAuthResponseModel(accessToken, refreshToken));
+      return new InterlayerNotice(new GoogleAuthResponseModel(accessToken, refreshToken));
     } catch (error) {
       console.error('Error during Google OAuth execution:', error);
       throw new Error('Failed to authenticate with Google');

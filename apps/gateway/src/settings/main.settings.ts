@@ -7,7 +7,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { EnvironmentsTypes } from './getConfiguration';
 import { HttpExceptionFilter } from './exception-filter';
 import { ConfigService } from '@nestjs/config';
-// import { LoggingInterceptor } from '../utils/interceptors/logging.interceptor';
 
 const APP_PREFIX = '/api/v1';
 
@@ -28,7 +27,6 @@ const getEnv = (app: INestApplication) => {
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT') || 3000;
   const env = configService.get<EnvironmentsTypes>('NODE_ENV');
-  // const prefix = configService.get<string>('APP_PREFIX');
   return { port, env }
 }
 
