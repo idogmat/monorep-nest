@@ -46,9 +46,9 @@ export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
         await this.linkGoogleProvider(user, sub);
       }
 
-      // const profile = await this.gateService.profileServicePost('', {}, {
-      //   userId: user.id, userName: user.name, email: user.email
-      // })
+      const profile = await this.gateService.profileServicePost('', {}, {
+        userId: user.id, userName: user.name, email: user.email
+      })
 
       const updatedAt = new Date()
       d = await this.deviceService.find({ ip, title, userId: user.id, updatedAt })

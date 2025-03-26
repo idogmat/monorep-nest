@@ -17,8 +17,12 @@ export class GateService {
   ) {
     // FIXME check env and route path on k8s
     this.env = this.configService.get('NODE_ENV') === 'DEVELOPMENT'
-    this.fileService = `http://localhost:${this.configService.get('FILE_LOCAL_PORT')}`
-    this.profileService = `http://localhost:${this.configService.get('PROFILE_LOCAL_PORT')}`
+    this.fileService = this.env
+      ? `http://localhost:${this.configService.get('FILE_LOCAL_PORT')}/api/v1`
+      : 'https://files.myin-gram.ru/api/v1'
+    this.profileService = this.env
+      ? `http://localhost:${this.configService.get('PROFILE_LOCAL_PORT')}/api/v1`
+      : 'https://profile.myin-gram.ru/api/v1'
   }
 
   async profileServicePost(path, headers, payload) {
