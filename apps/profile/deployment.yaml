@@ -32,3 +32,8 @@ spec:
                  secretKeyRef:
                    name: profile-production-config-secret
                    key: PROFILE_DB_URL
+             - name: NODE_ENV
+               valueFrom:
+                 secretKeyRef:
+                   name: profile-production-config-secret
+                   key: NODE_ENV
