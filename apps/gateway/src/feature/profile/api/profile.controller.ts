@@ -8,7 +8,7 @@ import { HttpService } from '@nestjs/axios';
 import { mkdir } from 'fs/promises';
 import { FileValidationPipe } from '../../../../../libs/check.file';
 import { lastValueFrom } from 'rxjs';
-import { AuthGuard } from 'apps/gateway/src/common/guard/authGuard';
+import { AuthGuard } from '../../../common/guard/authGuard';
 import { GateService } from '../../../common/gate.service';
 
 
