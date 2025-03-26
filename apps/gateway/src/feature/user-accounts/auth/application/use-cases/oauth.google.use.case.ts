@@ -7,6 +7,7 @@ import { Provider, User } from '@prisma/client';
 import { GoogleAuthResponseModel } from '../../api/models/shared/google.auth.response.model';
 import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/users.prisma.repository';
 import { DeviceService } from '../../../devices/application/device.service';
+import { GateService } from '../../../../../common/gate.service';
 
 export class OauthGoogleCommand {
   constructor(public googleTokenModel: GoogleTokenModel) {
@@ -21,6 +22,8 @@ export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
     private googleService: GoogleService,
     private authService: AuthService,
     private deviceService: DeviceService,
+    readonly gateService: GateService,
+
   ) {
   }
 
@@ -42,6 +45,10 @@ export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
       } else {
         await this.linkGoogleProvider(user, sub);
       }
+
+      const profile = await this.gateService.profileServicePost('', {}, {
+        userId: user.id, userName: user.name, email: user.email
+      })
 
       const updatedAt = new Date()
       d = await this.deviceService.find({ ip, title, userId: user.id, updatedAt })

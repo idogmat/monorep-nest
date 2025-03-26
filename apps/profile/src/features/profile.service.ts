@@ -8,11 +8,12 @@ import { EventPattern } from "@nestjs/microservices";
 export class ProfileService {
   constructor(private prisma: PrismaService) { }
 
-  async createDevice(profile: Partial<any>): Promise<any> {
+  async createProfile(profile: any): Promise<any> {
     return this.prisma.profile.create({
       data: {
         userId: profile.userId,
-        photoUrl: profile.fileUrl,
+        userName: profile.userName,
+        email: profile.email
       }
     })
   }

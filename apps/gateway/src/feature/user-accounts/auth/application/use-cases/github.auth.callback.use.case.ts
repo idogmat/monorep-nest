@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { GithubAuthResponseModel } from '../../api/models/shared/github.auth.response.model';
 import { Provider, User } from '@prisma/client';
 import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/users.prisma.repository';
+import { GateService } from '../../../../../common/gate.service';
 
 export class GithubAuthCallbackCommand {
   constructor(
@@ -20,10 +21,14 @@ export class GithubAuthCallbackCommand {
 
 @CommandHandler(GithubAuthCallbackCommand)
 export class GithubAuthCallbackUseCase implements ICommandHandler<GithubAuthCallbackCommand> {
-  constructor(private githubService: GithubService,
+  constructor(
+    private githubService: GithubService,
     private userPrismaRepository: UsersPrismaRepository,
     private authService: AuthService,
-    private configService: ConfigService) {
+    private configService: ConfigService,
+    readonly gateService: GateService,
+
+  ) {
   }
   async execute(command: GithubAuthCallbackCommand): Promise<InterlayerNotice<GithubAuthResponseModel>> {
 
@@ -46,7 +51,9 @@ export class GithubAuthCallbackUseCase implements ICommandHandler<GithubAuthCall
       } else {
         await this.linkGithubProvider(user, userInfo.providerId.toString());
       }
-
+      const profile = await this.gateService.profileServicePost('', {}, {
+        userId: user.id, userName: user.name, email: user.email
+      })
       const [accessToken, refreshToken] = await this.authService.createPairTokens({ userId: user.id });
       const baseURL = this.configService.get<string>('BASE_URL')
       return new InterlayerNotice(new GithubAuthResponseModel(accessToken, refreshToken, baseURL));

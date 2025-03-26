@@ -21,3 +21,14 @@ spec:
            ports:
              - containerPort: PORT_CONTAINER
 
+           env:
+             - name: RABBIT_URLS
+               valueFrom:
+                 secretKeyRef:
+                   name: profile-production-config-secret
+                   key: RABBIT_URLS
+             - name: PROFILE_DB_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: profile-production-config-secret
+                   key: PROFILE_DB_URL
