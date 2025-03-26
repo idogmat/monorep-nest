@@ -6,14 +6,14 @@ import {
 import { EnvironmentsTypes } from './getConfiguration';
 import { ConfigService } from '@nestjs/config';
 
-
+const APP_PREFIX = '/api/v1';
 export const applyAppSettings = (app: INestApplication): {
   port: number;
   env: string;
   host: string
 } => {
   const { port, env, host } = getEnv(app)
-
+  setAppPrefix(app, APP_PREFIX);
   setAppPipes(app);
 
   return { port, env, host }
@@ -26,7 +26,9 @@ const getEnv = (app: INestApplication) => {
   const host = env !== 'DEVELOPMENT' ? '0.0.0.0' : 'localhost';
   return { port, env, host }
 }
-
+const setAppPrefix = (app: INestApplication, prefix: string) => {
+  app.setGlobalPrefix(prefix);
+};
 const checkEnv = (envMode: string) => {
   return envMode !== 'DEVELOPMENT' ? 'PORT' : 'PROFILE_LOCAL_PORT'
 }
