@@ -97,3 +97,13 @@ spec:
                  secretKeyRef:
                    name: gate-production-config-secret
                    key: DATABASE_URL
+             - name: FILE_PROD_SERVICE
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: FILE_PROD_SERVICE
+             - name: PROFILE_PROD_SERVICE
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: PROFILE_PROD_SERVICE
