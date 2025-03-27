@@ -15,10 +15,7 @@ export class PostMedia {
   createdAt: Date;
 
   @Prop()
-  originalKey: string;
-
-  @Prop()
-  compressedKey: string;
+  key: string;
 
   @Prop()
   mimetype: string;
@@ -27,10 +24,14 @@ export class PostMedia {
   originalName: string;
 
   @Prop()
-  originalFileId: string;
+  location: string;
 
   @Prop()
-  compressedFileId: string;
+  ETag: string;
+
+  @Prop()
+  bucket: string;
+
 
   static create(
     PostMediaModel: PostMediaModelType,
@@ -41,10 +42,10 @@ export class PostMedia {
       postId: data.postId,
       mimetype: data.mimetype,
       originalName: data.originalName,
-      originalKey: data.uploadData.originalKey,
-      compressedKey: data.uploadData.compressedKey,
-      originalFileId: data.uploadData.originalFileId,
-      compressedFileId: data.uploadData.compressedFileId,
+      key: data.uploadData.key,
+      location: data.uploadData.Location,
+      ETag: data.uploadData.ETag,
+      bucket: data.uploadData.Bucket,
     })
   }
 }

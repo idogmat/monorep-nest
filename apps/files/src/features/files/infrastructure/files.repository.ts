@@ -1,19 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { createFileType, File, FileDocument, FileModelType } from '../domain/file.entity';
+import {
+  createPostMediaType,
+  PostMedia, PostMediaDocument,
+  PostMediaModelType,
+} from '../domain/post.media.entity';
 import { InjectModel } from '@nestjs/mongoose';
-import { UploadPhotoResponse } from '../../../common/types/upload.photo.response';
 
 @Injectable()
 export class FilesRepository{
   constructor(
-    @InjectModel(File.name)
-    private FileModel: FileModelType
+    @InjectModel(PostMedia.name)
+    private PostMediaModel: PostMediaModelType
   ) {}
 
-  async createFile(data: createFileType): Promise<FileDocument>{
+  async createPostMedia(data: createPostMediaType): Promise<PostMediaDocument>{
 
-    const fileData = File.create(this.FileModel, data);
-    const newFile = await this.FileModel.create(fileData);
+    const fileData = PostMedia.create(this.PostMediaModel, data);
+    const newFile = await this.PostMediaModel.create(fileData);
     return newFile.save();
   }
 }

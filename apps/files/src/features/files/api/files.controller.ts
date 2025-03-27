@@ -1,14 +1,33 @@
 // src/files.controller.ts
 
-import { Body, Controller, Get, Headers, HttpStatus, Inject, Post, Req, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
-import { ClientProxy, EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
-import { FilesService } from '../application/files.service';
-import { UploadSummaryResponse } from '../../../common/types/upload.summary.response';
+import {
+  BadRequestException,
+  Controller,
+  Headers,
+  Inject,
+  Post,
+  Req,
+  Res, UploadedFiles, UseInterceptors,
+} from '@nestjs/common';
+import { ClientProxy} from '@nestjs/microservices';
+import { promises as fs } from 'fs'
+
 import path, { join } from 'path';
 import { createReadStream, createWriteStream, existsSync, mkdirSync, readdirSync, unlinkSync } from 'fs';
 import { Request } from 'express';
 import { ProfileService } from '../application/profile.service';
 import { readFile } from 'fs/promises';
+import { PostPhotoService } from '../application/post.photo.service';
+import { diskStorage } from 'multer';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import {
+  SignupCommand
+} from '../../../../../gateway/src/feature/user-accounts/auth/application/use-cases/signup.use.case';
+import { CreatePhotoForPostCommand } from '../application/use-cases/create.photo.for.post.use-case';
+import { CommandBus } from '@nestjs/cqrs';
+import { UploadResult } from '../../../common/types/upload.result';
+
+
 
 @Controller()
 export class FilesController {
@@ -17,7 +36,7 @@ export class FilesController {
   constructor(
     @Inject('RABBITMQ_SERVICE') private readonly rabbitClient: ClientProxy,
     private readonly profileService: ProfileService,
-    private readonly filesService: FilesService,
+    private commandBus: CommandBus,
   ) {
     if (!existsSync(this.chunkDir)) {
       mkdirSync(this.chunkDir, { recursive: true });
@@ -25,11 +44,28 @@ export class FilesController {
   }
 
 
-  @MessagePattern('upload_files')
-  async handleFilesUpload(@Payload() data: { files: Express.Multer.File[], postId: string, userId: string }): Promise<UploadSummaryResponse> {
-    console.log("Hi");
-    const { files, postId, userId } = data;
-    return this.filesService.sendPhoto(userId, postId, files);
+
+  @Post('upload_files')
+  @UseInterceptors(
+    FilesInterceptor('files', 10, {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          cb(null, `${Date.now()}-${file.originalname}`);
+        },
+      }),
+    }) as any
+  )
+  async handleFilesUpload(@UploadedFiles() files: Express.Multer.File[],
+                          @Headers('X-UserId') userId: string,
+  @Headers('X-PostId') postId: string) {
+    if (!files || files.length === 0) {
+      throw new BadRequestException('No files received');
+    }
+
+    return this.commandBus.execute(
+      new CreatePhotoForPostCommand(files, userId, postId)
+    );
   }
 
   @Post('receive')
