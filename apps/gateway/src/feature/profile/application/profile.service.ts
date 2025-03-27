@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 import { createReadStream, createWriteStream, unlinkSync } from "fs";
 import { Readable } from "stream";
-import { GateService } from "apps/gateway/src/common/gate.service";
+import { GateService } from "../../../common/gate.service";
 import { InputProfileModel } from "../api/model/input.profile.model";
 
 @Injectable()
