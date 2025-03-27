@@ -4,6 +4,8 @@ import { PostPhotoService } from '../post.photo.service';
 import { promises as fs } from 'fs';
 import * as AWS from 'aws-sdk';
 import type { FailedUpload, SuccessfulUpload } from '../../../../common/types/upload.result';
+import { Inject } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 
 
 export class CreatePhotoForPostCommand{
@@ -19,7 +21,8 @@ export class CreatePhotoForPostCommand{
 export class CreatePhotoForPostUseCase implements ICommandHandler<CreatePhotoForPostCommand>{
 
   constructor(private readonly filesRepository: FilesRepository,
-              private readonly postPhotoService: PostPhotoService, ) { }
+              private readonly postPhotoService: PostPhotoService,
+              @Inject('RABBITMQ_SERVICE') private readonly rabbitClient: ClientProxy) { }
 
   async execute(command: CreatePhotoForPostCommand){
 
@@ -28,7 +31,7 @@ export class CreatePhotoForPostUseCase implements ICommandHandler<CreatePhotoFor
     //Define the folder
     const folder = `posts/user_${userId}/post_${postId}`;
     //Looping through the files.
-    const uploadPromises: Promise<SuccessfulUpload | FailedUpload>[] = files.map( async (file) =>{
+    const uploadPromises = files.map( async (file) =>{
         try {
        //Prepare the data for saving the file.
         const fileBuffer = await fs.readFile(file.path); // Читаем файл как буфер
@@ -40,7 +43,7 @@ export class CreatePhotoForPostUseCase implements ICommandHandler<CreatePhotoFor
         const uploadResult = await this.postPhotoService.uploadImage(fileInfo, folder);
 
         //create dto for create post media and save in mongo
-        await this.createPostMedia(userId, postId, uploadResult, file.mimetype, file.originalname);
+        const postMedia = await this.createPostMedia(userId, postId, uploadResult, file.mimetype, file.originalname);
 
         return { status: 'success' as const, file: file.originalname, url: uploadResult.Location };
       }catch (error){
@@ -57,33 +60,24 @@ export class CreatePhotoForPostUseCase implements ICommandHandler<CreatePhotoFor
     // Выполняем все загрузки
     const results: PromiseSettledResult<SuccessfulUpload | FailedUpload>[] = await Promise.allSettled(uploadPromises);
 
+    const successfulUploads = results
+      .filter((res): res is PromiseFulfilledResult<SuccessfulUpload> => res.status === 'fulfilled' && res.value.status === 'success')
+      .map(res => res.value);
 
-    // Разбираем результаты
-    const successfulUploads: SuccessfulUpload[] = results
-      .filter((res): res is PromiseFulfilledResult<SuccessfulUpload> =>
-        res.status === 'fulfilled' && (res.value as any).status === 'success'
-      )
-      .map(res => res.value as SuccessfulUpload);
+    if (successfulUploads.length > 0) {
+      // Отправляем сообщение в RabbitMQ
+      const message = {
+        userId,
+        postId,
+        files: successfulUploads.map(file => ({
+          fileName: file.file,
+          fileUrl: file.url,
+        })),
+        timestamp: new Date(),
+      };
 
-    const failedUploads: FailedUpload[] = results
-      .filter((res): res is PromiseFulfilledResult<FailedUpload> =>
-        res.status === 'fulfilled' && (res.value as any).status === 'error'
-      )
-      .map(res => res.value as FailedUpload);
-
-    // Возвращаем ответ в `gateway`
-    // return {
-    //   postId,
-    //   successfulUploads,
-    //   errorFiles: failedUploads,
-    //   message:
-    //     successfulUploads.length === files.length
-    //       ? 'All files uploaded successfully'
-    //       : successfulUploads.length > 0
-    //         ? 'Some files uploaded successfully'
-    //         : 'No files could be uploaded',
-    //   error: successfulUploads.length === 0,
-    // };
+      this.rabbitClient.emit('files_uploaded', message);
+    }
   }
 
   async createPostMedia(userId: string, postId: string, uploadResult: AWS.S3.ManagedUpload.SendData,

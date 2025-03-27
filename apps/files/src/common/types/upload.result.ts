@@ -1,7 +1,13 @@
 export type UploadResult = { fileName: string; status: "success" | "error"; error: string| null};
 
-export class SuccessfulUpload {
+export interface SuccessfulUpload {
+  status: 'success';  // Успешная загрузка
+  file: string;       // Имя файла
+  url: string;        // URL файла в S3
 }
 
-export class FailedUpload {
+export interface FailedUpload {
+  status: 'error';    // Ошибка загрузки
+  file: string;       // Имя файла
+  error: string;      // Сообщение об ошибке
 }

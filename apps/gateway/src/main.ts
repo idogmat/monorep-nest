@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 
 import { useContainer } from 'class-validator';
 import { applyAppSettings } from './settings/main.settings';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
@@ -19,9 +20,19 @@ async function bootstrap() {
     ],
     credentials: true
   });
+  const { port, env, rabbit } = applyAppSettings(app)
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: [rabbit], // Подключение к RabbitMQ
+      queue: 'file_queue', // Очередь, в которую будут отправляться сообщения
+      queueOptions: { durable: false }, // Очередь не сохраняет сообщения после перезапуска
+    },
+  });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
-  const { port, env } = applyAppSettings(app)
 
+
+  await app.startAllMicroservices();
   await app.listen(port, () => {
     console.log('App starting listen port: ', port);
     console.log('ENV: ', env);

@@ -56,7 +56,13 @@ model Post {
   title     String   @db.VarChar(255)
   author    User?    @relation("UserPost", fields: [authorId], references: [id])
   authorId  String?
+  photoUploadStatus PhotoUploadStatus   @default(PENDING)  // Статус загрузки фотографий
   @@map("posts")
 }
 
-
+enum PhotoUploadStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+}
