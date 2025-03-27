@@ -11,14 +11,14 @@ async function bootstrap() {
 
   // remove localhost after test
 
-  // app.enableCors({
-  //   origin: [
-  //     'https://myin-gram.ru',
-  //     // 'http://localhost:5173',
-  //     'https://localhost:3000'
-  //   ],
-  //   credentials: true
-  // });
+  app.enableCors({
+    origin: [
+      'https://myin-gram.ru',
+      'http://localhost:5173',
+      'https://localhost:3000'
+    ],
+    credentials: true
+  });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   const { port, env } = applyAppSettings(app)
 

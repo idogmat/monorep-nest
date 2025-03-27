@@ -10,7 +10,6 @@ export class ProfileService {
   }
   async uploadImage(file: any, folder: string): Promise<AWS.S3.ManagedUpload.SendData> {
     const result: AWS.S3.ManagedUpload.SendData = await this.s3Adapter.uploadFile(file, folder)
-    console.log(result)
     return result
   }
 

@@ -7,6 +7,7 @@ import { HttpModule } from '@nestjs/axios';
 import { JwtModule } from '@nestjs/jwt';
 import { DeviceService } from '../user-accounts/devices/application/device.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { GateService } from '../../common/gate.service';
 
 @Module({
   imports: [
@@ -37,7 +38,7 @@ import { PrismaService } from '../prisma/prisma.service';
         inject: [ConfigService],
       },
     ])],
-  providers: [ProfileService, DeviceService, PrismaService],
+  providers: [ProfileService, DeviceService, PrismaService, GateService],
   controllers: [ProfileController],
   exports: []
 })

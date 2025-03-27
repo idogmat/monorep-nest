@@ -9,10 +9,14 @@ generator client {
 }
 
 model Profile {
-  id        String   @id @default(uuid())
-  userId    String   @unique
-  firstName String?
-  lastName String?
+  id              String    @id @default(uuid())
+  userId          String    @unique
+  photoUrl        String?
+  email           String
+  paymentAccont   Boolean   @default(false)
+  userName        String
+  aboutMe         String?   
+  firstName       String?   
+  lastName        String?   
   @@map("profiles")
 }
-

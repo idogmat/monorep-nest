@@ -1,23 +1,15 @@
-import { HttpService } from "@nestjs/axios";
-import { Get, Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
-import { createReadStream, createWriteStream, readFileSync, unlinkSync } from "fs";
+import { createReadStream, createWriteStream, unlinkSync } from "fs";
 import { Readable } from "stream";
-import FormData from 'form-data'; // Импортируем Node.js версию
-import { lastValueFrom } from "rxjs";
+import { PrismaService } from "../../prisma/prisma.service";
 
 @Injectable()
 export class ProfileService {
   constructor(
     @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy,
+    private prisma: PrismaService
   ) { }
-
-  sendMessage() {
-    const message = { text: 'Hello, RabbitMQ!', timestamp: new Date() };
-    this.client.emit('test_event', message); // Отправляем сообщение в очередь
-    // return { message: 'Message sent to RabbitMQ', payload: message };
-  }
-
 
   async chunkSlicer(file) {
     const fileStream = Readable.from(file.buffer); // Создаем поток из буфера
