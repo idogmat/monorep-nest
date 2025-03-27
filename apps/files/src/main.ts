@@ -7,9 +7,9 @@ import { INestApplication } from '@nestjs/common';
 import { json, urlencoded } from 'express';
 // TODO take out services to settings
 async function bootstrap() {
-  // const port = 3795
+
   const app = await NestFactory.create<INestApplication>(AppModule)
-  let { port, env, host } = applyAppSettings(app)
+  const { port, env, host } = applyAppSettings(app)
   app.use(json({ limit: '10gb' }));
   app.use(urlencoded({ extended: true, limit: '10gb' }));
   // app.connectMicroservice<MicroserviceOptions>({
@@ -20,7 +20,6 @@ async function bootstrap() {
   //     queueOptions: { durable: false },
   //   },
   // });
-  port = 3795;
   await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
     transport: Transport.TCP,
     options: {
