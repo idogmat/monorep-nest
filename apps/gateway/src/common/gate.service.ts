@@ -19,10 +19,10 @@ export class GateService {
     this.env = this.configService.get('NODE_ENV') === 'DEVELOPMENT'
     this.fileService = this.env
       ? `http://localhost:${this.configService.get('FILE_LOCAL_PORT')}/api/v1`
-      : 'https://files.myin-gram.ru/api/v1'
+      : this.configService.get('FILE_PROD_SERVICE')
     this.profileService = this.env
       ? `http://localhost:${this.configService.get('PROFILE_LOCAL_PORT')}/api/v1`
-      : 'http://profile-service.myin-gram-ru:3814/api/v1'
+      : this.configService.get('PROFILE_PROD_SERVICE')
   }
 
   async profileServicePost(path, headers, payload) {
