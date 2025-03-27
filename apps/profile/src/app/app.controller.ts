@@ -1,6 +1,8 @@
-import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
-import { ClientProxy, EventPattern } from '@nestjs/microservices';
+import { Body, Controller, Get, Headers, Post } from '@nestjs/common';
+import { EventPattern } from '@nestjs/microservices';
 import { ProfileService } from '../features/profile.service';
+import { ProfilePhotoInputModel } from '../features/model/profilePhoto.input.model';
+import { InputProfileModel } from '../features/model/input.profile.model';
 
 @Controller()
 export class AppController {
@@ -10,23 +12,39 @@ export class AppController {
   healthCheck() {
     return this.profileService.findMany({});  // Возвращаем статус микросервиса
   }
+
+  @Post()
+  async updateProfile(
+    @Headers('X-UserId') userId,
+    @Body() data: InputProfileModel
+  ) {
+    try {
+      await this.profileService.updateProfileData(userId, data)
+    } catch (error) {
+      // save as error
+      console.warn(error)
+    }
+  }
+
   @Post()
   async createProfile(
     @Body() data: any
   ) {
-    console.log(data, 'profile-data')
-    this.profileService.createProfile(data)
+    try {
+      this.profileService.createProfile(data)
+    } catch (error) {
+      // save as error
+      console.warn(error)
+    }
   }
 
-  // @EventPattern('test_event')
-  // handleTestEvent(data: any) {
-  //   console.log('📩 Received event: PROFILE', data);
-  // }
-
   @EventPattern('load_profile_photo')
-  handleTestEvent(data: any) {
-    console.log('📩 Received event: PROFILE', data);
-    // 
-
+  async handleTestEvent(data: ProfilePhotoInputModel) {
+    try {
+      await this.profileService.updateProfilePhoto(data)
+    } catch (error) {
+      // save as error
+      console.warn(error)
+    }
   }
 }

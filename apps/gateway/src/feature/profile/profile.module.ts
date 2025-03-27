@@ -30,14 +30,15 @@ import { GateService } from '../../common/gate.service';
             transport: Transport.RMQ,
             options: {
               urls: configService.get<string[]>('RABBIT_URLS'),
-              queue: 'test_queue',
+              queue: 'file_queue',
               queueOptions: { durable: false },
             },
           }
         },
         inject: [ConfigService],
       },
-    ])],
+    ])
+  ],
   providers: [ProfileService, DeviceService, PrismaService, GateService],
   controllers: [ProfileController],
   exports: []

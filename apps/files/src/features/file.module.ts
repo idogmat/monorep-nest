@@ -13,8 +13,13 @@ import { ProfileService } from './files/application/profile.service';
 import { PostPhotoService } from './files/application/post.photo.service';
 import { PostMedia, PostMediaSchema } from './files/domain/post.media.entity';
 import { CreatePhotoForPostUseCase } from './files/application/use-cases/create.photo.for.post.use-case';
+import { UploadProfilePhotoUseCase } from './files/application/use-cases/upload.profile.photo.use-case';
 
-const useCases = [CreatePhotoForPostUseCase];
+const useCases = [
+  CreatePhotoForPostUseCase,
+  UploadProfilePhotoUseCase
+];
+
 @Module({
   imports: [
     CqrsModule,

@@ -1,4 +1,4 @@
-import {  Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { lastValueFrom } from "rxjs";
 import { HttpService } from "@nestjs/axios";
 import { ConfigService } from "@nestjs/config";
@@ -22,9 +22,7 @@ export class GateService {
       : this.configService.get('PROFILE_PROD_SERVICE')
   }
 
-  async profileServicePost(path, headers, payload) {
-    console.log(this.profileService)
-
+  async profileServicePost(path, payload, headers) {
     const response = await lastValueFrom(this.httpService.post(
       this.profileService,
       payload,
@@ -32,11 +30,10 @@ export class GateService {
         headers
       }
     ));
-    return response.data
+    return response
   }
 
   async filesServicePost(path, payload, headers) {
-
     const response = await lastValueFrom(this.httpService.post(
       [this.fileService, path].join('/'),
       payload,
@@ -44,7 +41,7 @@ export class GateService {
         headers
       }
     ));
-    return response.data;
+    return response;
   }
   async profileServiceGet(path, query) {
     console.log(this.profileService)

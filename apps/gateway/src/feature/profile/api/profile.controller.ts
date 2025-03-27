@@ -1,5 +1,5 @@
 import { ApiTags } from '@nestjs/swagger';
-import { BadRequestException, Controller, Get, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post, Put, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { createReadStream, statSync, unlinkSync } from 'fs';
 import { diskStorage } from 'multer';
@@ -10,6 +10,7 @@ import { FileValidationPipe } from '../../../../../libs/check.file';
 import { lastValueFrom } from 'rxjs';
 import { AuthGuard } from '../../../common/guard/authGuard';
 import { GateService } from '../../../common/gate.service';
+import { InputProfileModel } from './model/input.profile.model';
 
 
 @ApiTags('Profile')
@@ -37,51 +38,23 @@ export class ProfileController {
     // return await this.profileService.
   }
 
-  @Post('edit')
+  @Put('edit')
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
       destination: './tmp',
-      filename: (req, file, cb) => cb(null, file.originalname),
+      filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
     }),
   }))
   async uploadFile(
     @Req() req,
+    @Body() profile: InputProfileModel,
     @UploadedFile(new FileValidationPipe()) file: Express.Multer.File,
   ) {
     if (!file) throw new BadRequestException({
       message: 'Not a valid file'
     })
-    console.log(file)
-    // const writeStream = createWriteStream(`./tmp/${file.originalname}`, { highWaterMark: 10000 });
-
-    try {
-      //   // 2. Читаем файл после успешной записи
-      const readStream = createReadStream(`./tmp/${file.originalname}`);
-      // FIXME env на урл
-      //   // 3. Отправляем файл
-      const response = await await lastValueFrom(this.httpService.post(
-        'http://localhost:3795/receive',
-        readStream,
-        {
-          headers: {
-            'Content-Type': file.mimetype,
-            'X-Filename': file.originalname,
-            'x-user': req.user.userId
-          },
-        }
-      ));
-      console.log(response)
-      return response.data;
-    } catch (error) {
-      // Обработка ошибок
-      console.error('Ошибка:', error.message);
-      throw error;
-    } finally {
-      // 4. Удаляем временный файл
-      unlinkSync(`./tmp/${file.originalname}`);
-    }
-
+    await this.profileService.updateProfile(file, profile, req.user.userId)
   }
 
 

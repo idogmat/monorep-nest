@@ -6,9 +6,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { getConfiguration } from '../settings/getConfiguration';
 import { PrismaService } from '../features/prisma/prisma.service';
 import { ProfileService } from '../features/profile.service';
-import {
-  PostMediaUploadListener
-} from '../../../gateway/src/feature/posts/infrastructure/rabbitMQ/post.media.upload.listener';
 
 @Module({
   imports: [
@@ -36,7 +33,7 @@ import {
 
   ],
   controllers: [AppController],
-  providers: [PrismaService, ProfileService, PostMediaUploadListener],
+  providers: [PrismaService, ProfileService],
   exports: [],
 })
 export class AppModule { }
