@@ -14,6 +14,7 @@ import { PostPhotoService } from './files/application/post.photo.service';
 import { PostMedia, PostMediaSchema } from './files/domain/post.media.entity';
 import { CreatePhotoForPostUseCase } from './files/application/use-cases/create.photo.for.post.use-case';
 
+const useCases = [CreatePhotoForPostUseCase];
 @Module({
   imports: [
     CqrsModule,
@@ -52,7 +53,7 @@ import { CreatePhotoForPostUseCase } from './files/application/use-cases/create.
     ]),
   ],
   providers: [
-    CreatePhotoForPostUseCase,
+    ...useCases,
     FilesService,
     FilesRepository,
     ProfileService,

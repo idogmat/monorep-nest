@@ -10,8 +10,10 @@ import { CreatePostUseCases } from './application/use-cases/create.post.use.case
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { DeviceService } from '../user-accounts/devices/application/device.service';
+import { UploadPostPhotosUseCase } from './application/use-cases/upload.post.photos.use-case';
+import { GateService } from '../../common/gate.service';
 
-const useCasesForPost = [CreatePostUseCases]
+const useCasesForPost = [CreatePostUseCases, UploadPostPhotosUseCase]
 @Module({
   imports: [
     HttpModule,
@@ -51,6 +53,7 @@ const useCasesForPost = [CreatePostUseCases]
     PostsPrismaRepository,
     PrismaService,
     DeviceService,
+    GateService,
     ...useCasesForPost
   ],
   controllers: [PostsController],

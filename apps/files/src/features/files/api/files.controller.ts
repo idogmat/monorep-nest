@@ -1,9 +1,4 @@
 // src/files.controller.ts
-
-import { Controller, Headers, Inject, Post, Req, Res } from '@nestjs/common';
-import { ClientProxy, MessagePattern, Payload } from '@nestjs/microservices';
-import { FilesService } from '../application/files.service';
-import { UploadSummaryResponse } from '../../../common/types/upload.summary.response';
 import {
   BadRequestException,
   Controller,
@@ -14,24 +9,15 @@ import {
   Res, UploadedFiles, UseInterceptors,
 } from '@nestjs/common';
 import { ClientProxy} from '@nestjs/microservices';
-import { promises as fs } from 'fs'
-
 import path, { join } from 'path';
 import { createReadStream, createWriteStream, existsSync, mkdirSync, readdirSync, unlinkSync } from 'fs';
 import { Request } from 'express';
 import { ProfileService } from '../application/profile.service';
-import { readFile } from 'fs/promises';
-import { PostPhotoService } from '../application/post.photo.service';
+
 import { diskStorage } from 'multer';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import {
-  SignupCommand
-} from '../../../../../gateway/src/feature/user-accounts/auth/application/use-cases/signup.use.case';
 import { CreatePhotoForPostCommand } from '../application/use-cases/create.photo.for.post.use-case';
 import { CommandBus } from '@nestjs/cqrs';
-import { UploadResult } from '../../../common/types/upload.result';
-
-
 import { readFile, unlink } from 'fs/promises';
 
 @Controller()
@@ -41,7 +27,7 @@ export class FilesController {
   constructor(
     @Inject('RABBITMQ_SERVICE') private readonly rabbitClient: ClientProxy,
     private readonly profileService: ProfileService,
-    private commandBus: CommandBus,
+    private readonly commandBus: CommandBus,
   ) {
     if (!existsSync(this.chunkDir)) {
       mkdirSync(this.chunkDir, { recursive: true });

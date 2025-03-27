@@ -1,4 +1,4 @@
-import { ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { FilesRepository } from '../../infrastructure/files.repository';
 import { PostPhotoService } from '../post.photo.service';
 import { promises as fs } from 'fs';
@@ -15,6 +15,7 @@ export class CreatePhotoForPostCommand{
   }
 }
 
+@CommandHandler(CreatePhotoForPostCommand)
 export class CreatePhotoForPostUseCase implements ICommandHandler<CreatePhotoForPostCommand>{
 
   constructor(private readonly filesRepository: FilesRepository,
@@ -25,7 +26,7 @@ export class CreatePhotoForPostUseCase implements ICommandHandler<CreatePhotoFor
     //Unpacking the necessary variables
     const {userId, postId, files} = command;
     //Define the folder
-    const folder = `post/${postId}/${userId}`;
+    const folder = `posts/user_${userId}/post_${postId}`;
     //Looping through the files.
     const uploadPromises: Promise<SuccessfulUpload | FailedUpload>[] = files.map( async (file) =>{
         try {
@@ -41,12 +42,16 @@ export class CreatePhotoForPostUseCase implements ICommandHandler<CreatePhotoFor
         //create dto for create post media and save in mongo
         await this.createPostMedia(userId, postId, uploadResult, file.mimetype, file.originalname);
 
-        //delete local file
-        await fs.unlink(file.path);
-          return { status: 'success' as const, file: file.originalname, url: uploadResult.Location };
+        return { status: 'success' as const, file: file.originalname, url: uploadResult.Location };
       }catch (error){
           return { status: 'error' as const, file: file.originalname, error: error.message };
-      }
+      }finally {
+          try {
+            await fs.unlink(file.path);
+          } catch (err) {
+            console.warn(`Не удалось удалить файл ${file.path}:`, err.message);
+          }
+        }
     });
 
     // Выполняем все загрузки

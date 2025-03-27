@@ -1,6 +1,5 @@
 import {  ApiTags } from '@nestjs/swagger';
 import {
-  BadRequestException,
   Body,
   Controller,
   Inject,
@@ -18,9 +17,8 @@ import { diskStorage } from 'multer';
 import { randomUUID } from 'crypto';
 import { AuthGuard } from '../../../common/guard/authGuard';
 import { HttpService } from '@nestjs/axios';
-import FormData from 'form-data';
-
-import axios from 'axios';
+import { UploadPostPhotosCommand } from '../application/use-cases/upload.post.photos.use-case';
+import { ErrorProcessor } from '../../../common/error-handling/error.processor';
 
 
 
@@ -47,31 +45,15 @@ export class PostsController {
   @UseGuards(AuthGuard)
   async createPost(@Req() req, @Body() postCreateModel: PostCreateModel, @UploadedFiles() files: Express.Multer.File[]) {
 
-    if (!files || files.length === 0) {
-      throw new BadRequestException('No files uploaded');
-    }
-
     const postId = randomUUID();
     const userId = req.user.userId;
-    const formData = new FormData();
-    files.forEach((file) => {
-      formData.append('files', file); // 👈 Имя должно совпадать с сервером
-    });
-    formData.append('postId', postId);
-    formData.append('userId', userId);
 
-    const headers = formData.getHeaders();
-    headers['Content-Type'] = 'multipart/form-data';
-    headers['X-UserId'] = userId;
-    headers['X-PostId'] = postId;
+    const result = await this.commandBus.execute(
+      new UploadPostPhotosCommand(files, userId, postId)
+    )
 
-    const result = await axios.post('http://localhost:3795/upload_files', formData, { headers });
-
-    console.log("result", result);
-      // if (result.data.error) {
-      //   throw new BadRequestException(result.data.error.message);
-      // }
-      //
-      // return { status: 201, message: result.data.message };
+    if (result.hasError()) {
+      new ErrorProcessor(result).handleError();
+    }
   }
 }
