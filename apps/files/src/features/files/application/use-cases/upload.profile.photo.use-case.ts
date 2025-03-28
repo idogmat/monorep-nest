@@ -21,7 +21,7 @@ export class UploadProfilePhotoUseCase implements ICommandHandler<UploadProfileP
 
   constructor(
     private readonly profileService: ProfileService,
-    @Inject('RABBITMQ_SERVICE') private readonly rabbitClient: ClientProxy,
+    @Inject('RABBITMQ_PROFILE_SERVICE') private readonly rabbitClient: ClientProxy,
 
   ) { }
 

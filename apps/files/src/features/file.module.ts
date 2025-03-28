@@ -42,13 +42,28 @@ const useCases = [
     ClientsModule.registerAsync([
       {
         imports: [ConfigModule],
-        name: 'RABBITMQ_SERVICE',
+        name: 'RABBITMQ_POST_SERVICE',
         useFactory: (configService: ConfigService) => {
           return {
             transport: Transport.RMQ,
             options: {
               urls: configService.get<string[]>('RABBIT_URLS'),
-              queue: 'file_queue',
+              queue: 'post_queue',
+              queueOptions: { durable: false },
+            },
+          }
+        },
+        inject: [ConfigService],
+      },
+      {
+        imports: [ConfigModule],
+        name: 'RABBITMQ_PROFILE_SERVICE',
+        useFactory: (configService: ConfigService) => {
+          return {
+            transport: Transport.RMQ,
+            options: {
+              urls: configService.get<string[]>('RABBIT_URLS'),
+              queue: 'profile_queue',
               queueOptions: { durable: false },
             },
           }
@@ -78,7 +93,7 @@ const useCases = [
       useFactory: (configService: ConfigService) => {
         return new S3StorageAdapterJ(
           configService,
-          'mygram', // Укажите имя бакета из конфига
+          'posts-bucket', // Укажите имя бакета из конфига
         );
       },
       inject: [ConfigService],

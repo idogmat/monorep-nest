@@ -1,4 +1,4 @@
-import {  ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -47,8 +47,8 @@ export class PostsController {
   )
   @UseGuards(AuthGuard)
   async createPost(@Req() req,
-                   @Body() postCreateModel: PostCreateModel,
-                   @UploadedFiles() files: Express.Multer.File[]) {
+    @Body() postCreateModel: PostCreateModel,
+    @UploadedFiles() files: Express.Multer.File[]) {
 
     const userId = req.user.userId;
 
@@ -67,11 +67,11 @@ export class PostsController {
 
   @EventPattern('files_uploaded')
   async handleFileUploaded(@Payload() data: any,
-                           @Ctx() context: any) {
+    @Ctx() context: any) {
     console.log('Received file uploaded message:', data);
     const { postId, files } = data;
     let status;
-    if(files.length > 0 ){
+    if (files.length > 0) {
       status = 'COMPLETED';
     } else {
       status = 'FAILED';
