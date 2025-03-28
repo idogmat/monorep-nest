@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Headers, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post, Put, Query, Req } from '@nestjs/common';
 import { EventPattern } from '@nestjs/microservices';
 import { ProfileService } from '../features/profile.service';
 import { ProfilePhotoInputModel } from '../features/model/profilePhoto.input.model';
@@ -9,8 +9,13 @@ export class AppController {
   constructor(readonly profileService: ProfileService) { }
 
   @Get()
-  healthCheck() {
-    return this.profileService.findMany({});  // Возвращаем статус микросервиса
+  async getProfiles(
+    // @Query() query: any
+    // @Req() req
+  ) {
+    // console.log(req.query)
+    // console.log(query)
+    return await this.profileService.findMany({});
   }
 
   @Post()

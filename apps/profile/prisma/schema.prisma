@@ -15,8 +15,14 @@ model Profile {
   email           String
   paymentAccont   Boolean   @default(false)
   userName        String
-  aboutMe         String?   
+  aboutMe         String?   @db.VarChar(200)
   firstName       String?   
-  lastName        String?   
+  lastName        String?
+  dateOfBirth     DateTime?
+  country         String?
+  city            String?
+
+  @@index([userName])
+  @@index([firstName, lastName])
   @@map("profiles")
 }

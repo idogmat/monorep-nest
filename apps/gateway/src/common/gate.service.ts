@@ -55,10 +55,19 @@ export class GateService {
     return response;
   }
   async profileServiceGet(path, query) {
-    console.log(this.profileService)
+    console.log(query, 'query-gate')
+    console.log(Object.entries(query))
+    // for (const el of query) {
+    //   console.log(el)
+    // }
+    const url = [this.profileService, path].join('/')
+    // if (!query) {
+    //   url = `${url}&${query}`
+    // }
+    console.log(url)
 
     const response = await lastValueFrom(this.httpService.get(
-      [this.profileService, path].join('/'),
+      url,
     ));
     return response.data
   }

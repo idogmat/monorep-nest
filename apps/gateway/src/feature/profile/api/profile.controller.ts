@@ -1,5 +1,5 @@
 import { ApiTags } from '@nestjs/swagger';
-import { BadRequestException, Body, Controller, Get, Put, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Put, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { ProfileService } from '../application/profile.service';
@@ -29,9 +29,11 @@ export class ProfileController {
   @Get()
   async getProfiles(
     @Req() req: Request,
+    @Query() query: any
     // @Res() res: Response
   ) {
-    const result = await this.gateService.profileServiceGet('', '')
+    // console.log(query)
+    const result = await this.gateService.profileServiceGet('', query)
     return result
     // return await this.profileService.
   }
