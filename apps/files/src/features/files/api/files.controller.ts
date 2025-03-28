@@ -25,7 +25,7 @@ export class FilesController {
   private chunkDir = './uploads/chunks';
   private readonly localFileName = 'test.png';
   constructor(
-    @Inject('RABBITMQ_SERVICE') private readonly rabbitClient: ClientProxy,
+    @Inject('RABBITMQ_POST_SERVICE') private readonly rabbitClient: ClientProxy,
     private readonly profileService: ProfileService,
     private readonly commandBus: CommandBus,
   ) {

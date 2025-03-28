@@ -25,7 +25,7 @@ async function bootstrap() {
     transport: Transport.RMQ,
     options: {
       urls: [rabbit], // Подключение к RabbitMQ
-      queue: 'file_queue', // Очередь, в которую будут отправляться сообщения
+      queue: 'post_queue', // Очередь, в которую будут отправляться сообщения
       queueOptions: { durable: false }, // Очередь не сохраняет сообщения после перезапуска
     },
   });

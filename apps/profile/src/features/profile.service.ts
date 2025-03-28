@@ -50,10 +50,9 @@ export class ProfileService {
   }
 
   async updateProfileData(userId: string, data: InputProfileModel): Promise<Profile> {
-    console.log(userId)
     return await this.prisma.$transaction(async (tx) => {
       const profile = await tx.profile.findFirst({
-        where: { userId }
+        where: { userId: userId }
       })
       if (!profile) throw new ForbiddenException()
       return tx.profile.update({

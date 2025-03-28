@@ -21,23 +21,23 @@ import { GateService } from '../../common/gate.service';
       },
       inject: [ConfigService]
     }),
-    ClientsModule.registerAsync([
-      {
-        imports: [ConfigModule],
-        name: 'RABBITMQ_SERVICE',
-        useFactory: (configService: ConfigService) => {
-          return {
-            transport: Transport.RMQ,
-            options: {
-              urls: configService.get<string[]>('RABBIT_URLS'),
-              queue: 'file_queue',
-              queueOptions: { durable: false },
-            },
-          }
-        },
-        inject: [ConfigService],
-      },
-    ])
+    // ClientsModule.registerAsync([
+    //   {
+    //     imports: [ConfigModule],
+    //     name: 'RABBITMQ_SERVICE',
+    //     useFactory: (configService: ConfigService) => {
+    //       return {
+    //         transport: Transport.RMQ,
+    //         options: {
+    //           urls: configService.get<string[]>('RABBIT_URLS'),
+    //           queue: 'file_queue',
+    //           queueOptions: { durable: false },
+    //         },
+    //       }
+    //     },
+    //     inject: [ConfigService],
+    //   },
+    // ])
   ],
   providers: [ProfileService, DeviceService, PrismaService, GateService],
   controllers: [ProfileController],

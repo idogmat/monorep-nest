@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Headers, Post } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post, Put } from '@nestjs/common';
 import { EventPattern } from '@nestjs/microservices';
 import { ProfileService } from '../features/profile.service';
 import { ProfilePhotoInputModel } from '../features/model/profilePhoto.input.model';
@@ -14,19 +14,6 @@ export class AppController {
   }
 
   @Post()
-  async updateProfile(
-    @Headers('X-UserId') userId,
-    @Body() data: InputProfileModel
-  ) {
-    try {
-      await this.profileService.updateProfileData(userId, data)
-    } catch (error) {
-      // save as error
-      console.warn(error)
-    }
-  }
-
-  @Post()
   async createProfile(
     @Body() data: any
   ) {
@@ -38,8 +25,27 @@ export class AppController {
     }
   }
 
+  @Put()
+  async updateProfile(
+    @Headers('X-UserId') userId,
+    @Body() data: InputProfileModel
+  ) {
+    console.log(data, 'updateProfile')
+    console.log(userId, 'userId')
+    try {
+      await this.profileService.updateProfileData(userId, data)
+    } catch (error) {
+      // save as error
+      console.warn(error)
+    }
+  }
+
+
+
   @EventPattern('load_profile_photo')
   async handleTestEvent(data: ProfilePhotoInputModel) {
+    console.log(data, 'handleTestEvent')
+
     try {
       await this.profileService.updateProfilePhoto(data)
     } catch (error) {

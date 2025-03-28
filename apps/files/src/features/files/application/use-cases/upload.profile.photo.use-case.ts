@@ -21,7 +21,7 @@ export class UploadProfilePhotoUseCase implements ICommandHandler<UploadProfileP
 
   constructor(
     private readonly profileService: ProfileService,
-    @Inject('RABBITMQ_SERVICE') private readonly rabbitClient: ClientProxy,
+    @Inject('RABBITMQ_PROFILE_SERVICE') private readonly rabbitClient: ClientProxy,
 
   ) { }
 
@@ -53,7 +53,7 @@ export class UploadProfilePhotoUseCase implements ICommandHandler<UploadProfileP
       const folder = `profile/${userId}`;
       const uploadResult = await this.profileService.uploadImage(fileInfo, folder);
       const photoUrl = await this.profileService.getFileUrl(uploadResult.Key);
-
+      console.log(photoUrl, 'photoUrl')
       // Отправляем сообщение в RabbitMQ
       const message = { photoUrl, userId, timestamp: new Date() };
       this.rabbitClient.emit('load_profile_photo', message);

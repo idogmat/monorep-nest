@@ -51,7 +51,7 @@ const useCasesForPost = [CreatePostUseCases, UploadPostPhotosUseCase]
     ClientsModule.registerAsync([
       {
         imports: [ConfigModule],
-        name: 'RABBITMQ_SERVICE',
+        name: 'RABBITMQ_POST_SERVICE',
         useFactory: (configService: ConfigService) => {
           return {
             transport: Transport.RMQ,

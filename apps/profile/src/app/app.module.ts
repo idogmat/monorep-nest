@@ -16,13 +16,13 @@ import { ProfileService } from '../features/profile.service';
     ClientsModule.registerAsync([
       {
         imports: [ConfigModule],
-        name: 'RABBITMQ_SERVICE',
+        name: 'RABBITMQ_PROFILE_SERVICE',
         useFactory: (configService: ConfigService) => {
           return {
             transport: Transport.RMQ,
             options: {
               urls: configService.get<string[]>('RABBIT_URLS'),
-              queue: 'file_queue',
+              queue: 'profile_queue',
               queueOptions: { durable: false },
             },
           }

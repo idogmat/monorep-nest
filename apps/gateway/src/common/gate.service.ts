@@ -33,6 +33,17 @@ export class GateService {
     return response
   }
 
+  async profileServicePut(path, payload, headers) {
+    const response = await lastValueFrom(this.httpService.put(
+      this.profileService,
+      payload,
+      {
+        headers
+      }
+    ));
+    return response
+  }
+
   async filesServicePost(path, payload, headers) {
     const response = await lastValueFrom(this.httpService.post(
       [this.fileService, path].join('/'),

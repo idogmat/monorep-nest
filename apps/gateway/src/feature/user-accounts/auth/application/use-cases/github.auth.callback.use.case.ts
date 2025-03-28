@@ -51,9 +51,9 @@ export class GithubAuthCallbackUseCase implements ICommandHandler<GithubAuthCall
       } else {
         await this.linkGithubProvider(user, userInfo.providerId.toString());
       }
-      const profile = await this.gateService.profileServicePost('', {}, {
+      const profile = await this.gateService.profileServicePost('', {
         userId: user.id, userName: user.name, email: user.email
-      })
+      }, {})
       const [accessToken, refreshToken] = await this.authService.createPairTokens({ userId: user.id });
       console.log(accessToken)
       const baseURL = this.configService.get<string>('BASE_URL')
