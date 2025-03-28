@@ -3,15 +3,22 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FilesController } from './files/api/files.controller';
-import { S3StorageAdapter } from '../common/s3/s3.storage.adapter';
 import { FilesService } from './files/application/files.service';
 import { FilesRepository } from './files/infrastructure/files.repository';
-import { FilesSchema } from './files/domain/file.entity';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { getConfiguration } from '../settings/getConfiguration';
 import { MulterModule } from '@nestjs/platform-express';
 import { S3StorageAdapterJ } from './files/application/s3.service';
 import { ProfileService } from './files/application/profile.service';
+import { PostPhotoService } from './files/application/post.photo.service';
+import { PostMedia, PostMediaSchema } from './files/domain/post.media.entity';
+import { CreatePhotoForPostUseCase } from './files/application/use-cases/create.photo.for.post.use-case';
+import { UploadProfilePhotoUseCase } from './files/application/use-cases/upload.profile.photo.use-case';
+
+const useCases = [
+  CreatePhotoForPostUseCase,
+  UploadProfilePhotoUseCase
+];
 
 @Module({
   imports: [
@@ -31,7 +38,7 @@ import { ProfileService } from './files/application/profile.service';
       },
       inject: [ConfigService],
     }),
-    MongooseModule.forFeature([{ name: File.name, schema: FilesSchema }]),
+    MongooseModule.forFeature([{ name: PostMedia.name, schema: PostMediaSchema }]),
     ClientsModule.registerAsync([
       {
         imports: [ConfigModule],
@@ -51,16 +58,27 @@ import { ProfileService } from './files/application/profile.service';
     ]),
   ],
   providers: [
-    S3StorageAdapter,
+    ...useCases,
     FilesService,
     FilesRepository,
     ProfileService,
+    PostPhotoService,
     {
       provide: 'PROFILE_BUCKET_ADAPTER',
       useFactory: (configService: ConfigService) => {
         return new S3StorageAdapterJ(
           configService,
           'profile', // Укажите имя бакета из конфига
+        );
+      },
+      inject: [ConfigService],
+    },
+    {
+      provide: 'POST_PHOTO_BUCKET_ADAPTER',
+      useFactory: (configService: ConfigService) => {
+        return new S3StorageAdapterJ(
+          configService,
+          'mygram', // Укажите имя бакета из конфига
         );
       },
       inject: [ConfigService],

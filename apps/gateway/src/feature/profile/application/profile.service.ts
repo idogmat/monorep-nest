@@ -2,14 +2,52 @@ import { Inject, Injectable } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 import { createReadStream, createWriteStream, unlinkSync } from "fs";
 import { Readable } from "stream";
-import { PrismaService } from "../../prisma/prisma.service";
+import { GateService } from "../../../common/gate.service";
+import { InputProfileModel } from "../api/model/input.profile.model";
 
 @Injectable()
 export class ProfileService {
   constructor(
     @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy,
-    private prisma: PrismaService
+    readonly gateService: GateService,
   ) { }
+
+
+  async updateProfile(
+    file: Express.Multer.File,
+    profile: InputProfileModel,
+    userId: string
+  ) {
+    console.log(profile)
+    const readStream = createReadStream(`./tmp/${file.filename}`);
+    try {
+      const result = await Promise.allSettled([
+        this.gateService.filesServicePost(
+          'receive',
+          readStream,
+          {
+            'Content-Type': file.mimetype,
+            'X-Filename': file.originalname,
+            'X-UserId': userId
+          },
+        ),
+        this.gateService.profileServicePost(
+          '',
+          profile,
+          {
+            'X-UserId': userId
+          },
+        )])
+      console.log(result)
+    } catch (error) {
+      // Обработка ошибок
+      console.error('Ошибка:', error.message);
+      throw error;
+    } finally {
+      // 4. Удаляем временный файл
+      unlinkSync(`./tmp/${file.filename}`);
+    }
+  }
 
   async chunkSlicer(file) {
     const fileStream = Readable.from(file.buffer); // Создаем поток из буфера

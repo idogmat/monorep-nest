@@ -1,14 +1,24 @@
 // src/files.controller.ts
-
-import { Controller, Headers, Inject, Post, Req, Res } from '@nestjs/common';
-import { ClientProxy, MessagePattern, Payload } from '@nestjs/microservices';
-import { FilesService } from '../application/files.service';
-import { UploadSummaryResponse } from '../../../common/types/upload.summary.response';
-import path, { join } from 'path';
+import {
+  BadRequestException,
+  Controller,
+  Headers,
+  HttpStatus,
+  Inject,
+  Post,
+  Req,
+  Res, UploadedFiles, UseInterceptors,
+} from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { join } from 'path';
 import { createReadStream, createWriteStream, existsSync, mkdirSync, readdirSync, unlinkSync } from 'fs';
 import { Request } from 'express';
 import { ProfileService } from '../application/profile.service';
-import { readFile, unlink } from 'fs/promises';
+import { diskStorage } from 'multer';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { CreatePhotoForPostCommand } from '../application/use-cases/create.photo.for.post.use-case';
+import { CommandBus } from '@nestjs/cqrs';
+import { UploadProfilePhotoCommand } from '../application/use-cases/upload.profile.photo.use-case';
 
 @Controller()
 export class FilesController {
@@ -17,7 +27,7 @@ export class FilesController {
   constructor(
     @Inject('RABBITMQ_SERVICE') private readonly rabbitClient: ClientProxy,
     private readonly profileService: ProfileService,
-    private readonly filesService: FilesService,
+    private readonly commandBus: CommandBus,
   ) {
     if (!existsSync(this.chunkDir)) {
       mkdirSync(this.chunkDir, { recursive: true });
@@ -25,66 +35,43 @@ export class FilesController {
   }
 
 
-  @MessagePattern('upload_files')
-  async handleFilesUpload(@Payload() data: { files: Express.Multer.File[], postId: string, userId: string }): Promise<UploadSummaryResponse> {
-    console.log("Hi");
-    const { files, postId, userId } = data;
-    return this.filesService.sendPhoto(userId, postId, files);
+
+  @Post('upload_files')
+  @UseInterceptors(
+    FilesInterceptor('files', 10, {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          cb(null, `${Date.now()}-${file.originalname}`);
+        },
+      }),
+    }) as any
+  )
+  async handleFilesUpload(@UploadedFiles() files: Express.Multer.File[],
+    @Headers('X-UserId') userId: string,
+    @Headers('X-PostId') postId: string) {
+    if (!files || files.length === 0) {
+      throw new BadRequestException('No files received');
+    }
+
+    return this.commandBus.execute(
+      new CreatePhotoForPostCommand(files, userId, postId)
+    );
   }
 
   @Post('receive')
   async uploadStream(
-    @Req() req: Request,
+    @Req() req,
     @Res() res,
-    @Headers('x-filename') filename: string,
-    @Headers('x-user') userId: string
+    @Headers('X-Filename') filename: string,
+    @Headers('X-UserId') userId: string
   ) {
-    const filePath = `./uploads/${filename}`;
-    const writeStream = createWriteStream(filePath, { highWaterMark: 64 * 1024 });
 
-    try {
-      // Ожидаем завершения записи файла
-      await new Promise((resolve, reject) => {
-        req
-          .pipe(writeStream)
-          .on('error', reject)
-          .on('finish', resolve as any)
-          .on('error', reject);
-      });
+    const code: HttpStatus = await this.commandBus.execute(
+      new UploadProfilePhotoCommand(req, userId, filename)
+    );
+    res.status(code).send()
 
-      // Читаем файл после записи
-      const buffer = await readFile(filePath);
-      const fileInfo = {
-        originalname: path.basename(filePath),
-        buffer,
-        mimetype: 'application/octet-stream',
-      };
-
-      // Загружаем в S3
-      const folder = `profile/${userId}`;
-      const uploadResult = await this.profileService.uploadImage(fileInfo, folder);
-      const fileUrl = await this.profileService.getFileUrl(uploadResult.Key);
-
-      // Отправляем сообщение в RabbitMQ
-      const message = { fileUrl, userId, timestamp: new Date() };
-      this.rabbitClient.emit('load_profile_photo', message);
-
-      return res.status(200).send({ url: fileUrl });
-
-    } catch (error) {
-      console.error('Upload failed:', error);
-      return res.status(500).send('File processing error');
-
-    } finally {
-      // Удаляем временный файл в любом случае
-      try {
-        if (existsSync(filePath)) {
-          await unlink(filePath);
-        }
-      } catch (unlinkError) {
-        console.warn('Temp file cleanup failed:', unlinkError);
-      }
-    }
   }
 
 

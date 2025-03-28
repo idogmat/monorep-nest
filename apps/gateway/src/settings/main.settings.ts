@@ -10,8 +10,8 @@ import { ConfigService } from '@nestjs/config';
 
 const APP_PREFIX = '/api/v1';
 
-export const applyAppSettings = (app: INestApplication): { port: number; env: string } => {
-  const { port, env } = getEnv(app)
+export const applyAppSettings = (app: INestApplication): { port: number; env: string; rabbit: string } => {
+  const { port, env , rabbit} = getEnv(app)
 
   setAppPrefix(app, APP_PREFIX);
 
@@ -20,14 +20,15 @@ export const applyAppSettings = (app: INestApplication): { port: number; env: st
   setAppPipes(app);
 
   setAppExceptionsFilters(app);
-  return { port, env }
+  return { port, env, rabbit }
 };
 
 const getEnv = (app: INestApplication) => {
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT') || 3000;
   const env = configService.get<EnvironmentsTypes>('NODE_ENV');
-  return { port, env }
+  const rabbit = configService.get<string>('RABBIT_URLS')?.toString() || '';
+  return { port, env, rabbit }
 }
 
 const setAppPrefix = (app: INestApplication, prefix: string) => {

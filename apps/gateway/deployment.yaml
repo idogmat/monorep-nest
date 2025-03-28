@@ -107,3 +107,8 @@ spec:
                  secretKeyRef:
                    name: gate-production-config-secret
                    key: PROFILE_PROD_SERVICE
+             - name: RABBIT_URLS
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: RABBIT_URLS

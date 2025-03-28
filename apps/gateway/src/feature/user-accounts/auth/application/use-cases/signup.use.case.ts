@@ -9,6 +9,7 @@ import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
 import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/users.prisma.repository';
 import { GateService } from '../../../../../common/gate.service';
+import { CreateUserData } from '../../../users/infrastructure/prisma/dto/create.user.data.dto';
 export class SignupCommand {
   constructor(public createInputUser: UserCreateModel) { }
 }

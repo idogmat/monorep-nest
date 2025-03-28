@@ -1,7 +1,8 @@
 import { Controller, Get, Inject, Req, Res } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, Ctx, EventPattern, Payload } from '@nestjs/microservices';
 import { Request, Response } from 'express';
 import { firstValueFrom } from 'rxjs';
+import { PostsPrismaRepository } from '../feature/posts/infrastructure/prisma/posts.prisma.repository';
 
 @Controller()
 export class AppController {
@@ -44,4 +45,6 @@ export class AppController {
 
 
   }
+
+
 }
