@@ -49,6 +49,7 @@ export class ProfileController {
     @Body() profile: InputProfileModel,
     @UploadedFile(new FileValidationPipe()) file: Express.Multer.File,
   ) {
+    console.log(file, 'file')
     if (!file) throw new BadRequestException({
       message: 'Not a valid file'
     })
