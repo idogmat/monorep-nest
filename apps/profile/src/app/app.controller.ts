@@ -25,7 +25,7 @@ export class AppController {
   ) {
     // console.log(req.query)
     // console.log(query)
-    return await this.profileService.findMany({});
+    return await this.profileService.findMany();
   }
 
   @Post()
