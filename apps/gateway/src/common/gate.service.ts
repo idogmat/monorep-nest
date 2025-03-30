@@ -55,8 +55,8 @@ export class GateService {
     return response;
   }
   async profileServiceGet(path, query) {
-    console.log(query, 'query-gate')
-    console.log(Object.entries(query))
+    // console.log(query, 'query-gate')
+    // console.log(Object.entries(query))
     // for (const el of query) {
     //   console.log(el)
     // }

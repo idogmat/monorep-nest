@@ -1,14 +1,15 @@
 import { ApiTags } from '@nestjs/swagger';
-import { BadRequestException, Body, Controller, Get, Put, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Put, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { ProfileService } from '../application/profile.service';
 import { HttpService } from '@nestjs/axios';
 import { mkdir } from 'fs/promises';
-import { FileValidationPipe } from '../../../../../libs/check.file';
 import { AuthGuard } from '../../../common/guard/authGuard';
 import { GateService } from '../../../common/gate.service';
 import { InputProfileModel } from './model/input.profile.model';
+import { FileValidationPipe } from '../../../../../libs/input.validate/check.file';
+import { EnhancedParseUUIDPipe } from '../../../../../libs/input.validate/check.uuid-param';
 
 
 @ApiTags('Profile')
@@ -24,6 +25,19 @@ export class ProfileController {
 
   ) {
     mkdir(this.uploadsDir, { recursive: true });
+  }
+
+
+  @Get(':id')
+  async getProfile(
+    @Req() req: Request,
+    @Param('id', new EnhancedParseUUIDPipe()) id: string
+    // @Res() res: Response
+  ) {
+    console.log(id)
+    const result = await this.gateService.profileServiceGet(id, '')
+    return result
+    // return await this.profileService.
   }
 
   @Get()

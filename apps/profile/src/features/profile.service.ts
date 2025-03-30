@@ -27,12 +27,12 @@ export class ProfileService {
   }
 
   async findByUserId(userId: string): Promise<any> {
-    return this.prisma.profile.findMany({
+    return this.prisma.profile.findFirst({
       where: { userId }
     })
   }
 
-  async findMany(device: Partial<any>): Promise<any> {
+  async findMany(): Promise<any> {
     return this.prisma.profile.findMany({})
   }
 
