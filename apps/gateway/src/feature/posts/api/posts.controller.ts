@@ -1,8 +1,8 @@
 import { ApiTags } from '@nestjs/swagger';
 import {
   Body,
-  Controller,
-  Inject,
+  Controller, Get,
+  Inject, Param, ParseUUIDPipe,
   Post,
   Req,
   UploadedFiles,
@@ -21,6 +21,9 @@ import { UploadPostPhotosCommand } from '../application/use-cases/upload.post.ph
 import { ErrorProcessor } from '../../../common/error-handling/error.processor';
 import { CreatePostCommand } from '../application/use-cases/create.post.use.cases';
 import { PostsPrismaRepository } from '../infrastructure/prisma/posts.prisma.repository';
+import {
+  UpdatePostStatusOnFileUploadCommand
+} from '../application/use-cases/update.post.status.on.file.upload.use-case';
 
 
 
@@ -35,7 +38,7 @@ export class PostsController {
   ) {
   }
 
-  @Post('upload')
+  @Post()
   @UseInterceptors(
     FilesInterceptor('files', 10, {
       storage: diskStorage({
@@ -65,18 +68,19 @@ export class PostsController {
     }
   }
 
+  @UseGuards(AuthGuard)
+  @Get(':id')
+  async getPost(@Param('id', new ParseUUIDPipe()) postId: string){
+
+  }
+
   @EventPattern('files_uploaded')
   async handleFileUploaded(@Payload() data: any,
     @Ctx() context: any) {
     console.log('Received file uploaded message:', data);
     const { postId, files } = data;
-    let status;
-    if (files.length > 0) {
-      status = 'COMPLETED';
-    } else {
-      status = 'FAILED';
-    }
-    await this.postsPrismaRepository.updateStatusForPost(postId, status);
-
+    await this.commandBus.execute(
+      new UpdatePostStatusOnFileUploadCommand(postId, files)
+    )
   }
 }
