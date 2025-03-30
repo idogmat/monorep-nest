@@ -24,6 +24,7 @@ import { PostsPrismaRepository } from '../infrastructure/prisma/posts.prisma.rep
 import {
   UpdatePostStatusOnFileUploadCommand
 } from '../application/use-cases/update.post.status.on.file.upload.use-case';
+import { GetPostAndPhotoCommand } from '../application/use-cases/get.post.and.photo.use-case';
 
 
 
@@ -70,8 +71,16 @@ export class PostsController {
 
   @UseGuards(AuthGuard)
   @Get(':id')
-  async getPost(@Param('id', new ParseUUIDPipe()) postId: string){
+  async getPost(@Param('id', new ParseUUIDPipe()) postId: string,
+                @Req() req,){
 
+    const userId = req.user.userId;
+    const result = await this.commandBus.execute(
+      new GetPostAndPhotoCommand(postId, userId)
+    )
+    if (result.hasError()) {
+      new ErrorProcessor(result).handleError();
+    }
   }
 
   @EventPattern('files_uploaded')

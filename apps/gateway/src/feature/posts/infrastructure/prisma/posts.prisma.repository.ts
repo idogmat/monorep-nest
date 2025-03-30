@@ -17,10 +17,16 @@ export class  PostsPrismaRepository{
     })
   }
 
-  async updateStatusForPost(postId: string, status: PhotoUploadStatus){
+  async updateStatusForPost(postId: string, status: PhotoUploadStatus): Promise<Post>{
     return this.prisma.post.update({
       where: {id: postId},
       data: {photoUploadStatus: status}
+    })
+  }
+
+  async findById(id: string): Promise<Post>{
+    return this.prisma.post.findFirst({
+      where: {id}
     })
   }
 }

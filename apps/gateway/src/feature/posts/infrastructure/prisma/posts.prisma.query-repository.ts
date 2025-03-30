@@ -6,10 +6,6 @@ export class  PostsPrismaQueryRepository {
   constructor(private prisma: PrismaService) {
   }
 
-  async findById(id: string){
-    return this.prisma.post.findFirst({
-      where: {id}
-    })
-  }
+
 
 }

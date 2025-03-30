@@ -1,5 +1,4 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { CreatePostUseCases } from './create.post.use.cases';
 import { PostsPrismaRepository } from '../../infrastructure/prisma/posts.prisma.repository';
 
 export class UpdatePostStatusOnFileUploadCommand{
