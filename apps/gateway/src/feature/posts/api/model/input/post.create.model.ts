@@ -6,6 +6,6 @@ export class PostCreateModel{
   @ApiProperty({ type: String })
   @IsString()
   @Length(0, 500)
-  title: string;
+  description: string;
 
 }

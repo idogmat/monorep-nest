@@ -35,7 +35,6 @@ export class FilesController {
   }
 
 
-
   @Post('upload_files')
   @UseInterceptors(
     FilesInterceptor('files', 10, {
@@ -50,6 +49,7 @@ export class FilesController {
   async handleFilesUpload(@UploadedFiles() files: Express.Multer.File[],
     @Headers('X-UserId') userId: string,
     @Headers('X-PostId') postId: string) {
+
     if (!files || files.length === 0) {
       throw new BadRequestException('No files received');
     }

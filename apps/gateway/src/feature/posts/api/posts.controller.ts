@@ -57,7 +57,7 @@ export class PostsController {
     const userId = req.user.userId;
 
     const postId = await this.commandBus.execute(
-      new CreatePostCommand(postCreateModel.title, userId, 'IN_PROGRESS')
+      new CreatePostCommand(postCreateModel.description, userId, 'IN_PROGRESS')
     )
 
     const result = await this.commandBus.execute(
