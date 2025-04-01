@@ -33,7 +33,7 @@ export class ProfileController {
   @Get(':id')
   @UseGuards(AuthGuardOptional)
   async getProfile(
-    @Req() req,
+    @Req() req: Request,
     @Param('id', new EnhancedParseUUIDPipe()) id: string
     // @Res() res: Response
   ) {
@@ -47,7 +47,7 @@ export class ProfileController {
 
   @Get()
   async getProfiles(
-    @Req() req,
+    @Req() req: Request,
     @Query() query: any
     // @Res() res: Response
   ) {
