@@ -33,26 +33,29 @@ export class ProfileController {
   @Get(':id')
   @UseGuards(AuthGuardOptional)
   async getProfile(
-    @Req() req: Request,
+    @Req() req,
     @Param('id', new EnhancedParseUUIDPipe()) id: string
     // @Res() res: Response
   ) {
-    const headers = { 'X-UserId': '' }
-    if (req.user) headers['X-UserId'] = req.user.userId
-    const result = await this.gateService.profileServiceGet(id, headers)
+    const userId = req.user?.userId || ''
+    const result = await this.gateService.profileServiceGet(id, {
+      'X-UserId': userId
+    })
     return result
     // return await this.profileService.
   }
 
   @Get()
   async getProfiles(
-    @Req() req: Request,
+    @Req() req,
     @Query() query: any
     // @Res() res: Response
   ) {
-    const headers = { 'X-UserId': '' }
-    if (req.user) headers['X-UserId'] = req.user.userId
-    const result = await this.gateService.profileServiceGet('', headers)
+    // console.log(query)
+    const userId = req.user?.userId || ''
+    const result = await this.gateService.profileServiceGet('', {
+      'X-UserId': userId
+    },)
     return result
     // return await this.profileService.
   }

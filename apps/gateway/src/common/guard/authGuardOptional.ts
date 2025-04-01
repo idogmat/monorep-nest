@@ -23,7 +23,7 @@ export class AuthGuardOptional implements CanActivate {
     context: ExecutionContext,
   ): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
-    if (!request.headers?.authorization) return true;
+    if (!request.headers?.authorization) { return true };
     let res: IAuthUser | null = null;
     try {
       const token = request.headers?.authorization?.split(" ");
