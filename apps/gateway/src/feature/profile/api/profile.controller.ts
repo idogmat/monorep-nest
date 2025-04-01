@@ -37,7 +37,6 @@ export class ProfileController {
     @Param('id', new EnhancedParseUUIDPipe()) id: string
     // @Res() res: Response
   ) {
-    console.log(req?.user)
     const headers = { 'X-UserId': '' }
     if (req.user) headers['X-UserId'] = req.user.userId
     const result = await this.gateService.profileServiceGet(id, headers)
