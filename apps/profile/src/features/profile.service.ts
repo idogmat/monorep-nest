@@ -61,22 +61,7 @@ export class ProfileService {
       }
     });
 
-    return profiles.map(profile => ({
-      id: profile.id,
-      userId: profile.userId,
-      photoUrl: profile.photoUrl,
-      email: profile.email,
-      paymentAccount: profile.paymentAccount,
-      userName: profile.userName,
-      aboutMe: profile.aboutMe,
-      firstName: profile.firstName,
-      lastName: profile.lastName,
-      dateOfBirth: profile.dateOfBirth,
-      country: profile.country,
-      city: profile.city,
-      subscribers: profile.subscribers,
-      subscriptions: profile.subscriptions
-    }));
+    return profiles
   }
 
   async updateProfilePhoto(data: ProfilePhotoInputModel): Promise<Profile> {
@@ -113,7 +98,7 @@ export class ProfileService {
       const profile = await tx.profile.findFirst({
         where: { userId: userProfileId }
       })
-      if (subscriber || profile) throw new Error()
+      if (!subscriber || !profile) throw new Error()
       const sub = await tx.subscription.findFirst({
         where: {
           AND: [

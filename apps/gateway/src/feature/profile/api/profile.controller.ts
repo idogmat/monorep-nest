@@ -10,6 +10,8 @@ import { GateService } from '../../../common/gate.service';
 import { InputProfileModel } from './model/input.profile.model';
 import { FileValidationPipe } from '../../../../../libs/input.validate/check.file';
 import { EnhancedParseUUIDPipe } from '../../../../../libs/input.validate/check.uuid-param';
+import { Request } from 'express';
+import { AuthGuardOptional } from '../../../common/guard/authGuardOptional';
 
 
 @ApiTags('Profile')
@@ -29,13 +31,16 @@ export class ProfileController {
 
 
   @Get(':id')
+  @UseGuards(AuthGuardOptional)
   async getProfile(
     @Req() req: Request,
     @Param('id', new EnhancedParseUUIDPipe()) id: string
     // @Res() res: Response
   ) {
-    console.log(id)
-    const result = await this.gateService.profileServiceGet(id, '')
+    console.log(req?.user)
+    const headers = { 'X-UserId': '' }
+    if (req.user) headers['X-UserId'] = req.user.userId
+    const result = await this.gateService.profileServiceGet(id, headers)
     return result
     // return await this.profileService.
   }
@@ -46,8 +51,9 @@ export class ProfileController {
     @Query() query: any
     // @Res() res: Response
   ) {
-    // console.log(query)
-    const result = await this.gateService.profileServiceGet('', query)
+    const headers = { 'X-UserId': '' }
+    if (req.user) headers['X-UserId'] = req.user.userId
+    const result = await this.gateService.profileServiceGet('', headers)
     return result
     // return await this.profileService.
   }

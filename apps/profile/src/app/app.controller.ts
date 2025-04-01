@@ -15,11 +15,17 @@ export class AppController {
 
   @Get(':id')
   async getProfile(
+    @Headers('X-UserId') userId,
     @Param('id', new EnhancedParseUUIDPipe()) id: string
   ) {
-    console.log(id)
+    console.log(userId)
+    let profileForMatchId = ''
+    if (userId) {
+      const profile = await this.profileService.findByUserId(userId)
+      profileForMatchId = profile.id
+    }
     const result = await this.profileService.findByUserId(id)
-    return OutputProfileModelMapper(result)
+    return OutputProfileModelMapper(result, profileForMatchId)
   }
 
   @Get()
@@ -32,7 +38,7 @@ export class AppController {
     const result = await this.profileService.findMany();
     console.log(result)
     // return
-    return result.map(OutputProfileModelMapper)
+    return result.map(p => OutputProfileModelMapper(p))
   }
 
   @Post()
