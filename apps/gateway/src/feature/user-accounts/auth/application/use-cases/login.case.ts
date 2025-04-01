@@ -48,6 +48,7 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
 
     d = await this.deviceService.update({ ...d, updatedAt })
 
+
     const [accessToken, refreshToken] = await Promise.all(
       [
         await this.authService.createToken({

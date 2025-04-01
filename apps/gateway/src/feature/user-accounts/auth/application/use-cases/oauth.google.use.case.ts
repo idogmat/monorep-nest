@@ -42,13 +42,12 @@ export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
       if (!user) {
         //create user and provider from google
         user = await this.userPrismaRepository.createUserWithProvider(email, email.split('@')[0], { googleId: sub });
+        const profile = await this.gateService.profileServicePost('', {
+          userId: user.id, userName: user.name, email: user.email
+        }, {})
       } else {
         await this.linkGoogleProvider(user, sub);
       }
-
-      const profile = await this.gateService.profileServicePost('', {
-        userId: user.id, userName: user.name, email: user.email
-      }, {})
 
       const updatedAt = new Date()
       d = await this.deviceService.find({ ip, title, userId: user.id, updatedAt })

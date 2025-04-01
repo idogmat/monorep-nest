@@ -20,6 +20,7 @@ import { GithubTokenModel } from './models/input/github.token.model';
 import { GithubAuthCallbackCommand } from '../application/use-cases/github.auth.callback.use.case';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '../../../../common/guard/authGuard';
+import { DeviceInfoDto } from './models/shared/device.info.dto';
 
 interface ICookieSettings {
   httpOnly: boolean,
@@ -188,12 +189,17 @@ export class AuthController {
 
   @Get('github/callback')
   async githubAuthCallback(
+    @Req() req,
     @Res() res,
     @Query() queryDto: GithubTokenModel
   ) {
 
+    const deviceInfo = new DeviceInfoDto(
+      req.get("user-agent")?.toString() || 'null',
+      req.ip?.toString() || req.headers["x-forwarded-for"]?.toString() || 'null'
+    );
     const result = await this.commandBus.execute(
-      new GithubAuthCallbackCommand(queryDto),
+      new GithubAuthCallbackCommand(queryDto, deviceInfo),
     );
     if (result.hasError?.()) {
       new ErrorProcessor(result).handleError();

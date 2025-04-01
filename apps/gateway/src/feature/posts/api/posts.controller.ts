@@ -70,8 +70,8 @@ export class PostsController {
   }
 
   @UseGuards(AuthGuard)
-  @Get(':id')
-  async getPost(@Param('id', new ParseUUIDPipe()) postId: string,
+  @Get(':postId')
+  async getPost(@Param('postId', new ParseUUIDPipe()) postId: string,
                 @Req() req,){
 
     const userId = req.user.userId;
