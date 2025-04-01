@@ -3,6 +3,7 @@ import { PrismaService } from "./prisma/prisma.service"
 import { Profile } from 'node_modules/.prisma/profile-client';
 import { ProfilePhotoInputModel } from "./model/profilePhoto.input.model";
 import { InputProfileModel } from "./model/input.profile.model";
+import { ProfileWithSubscribers } from "./model/profile.output.model";
 
 
 
@@ -26,14 +27,56 @@ export class ProfileService {
     })
   }
 
-  async findByUserId(userId: string): Promise<any> {
-    return this.prisma.profile.findFirst({
-      where: { userId }
+  async findByUserId(userId: string): Promise<ProfileWithSubscribers> {
+    return await this.prisma.profile.findFirst({
+      where: { userId },
+      include: {
+        subscribers: {
+          include: {
+            profile: true // Получаем связанные профили
+          }
+        },
+        subscriptions: {
+          include: {
+            subscriber: true // Получаем связанные профили
+          }
+        }
+      }
     })
   }
 
-  async findMany(): Promise<any> {
-    return this.prisma.profile.findMany({})
+  async findMany(): Promise<ProfileWithSubscribers[]> {
+    const profiles = await this.prisma.profile.findMany({
+      include: {
+        subscribers: {
+          include: {
+            profile: true // Получаем связанные профили
+          }
+        },
+        subscriptions: {
+          include: {
+            subscriber: true // Получаем связанные профили
+          }
+        }
+      }
+    });
+
+    return profiles.map(profile => ({
+      id: profile.id,
+      userId: profile.userId,
+      photoUrl: profile.photoUrl,
+      email: profile.email,
+      paymentAccount: profile.paymentAccount,
+      userName: profile.userName,
+      aboutMe: profile.aboutMe,
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      dateOfBirth: profile.dateOfBirth,
+      country: profile.country,
+      city: profile.city,
+      subscribers: profile.subscribers,
+      subscriptions: profile.subscriptions
+    }));
   }
 
   async updateProfilePhoto(data: ProfilePhotoInputModel): Promise<Profile> {
@@ -59,6 +102,45 @@ export class ProfileService {
         where: { userId },
         data: { ...data }
       })
+    })
+  }
+
+  async subscribe(userId: string, userProfileId: string): Promise<void> {
+    return await this.prisma.$transaction(async (tx) => {
+      const subscriber = await tx.profile.findFirst({
+        where: { userId }
+      })
+      const profile = await tx.profile.findFirst({
+        where: { userId: userProfileId }
+      })
+      if (subscriber || profile) throw new Error()
+      const sub = await tx.subscription.findFirst({
+        where: {
+          AND: [
+            { subscriberId: subscriber.id },
+            { profileId: profile.id }
+          ]
+        }
+      });
+
+      if (sub) {
+        await tx.subscription.delete({
+          where: {
+            subscriberId_profileId: {
+              subscriberId: sub.subscriberId,
+              profileId: sub.profileId
+            }
+          }
+        })
+      } else {
+        await tx.subscription.create({
+          data: {
+            subscriberId: subscriber.id,
+            profileId: profile.id
+          }
+        });
+      }
+
     })
   }
 }

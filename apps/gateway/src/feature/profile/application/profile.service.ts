@@ -47,6 +47,26 @@ export class ProfileService {
     }
   }
 
+  async subscribe(
+    userId,
+    subscribeUserId
+  ) {
+    try {
+      const response = await this.gateService.profileServicePost(
+        'subscribe',
+        {
+          userId,
+          subscribeUserId
+        },
+        {},
+      )
+      return response
+    } catch (error) {
+      console.error('Ошибка:', error.message);
+      throw error;
+    }
+  }
+
   // async chunkSlicer(file) {
   //   const fileStream = Readable.from(file.buffer); // Создаем поток из буфера
   //   let chunkIndex = 0;

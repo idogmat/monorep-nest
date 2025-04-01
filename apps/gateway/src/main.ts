@@ -1,9 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import cookieParser from 'cookie-parser';
-
+import v8 from 'v8';
 import { useContainer } from 'class-validator';
-import { applyAppSettings } from './settings/main.settings';
+import { applyAppSettings, intervalRunner } from './settings/main.settings';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -32,10 +32,14 @@ async function bootstrap() {
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
 
+
+
   await app.startAllMicroservices();
   await app.listen(port, () => {
     console.log('App starting listen port: ', port);
     console.log('ENV: ', env);
+    // intervalRunner.start(() => console.log(process.memoryUsage()), 5000, true)
+    // intervalRunner.start(() => console.log(v8.getHeapStatistics()), 5000, true)
   });
 
 }

@@ -1,5 +1,5 @@
 import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
-import { BadRequestException, Body, Controller, Get, Param, Put, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, ForbiddenException, Get, Param, Patch, Put, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { ProfileService } from '../application/profile.service';
@@ -70,6 +70,23 @@ export class ProfileController {
       message: 'Not a valid file'
     })
     await this.profileService.updateProfile(file, profile, req.user.userId)
+  }
+
+  @Patch('subscribe/:id')
+  @UseGuards(AuthGuard)
+  async subscribe(
+    @Req() req,
+    @Param('id') id: string
+  ) {
+    if (req.user.userId === id) throw new ForbiddenException()
+    try {
+      await this.profileService.subscribe(req.user.userId, id)
+    } catch {
+      throw new BadRequestException({
+        message: 'Not a valid userId'
+      })
+    }
+
   }
 
 

@@ -23,8 +23,9 @@ export class GateService {
   }
 
   async profileServicePost(path, payload, headers) {
+    console.log([this.profileService, path].join('/'))
     const response = await lastValueFrom(this.httpService.post(
-      this.profileService,
+      [this.profileService, path].join('/'),
       payload,
       {
         headers
