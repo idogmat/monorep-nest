@@ -10,6 +10,8 @@ import { GateService } from '../../../common/gate.service';
 import { InputProfileModel } from './model/input.profile.model';
 import { FileValidationPipe } from '../../../../../libs/input.validate/check.file';
 import { EnhancedParseUUIDPipe } from '../../../../../libs/input.validate/check.uuid-param';
+import { Request } from 'express';
+import { AuthGuardOptional } from '../../../common/guard/authGuardOptional';
 
 
 @ApiTags('Profile')
@@ -29,15 +31,22 @@ export class ProfileController {
 
 
   @Get(':id')
+  @UseGuards(AuthGuardOptional)
   async getProfile(
     @Req() req: Request,
     @Param('id', new EnhancedParseUUIDPipe()) id: string
     // @Res() res: Response
   ) {
-    console.log(id)
-    const result = await this.gateService.profileServiceGet(id, '')
-    return result
-    // return await this.profileService.
+    try {
+      const userId = req.user?.userId || ''
+      const { data } = await this.gateService.profileServiceGet(id, {
+        'X-UserId': userId
+      })
+      return data
+    } catch {
+      //  throw error
+    }
+
   }
 
   @Get()
@@ -46,10 +55,16 @@ export class ProfileController {
     @Query() query: any
     // @Res() res: Response
   ) {
-    // console.log(query)
-    const result = await this.gateService.profileServiceGet('', query)
-    return result
-    // return await this.profileService.
+    try {
+      const userId = req.user?.userId || ''
+      const { data } = await this.gateService.profileServiceGet('', {
+        'X-UserId': userId
+      })
+      return data
+    } catch {
+      // throw error
+    }
+
   }
 
   @Put('edit')
@@ -81,9 +96,10 @@ export class ProfileController {
     if (req.user.userId === id) throw new ForbiddenException()
     try {
       await this.profileService.subscribe(req.user.userId, id)
-    } catch {
+    } catch (e) {
+      const error = e.response?.data?.toString() || 'Not a valid'
       throw new BadRequestException({
-        message: 'Not a valid userId'
+        message: error
       })
     }
 
