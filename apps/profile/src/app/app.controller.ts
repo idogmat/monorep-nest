@@ -30,15 +30,19 @@ export class AppController {
 
   @Get()
   async getProfiles(
+    @Headers('X-UserId') userId,
     // @Query() query: any
     // @Req() req
   ) {
-    // console.log(req.query)
-    // console.log(query)
+    console.log(userId)
+    let profileForMatchId = ''
+    if (userId) {
+      const profile = await this.profileService.findByUserId(userId)
+      profileForMatchId = profile.id
+    }
     const result = await this.profileService.findMany();
-    console.log(result)
-    // return
-    return result.map(p => OutputProfileModelMapper(p))
+
+    return result.map(p => OutputProfileModelMapper(p, profileForMatchId))
   }
 
   @Post()

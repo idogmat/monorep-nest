@@ -18,9 +18,9 @@ import { OauthGoogleCommand } from '../application/use-cases/oauth.google.use.ca
 import { GithubService } from '../../../../common/provider/github.service';
 import { GithubTokenModel } from './models/input/github.token.model';
 import { GithubAuthCallbackCommand } from '../application/use-cases/github.auth.callback.use.case';
-import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '../../../../common/guard/authGuard';
 import { DeviceInfoDto } from './models/shared/device.info.dto';
+import { RedisService } from '../../../../support.modules/redis/redis.service';
 
 interface ICookieSettings {
   httpOnly: boolean,
@@ -38,7 +38,6 @@ export class AuthController {
     private commandBus: CommandBus,
     private readonly authService: AuthService,
     private readonly githubService: GithubService,
-    private readonly configService: ConfigService,
   ) {
     // const isLocal = this.configService.get<string>('NODE_ENV') === 'DEVELOPMENT'
     this.COOKIE_SETTINGS = {

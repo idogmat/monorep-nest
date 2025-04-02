@@ -93,12 +93,10 @@ export class ProfileService {
 
   async subscribe(userId: string, userProfileId: string): Promise<void> {
     return await this.prisma.$transaction(async (tx) => {
-      const subscriber = await tx.profile.findUnique({
-        where: { userId }
-      })
-      const profile = await tx.profile.findUnique({
-        where: { userId: userProfileId }
-      })
+      const [subscriber, profile] = await Promise.all([
+        tx.profile.findUnique({ where: { userId } }),
+        tx.profile.findUnique({ where: { userId: userProfileId } }),
+      ]);
       if (!subscriber ||
         !profile ||
         subscriber.id === profile.id) throw new ConflictException('Not exist or you subscribe by self');

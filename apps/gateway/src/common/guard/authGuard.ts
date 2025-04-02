@@ -3,6 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { Request } from "express";
 import { DeviceService } from "../../feature/user-accounts/devices/application/device.service";
+import { RedisService } from "../../support.modules/redis/redis.service";
 
 export interface IAuthUser {
   userId: string;
@@ -18,30 +19,25 @@ export class AuthGuard implements CanActivate {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly deviceService: DeviceService,
+    private readonly redisService: RedisService,
+
   ) { }
   async canActivate(
     context: ExecutionContext,
   ): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
     if (!request.headers?.authorization) return false;
-    let res: IAuthUser | null = null;
     try {
       const token = request.headers?.authorization?.split(" ");
-      res = await this.jwtService.verify(token[1], { secret: this.configService.get('ACCESS_SECRET_TOKEN') });
+      const userInfo: IAuthUser | null = await this.redisService.get(token[1])
+      if (userInfo) {
+        Object.assign(request, { user: userInfo })
+        return true;
+      } else {
+        return false
+      }
     } catch {
       console.log('fail');
-    }
-
-    const device = await this.deviceService.findById(res.deviceId)
-
-    if (device &&
-      device.updatedAt?.toISOString() === res?.updatedAt
-      && res.exp * 1000 > new Date().getTime()
-    ) {
-      Object.assign(request, { user: res })
-      return true;
-    } else {
-      return false
     }
 
   }
