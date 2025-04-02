@@ -7,7 +7,7 @@ import { BcryptService } from '../../infrastructure/bcrypt.service';
 import { LoginModel } from '../../api/models/input/login.model';
 import { AuthService } from '../auth.service';
 import { DeviceService } from '../../../devices/application/device.service';
-import { RedisService } from 'apps/gateway/src/support.modules/redis/redis.service';
+import { RedisService } from '../../../../../support.modules/redis/redis.service';
 import { parseTimeToSeconds } from '../../../../../common/utils/parseTime';
 
 const throwError = InterlayerNotice.createErrorNotice(
