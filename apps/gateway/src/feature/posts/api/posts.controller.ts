@@ -3,7 +3,7 @@ import {
   Body,
   Controller, Get,
   Inject, Param, ParseUUIDPipe,
-  Post,
+  Post, Query,
   Req,
   UploadedFiles,
   UseGuards,
@@ -26,6 +26,9 @@ import {
 } from '../application/use-cases/update.post.status.on.file.upload.use-case';
 import { GetPostAndPhotoCommand } from '../application/use-cases/get.post.and.photo.use-case';
 import { AuthGuardOptional } from '../../../common/guard/authGuardOptional';
+import { PaginationSearchPostTerm} from './model/input/query.posts.model';
+import { Request } from 'express';
+import { GetAllPostsCommand } from '../application/use-cases/get.all.posts.use-case';
 
 
 
@@ -83,6 +86,24 @@ export class PostsController {
       new ErrorProcessor(result).handleError();
     }
     return result.data;
+  }
+
+  @UseGuards(AuthGuardOptional)
+  @Get()
+  async getPosts(
+    @Req() req: Request,
+    @Query()
+    queryDTO: PaginationSearchPostTerm){
+
+    const userId = req.user?.userId || ''
+    const result = await this.commandBus.execute(
+      new GetAllPostsCommand(queryDTO, userId)
+    )
+    return result;
+    // if (result.hasError()) {
+    //   new ErrorProcessor(result).handleError();
+    // }
+    // return result.data;
   }
 
   @EventPattern('files_uploaded')

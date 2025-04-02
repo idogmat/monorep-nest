@@ -6,7 +6,6 @@ import { ENTITY_POST } from '../../../../common/entities.constants';
 import { GateService } from '../../../../common/gate.service';
 import { LocationViewModel } from '../../../../../../files/src/features/files/api/model/output/location.view.model';
 import { PostViewModel } from '../../api/model/output/post.view.model';
-import { PostMediaDocument } from '../../../../../../files/src/features/files/domain/post.media.entity';
 import { Post } from '@prisma/client';
 
 export class GetPostAndPhotoCommand{
@@ -37,7 +36,7 @@ export class GetPostAndPhotoUseCase implements ICommandHandler<GetPostAndPhotoCo
 
     }
 
-    const response = await this.gateService.filesServiceGet(foundPost.id) as LocationViewModel;
+    const response = await this.gateService.filesServicePost(foundPost.id, '', '') as LocationViewModel;
 
     const result = this.mapPostViewModel(foundPost, response);
 

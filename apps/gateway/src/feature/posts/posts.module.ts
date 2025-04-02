@@ -12,15 +12,20 @@ import { JwtModule } from '@nestjs/jwt';
 import { DeviceService } from '../user-accounts/devices/application/device.service';
 import { UploadPostPhotosUseCase } from './application/use-cases/upload.post.photos.use-case';
 import { GateService } from '../../common/gate.service';
-import { PostsPrismaQueryRepository } from './infrastructure/prisma/posts.prisma.query-repository';
+import { PostsQueryRepository } from './infrastructure/prisma/posts-query-repository.service';
 import {
   UpdatePostStatusOnFileUploadUseCases
 } from './application/use-cases/update.post.status.on.file.upload.use-case';
 import { GetPostAndPhotoUseCase } from './application/use-cases/get.post.and.photo.use-case';
+import { GetAllPostsUseCase } from './application/use-cases/get.all.posts.use-case';
 
 
-const useCasesForPost = [CreatePostUseCases, UploadPostPhotosUseCase, UpdatePostStatusOnFileUploadUseCases,
-  GetPostAndPhotoUseCase]
+const useCasesForPost = [
+  CreatePostUseCases,
+  UploadPostPhotosUseCase,
+  UpdatePostStatusOnFileUploadUseCases,
+  GetPostAndPhotoUseCase,
+  GetAllPostsUseCase ]
 @Module({
   imports: [
     HttpModule,
@@ -74,7 +79,7 @@ const useCasesForPost = [CreatePostUseCases, UploadPostPhotosUseCase, UpdatePost
   ],
   providers: [
     PostsPrismaRepository,
-    PostsPrismaQueryRepository,
+    PostsQueryRepository,
     PrismaService,
     DeviceService,
     GateService,

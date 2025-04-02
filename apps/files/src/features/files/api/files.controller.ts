@@ -21,6 +21,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { UploadProfilePhotoCommand } from '../application/use-cases/upload.profile.photo.use-case';
 import { FilesQueryRepository } from '../infrastructure/files.query-repository';
 import { LocationViewModel } from './model/output/location.view.model';
+import { Query } from 'mongoose';
 
 @Controller()
 export class FilesController {
@@ -36,6 +37,14 @@ export class FilesController {
       mkdirSync(this.chunkDir, { recursive: true });
     }
   }
+
+  @Get('postsPhoto')
+  async getPostsAndPhotos(@Headers('X-UserId') userId,) {
+
+    return this.filesQueryRepository.getPostsMedia(userId);
+
+  }
+
 
   @Get(':postId')
   async getPostPhotos(@Param('postId') postId: string): Promise<LocationViewModel> {

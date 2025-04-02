@@ -56,14 +56,16 @@ export class GateService {
     return response;
   }
 
-  async filesServiceGet(path: string, query?: string) {
+  async filesServiceGet(path: string, headers) {
     const url = [this.fileService, path].join('/');
     console.log(url)
 
     const response = await lastValueFrom(this.httpService.get(
       url,
+      {headers}
     ));
-    return response.data
+
+    return response;
 
   }
 
