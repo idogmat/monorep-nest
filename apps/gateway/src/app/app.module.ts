@@ -10,6 +10,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { PrismaService } from '../feature/prisma/prisma.service';
 import { PostsModule } from '../feature/posts/posts.module';
 import { ProfileModule } from '../feature/profile/profile.module';
+import { RedisModule } from '../support.modules/redis/redis.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ProfileModule } from '../feature/profile/profile.module';
       ttl: 10000,
       limit: 5,
     }]),
+    RedisModule,
     ClientsModule.registerAsync([
       {
         imports: [ConfigModule],

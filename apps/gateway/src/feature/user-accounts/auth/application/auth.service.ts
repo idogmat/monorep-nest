@@ -108,6 +108,12 @@ export class AuthService {
     return token;
   }
 
+  async getExpiration(type: 'ACCESS' | 'REFRESH') {
+
+    const expiresIn = this.configService.get(`${type}_TOKEN_EXPIRATION`) || 'TEST'
+    return expiresIn;
+  }
+
   async getById(id: string) {
     return await this.userPrismaRepository.getById(id);
   }

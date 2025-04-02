@@ -50,6 +50,7 @@ export class ProfileController {
   }
 
   @Get()
+  @UseGuards(AuthGuardOptional)
   async getProfiles(
     @Req() req: Request,
     @Query() query: any

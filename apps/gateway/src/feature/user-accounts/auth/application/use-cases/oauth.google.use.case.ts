@@ -8,6 +8,8 @@ import { GoogleAuthResponseModel } from '../../api/models/shared/google.auth.res
 import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/users.prisma.repository';
 import { DeviceService } from '../../../devices/application/device.service';
 import { GateService } from '../../../../../common/gate.service';
+import { parseTimeToSeconds } from '../../../../../common/utils/parseTime';
+import { RedisService } from '../../../../../support.modules/redis/redis.service';
 
 export class OauthGoogleCommand {
   constructor(public googleTokenModel: GoogleTokenModel) {
@@ -23,7 +25,7 @@ export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
     private authService: AuthService,
     private deviceService: DeviceService,
     readonly gateService: GateService,
-
+    private readonly redisService: RedisService,
   ) {
   }
 
@@ -60,6 +62,9 @@ export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
         deviceId: d.id,
         updatedAt
       });
+      const exp = await this.authService.getExpiration('ACCESS')
+      const expSeconds = parseTimeToSeconds(exp)
+      await this.redisService.set(accessToken, d, expSeconds)
 
       return new InterlayerNotice(new GoogleAuthResponseModel(accessToken, refreshToken));
     } catch (error) {

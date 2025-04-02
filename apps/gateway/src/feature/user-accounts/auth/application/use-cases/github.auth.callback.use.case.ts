@@ -12,6 +12,8 @@ import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/user
 import { GateService } from '../../../../../common/gate.service';
 import { DeviceInfoDto } from '../../api/models/shared/device.info.dto';
 import { DeviceService } from '../../../devices/application/device.service';
+import { RedisService } from '../../../../../support.modules/redis/redis.service';
+import { parseTimeToSeconds } from '../../../../../common/utils/parseTime';
 
 export class GithubAuthCallbackCommand {
   constructor(
@@ -30,7 +32,7 @@ export class GithubAuthCallbackUseCase implements ICommandHandler<GithubAuthCall
     private configService: ConfigService,
     readonly gateService: GateService,
     private deviceService: DeviceService,
-
+    private readonly redisService: RedisService,
   ) {
   }
   async execute(command: GithubAuthCallbackCommand): Promise<InterlayerNotice<GithubAuthResponseModel>> {
@@ -61,13 +63,17 @@ export class GithubAuthCallbackUseCase implements ICommandHandler<GithubAuthCall
       }
 
       const updatedAt = new Date();
-      const device =  await this.createOrUpdateDevice(user.id, command.deviceInfo, updatedAt);
+      const d = await this.createOrUpdateDevice(user.id, command.deviceInfo, updatedAt);
 
       const [accessToken, refreshToken] = await this.authService.createPairTokens({
         userId: user.id,
-        deviceId: device.id,
+        deviceId: d.id,
         updatedAt
       });
+
+      const exp = await this.authService.getExpiration('ACCESS')
+      const expSeconds = parseTimeToSeconds(exp)
+      await this.redisService.set(accessToken, d, expSeconds)
 
       const baseURL = this.configService.get<string>('BASE_URL')
 
@@ -88,12 +94,12 @@ export class GithubAuthCallbackUseCase implements ICommandHandler<GithubAuthCall
     }
   }
 
-  private async createOrUpdateDevice(userId: string, deviceInfo: DeviceInfoDto, updatedAt: Date ): Promise<Device>{
+  private async createOrUpdateDevice(userId: string, deviceInfo: DeviceInfoDto, updatedAt: Date): Promise<Device> {
     let d = null
 
     d = await this.deviceService.find({ ip: deviceInfo.ip, title: deviceInfo.title, userId, updatedAt })
     if (!d) {
-      d = await this.deviceService.createDevice({ ip: deviceInfo.ip, title: deviceInfo.title, userId})
+      d = await this.deviceService.createDevice({ ip: deviceInfo.ip, title: deviceInfo.title, userId })
     }
     d = await this.deviceService.update({ ...d, updatedAt })
 
