@@ -1,9 +1,10 @@
-import { ForbiddenException, Injectable } from "@nestjs/common"
+import { ConflictException, ForbiddenException, Injectable } from "@nestjs/common"
 import { PrismaService } from "./prisma/prisma.service"
 import { Profile } from 'node_modules/.prisma/profile-client';
 import { ProfilePhotoInputModel } from "./model/profilePhoto.input.model";
 import { InputProfileModel } from "./model/input.profile.model";
 import { ProfileWithSubscribers } from "./model/profile.output.model";
+import ts from "typescript";
 
 
 
@@ -92,13 +93,15 @@ export class ProfileService {
 
   async subscribe(userId: string, userProfileId: string): Promise<void> {
     return await this.prisma.$transaction(async (tx) => {
-      const subscriber = await tx.profile.findFirst({
+      const subscriber = await tx.profile.findUnique({
         where: { userId }
       })
-      const profile = await tx.profile.findFirst({
+      const profile = await tx.profile.findUnique({
         where: { userId: userProfileId }
       })
-      if (!subscriber || !profile) throw new Error()
+      if (!subscriber ||
+        !profile ||
+        subscriber.id === profile.id) throw new ConflictException('Not exist or you subscribe by self');
       const sub = await tx.subscription.findFirst({
         where: {
           AND: [
@@ -125,7 +128,6 @@ export class ProfileService {
           }
         });
       }
-
     })
   }
 }

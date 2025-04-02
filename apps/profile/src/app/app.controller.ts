@@ -83,7 +83,7 @@ export class AppController {
     } catch (error) {
       //   // save as error
       console.warn(error)
-      res.status(400).send()
+      res.status(400).json(error.message)
     }
   }
 

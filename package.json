@@ -21,6 +21,8 @@
     "test:e2e": "dotenv -e .env.test -- npx prisma generate --schema=apps/gateway/prisma/schema.prisma && dotenv -e .env.test -- npx prisma migrate dev --schema=apps/gateway/prisma/schema.prisma && dotenv -e .env.test -- jest --config ./apps/gateway/test/jest-e2e.json",
     "prisma": "node prisma-script.js",
     "rabbitmq": "docker-compose -f docker-compose.rabbitmq.yaml up -d",
+    "redis": "docker-compose -f docker-compose.redis.yaml up -d",
+    "redis:terminal": "docker exec -it redis redis-cli",
     "seed": "ts-node apps/profile/src/features/prisma/seed.countries.prisma.ts",
     "build:gateway": "nest build gateway",
     "start:gateway": "node dist/apps/gateway/main",

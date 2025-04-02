@@ -37,12 +37,16 @@ export class ProfileController {
     @Param('id', new EnhancedParseUUIDPipe()) id: string
     // @Res() res: Response
   ) {
-    const userId = req.user?.userId || ''
-    const result = await this.gateService.profileServiceGet(id, {
-      'X-UserId': userId
-    })
-    return result
-    // return await this.profileService.
+    try {
+      const userId = req.user?.userId || ''
+      const { data } = await this.gateService.profileServiceGet(id, {
+        'X-UserId': userId
+      })
+      return data
+    } catch {
+      //  throw error
+    }
+
   }
 
   @Get()
@@ -51,13 +55,16 @@ export class ProfileController {
     @Query() query: any
     // @Res() res: Response
   ) {
-    // console.log(query)
-    const userId = req.user?.userId || ''
-    const result = await this.gateService.profileServiceGet('', {
-      'X-UserId': userId
-    },)
-    return result
-    // return await this.profileService.
+    try {
+      const userId = req.user?.userId || ''
+      const { data } = await this.gateService.profileServiceGet('', {
+        'X-UserId': userId
+      })
+      return data
+    } catch {
+      // throw error
+    }
+
   }
 
   @Put('edit')
@@ -89,9 +96,10 @@ export class ProfileController {
     if (req.user.userId === id) throw new ForbiddenException()
     try {
       await this.profileService.subscribe(req.user.userId, id)
-    } catch {
+    } catch (e) {
+      const error = e.response?.data?.toString() || 'Not a valid'
       throw new BadRequestException({
-        message: 'Not a valid userId'
+        message: error
       })
     }
 

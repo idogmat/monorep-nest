@@ -38,8 +38,8 @@ export class OutputProfileModel {
   dateOfBirth: Date;
   country: string;
   city: string;
-  // ---- case
   followed: boolean;
+  // TODO remove excess fields ---- case
   yourProfile: true;
   yourFriend: true
 }
@@ -55,7 +55,7 @@ export const OutputProfileModelMapper = (profile: ProfileWithSubscribers, _userI
   outputModel.country = profile.country;
   outputModel.city = profile.city;
   outputModel.followed = followedCheck(profile.subscribers, _userId || '');
-  // точно нужны
+  // теперь уже хз
   // outputModel.yourProfile = profile.yourProfile;
   // outputModel.yourFriend = profile.yourFriend;
   outputModel.subscribers = getCount(profile.subscribers);

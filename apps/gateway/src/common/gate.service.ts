@@ -71,6 +71,6 @@ export class GateService {
       url,
       { headers }
     ));
-    return response.data
+    return response
   }
 }
