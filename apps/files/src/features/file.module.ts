@@ -14,6 +14,7 @@ import { PostPhotoService } from './files/application/post.photo.service';
 import { PostMedia, PostMediaSchema } from './files/domain/post.media.entity';
 import { CreatePhotoForPostUseCase } from './files/application/use-cases/create.photo.for.post.use-case';
 import { UploadProfilePhotoUseCase } from './files/application/use-cases/upload.profile.photo.use-case';
+import { FilesQueryRepository } from './files/infrastructure/files.query-repository';
 
 const useCases = [
   CreatePhotoForPostUseCase,
@@ -76,6 +77,7 @@ const useCases = [
     ...useCases,
     FilesService,
     FilesRepository,
+    FilesQueryRepository,
     ProfileService,
     PostPhotoService,
     {

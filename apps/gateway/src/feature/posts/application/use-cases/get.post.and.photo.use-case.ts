@@ -5,6 +5,7 @@ import { PostsPrismaRepository } from '../../infrastructure/prisma/posts.prisma.
 import { InterlayerNotice } from '../../../../common/error-handling/interlayer.notice';
 import { PostError } from '../../../../common/error-handling/post.error';
 import { ENTITY_POST } from '../../../../common/entities.constants';
+import { GateService } from '../../../../common/gate.service';
 
 export class GetPostAndPhotoCommand{
   constructor(
@@ -16,7 +17,8 @@ export class GetPostAndPhotoCommand{
 
 @CommandHandler(GetPostAndPhotoCommand)
 export class GetPostAndPhotoUseCase implements ICommandHandler<GetPostAndPhotoCommand>{
-  constructor(private readonly postsPrismaRepository: PostsPrismaRepository) {
+  constructor(private readonly postsPrismaRepository: PostsPrismaRepository,
+              private readonly gateService: GateService) {
 
 
   }
@@ -33,6 +35,10 @@ export class GetPostAndPhotoUseCase implements ICommandHandler<GetPostAndPhotoCo
 
     }
 
+    const response = await this.gateService.filesServiceGet(foundPost.id);
+    console.log("response", response);
+
+    return new InterlayerNotice(null);
     // if(foundPost.authorId === command.userId){
     //
     // }

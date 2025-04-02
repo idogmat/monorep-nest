@@ -55,6 +55,17 @@ export class GateService {
     ));
     return response;
   }
+
+  async filesServiceGet(path: string, query?: string) {
+    const url = [this.fileService, path].join('/');
+    console.log(url)
+
+    const response = await lastValueFrom(this.httpService.get(
+      url,
+    ));
+    return response.data
+
+  }
   async profileServiceGet(path, query) {
     // console.log(query, 'query-gate')
     // console.log(Object.entries(query))

@@ -69,7 +69,6 @@ export class PostsController {
     }
   }
 
-  @UseGuards(AuthGuard)
   @Get(':postId')
   async getPost(@Param('postId', new ParseUUIDPipe()) postId: string,
                 @Req() req,){

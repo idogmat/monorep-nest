@@ -1,10 +1,10 @@
 // src/files.controller.ts
 import {
   BadRequestException,
-  Controller,
+  Controller, Get,
   Headers,
   HttpStatus,
-  Inject,
+  Inject, Param,
   Post,
   Req,
   Res, UploadedFiles, UseInterceptors,
@@ -19,6 +19,8 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { CreatePhotoForPostCommand } from '../application/use-cases/create.photo.for.post.use-case';
 import { CommandBus } from '@nestjs/cqrs';
 import { UploadProfilePhotoCommand } from '../application/use-cases/upload.profile.photo.use-case';
+import { FilesQueryRepository } from '../infrastructure/files.query-repository';
+import { LocationViewModel } from './model/output/location.view.model';
 
 @Controller()
 export class FilesController {
@@ -27,6 +29,7 @@ export class FilesController {
   constructor(
     @Inject('RABBITMQ_POST_SERVICE') private readonly rabbitClient: ClientProxy,
     private readonly profileService: ProfileService,
+    private readonly filesQueryRepository: FilesQueryRepository,
     private readonly commandBus: CommandBus,
   ) {
     if (!existsSync(this.chunkDir)) {
@@ -34,6 +37,10 @@ export class FilesController {
     }
   }
 
+  @Get(':postId')
+  async getPostPhotos(@Param('postId') postId: string): Promise<LocationViewModel> {
+    return this.filesQueryRepository.getLocationByPostId(postId);
+  }
 
   @Post('upload_files')
   @UseInterceptors(
