@@ -33,11 +33,11 @@ export class PostMedia {
   bucket: string;
 
 
-  static create(
+  static createNewPost(
     PostMediaModel: PostMediaModelType,
     data: createPostMediaType,
   ): PostMediaDocument{
-    return new PostMediaModel({
+    const newPost = new PostMediaModel({
       userId: data.userId,
       postId: data.postId,
       mimetype: data.mimetype,
@@ -47,11 +47,13 @@ export class PostMedia {
       ETag: data.uploadData.ETag,
       bucket: data.uploadData.Bucket,
     })
+
+    return newPost;
   }
 }
 
 export type PostMediaModelStaticType = {
-  create: (PostMediaModel: PostMediaModelType,
+  createNewPost: (PostMediaModel: PostMediaModelType,
            data: createPostMediaType) => PostMediaDocument;
 }
 
@@ -65,7 +67,7 @@ export type createPostMediaType = {
 export const PostMediaSchema = SchemaFactory.createForClass(PostMedia);
 
 PostMediaSchema.statics = {
-  create: PostMedia.create
+  createNewPost: PostMedia.createNewPost
 } as PostMediaModelStaticType;
 export type PostMediaModelType = Model<PostMediaDocument> &
   PostMediaModelStaticType;

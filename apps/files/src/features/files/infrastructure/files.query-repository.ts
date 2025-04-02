@@ -15,6 +15,7 @@ export class FilesQueryRepository{
 
     const locations = await this.PostMediaModel.find({ postId }).exec();
 
+    console.log("locations", locations);
     return  {postId, photoUrls: locations.map((item) => item.location)};
   }
 }

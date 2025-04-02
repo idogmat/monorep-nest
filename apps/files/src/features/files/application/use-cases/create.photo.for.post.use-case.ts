@@ -26,6 +26,7 @@ export class CreatePhotoForPostUseCase implements ICommandHandler<CreatePhotoFor
 
   async execute(command: CreatePhotoForPostCommand) {
 
+
     //Unpacking the necessary variables
     const { userId, postId, files } = command;
     //Define the folder
@@ -60,6 +61,7 @@ export class CreatePhotoForPostUseCase implements ICommandHandler<CreatePhotoFor
     // Выполняем все загрузки
     const results: PromiseSettledResult<SuccessfulUpload | FailedUpload>[] = await Promise.allSettled(uploadPromises);
 
+    console.log("results", results);
     const successfulUploads = results
       .filter((res): res is PromiseFulfilledResult<SuccessfulUpload> => res.status === 'fulfilled' && res.value.status === 'success')
       .map(res => res.value);

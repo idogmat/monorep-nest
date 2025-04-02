@@ -24,7 +24,7 @@ export class  PostsPrismaRepository{
     })
   }
 
-  async findById(id: string): Promise<Post>{
+  async findById(id: string): Promise<Post|null>{
     return this.prisma.post.findFirst({
       where: {id}
     })

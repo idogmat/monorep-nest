@@ -57,6 +57,7 @@ export class FilesController {
     @Headers('X-UserId') userId: string,
     @Headers('X-PostId') postId: string) {
 
+
     if (!files || files.length === 0) {
       throw new BadRequestException('No files received');
     }

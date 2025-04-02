@@ -1,11 +1,13 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { PostsPrismaQueryRepository } from '../../infrastructure/prisma/posts.prisma.query-repository';
-import { isHigherPrecedenceThanAwait } from '@typescript-eslint/eslint-plugin/dist/util';
 import { PostsPrismaRepository } from '../../infrastructure/prisma/posts.prisma.repository';
 import { InterlayerNotice } from '../../../../common/error-handling/interlayer.notice';
 import { PostError } from '../../../../common/error-handling/post.error';
 import { ENTITY_POST } from '../../../../common/entities.constants';
 import { GateService } from '../../../../common/gate.service';
+import { LocationViewModel } from '../../../../../../files/src/features/files/api/model/output/location.view.model';
+import { PostViewModel } from '../../api/model/output/post.view.model';
+import { PostMediaDocument } from '../../../../../../files/src/features/files/domain/post.media.entity';
+import { Post } from '@prisma/client';
 
 export class GetPostAndPhotoCommand{
   constructor(
@@ -23,7 +25,7 @@ export class GetPostAndPhotoUseCase implements ICommandHandler<GetPostAndPhotoCo
 
   }
 
-  async execute(command: GetPostAndPhotoCommand){
+  async execute(command: GetPostAndPhotoCommand): Promise<InterlayerNotice<PostViewModel|null>>{
 
     const foundPost = await this.postsPrismaRepository.findById(command.postId);
     if(!foundPost){
@@ -35,13 +37,23 @@ export class GetPostAndPhotoUseCase implements ICommandHandler<GetPostAndPhotoCo
 
     }
 
-    const response = await this.gateService.filesServiceGet(foundPost.id);
-    console.log("response", response);
+    const response = await this.gateService.filesServiceGet(foundPost.id) as LocationViewModel;
 
-    return new InterlayerNotice(null);
-    // if(foundPost.authorId === command.userId){
-    //
-    // }
+    const result = this.mapPostViewModel(foundPost, response);
 
+    return new InterlayerNotice(result);
+
+
+  }
+
+  private mapPostViewModel(post: Post, response: LocationViewModel): PostViewModel{
+    return {
+      id: post.id,
+      userId: post.authorId,
+      description: post.title,
+      photoUrls: response.photoUrls,
+      createdAt: post.createdAt,
+      updatedAt: post.updatedAt,
+    }
   }
 }

@@ -16,9 +16,11 @@ import { PostsPrismaQueryRepository } from './infrastructure/prisma/posts.prisma
 import {
   UpdatePostStatusOnFileUploadUseCases
 } from './application/use-cases/update.post.status.on.file.upload.use-case';
+import { GetPostAndPhotoUseCase } from './application/use-cases/get.post.and.photo.use-case';
 
 
-const useCasesForPost = [CreatePostUseCases, UploadPostPhotosUseCase, UpdatePostStatusOnFileUploadUseCases]
+const useCasesForPost = [CreatePostUseCases, UploadPostPhotosUseCase, UpdatePostStatusOnFileUploadUseCases,
+  GetPostAndPhotoUseCase]
 @Module({
   imports: [
     HttpModule,

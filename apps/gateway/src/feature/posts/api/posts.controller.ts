@@ -25,6 +25,7 @@ import {
   UpdatePostStatusOnFileUploadCommand
 } from '../application/use-cases/update.post.status.on.file.upload.use-case';
 import { GetPostAndPhotoCommand } from '../application/use-cases/get.post.and.photo.use-case';
+import { AuthGuardOptional } from '../../../common/guard/authGuardOptional';
 
 
 
@@ -69,17 +70,19 @@ export class PostsController {
     }
   }
 
+  @UseGuards(AuthGuardOptional)
   @Get(':postId')
   async getPost(@Param('postId', new ParseUUIDPipe()) postId: string,
                 @Req() req,){
 
-    const userId = req.user.userId;
+    const userId = req.user?.userId || ''
     const result = await this.commandBus.execute(
       new GetPostAndPhotoCommand(postId, userId)
     )
     if (result.hasError()) {
       new ErrorProcessor(result).handleError();
     }
+    return result.data;
   }
 
   @EventPattern('files_uploaded')
