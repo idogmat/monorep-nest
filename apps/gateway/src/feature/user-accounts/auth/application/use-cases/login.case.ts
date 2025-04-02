@@ -40,7 +40,6 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
     const { email, password, ip, title } = command.loginModel;
     const u = await this.userPrismaRepository.findUserByEmail(email);
     if (!u) return throwError
-
     const checkPassword = await this.bcryptService.checkPassword(password, u.passwordHash)
     if (!checkPassword) return throwError;
     let d = null
@@ -51,7 +50,7 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
     }
 
     d = await this.deviceService.update({ ...d, updatedAt })
-
+    console.log(d)
     const [accessToken, refreshToken] = await Promise.all(
       [
         await this.authService.createToken({
@@ -68,7 +67,7 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
     const exp = await this.authService.getExpiration('ACCESS')
     const expSeconds = parseTimeToSeconds(exp)
     await this.redisService.set(accessToken, d, expSeconds)
-    console.log(await this.redisService.showAll(''))
+
     return { accessToken, refreshToken };
 
   }

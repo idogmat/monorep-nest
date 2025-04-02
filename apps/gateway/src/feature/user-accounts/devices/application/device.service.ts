@@ -37,7 +37,7 @@ export class DeviceService {
         AND: [
           { ip: device.ip },
           { title: device.title },
-          { userId: device.id }
+          { userId: device.userId }
         ]
       }
     })

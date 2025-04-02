@@ -16,7 +16,9 @@ async function bootstrap() {
     origin: [
       'https://myin-gram.ru',
       'http://localhost:5173',
-      'https://localhost:3000'
+      'https://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:3000'
     ],
     credentials: true
   });
