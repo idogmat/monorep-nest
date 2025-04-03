@@ -1,9 +1,5 @@
 import { PaginationSearchPostTerm } from '../../api/model/input/query.posts.model';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import {
-  LocationViewModel,
-  PostMediaViewModel,
-} from '../../../../../../files/src/features/files/api/model/output/location.view.model';
 import { GateService } from '../../../../common/gate.service';
 import { PostsQueryRepository } from '../../infrastructure/prisma/posts-query-repository.service';
 import { Post } from '@prisma/client';
@@ -53,8 +49,8 @@ export class GetAllPostsUseCase implements  ICommandHandler<GetAllPostsCommand>{
       return{
         id: post.id,
         userId: post.authorId,
-        createdAt: post.createdAt,
-        updatedAt: post.updatedAt,
+        createdAt: post.createdAt.toISOString(),
+        updatedAt: post.updatedAt.toISOString(),
         description: post.title,
         photoUrls: mediaData.photoUrls || [],
       }

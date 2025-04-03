@@ -3,6 +3,8 @@ import { PostsPrismaRepository } from '../../infrastructure/prisma/posts.prisma.
 import { InterlayerNotice } from '../../../../common/error-handling/interlayer.notice';
 import { PostError } from '../../../../common/error-handling/post.error';
 import { ENTITY_POST } from '../../../../common/entities.constants';
+import { PostsQueryRepository } from '../../infrastructure/prisma/posts-query-repository.service';
+import { PostViewModel } from '../../api/model/output/post.view.model';
 
 export class UpdatePostCommand{
   constructor(
@@ -15,10 +17,11 @@ export class UpdatePostCommand{
 
 @CommandHandler(UpdatePostCommand)
 export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand>{
-  constructor(private postsPrismaRepository: PostsPrismaRepository) {
+  constructor(private postsPrismaRepository: PostsPrismaRepository,
+              private postsQueryRepository: PostsQueryRepository) {
   }
 
-  async execute(command: UpdatePostCommand){
+  async execute(command: UpdatePostCommand): Promise<InterlayerNotice<PostViewModel>>{
 
     const foundPost = await this.postsPrismaRepository.findById(command.postId);
     if(!foundPost){
@@ -38,5 +41,6 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand>{
     }
     foundPost.title = command.description;
     await this.postsPrismaRepository.updatePost({id: command.postId, data: foundPost});
+    return new InterlayerNotice(await this.postsQueryRepository.getPostById({id: command.postId}));
   }
 }

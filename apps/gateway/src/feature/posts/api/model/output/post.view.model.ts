@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsDate, IsString, IsUUID, Length } from 'class-validator';
+import { IsArray, IsDate, IsOptional, IsString, IsUUID, Length } from 'class-validator';
 
 export class PostViewModel {
   @ApiProperty({ type: String, format: 'uuid' })
@@ -16,15 +16,16 @@ export class PostViewModel {
   description: string;
 
   @ApiProperty({ type: [String] })
+  @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  photoUrls: string[];
+  photoUrls?: string[];
 
-  @ApiProperty({ type: Date })
+  @ApiProperty({ type: String })
   @IsDate()
-  createdAt: Date;
+  createdAt: string;
 
-  @ApiProperty({ type: Date })
+  @ApiProperty({ type: String })
   @IsDate()
-  updatedAt: Date;
+  updatedAt: string;
 }

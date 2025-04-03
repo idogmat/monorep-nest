@@ -1,4 +1,4 @@
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   Body,
   Controller, Delete, Get,
@@ -47,6 +47,9 @@ export class PostsController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a new post' })
+  @ApiConsumes('multipart/form-data')
+  @ApiResponse({ status: 201, description: 'Post created successfully' })
   @UseInterceptors(
     FilesInterceptor('files', 10, {
       storage: diskStorage({
@@ -77,6 +80,11 @@ export class PostsController {
   }
 
   @UseGuards(AuthGuardOptional)
+  @ApiOperation({ summary: 'Update an existing post' })
+  @ApiResponse({ status: 200, description: 'Post updated' })
+  @ApiResponse({ status: 403, description: 'Forbidden to update' })
+  @ApiResponse({ status: 404, description: 'Post not found' })
+  @ApiBody({ type: PostUpdateModel })
   @Get(':postId')
   async getPost(@Param('postId', new ParseUUIDPipe()) postId: string,
                 @Req() req,){
@@ -92,6 +100,8 @@ export class PostsController {
   }
 
   @UseGuards(AuthGuardOptional)
+  @ApiOperation({ summary: 'Get a list of posts with pagination' })
+  @ApiResponse({ status: 200, description: 'List of posts' })
   @Get()
   async getPosts(
     @Req() req: Request,
@@ -105,6 +115,12 @@ export class PostsController {
   }
 
   @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'Update an existing post' })
+  @ApiParam({ name: 'postId', type: 'string', format: 'uuid', description: 'Post UUID' })
+  @ApiBody({ type: PostUpdateModel })
+  @ApiResponse({ status: 200, description: 'Post updated' })
+  @ApiResponse({ status: 403, description: 'Forbidden to update' })
+  @ApiResponse({ status: 404, description: 'Post not found' })
   @Put(':postId')
   async updatePost(@Param('postId', new ParseUUIDPipe()) postId: string,
                 @Body() updateModel: PostUpdateModel,
@@ -117,10 +133,16 @@ export class PostsController {
     if (result.hasError()) {
       new ErrorProcessor(result).handleError();
     }
+    return result.data;
   }
 
   @UseGuards(AuthGuard)
   @Delete(':postId')
+  @ApiOperation({ summary: 'Delete a post' })
+  @ApiParam({ name: 'postId', type: 'string', format: 'uuid', description: 'Post UUID' })
+  @ApiResponse({ status: 204, description: 'Post deleted' })
+  @ApiResponse({ status: 403, description: 'Forbidden to delete' })
+  @ApiResponse({ status: 404, description: 'Post not found' })
   async deletePost(@Param('postId', new ParseUUIDPipe()) postId: string,
                    @Req() req: Request,){
 

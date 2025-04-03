@@ -36,9 +36,10 @@ export class GetPostAndPhotoUseCase implements ICommandHandler<GetPostAndPhotoCo
 
     }
 
-    const response = await this.gateService.filesServicePost(foundPost.id, '', '') as LocationViewModel;
+    const response = await this.gateService.filesServicePost(foundPost.id, '', '');
 
-    const result = this.mapPostViewModel(foundPost, response);
+    const locationViewModel: LocationViewModel = response.data;
+    const result = this.mapPostViewModel(foundPost, locationViewModel);
 
     return new InterlayerNotice(result);
 
@@ -51,8 +52,8 @@ export class GetPostAndPhotoUseCase implements ICommandHandler<GetPostAndPhotoCo
       userId: post.authorId,
       description: post.title,
       photoUrls: response.photoUrls,
-      createdAt: post.createdAt,
-      updatedAt: post.updatedAt,
+      createdAt: post.createdAt.toISOString(),
+      updatedAt: post.updatedAt.toISOString(),
     }
   }
 }
