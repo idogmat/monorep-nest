@@ -39,6 +39,30 @@ export class S3StorageAdapterJ {
     });
   }
 
+  async getFilesByPath(path: string): Promise<AWS.S3.Object[]> {
+    try {
+      const data = await this.s3.listObjectsV2({
+        Bucket: this.bucketName,
+        Prefix: path,
+      }).promise();
+
+      return data.Contents || [];
+    } catch (error) {
+      throw new Error(`Failed to list files: ${error.message}`);
+    }
+  }
+
+  async deleteFile(key: string): Promise<void> {
+    try {
+      await this.s3.deleteObject({
+        Bucket: this.bucketName,
+        Key: key,
+      }).promise();
+    } catch (error) {
+      throw new Error(`Failed to delete file: ${error.message}`);
+    }
+  }
+
   async clearBucket(): Promise<void> {
     const data: AWS.S3.ObjectList = await new Promise((resolve, reject) => {
       this.s3.listObjectsV2({ Bucket: this.bucketName }, (err, data) => {
