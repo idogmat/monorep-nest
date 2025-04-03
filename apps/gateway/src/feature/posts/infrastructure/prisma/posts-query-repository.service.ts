@@ -8,10 +8,10 @@ export class PostsQueryRepository {
   }
 
 
-  async getAllPosts(userId: string): Promise<Post[]>{
-    const filter = !userId?{}: {userId};
+  async getAllPosts(userId: string): Promise<Post[]> {
+    const filter = { userId };
 
-    return this.prisma.post.findMany(filter);
+    return this.prisma.post.findMany();
 
   }
 

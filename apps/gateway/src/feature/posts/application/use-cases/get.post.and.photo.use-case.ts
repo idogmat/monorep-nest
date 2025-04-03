@@ -8,44 +8,38 @@ import { LocationViewModel } from '../../../../../../files/src/features/files/ap
 import { PostViewModel } from '../../api/model/output/post.view.model';
 import { Post } from '@prisma/client';
 
-export class GetPostAndPhotoCommand{
+export class GetPostAndPhotoCommand {
   constructor(
     public postId: string,
     public userId: string,
 
-  ) {}
+  ) { }
 }
 
 @CommandHandler(GetPostAndPhotoCommand)
-export class GetPostAndPhotoUseCase implements ICommandHandler<GetPostAndPhotoCommand>{
-  constructor(private readonly postsPrismaRepository: PostsPrismaRepository,
-              private readonly gateService: GateService) {
+export class GetPostAndPhotoUseCase implements ICommandHandler<GetPostAndPhotoCommand> {
+  constructor(
+    private readonly postsPrismaRepository: PostsPrismaRepository,
+    private readonly gateService: GateService
+  ) { }
 
-
-  }
-
-  async execute(command: GetPostAndPhotoCommand): Promise<InterlayerNotice<PostViewModel|null>>{
-
+  async execute(command: GetPostAndPhotoCommand): Promise<InterlayerNotice<PostViewModel | null>> {
     const foundPost = await this.postsPrismaRepository.findById(command.postId);
-    if(!foundPost){
+    if (!foundPost) {
       return InterlayerNotice.createErrorNotice(
         PostError.NOT_FOUND_POST,
         ENTITY_POST,
         404
       )
-
     }
 
-    const response = await this.gateService.filesServicePost(foundPost.id, '', '') as LocationViewModel;
-
-    const result = this.mapPostViewModel(foundPost, response);
+    const response = await this.gateService.filesServicePost(foundPost.id, {}, '');
+    const result = this.mapPostViewModel(foundPost, response?.data);
 
     return new InterlayerNotice(result);
-
-
   }
 
-  private mapPostViewModel(post: Post, response: LocationViewModel): PostViewModel{
+  private mapPostViewModel(post: Post, response: LocationViewModel): PostViewModel {
     return {
       id: post.id,
       userId: post.authorId,
