@@ -52,3 +52,8 @@ spec:
                  secretKeyRef:
                    name: files-myingram-production-config-secret
                    key: MONGO_DB_URL
+             - name: POST_BUCKET
+               valueFrom:
+                 secretKeyRef:
+                   name: files-myingram-production-config-secret
+                   key: POST_BUCKET
