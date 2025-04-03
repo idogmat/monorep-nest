@@ -18,6 +18,8 @@ import {
 } from './application/use-cases/update.post.status.on.file.upload.use-case';
 import { GetPostAndPhotoUseCase } from './application/use-cases/get.post.and.photo.use-case';
 import { GetAllPostsUseCase } from './application/use-cases/get.all.posts.use-case';
+import { UpdatePostUseCase } from './application/use-cases/update.post.use-case';
+import { DeletePostUseCase } from './application/use-cases/delete.post.use-case';
 
 
 const useCasesForPost = [
@@ -25,7 +27,9 @@ const useCasesForPost = [
   UploadPostPhotosUseCase,
   UpdatePostStatusOnFileUploadUseCases,
   GetPostAndPhotoUseCase,
-  GetAllPostsUseCase ]
+  GetAllPostsUseCase,
+  UpdatePostUseCase,
+  DeletePostUseCase]
 @Module({
   imports: [
     HttpModule,

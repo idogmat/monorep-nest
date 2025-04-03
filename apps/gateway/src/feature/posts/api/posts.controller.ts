@@ -1,9 +1,9 @@
 import { ApiTags } from '@nestjs/swagger';
 import {
   Body,
-  Controller, Get,
+  Controller, Delete, Get,
   Inject, Param, ParseUUIDPipe,
-  Post, Query,
+  Post, Put, Query,
   Req,
   UploadedFiles,
   UseGuards,
@@ -29,6 +29,9 @@ import { AuthGuardOptional } from '../../../common/guard/authGuardOptional';
 import { PaginationSearchPostTerm} from './model/input/query.posts.model';
 import { Request } from 'express';
 import { GetAllPostsCommand } from '../application/use-cases/get.all.posts.use-case';
+import { PostUpdateModel } from './model/input/post.update.model';
+import { UpdatePostCommand } from '../application/use-cases/update.post.use-case';
+import { DeletePostCommand } from '../application/use-cases/delete.post.use-case';
 
 
 
@@ -96,16 +99,39 @@ export class PostsController {
     queryDTO: PaginationSearchPostTerm){
 
     const userId = req.user?.userId || ''
-    const result = await this.commandBus.execute(
+    return await this.commandBus.execute(
       new GetAllPostsCommand(queryDTO, userId)
     )
-    return result;
-    // if (result.hasError()) {
-    //   new ErrorProcessor(result).handleError();
-    // }
-    // return result.data;
   }
 
+  @UseGuards(AuthGuard)
+  @Put(':postId')
+  async updatePost(@Param('postId', new ParseUUIDPipe()) postId: string,
+                @Body() updateModel: PostUpdateModel,
+                @Req() req: Request,){
+
+    const userId = req.user.userId;
+    const result = await this.commandBus.execute(
+      new UpdatePostCommand(postId, userId, updateModel.description)
+    )
+    if (result.hasError()) {
+      new ErrorProcessor(result).handleError();
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete(':postId')
+  async deletePost(@Param('postId', new ParseUUIDPipe()) postId: string,
+                   @Req() req: Request,){
+
+    const userId = req.user.userId;
+    const result = await this.commandBus.execute(
+      new DeletePostCommand(postId, userId)
+    )
+    if (result.hasError()) {
+      new ErrorProcessor(result).handleError();
+    }
+  }
   @EventPattern('files_uploaded')
   async handleFileUploaded(@Payload() data: any,
     @Ctx() context: any) {

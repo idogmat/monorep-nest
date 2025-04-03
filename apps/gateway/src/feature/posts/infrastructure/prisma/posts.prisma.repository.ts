@@ -29,4 +29,17 @@ export class  PostsPrismaRepository{
       where: {id}
     })
   }
+
+  async updatePost(param: { id: string, data: Partial<Post> }) {
+    return this.prisma.post.update({
+      where: {id: param.id},
+      data: param.data
+    })
+  }
+
+  async delete(param: { id: string }) {
+    await this.prisma.post.delete({
+      where: {id: param.id}
+    })
+  }
 }
