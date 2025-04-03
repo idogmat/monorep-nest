@@ -95,7 +95,7 @@ const useCases = [
       useFactory: (configService: ConfigService) => {
         return new S3StorageAdapterJ(
           configService,
-          'post-bucket', // Укажите имя бакета из конфига
+          configService.get<string>('POST_BUCKET'), // Укажите имя бакета из конфига
         );
       },
       inject: [ConfigService],
