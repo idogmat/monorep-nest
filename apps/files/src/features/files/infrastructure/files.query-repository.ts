@@ -20,7 +20,7 @@ export class FilesQueryRepository{
 
   async getPostsMedia(userId: string): Promise<PostMediaViewModel[]> {
 
-    const filter = !userId?{}: {userId};
+    const filter = !userId ? {} : {userId};
 
     const postsMedia = await this.PostMediaModel.find(filter).exec();
 
