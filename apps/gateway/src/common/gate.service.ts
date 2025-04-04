@@ -45,7 +45,7 @@ export class GateService {
     return response
   }
 
-  async filesServicePost(path, payload, headers) {
+  async gitfilesServicePost(path, payload, headers) {
     const response = await lastValueFrom(this.httpService.post(
       [this.fileService, path].join('/'),
       payload,
