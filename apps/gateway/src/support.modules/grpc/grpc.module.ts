@@ -17,7 +17,7 @@ import { MessageClientService } from './grpc.service';
             options: {
               package: 'message',
               protoPath: join(__dirname, 'proto/message.proto'),
-              url: 'localhost:3814',
+              url: configService.get('GATE_PROFILE_GRPC_URL'),
             },
           }
         },

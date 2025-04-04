@@ -8,7 +8,7 @@ import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create<INestApplication>(AppModule)
-  const { port, env, host, rabbit } = applyAppSettings(app)
+  const { port, env, host, rabbit, grpc_url } = applyAppSettings(app)
 
   // Настроим микросервисный транспорт для RabbitMQ
   app.connectMicroservice<MicroserviceOptions>({
@@ -25,7 +25,7 @@ async function bootstrap() {
     options: {
       package: 'message',
       protoPath: join(__dirname, 'proto/message.proto'),
-      url: '0.0.0.0:3814', // Слушаем все интерфейсы
+      url: grpc_url, // Слушаем все интерфейсы
 
     },
   });
