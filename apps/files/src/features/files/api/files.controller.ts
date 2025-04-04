@@ -39,7 +39,9 @@ export class FilesController {
   }
 
   @Get('postsPhoto')
-  async getPostsAndPhotos(@Headers('X-UserId') userId,) {
+  async getPostsAndPhotos(
+    @Headers('X-UserId') userId: string
+  ) {
 
     return this.filesQueryRepository.getPostsMedia(userId);
 
@@ -47,7 +49,9 @@ export class FilesController {
 
 
   @Get(':postId')
-  async getPostPhotos(@Param('postId') postId: string): Promise<LocationViewModel> {
+  async getPostPhotos(
+    @Param('postId') postId: string
+  ): Promise<LocationViewModel> {
     return this.filesQueryRepository.getLocationByPostId(postId);
   }
 

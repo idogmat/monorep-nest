@@ -34,7 +34,8 @@ export class GetPostAndPhotoUseCase implements ICommandHandler<GetPostAndPhotoCo
 
     }
 
-    const response = await this.gateService.filesServicePost(foundPost.id, {}, '');
+    const response = await this.gateService.filesServiceGet(foundPost.id, {});
+    console.log("response", response);
     const result = this.mapPostViewModel(foundPost, response?.data);
 
     return new InterlayerNotice(result);
