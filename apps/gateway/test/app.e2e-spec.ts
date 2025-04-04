@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, Module } from '@nestjs/common';
 import { AppModule } from '../src/app/app.module';
 import { applyAppSettings } from '../src/settings/main.settings';
 import { AuthTestManager } from './utils/auth/auth.test.manager';
@@ -12,7 +12,29 @@ import { PrismaService } from '../src/feature/prisma/prisma.service';
 import { clearDatabase } from './utils/clear.database';
 import { GateService } from '../src/common/gate.service';
 import { GateServiceMock } from './mock/gate.service.mock';
-
+import { GrpcServiceModule } from '../src/support.modules/grpc/grpc.module';
+import { MessageClientService } from '../src/support.modules/grpc/grpc.service';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { join } from 'path';
+@Module({
+  imports: [
+    ClientsModule.register([
+      {
+        name: 'MESSAGE_SERVICE',
+        transport: Transport.GRPC,
+        options: {
+          package: 'message',
+          protoPath: join(__dirname, '../src/proto/message.proto'),
+          url: '0.0.0.0',
+        },
+      },
+    ]),
+  ],
+  controllers: [],
+  providers: [MessageClientService],
+  exports: [MessageClientService],
+})
+export class GrpcServiceModuleMock { }
 describe('AppController (e2e)', () => {
   let app: INestApplication;
   let authTestManager: AuthTestManager;
@@ -29,6 +51,8 @@ describe('AppController (e2e)', () => {
       .useClass(EmailServiceMock)
       .overrideProvider(GateService)
       .useClass(GateServiceMock)
+      .overrideModule(GrpcServiceModule)
+      .useModule(GrpcServiceModuleMock)
       .compile();
 
     app = moduleFixture.createNestApplication();
