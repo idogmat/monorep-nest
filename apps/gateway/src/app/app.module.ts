@@ -11,6 +11,8 @@ import { PrismaService } from '../feature/prisma/prisma.service';
 import { PostsModule } from '../feature/posts/posts.module';
 import { ProfileModule } from '../feature/profile/profile.module';
 import { RedisModule } from '../support.modules/redis/redis.module';
+import { MessageClientService } from '../support.modules/grpc/grpc.service';
+import { GrpcServiceModule } from '../support.modules/grpc/grpc.module';
 
 @Module({
   imports: [
@@ -40,6 +42,22 @@ import { RedisModule } from '../support.modules/redis/redis.module';
         inject: [ConfigService],
       },
       // {
+      //   imports: [ConfigModule],
+      //   name: 'MESSAGE_PACKAGE',
+      //   useFactory: (configService: ConfigService) => {
+      //     return {
+      //       transport: Transport.GRPC,
+      //       options: {
+      //         package: 'message',
+      //         protoPath: join(__dirname, 'message.proto'),
+      //         url: 'localhost:3814',
+      //       },
+      //     }
+      //   },
+      //   inject: [ConfigService],
+      // },
+
+      // {
       //   name: 'GATE-SERVICE',
       //   imports: [ConfigModule], // Импорт з
       //   useFactory: (configService: ConfigService) => ({
@@ -52,6 +70,7 @@ import { RedisModule } from '../support.modules/redis/redis.module';
       //   inject: [ConfigService]
       // }
     ]),
+    GrpcServiceModule,
     UsersAccountsModule,
     PostsModule,
     ProfileModule

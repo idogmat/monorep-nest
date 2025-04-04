@@ -20,6 +20,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "dotenv -e .env.test -- npx prisma generate --schema=apps/gateway/prisma/schema.prisma && dotenv -e .env.test -- npx prisma migrate dev --schema=apps/gateway/prisma/schema.prisma && dotenv -e .env.test -- jest --config ./apps/gateway/test/jest-e2e.json",
     "prisma": "node prisma-script.js",
+    "generate:proto": "ts-node generate-proto.ts",
     "rabbitmq": "docker-compose -f docker-compose.rabbitmq.yaml up -d",
     "redis": "docker-compose -f docker-compose.redis.yaml up -d",
     "redis:terminal": "docker exec -it redis redis-cli",
@@ -36,6 +37,8 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.758.0",
+    "@grpc/grpc-js": "^1.13.2",
+    "@grpc/proto-loader": "^0.7.13",
     "@nestjs/axios": "^4.0.0",
     "@nestjs/cache-manager": "^3.0.1",
     "@nestjs/common": "^10.0.0",
@@ -43,7 +46,7 @@
     "@nestjs/core": "^10.0.0",
     "@nestjs/cqrs": "^11.0.2",
     "@nestjs/jwt": "^11.0.0",
-    "@nestjs/microservices": "^11.0.12",
+    "@nestjs/microservices": "^11.0.13",
     "@nestjs/mongoose": "^11.0.2",
     "@nestjs/platform-express": "^11.0.12",
     "@nestjs/swagger": "^11.0.6",
@@ -75,6 +78,7 @@
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "sharp": "^0.33.5",
+    "ts-proto": "^2.7.0",
     "uuid": "^11.1.0"
   },
   "devDependencies": {

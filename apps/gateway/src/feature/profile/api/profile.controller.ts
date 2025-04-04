@@ -21,14 +21,12 @@ export class ProfileController {
   private readonly localFileName = 'test.png';
   constructor(
     readonly profileService: ProfileService,
-    private readonly httpService: HttpService,
     readonly gateService: GateService,
 
 
   ) {
     mkdir(this.uploadsDir, { recursive: true });
   }
-
 
   @Get(':id')
   @UseGuards(AuthGuardOptional)

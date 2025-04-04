@@ -21,6 +21,7 @@ import { GateService } from '../../common/gate.service';
       },
       inject: [ConfigService]
     }),
+
     // ClientsModule.registerAsync([
     //   {
     //     imports: [ConfigModule],

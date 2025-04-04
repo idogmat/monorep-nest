@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Headers, Param, Patch, Post, Put, Query, Req, Res } from '@nestjs/common';
-import { EventPattern } from '@nestjs/microservices';
+import { EventPattern, GrpcMethod } from '@nestjs/microservices';
 import { ProfileService } from '../features/profile.service';
 import { ProfilePhotoInputModel } from '../features/model/profilePhoto.input.model';
 import { InputProfileModel } from '../features/model/input.profile.model';
@@ -12,6 +12,16 @@ import { OutputProfileModelMapper } from '../features/model/profile.output.model
 export class AppController {
   constructor(readonly profileService: ProfileService) { }
 
+  private messages = [
+    { id: '1', content: 'Hello from Server!' },
+    { id: '2', content: 'Another message' },
+  ];
+
+  @GrpcMethod('MessageService', 'GetMessage')
+  getMessage(data: { id: string }) {
+    console.log(data)
+    return this.messages.find(msg => msg.id === data.id);
+  }
 
   @Get(':id')
   async getProfile(

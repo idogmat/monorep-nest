@@ -4,6 +4,7 @@ import { applyAppSettings } from './settings/main.settings';
 import { INestApplication } from '@nestjs/common';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app/app.module';
+import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create<INestApplication>(AppModule)
@@ -16,6 +17,16 @@ async function bootstrap() {
       urls: [rabbit], // Подключение к RabbitMQ
       queue: 'profile_queue', // Очередь, в которую будут отправляться сообщения
       queueOptions: { durable: false }, // Очередь не сохраняет сообщения после перезапуска
+    },
+  });
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.GRPC,
+    options: {
+      package: 'message',
+      protoPath: join(__dirname, 'proto/message.proto'),
+      url: '0.0.0.0:3814', // Слушаем все интерфейсы
+
     },
   });
 
