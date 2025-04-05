@@ -30,20 +30,20 @@ import { join } from 'path';
         },
         inject: [ConfigService],
       },
-      {
-        imports: [ConfigModule],
-        name: 'MESSAGE_SERVICE',
-        useFactory: (configService: ConfigService) => {
-          return {
-            transport: Transport.GRPC,
-            options: {
-              package: 'message',
-              protoPath: join(__dirname, 'proto/message.proto'),
-            }
-          }
-        },
-        inject: [ConfigService],
-      },
+      // {
+      //   imports: [ConfigModule],
+      //   name: 'MESSAGE_SERVICE',
+      //   useFactory: (configService: ConfigService) => {
+      //     return {
+      //       transport: Transport.GRPC,
+      //       options: {
+      //         package: 'message',
+      //         protoPath: join(__dirname, 'proto/message.proto'),
+      //       }
+      //     }
+      //   },
+      //   inject: [ConfigService],
+      // },
     ]),
   ],
   controllers: [AppController],

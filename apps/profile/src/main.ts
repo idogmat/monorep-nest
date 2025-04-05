@@ -20,15 +20,15 @@ async function bootstrap() {
     },
   });
 
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.GRPC,
-    options: {
-      package: 'message',
-      protoPath: join(__dirname, 'proto/message.proto'),
-      url: grpc_url, // Слушаем все интерфейсы
+  // app.connectMicroservice<MicroserviceOptions>({
+  //   transport: Transport.GRPC,
+  //   options: {
+  //     package: 'message',
+  //     protoPath: join(__dirname, 'proto/message.proto'),
+  //     url: grpc_url, // Слушаем все интерфейсы
 
-    },
-  });
+  //   },
+  // });
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 

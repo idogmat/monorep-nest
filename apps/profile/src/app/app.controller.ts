@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Headers, Param, Patch, Post, Put, Query, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Headers, NotFoundException, Param, Patch, Post, Put, Query, Req, Res } from '@nestjs/common';
 import { EventPattern, GrpcMethod } from '@nestjs/microservices';
 import { ProfileService } from '../features/profile.service';
 import { ProfilePhotoInputModel } from '../features/model/profilePhoto.input.model';
@@ -12,16 +12,16 @@ import { OutputProfileModelMapper } from '../features/model/profile.output.model
 export class AppController {
   constructor(readonly profileService: ProfileService) { }
 
-  private messages = [
-    { id: '1', content: 'Hello from Server!' },
-    { id: '2', content: 'Another message' },
-  ];
+  // private messages = [
+  //   { id: '1', content: 'Hello from Server!' },
+  //   { id: '2', content: 'Another message' },
+  // ];
 
-  @GrpcMethod('MessageService', 'GetMessage')
-  getMessage(data: { id: string }) {
-    console.log(data)
-    return this.messages.find(msg => msg.id === data.id);
-  }
+  // @GrpcMethod('MessageService', 'GetMessage')
+  // getMessage(data: { id: string }) {
+  //   console.log(data)
+  //   return this.messages.find(msg => msg.id === data.id);
+  // }
 
   @Get(':id')
   async getProfile(
@@ -32,9 +32,10 @@ export class AppController {
     let profileForMatchId = ''
     if (userId) {
       const profile = await this.profileService.findByUserId(userId)
-      profileForMatchId = profile.id
+      profileForMatchId = profile?.id
     }
     const result = await this.profileService.findByUserId(id)
+    if (!result) throw new NotFoundException()
     return OutputProfileModelMapper(result, profileForMatchId)
   }
 
@@ -48,7 +49,7 @@ export class AppController {
     let profileForMatchId = ''
     if (userId) {
       const profile = await this.profileService.findByUserId(userId)
-      profileForMatchId = profile.id
+      profileForMatchId = profile?.id
     }
     const result = await this.profileService.findMany();
 

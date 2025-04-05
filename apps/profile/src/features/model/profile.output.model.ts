@@ -68,4 +68,4 @@ export const OutputProfileModelMapper = (profile: ProfileWithSubscribers, _userI
 const getCount = (array: ProfileWithSubscribers['subscribers']
   | ProfileWithSubscribers['subscriptions']) => array.length
 
-const followedCheck = (array: ProfileWithSubscribers['subscribers'], id: string = '') => Boolean(array.find(e => e.subscriberId === id))
+const followedCheck = (array: ProfileWithSubscribers['subscribers'], id: string = '') => Boolean(array.find(e => e?.subscriberId === id))
