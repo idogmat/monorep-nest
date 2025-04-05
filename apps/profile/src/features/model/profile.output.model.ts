@@ -39,12 +39,14 @@ export class OutputProfileModel {
   country: string;
   city: string;
   followed: boolean;
+  aboutMe: string;
   // TODO remove excess fields ---- case
   yourProfile: true;
   yourFriend: true
 }
 
 export const OutputProfileModelMapper = (profile: ProfileWithSubscribers, _userId?: string): OutputProfileModel => {
+  // console.log(profile)
   const outputModel = new OutputProfileModel();
   outputModel.id = profile.id;
   outputModel.userId = profile.userId;
@@ -54,6 +56,7 @@ export const OutputProfileModelMapper = (profile: ProfileWithSubscribers, _userI
   outputModel.dateOfBirth = profile.dateOfBirth;
   outputModel.country = profile.country;
   outputModel.city = profile.city;
+  outputModel.aboutMe = profile.aboutMe
   outputModel.followed = followedCheck(profile.subscribers, _userId || '');
   // теперь уже хз
   // outputModel.yourProfile = profile.yourProfile;
