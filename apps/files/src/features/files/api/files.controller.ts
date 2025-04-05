@@ -28,14 +28,24 @@ export class FilesController {
   private chunkDir = './uploads/chunks';
   private readonly localFileName = 'test.png';
   constructor(
-    @Inject('RABBITMQ_POST_SERVICE') private readonly rabbitClient: ClientProxy,
+    @Inject('RABBITMQ_PROFILE_SERVICE') private readonly rabbitClient: ClientProxy,
     private readonly profileService: ProfileService,
     private readonly filesQueryRepository: FilesQueryRepository,
     private readonly commandBus: CommandBus,
+
   ) {
     if (!existsSync(this.chunkDir)) {
       mkdirSync(this.chunkDir, { recursive: true });
     }
+  }
+
+  @Get('rabbit')
+  async rabbitMqCheck(
+  ) {
+
+    this.rabbitClient.emit('test_rabbit', { message: 'test value' });
+
+
   }
 
   @Get('postsPhoto')

@@ -1,8 +1,8 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { join } from 'path';
-import { MessageClientService } from './grpc.service';
+import { join, resolve } from 'path';
+import { ProfileClientService } from './grpc.service';
 
 @Global()
 @Module({
@@ -10,12 +10,12 @@ import { MessageClientService } from './grpc.service';
     ClientsModule.registerAsync([
       {
         imports: [ConfigModule],
-        name: 'MESSAGE_SERVICE',
+        name: 'PROFILE_SERVICE',
         useFactory: (configService: ConfigService) => {
           return {
             transport: Transport.GRPC,
             options: {
-              package: 'message',
+              package: 'profile',
               protoPath: join(__dirname, 'proto/message.proto'),
               url: configService.get('GATE_PROFILE_GRPC_URL'),
             },
@@ -26,7 +26,7 @@ import { MessageClientService } from './grpc.service';
     ]),
   ],
   controllers: [],
-  providers: [MessageClientService],
-  exports: [MessageClientService],
+  providers: [ProfileClientService],
+  exports: [ProfileClientService],
 })
 export class GrpcServiceModule { }

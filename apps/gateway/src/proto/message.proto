@@ -1,16 +1,34 @@
 syntax = "proto3";
 
-package message;
+package profile;
 
-service MessageService {
-  rpc GetMessage (MessageRequest) returns (MessageResponse);
+service ProfileService {
+  rpc GetUserProfile(UserProfileRequest) returns (UserProfileResponse);
+  rpc GetUserProfiles(UserProfileRequest) returns (UserProfilesResponse);
+}
+// Request messages
+message UserProfileRequest {
+  string userId = 1;
+  string profileUserId = 2;
 }
 
-message MessageRequest {
-  string id = 1;
+//  Response messages
+
+message UserProfilesResponse {
+  repeated UserProfileResponse profiles = 1;
 }
 
-message MessageResponse {
+message UserProfileResponse {
   string id = 1;
-  string content = 2;
+  string userId = 2;
+  string photoUrl = 3;
+  string firstName = 4;
+  string lastName = 5;
+  string dateOfBirth = 6;
+  string country = 7;
+  string city = 8;
+  string aboutMe = 9;
+  bool followed = 10;
+  int32 subscribers = 11;
+  int32 subscriptions = 12;
 }

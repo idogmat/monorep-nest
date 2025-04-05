@@ -1,39 +1,35 @@
 import { NestFactory } from '@nestjs/core';
-import { useContainer } from 'class-validator';
 import { applyAppSettings } from './settings/main.settings';
-import { INestApplication } from '@nestjs/common';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app/app.module';
 import { join } from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.create<INestApplication>(AppModule)
+  const app = await NestFactory.create(AppModule);
   const { port, env, host, rabbit, grpc_url } = applyAppSettings(app)
 
-  // Настроим микросервисный транспорт для RabbitMQ
   app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.RMQ,
+    transport: Transport.GRPC,
     options: {
-      urls: [rabbit], // Подключение к RabbitMQ
-      queue: 'profile_queue', // Очередь, в которую будут отправляться сообщения
-      queueOptions: { durable: false }, // Очередь не сохраняет сообщения после перезапуска
+      package: 'profile',
+      protoPath: join(__dirname, 'proto/message.proto'),
+      url: grpc_url,
     },
   });
 
-  // app.connectMicroservice<MicroserviceOptions>({
-  //   transport: Transport.GRPC,
-  //   options: {
-  //     package: 'message',
-  //     protoPath: join(__dirname, 'proto/message.proto'),
-  //     url: grpc_url, // Слушаем все интерфейсы
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: [rabbit],
+      queue: 'profile_queue',
+      queueOptions: { durable: false },
+    },
+  });
 
-  //   },
-  // });
-
-  useContainer(app.select(AppModule), { fallbackOnErrors: true });
-
+  // Запускаем все микросервисы
   await app.startAllMicroservices();
-  await app.listen(port);
+
+  // await app.listen(port);
 
   console.log(`Service is listening on port ${port} , on ${env} mode`);
 }

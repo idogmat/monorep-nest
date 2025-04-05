@@ -12,16 +12,33 @@ import { OutputProfileModelMapper } from '../features/model/profile.output.model
 export class AppController {
   constructor(readonly profileService: ProfileService) { }
 
-  // private messages = [
-  //   { id: '1', content: 'Hello from Server!' },
-  //   { id: '2', content: 'Another message' },
-  // ];
+  @GrpcMethod('ProfileService', 'GetUserProfile')
+  async GetUserProfile(data: { userId: string, profileUserId: string }) {
+    console.log(data)
+    let profileForMatchId = ''
+    if (data?.userId) {
+      const profile = await this.profileService.findByUserId(data?.userId)
+      profileForMatchId = profile?.id
+    }
+    const result = await this.profileService.findByUserId(data.profileUserId)
+    if (!result) throw new NotFoundException()
+    return OutputProfileModelMapper(result, profileForMatchId)
+  }
 
-  // @GrpcMethod('MessageService', 'GetMessage')
-  // getMessage(data: { id: string }) {
-  //   console.log(data)
-  //   return this.messages.find(msg => msg.id === data.id);
-  // }
+  @GrpcMethod('ProfileService', 'GetUserProfiles')
+  async GetUserProfiles(data: { userId: string }) {
+    console.log(data?.userId)
+    let profileForMatchId = ''
+    if (data?.userId) {
+      const profile = await this.profileService.findByUserId(data?.userId)
+      profileForMatchId = profile?.id
+    }
+    const result = await this.profileService.findMany();
+    const ready = result.map(p => OutputProfileModelMapper(p, profileForMatchId))
+    console.log(ready)
+
+    return { profiles: ready }
+  }
 
   @Get(':id')
   async getProfile(
@@ -114,5 +131,10 @@ export class AppController {
       // save as error
       console.warn(error)
     }
+  }
+
+  @EventPattern('test_rabbit')
+  async testRabbit(data: ProfilePhotoInputModel) {
+    console.log(data, 'test_rabbit')
   }
 }

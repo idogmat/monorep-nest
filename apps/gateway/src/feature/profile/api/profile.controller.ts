@@ -12,6 +12,7 @@ import { FileValidationPipe } from '../../../../../libs/input.validate/check.fil
 import { EnhancedParseUUIDPipe } from '../../../../../libs/input.validate/check.uuid-param';
 import { Request } from 'express';
 import { AuthGuardOptional } from '../../../common/guard/authGuardOptional';
+import { ProfileClientService } from '../../../support.modules/grpc/grpc.service';
 
 
 @ApiTags('Profile')
@@ -22,10 +23,49 @@ export class ProfileController {
   constructor(
     readonly profileService: ProfileService,
     readonly gateService: GateService,
+    private readonly profileClientService: ProfileClientService,
+
 
 
   ) {
     mkdir(this.uploadsDir, { recursive: true });
+  }
+
+  @Get('grpc/:id')
+  @UseGuards(AuthGuardOptional)
+  async getProfileGrpc(
+    @Req() req: Request,
+    @Param('id', new EnhancedParseUUIDPipe()) id: string
+    // @Res() res: Response
+  ) {
+    // this.messageClientService
+    try {
+      const userId = req.user?.userId || ''
+      const result = await this.profileClientService.getProfile(userId, id)
+      console.log(result)
+      return result
+    } catch {
+      //  throw error
+    }
+
+  }
+
+  @Get('grpc')
+  @UseGuards(AuthGuardOptional)
+  async getProfilesGrpc(
+    @Req() req: Request,
+    @Query() query: any
+    // @Res() res: Response
+  ) {
+    try {
+      const userId = req.user?.userId || ''
+      const result = await this.profileClientService.getProfiles(userId)
+      console.log(result)
+      return result
+    } catch {
+      // throw error
+    }
+
   }
 
   @Get(':id')
