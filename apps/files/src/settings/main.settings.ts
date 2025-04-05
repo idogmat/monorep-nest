@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   INestApplication,
-  INestMicroservice,
   ValidationPipe,
 } from '@nestjs/common';
 import { EnvironmentsTypes } from './getConfiguration';
@@ -13,14 +12,15 @@ const APP_PREFIX = '/api/v1';
 export const applyAppSettings = (app: INestApplication): {
   port: number;
   env: string;
-  host: string
+  host: string;
+  rabbit: string
 } => {
-  const { port, env, host } = getEnv(app)
+  const { port, env, host, rabbit } = getEnv(app)
   setAppPrefix(app, APP_PREFIX);
 
   setAppPipes(app);
 
-  return { port, env, host }
+  return { port, env, host, rabbit }
 };
 
 const getEnv = (app: INestApplication) => {
@@ -28,8 +28,8 @@ const getEnv = (app: INestApplication) => {
   const env = configService.get<EnvironmentsTypes>('NODE_ENV')
   const port = configService.get<number>(checkEnv(env)) || 3000;
   const host = env !== 'DEVELOPMENT' ? '0.0.0.0' : 'localhost';
-  // const rabbit = configService.get<string>('RABBIT_URLS');
-  return { port, env, host }
+  const rabbit = configService.get<string>('RABBIT_URLS')?.toString() || '';
+  return { port, env, host, rabbit }
 }
 
 const checkEnv = (envMode: string) => {

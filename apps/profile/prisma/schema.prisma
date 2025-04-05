@@ -13,10 +13,31 @@ model Profile {
   userId          String    @unique
   photoUrl        String?
   email           String
-  paymentAccont   Boolean   @default(false)
+  paymentAccount  Boolean   @default(false)
   userName        String
-  aboutMe         String?   
+  aboutMe         String?   @db.VarChar(200)
   firstName       String?   
-  lastName        String?   
+  lastName        String?
+  dateOfBirth     DateTime?
+  country         String?
+  city            String?
+
+  subscriptions   Subscription[] @relation("Subscriptions")
+  subscribers     Subscription[] @relation("Subscribers")
+  
+  @@index([userName])
+  @@index([userId])
   @@map("profiles")
+}
+
+model Subscription {
+  subscriberId   String
+  profileId      String
+  createdAt      DateTime     @default(now())
+
+  subscriber     Profile      @relation("Subscriptions", fields: [subscriberId], references: [id])
+  profile        Profile      @relation("Subscribers", fields: [profileId], references: [id])
+
+  @@id([subscriberId, profileId])
+  @@map("subscriptions")
 }

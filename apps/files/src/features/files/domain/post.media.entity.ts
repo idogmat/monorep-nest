@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
 import { UploadPhotoResponse } from '../../../common/types/upload.photo.response';
 
-export type PostMediaDocument = HydratedDocument<PostMedia >;
+export type PostMediaDocument = HydratedDocument<PostMedia>;
 @Schema()
 export class PostMedia {
   @Prop()
@@ -33,11 +33,11 @@ export class PostMedia {
   bucket: string;
 
 
-  static create(
+  static createNewPost(
     PostMediaModel: PostMediaModelType,
     data: createPostMediaType,
-  ): Partial<PostMedia>{
-    return new PostMediaModel({
+  ): PostMediaDocument{
+    const newPost = new PostMediaModel({
       userId: data.userId,
       postId: data.postId,
       mimetype: data.mimetype,
@@ -47,11 +47,14 @@ export class PostMedia {
       ETag: data.uploadData.ETag,
       bucket: data.uploadData.Bucket,
     })
+
+    return newPost;
   }
 }
 
 export type PostMediaModelStaticType = {
-  create: () => PostMediaDocument;
+  createNewPost: (PostMediaModel: PostMediaModelType,
+           data: createPostMediaType) => PostMediaDocument;
 }
 
 export type createPostMediaType = {
@@ -61,5 +64,10 @@ export type createPostMediaType = {
   originalName: string,
   uploadData: UploadPhotoResponse
 }
-export const PostMediaSchema = SchemaFactory.createForClass(PostMedia );
-export type PostMediaModelType = Model<PostMediaDocument>&PostMediaModelStaticType;
+export const PostMediaSchema = SchemaFactory.createForClass(PostMedia);
+
+PostMediaSchema.statics = {
+  createNewPost: PostMedia.createNewPost
+} as PostMediaModelStaticType;
+export type PostMediaModelType = Model<PostMediaDocument> &
+  PostMediaModelStaticType;

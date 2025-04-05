@@ -15,8 +15,7 @@ export class FilesRepository{
 
   async createPostMedia(data: createPostMediaType): Promise<PostMediaDocument>{
 
-    const fileData = PostMedia.create(this.PostMediaModel, data);
-    const newFile = await this.PostMediaModel.create(fileData);
-    return newFile.save();
+      const newFile = await this.PostMediaModel.createNewPost( this.PostMediaModel, data);
+      return newFile.save();
   }
 }

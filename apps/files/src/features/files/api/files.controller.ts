@@ -1,10 +1,10 @@
 // src/files.controller.ts
 import {
   BadRequestException,
-  Controller,
+  Controller, Get,
   Headers,
   HttpStatus,
-  Inject,
+  Inject, Param,
   Post,
   Req,
   Res, UploadedFiles, UseInterceptors,
@@ -19,14 +19,18 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { CreatePhotoForPostCommand } from '../application/use-cases/create.photo.for.post.use-case';
 import { CommandBus } from '@nestjs/cqrs';
 import { UploadProfilePhotoCommand } from '../application/use-cases/upload.profile.photo.use-case';
+import { FilesQueryRepository } from '../infrastructure/files.query-repository';
+import { LocationViewModel } from './model/output/location.view.model';
+import { Query } from 'mongoose';
 
 @Controller()
 export class FilesController {
   private chunkDir = './uploads/chunks';
   private readonly localFileName = 'test.png';
   constructor(
-    @Inject('RABBITMQ_SERVICE') private readonly rabbitClient: ClientProxy,
+    @Inject('RABBITMQ_POST_SERVICE') private readonly rabbitClient: ClientProxy,
     private readonly profileService: ProfileService,
+    private readonly filesQueryRepository: FilesQueryRepository,
     private readonly commandBus: CommandBus,
   ) {
     if (!existsSync(this.chunkDir)) {
@@ -34,7 +38,22 @@ export class FilesController {
     }
   }
 
+  @Get('postsPhoto')
+  async getPostsAndPhotos(
+    @Headers('X-UserId') userId: string
+  ) {
 
+    return this.filesQueryRepository.getPostsMedia(userId);
+
+  }
+
+
+  @Get(':postId')
+  async getPostPhotos(
+    @Param('postId') postId: string
+  ): Promise<LocationViewModel> {
+    return this.filesQueryRepository.getLocationByPostId(postId);
+  }
 
   @Post('upload_files')
   @UseInterceptors(
@@ -50,6 +69,8 @@ export class FilesController {
   async handleFilesUpload(@UploadedFiles() files: Express.Multer.File[],
     @Headers('X-UserId') userId: string,
     @Headers('X-PostId') postId: string) {
+
+
     if (!files || files.length === 0) {
       throw new BadRequestException('No files received');
     }

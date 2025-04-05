@@ -23,7 +23,19 @@ export class GateService {
   }
 
   async profileServicePost(path, payload, headers) {
+    console.log([this.profileService, path].join('/'))
     const response = await lastValueFrom(this.httpService.post(
+      [this.profileService, path].join('/'),
+      payload,
+      {
+        headers
+      }
+    ));
+    return response
+  }
+
+  async profileServicePut(path, payload, headers) {
+    const response = await lastValueFrom(this.httpService.put(
       this.profileService,
       payload,
       {
@@ -43,12 +55,36 @@ export class GateService {
     ));
     return response;
   }
-  async profileServiceGet(path, query) {
-    console.log(this.profileService)
+
+  async filesServiceGet(path: string, headers) {
+    const url = [this.fileService, path].join('/');
+    console.log(url)
 
     const response = await lastValueFrom(this.httpService.get(
-      [this.profileService, path].join('/'),
+      url,
+      {headers}
     ));
-    return response.data
+
+    return response;
+
+  }
+
+  async profileServiceGet(path, headers) {
+    // console.log(query, 'query-gate')
+    // console.log(Object.entries(query))
+    // for (const el of query) {
+    //   console.log(el)
+    // }
+    const url = [this.profileService, path].join('/')
+    // if (!query) {
+    //   url = `${url}&${query}`
+    // }
+    console.log(url)
+
+    const response = await lastValueFrom(this.httpService.get(
+      url,
+      { headers }
+    ));
+    return response
   }
 }

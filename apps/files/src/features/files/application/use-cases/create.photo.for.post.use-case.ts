@@ -8,7 +8,7 @@ import { Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
 
-export class CreatePhotoForPostCommand{
+export class CreatePhotoForPostCommand {
   constructor(
     public files: Express.Multer.File[],
     public userId: string,
@@ -18,22 +18,23 @@ export class CreatePhotoForPostCommand{
 }
 
 @CommandHandler(CreatePhotoForPostCommand)
-export class CreatePhotoForPostUseCase implements ICommandHandler<CreatePhotoForPostCommand>{
+export class CreatePhotoForPostUseCase implements ICommandHandler<CreatePhotoForPostCommand> {
 
   constructor(private readonly filesRepository: FilesRepository,
-              private readonly postPhotoService: PostPhotoService,
-              @Inject('RABBITMQ_SERVICE') private readonly rabbitClient: ClientProxy) { }
+    private readonly postPhotoService: PostPhotoService,
+    @Inject('RABBITMQ_POST_SERVICE') private readonly rabbitClient: ClientProxy) { }
 
-  async execute(command: CreatePhotoForPostCommand){
+  async execute(command: CreatePhotoForPostCommand) {
+
 
     //Unpacking the necessary variables
-    const {userId, postId, files} = command;
+    const { userId, postId, files } = command;
     //Define the folder
     const folder = `posts/user_${userId}/post_${postId}`;
     //Looping through the files.
-    const uploadPromises = files.map( async (file) =>{
-        try {
-       //Prepare the data for saving the file.
+    const uploadPromises = files.map(async (file) => {
+      try {
+        //Prepare the data for saving the file.
         const fileBuffer = await fs.readFile(file.path); // Читаем файл как буфер
         const fileInfo = {
           originalname: file.originalname,
@@ -46,24 +47,24 @@ export class CreatePhotoForPostUseCase implements ICommandHandler<CreatePhotoFor
         const postMedia = await this.createPostMedia(userId, postId, uploadResult, file.mimetype, file.originalname);
 
         return { status: 'success' as const, file: file.originalname, url: uploadResult.Location };
-      }catch (error){
-          return { status: 'error' as const, file: file.originalname, error: error.message };
-      }finally {
-          try {
-            await fs.unlink(file.path);
-          } catch (err) {
-            console.warn(`Не удалось удалить файл ${file.path}:`, err.message);
-          }
+      } catch (error) {
+        return { status: 'error' as const, file: file.originalname, error: error.message };
+      } finally {
+        try {
+          await fs.unlink(file.path);
+        } catch (err) {
+          console.warn(`Не удалось удалить файл ${file.path}:`, err.message);
         }
+      }
     });
 
     // Выполняем все загрузки
     const results: PromiseSettledResult<SuccessfulUpload | FailedUpload>[] = await Promise.allSettled(uploadPromises);
 
+    console.log("results", results);
     const successfulUploads = results
       .filter((res): res is PromiseFulfilledResult<SuccessfulUpload> => res.status === 'fulfilled' && res.value.status === 'success')
       .map(res => res.value);
-
     if (successfulUploads.length > 0) {
       // Отправляем сообщение в RabbitMQ
       const message = {
@@ -81,7 +82,7 @@ export class CreatePhotoForPostUseCase implements ICommandHandler<CreatePhotoFor
   }
 
   async createPostMedia(userId: string, postId: string, uploadResult: AWS.S3.ManagedUpload.SendData,
-                        mimetype: string, originalName: string){
+    mimetype: string, originalName: string) {
     const postMediaDTO = {
       userId,
       postId,

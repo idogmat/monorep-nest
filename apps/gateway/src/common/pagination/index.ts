@@ -11,8 +11,8 @@ export class Pagination {
   constructor(query: ParsedQs, sortProperties: string[] | []) {
     this.sortBy = this.getSortBy(query, sortProperties);
     this.sortDirection = this.getSortDirection(query);
-    this.pageNumber = Number(query.pageNumber || 1);
-    this.pageSize = Number(query.pageSize || 10);
+    this.pageNumber = query?.pageNumber ? Number(query.pageNumber) : 1;
+    this.pageSize = query?.pageSize ? Number(query.pageSize) : 10;
   }
 
   public getSkipItemsCount() {
@@ -20,6 +20,7 @@ export class Pagination {
   }
 
   private getSortDirection(query: ParsedQs): SortDirectionType {
+    if (!query) return "DESC";
     let sortDirection: SortDirectionType = "DESC";
 
     switch (query.sortDirection) {
@@ -36,6 +37,9 @@ export class Pagination {
   }
 
   private getSortBy(query: ParsedQs, sortProperties: string[]): string {
+
+    if (!query) return "createdAt";
+
     let result = "createdAt";
 
     const querySortBy = query.sortBy;

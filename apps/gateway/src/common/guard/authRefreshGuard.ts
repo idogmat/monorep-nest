@@ -32,7 +32,7 @@ export class AuthRefreshGuard implements CanActivate {
       console.log('fail');
     }
 
-    const device = await this.deviceService.findById(res.deviceId)
+    const device = await this.deviceService.findById(res?.deviceId)
 
     if (device &&
       device.updatedAt?.toISOString() === res?.updatedAt

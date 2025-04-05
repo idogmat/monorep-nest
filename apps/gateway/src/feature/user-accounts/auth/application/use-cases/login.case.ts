@@ -7,6 +7,8 @@ import { BcryptService } from '../../infrastructure/bcrypt.service';
 import { LoginModel } from '../../api/models/input/login.model';
 import { AuthService } from '../auth.service';
 import { DeviceService } from '../../../devices/application/device.service';
+import { RedisService } from '../../../../../support.modules/redis/redis.service';
+import { parseTimeToSeconds } from '../../../../../common/utils/parseTime';
 
 const throwError = InterlayerNotice.createErrorNotice(
   AuthError.WRONG_CRED,
@@ -28,7 +30,9 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
     private userPrismaRepository: UsersPrismaRepository,
     private bcryptService: BcryptService,
     private authService: AuthService,
-    private deviceService: DeviceService
+    private deviceService: DeviceService,
+    private readonly redisService: RedisService,
+
   ) {
   }
 
@@ -36,7 +40,6 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
     const { email, password, ip, title } = command.loginModel;
     const u = await this.userPrismaRepository.findUserByEmail(email);
     if (!u) return throwError
-
     const checkPassword = await this.bcryptService.checkPassword(password, u.passwordHash)
     if (!checkPassword) return throwError;
     let d = null
@@ -47,7 +50,7 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
     }
 
     d = await this.deviceService.update({ ...d, updatedAt })
-
+    console.log(d)
     const [accessToken, refreshToken] = await Promise.all(
       [
         await this.authService.createToken({
@@ -61,6 +64,9 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
           updatedAt
         }, 'REFRESH')
       ])
+    const exp = await this.authService.getExpiration('ACCESS')
+    const expSeconds = parseTimeToSeconds(exp)
+    await this.redisService.set(accessToken, d, expSeconds)
 
     return { accessToken, refreshToken };
 

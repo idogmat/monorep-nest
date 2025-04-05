@@ -7,11 +7,12 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { EnvironmentsTypes } from './getConfiguration';
 import { HttpExceptionFilter } from './exception-filter';
 import { ConfigService } from '@nestjs/config';
+import { interval } from 'date-fns';
 
 const APP_PREFIX = '/api/v1';
 
 export const applyAppSettings = (app: INestApplication): { port: number; env: string; rabbit: string } => {
-  const { port, env , rabbit} = getEnv(app)
+  const { port, env, rabbit } = getEnv(app)
 
   setAppPrefix(app, APP_PREFIX);
 
@@ -81,3 +82,43 @@ const setAppPipes = (app: INestApplication) => {
 const setAppExceptionsFilters = (app: INestApplication) => {
   app.useGlobalFilters(new HttpExceptionFilter());
 };
+
+class IntervalRunner {
+  intervalId: NodeJS.Timeout
+  isRunning: boolean
+  constructor() {
+    this.intervalId = null;
+    this.isRunning = false;
+  }
+
+  // Запустить выполнение функции с интервалом
+  start(func, interval = 5000, immediateFirstCall = false) {
+    if (this.isRunning) return;
+
+    this.isRunning = true;
+
+    if (immediateFirstCall) {
+      func();
+    }
+
+    this.intervalId = setInterval(() => {
+      func();
+    }, interval);
+  }
+
+  // Остановить выполнение
+  stop() {
+    if (!this.isRunning) return;
+
+    clearInterval(this.intervalId);
+    this.isRunning = false;
+    this.intervalId = null;
+  }
+
+  // Проверить статус выполнения
+  get status() {
+    return this.isRunning ? 'running' : 'stopped';
+  }
+}
+
+export const intervalRunner = new IntervalRunner();

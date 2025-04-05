@@ -9,17 +9,10 @@ import { json, urlencoded } from 'express';
 async function bootstrap() {
 
   const app = await NestFactory.create<INestApplication>(AppModule)
-  const { port, env, host } = applyAppSettings(app)
+  const { port, env, host, rabbit } = applyAppSettings(app)
   app.use(json({ limit: '10gb' }));
   app.use(urlencoded({ extended: true, limit: '10gb' }));
-  // app.connectMicroservice<MicroserviceOptions>({
-  //   transport: Transport.RMQ,
-  //   options: {
-  //     urls: ['amqp://user:password@localhost:5672'],
-  //     queue: 'test_queue',
-  //     queueOptions: { durable: false },
-  //   },
-  // });
+
   await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
     transport: Transport.TCP,
     options: {

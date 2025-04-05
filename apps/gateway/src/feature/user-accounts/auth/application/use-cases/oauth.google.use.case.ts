@@ -8,6 +8,8 @@ import { GoogleAuthResponseModel } from '../../api/models/shared/google.auth.res
 import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/users.prisma.repository';
 import { DeviceService } from '../../../devices/application/device.service';
 import { GateService } from '../../../../../common/gate.service';
+import { parseTimeToSeconds } from '../../../../../common/utils/parseTime';
+import { RedisService } from '../../../../../support.modules/redis/redis.service';
 
 export class OauthGoogleCommand {
   constructor(public googleTokenModel: GoogleTokenModel) {
@@ -23,7 +25,7 @@ export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
     private authService: AuthService,
     private deviceService: DeviceService,
     readonly gateService: GateService,
-
+    private readonly redisService: RedisService,
   ) {
   }
 
@@ -42,13 +44,12 @@ export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
       if (!user) {
         //create user and provider from google
         user = await this.userPrismaRepository.createUserWithProvider(email, email.split('@')[0], { googleId: sub });
+        const profile = await this.gateService.profileServicePost('', {
+          userId: user.id, userName: user.name, email: user.email
+        }, {})
       } else {
         await this.linkGoogleProvider(user, sub);
       }
-
-      const profile = await this.gateService.profileServicePost('', {}, {
-        userId: user.id, userName: user.name, email: user.email
-      })
 
       const updatedAt = new Date()
       d = await this.deviceService.find({ ip, title, userId: user.id, updatedAt })
@@ -61,6 +62,9 @@ export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
         deviceId: d.id,
         updatedAt
       });
+      const exp = await this.authService.getExpiration('ACCESS')
+      const expSeconds = parseTimeToSeconds(exp)
+      await this.redisService.set(accessToken, d, expSeconds)
 
       return new InterlayerNotice(new GoogleAuthResponseModel(accessToken, refreshToken));
     } catch (error) {

@@ -43,9 +43,10 @@ export class SignupUseCase implements ICommandHandler<SignupCommand> {
     const userDto = this.createUserDTO(login, email, passwordHash);
 
     const user = await this.userPrismaRepository.createUser(userDto);
-    const profile = await this.gateService.profileServicePost('', {}, {
+    console.log(user)
+    const profile = await this.gateService.profileServicePost('', {
       userId: user.id, userName: login, email
-    })
+    }, {})
     //TODO move send email to event handler
     try {
       this.emailService.sendRegisrtationEmail(

@@ -1,14 +1,37 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-
+import { MessageClientService } from '../support.modules/grpc/grpc.service';
+import { join } from 'path';
+import { GrpcServiceModule } from '../support.modules/grpc/grpc.module';
+import { Module } from '@nestjs/common';
+@Module({
+  imports: [
+    ClientsModule.register([
+      {
+        name: 'MESSAGE_SERVICE',
+        transport: Transport.GRPC,
+        options: {
+          package: 'message',
+          protoPath: join(__dirname, '../proto/message.proto'),
+          url: '0.0.0.0',
+        },
+      },
+    ]),
+  ],
+  controllers: [],
+  providers: [MessageClientService],
+  exports: [MessageClientService],
+})
+export class GrpcServiceModuleMock { }
 
 describe('AppController', () => {
   let appController: AppController;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
-      imports:[
+      imports: [
+        GrpcServiceModule,
         ClientsModule.register([
           {
             name: 'TCP_SERVICE',
@@ -18,11 +41,23 @@ describe('AppController', () => {
               port: 3001,  // Порт, на который отправляется запрос в Service B
             },
           },
+          // {
+          //   name: 'MESSAGE_SERVICE',
+          //   transport: Transport.GRPC,
+          //   options: {
+          //     package: 'message',
+          //     protoPath: join(__dirname, '../proto/message.proto'),
+          //     url: '0.0.0.0',
+          //   },
+          // }
         ])
       ],
       controllers: [AppController],
       providers: [],
-    }).compile();
+    })
+      .overrideModule(GrpcServiceModule)
+      .useModule(GrpcServiceModuleMock)
+      .compile();
 
     appController = app.get<AppController>(AppController);
   });

@@ -112,3 +112,8 @@ spec:
                  secretKeyRef:
                    name: gate-production-config-secret
                    key: RABBIT_URLS
+             - name: GATE_PROFILE_GRPC_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: GATE_PROFILE_GRPC_URL

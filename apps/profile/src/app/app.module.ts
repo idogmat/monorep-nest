@@ -6,6 +6,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { getConfiguration } from '../settings/getConfiguration';
 import { PrismaService } from '../features/prisma/prisma.service';
 import { ProfileService } from '../features/profile.service';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -16,21 +17,34 @@ import { ProfileService } from '../features/profile.service';
     ClientsModule.registerAsync([
       {
         imports: [ConfigModule],
-        name: 'RABBITMQ_SERVICE',
+        name: 'RABBITMQ_PROFILE_SERVICE',
         useFactory: (configService: ConfigService) => {
           return {
             transport: Transport.RMQ,
             options: {
               urls: configService.get<string[]>('RABBIT_URLS'),
-              queue: 'file_queue',
+              queue: 'profile_queue',
               queueOptions: { durable: false },
             },
           }
         },
         inject: [ConfigService],
       },
+      // {
+      //   imports: [ConfigModule],
+      //   name: 'MESSAGE_SERVICE',
+      //   useFactory: (configService: ConfigService) => {
+      //     return {
+      //       transport: Transport.GRPC,
+      //       options: {
+      //         package: 'message',
+      //         protoPath: join(__dirname, 'proto/message.proto'),
+      //       }
+      //     }
+      //   },
+      //   inject: [ConfigService],
+      // },
     ]),
-
   ],
   controllers: [AppController],
   providers: [PrismaService, ProfileService],

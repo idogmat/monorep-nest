@@ -17,10 +17,29 @@ export class  PostsPrismaRepository{
     })
   }
 
-  async updateStatusForPost(postId: string, status: PhotoUploadStatus){
+  async updateStatusForPost(postId: string, status: PhotoUploadStatus): Promise<Post>{
     return this.prisma.post.update({
       where: {id: postId},
       data: {photoUploadStatus: status}
+    })
+  }
+
+  async findById(id: string): Promise<Post|null>{
+    return this.prisma.post.findFirst({
+      where: {id}
+    })
+  }
+
+  async updatePost(param: { id: string, data: Partial<Post> }) {
+    return this.prisma.post.update({
+      where: {id: param.id},
+      data: param.data
+    })
+  }
+
+  async delete(param: { id: string }) {
+    await this.prisma.post.delete({
+      where: {id: param.id}
     })
   }
 }

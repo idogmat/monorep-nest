@@ -18,8 +18,9 @@ import { OauthGoogleCommand } from '../application/use-cases/oauth.google.use.ca
 import { GithubService } from '../../../../common/provider/github.service';
 import { GithubTokenModel } from './models/input/github.token.model';
 import { GithubAuthCallbackCommand } from '../application/use-cases/github.auth.callback.use.case';
-import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '../../../../common/guard/authGuard';
+import { DeviceInfoDto } from './models/shared/device.info.dto';
+import { RedisService } from '../../../../support.modules/redis/redis.service';
 
 interface ICookieSettings {
   httpOnly: boolean,
@@ -37,7 +38,6 @@ export class AuthController {
     private commandBus: CommandBus,
     private readonly authService: AuthService,
     private readonly githubService: GithubService,
-    private readonly configService: ConfigService,
   ) {
     // const isLocal = this.configService.get<string>('NODE_ENV') === 'DEVELOPMENT'
     this.COOKIE_SETTINGS = {
@@ -188,12 +188,17 @@ export class AuthController {
 
   @Get('github/callback')
   async githubAuthCallback(
+    @Req() req,
     @Res() res,
     @Query() queryDto: GithubTokenModel
   ) {
 
+    const deviceInfo = new DeviceInfoDto(
+      req.get("user-agent")?.toString() || 'null',
+      req.ip?.toString() || req.headers["x-forwarded-for"]?.toString() || 'null'
+    );
     const result = await this.commandBus.execute(
-      new GithubAuthCallbackCommand(queryDto),
+      new GithubAuthCallbackCommand(queryDto, deviceInfo),
     );
     if (result.hasError?.()) {
       new ErrorProcessor(result).handleError();

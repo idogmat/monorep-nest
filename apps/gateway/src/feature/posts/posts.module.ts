@@ -12,9 +12,24 @@ import { JwtModule } from '@nestjs/jwt';
 import { DeviceService } from '../user-accounts/devices/application/device.service';
 import { UploadPostPhotosUseCase } from './application/use-cases/upload.post.photos.use-case';
 import { GateService } from '../../common/gate.service';
+import { PostsQueryRepository } from './infrastructure/prisma/posts-query-repository.service';
+import {
+  UpdatePostStatusOnFileUploadUseCases
+} from './application/use-cases/update.post.status.on.file.upload.use-case';
+import { GetPostAndPhotoUseCase } from './application/use-cases/get.post.and.photo.use-case';
+import { GetAllPostsUseCase } from './application/use-cases/get.all.posts.use-case';
+import { UpdatePostUseCase } from './application/use-cases/update.post.use-case';
+import { DeletePostUseCase } from './application/use-cases/delete.post.use-case';
 
 
-const useCasesForPost = [CreatePostUseCases, UploadPostPhotosUseCase]
+const useCasesForPost = [
+  CreatePostUseCases,
+  UploadPostPhotosUseCase,
+  UpdatePostStatusOnFileUploadUseCases,
+  GetPostAndPhotoUseCase,
+  GetAllPostsUseCase,
+  UpdatePostUseCase,
+  DeletePostUseCase]
 @Module({
   imports: [
     HttpModule,
@@ -51,7 +66,7 @@ const useCasesForPost = [CreatePostUseCases, UploadPostPhotosUseCase]
     ClientsModule.registerAsync([
       {
         imports: [ConfigModule],
-        name: 'RABBITMQ_SERVICE',
+        name: 'RABBITMQ_POST_SERVICE',
         useFactory: (configService: ConfigService) => {
           return {
             transport: Transport.RMQ,
@@ -68,6 +83,7 @@ const useCasesForPost = [CreatePostUseCases, UploadPostPhotosUseCase]
   ],
   providers: [
     PostsPrismaRepository,
+    PostsQueryRepository,
     PrismaService,
     DeviceService,
     GateService,

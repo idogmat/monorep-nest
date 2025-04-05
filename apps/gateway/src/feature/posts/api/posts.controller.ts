@@ -1,9 +1,9 @@
-import {  ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   Body,
-  Controller,
-  Inject,
-  Post,
+  Controller, Delete, Get,
+  Inject, Param, ParseUUIDPipe,
+  Post, Put, Query,
   Req,
   UploadedFiles,
   UseGuards,
@@ -21,6 +21,17 @@ import { UploadPostPhotosCommand } from '../application/use-cases/upload.post.ph
 import { ErrorProcessor } from '../../../common/error-handling/error.processor';
 import { CreatePostCommand } from '../application/use-cases/create.post.use.cases';
 import { PostsPrismaRepository } from '../infrastructure/prisma/posts.prisma.repository';
+import {
+  UpdatePostStatusOnFileUploadCommand
+} from '../application/use-cases/update.post.status.on.file.upload.use-case';
+import { GetPostAndPhotoCommand } from '../application/use-cases/get.post.and.photo.use-case';
+import { AuthGuardOptional } from '../../../common/guard/authGuardOptional';
+import { PaginationSearchPostTerm} from './model/input/query.posts.model';
+import { Request } from 'express';
+import { GetAllPostsCommand } from '../application/use-cases/get.all.posts.use-case';
+import { PostUpdateModel } from './model/input/post.update.model';
+import { UpdatePostCommand } from '../application/use-cases/update.post.use-case';
+import { DeletePostCommand } from '../application/use-cases/delete.post.use-case';
 
 
 
@@ -35,7 +46,10 @@ export class PostsController {
   ) {
   }
 
-  @Post('upload')
+  @Post()
+  @ApiOperation({ summary: 'Create a new post' })
+  @ApiConsumes('multipart/form-data')
+  @ApiResponse({ status: 201, description: 'Post created successfully' })
   @UseInterceptors(
     FilesInterceptor('files', 10, {
       storage: diskStorage({
@@ -47,13 +61,13 @@ export class PostsController {
   )
   @UseGuards(AuthGuard)
   async createPost(@Req() req,
-                   @Body() postCreateModel: PostCreateModel,
-                   @UploadedFiles() files: Express.Multer.File[]) {
+    @Body() postCreateModel: PostCreateModel,
+    @UploadedFiles() files: Express.Multer.File[]) {
 
     const userId = req.user.userId;
 
     const postId = await this.commandBus.execute(
-      new CreatePostCommand(postCreateModel.title, userId, 'IN_PROGRESS')
+      new CreatePostCommand(postCreateModel.description, userId, 'IN_PROGRESS')
     )
 
     const result = await this.commandBus.execute(
@@ -65,18 +79,88 @@ export class PostsController {
     }
   }
 
+  @UseGuards(AuthGuardOptional)
+  @ApiOperation({ summary: 'Update an existing post' })
+  @ApiResponse({ status: 200, description: 'Post updated' })
+  @ApiResponse({ status: 403, description: 'Forbidden to update' })
+  @ApiResponse({ status: 404, description: 'Post not found' })
+  @ApiBody({ type: PostUpdateModel })
+  @Get(':postId')
+  async getPost(@Param('postId', new ParseUUIDPipe()) postId: string,
+                @Req() req,){
+
+    const userId = req.user?.userId || ''
+    const result = await this.commandBus.execute(
+      new GetPostAndPhotoCommand(postId, userId)
+    )
+    if (result.hasError()) {
+      new ErrorProcessor(result).handleError();
+    }
+    return result.data;
+  }
+
+  @UseGuards(AuthGuardOptional)
+  @ApiOperation({ summary: 'Get a list of posts with pagination' })
+  @ApiResponse({ status: 200, description: 'List of posts' })
+  @Get()
+  async getPosts(
+    @Req() req: Request,
+    @Query()
+    queryDTO: PaginationSearchPostTerm){
+
+    const userId = req.user?.userId || ''
+    return await this.commandBus.execute(
+      new GetAllPostsCommand(queryDTO, userId)
+    )
+  }
+
+  @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'Update an existing post' })
+  @ApiParam({ name: 'postId', type: 'string', format: 'uuid', description: 'Post UUID' })
+  @ApiBody({ type: PostUpdateModel })
+  @ApiResponse({ status: 200, description: 'Post updated' })
+  @ApiResponse({ status: 403, description: 'Forbidden to update' })
+  @ApiResponse({ status: 404, description: 'Post not found' })
+  @Put(':postId')
+  async updatePost(@Param('postId', new ParseUUIDPipe()) postId: string,
+                @Body() updateModel: PostUpdateModel,
+                @Req() req: Request,){
+
+    const userId = req.user.userId;
+    const result = await this.commandBus.execute(
+      new UpdatePostCommand(postId, userId, updateModel.description)
+    )
+    if (result.hasError()) {
+      new ErrorProcessor(result).handleError();
+    }
+    return result.data;
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete(':postId')
+  @ApiOperation({ summary: 'Delete a post' })
+  @ApiParam({ name: 'postId', type: 'string', format: 'uuid', description: 'Post UUID' })
+  @ApiResponse({ status: 204, description: 'Post deleted' })
+  @ApiResponse({ status: 403, description: 'Forbidden to delete' })
+  @ApiResponse({ status: 404, description: 'Post not found' })
+  async deletePost(@Param('postId', new ParseUUIDPipe()) postId: string,
+                   @Req() req: Request,){
+
+    const userId = req.user.userId;
+    const result = await this.commandBus.execute(
+      new DeletePostCommand(postId, userId)
+    )
+    if (result.hasError()) {
+      new ErrorProcessor(result).handleError();
+    }
+  }
   @EventPattern('files_uploaded')
   async handleFileUploaded(@Payload() data: any,
-                           @Ctx() context: any) {
+    @Ctx() context: any) {
     console.log('Received file uploaded message:', data);
     const { postId, files } = data;
-    let status;
-    if(files.length > 0 ){
-      status = 'COMPLETED';
-    } else {
-      status = 'FAILED';
-    }
-    await this.postsPrismaRepository.updateStatusForPost(postId, status);
-
+    await this.commandBus.execute(
+      new UpdatePostStatusOnFileUploadCommand(postId, files)
+    )
   }
 }

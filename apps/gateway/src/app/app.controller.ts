@@ -1,12 +1,24 @@
-import { Controller, Get, Inject, Req, Res } from '@nestjs/common';
-import { ClientProxy, Ctx, EventPattern, Payload } from '@nestjs/microservices';
+import { Controller, Get, Inject, Param, Req, Res } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import { Request, Response } from 'express';
 import { firstValueFrom } from 'rxjs';
-import { PostsPrismaRepository } from '../feature/posts/infrastructure/prisma/posts.prisma.repository';
+import { MessageClientService } from '../support.modules/grpc/grpc.service';
 
 @Controller()
 export class AppController {
-  constructor(@Inject('TCP_SERVICE') private readonly client: ClientProxy) { }
+  constructor(
+    @Inject('TCP_SERVICE') private readonly client: ClientProxy,
+    private readonly messageClientService: MessageClientService,
+
+  ) { }
+
+  @Get('grpc/:id')
+  async getMessage(
+    @Param('id') id: string
+  ) {
+    console.log('rgps')
+    return this.messageClientService.getMessage(id);
+  }
 
   @Get()
   getHello() {

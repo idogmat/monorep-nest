@@ -14,6 +14,7 @@ import { PostPhotoService } from './files/application/post.photo.service';
 import { PostMedia, PostMediaSchema } from './files/domain/post.media.entity';
 import { CreatePhotoForPostUseCase } from './files/application/use-cases/create.photo.for.post.use-case';
 import { UploadProfilePhotoUseCase } from './files/application/use-cases/upload.profile.photo.use-case';
+import { FilesQueryRepository } from './files/infrastructure/files.query-repository';
 
 const useCases = [
   CreatePhotoForPostUseCase,
@@ -42,13 +43,28 @@ const useCases = [
     ClientsModule.registerAsync([
       {
         imports: [ConfigModule],
-        name: 'RABBITMQ_SERVICE',
+        name: 'RABBITMQ_POST_SERVICE',
         useFactory: (configService: ConfigService) => {
           return {
             transport: Transport.RMQ,
             options: {
               urls: configService.get<string[]>('RABBIT_URLS'),
-              queue: 'file_queue',
+              queue: 'post_queue',
+              queueOptions: { durable: false },
+            },
+          }
+        },
+        inject: [ConfigService],
+      },
+      {
+        imports: [ConfigModule],
+        name: 'RABBITMQ_PROFILE_SERVICE',
+        useFactory: (configService: ConfigService) => {
+          return {
+            transport: Transport.RMQ,
+            options: {
+              urls: configService.get<string[]>('RABBIT_URLS'),
+              queue: 'profile_queue',
               queueOptions: { durable: false },
             },
           }
@@ -61,6 +77,7 @@ const useCases = [
     ...useCases,
     FilesService,
     FilesRepository,
+    FilesQueryRepository,
     ProfileService,
     PostPhotoService,
     {
@@ -78,7 +95,7 @@ const useCases = [
       useFactory: (configService: ConfigService) => {
         return new S3StorageAdapterJ(
           configService,
-          'mygram', // Укажите имя бакета из конфига
+          configService.get<string>('POST_BUCKET'), // Укажите имя бакета из конфига
         );
       },
       inject: [ConfigService],
