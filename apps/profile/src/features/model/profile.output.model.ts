@@ -29,17 +29,17 @@ export type ProfileWithSubscribers = Profile & Prisma.ProfileGetPayload<& typeof
 export class OutputProfileModel {
   id: string;
   userId: string;
-  photoUrl: string;
+  photoUrl: { value: string };
+  firstName: { value: string };
+  lastName: { value: string };
+  dateOfBirth: { value: string };
+  country: { value: string };
+  city: { value: string };
+  aboutMe: { value: string };
   paymentAccount: boolean;
+  followed: boolean;
   subscribers: number;
   subscriptions: number;
-  firstName: string;
-  lastName: string;
-  dateOfBirth: Date;
-  country: string;
-  city: string;
-  followed: boolean;
-  aboutMe: string;
   // TODO remove excess fields ---- case
   yourProfile: true;
   yourFriend: true
@@ -50,13 +50,13 @@ export const OutputProfileModelMapper = (profile: ProfileWithSubscribers, _userI
   const outputModel = new OutputProfileModel();
   outputModel.id = profile.id;
   outputModel.userId = profile.userId;
-  outputModel.photoUrl = profile.photoUrl;
-  outputModel.firstName = profile.firstName;
-  outputModel.lastName = profile.lastName;
-  outputModel.dateOfBirth = profile.dateOfBirth;
-  outputModel.country = profile.country;
-  outputModel.city = profile.city;
-  outputModel.aboutMe = profile.aboutMe
+  outputModel.photoUrl = { value: profile.photoUrl || '' };
+  outputModel.firstName = { value: profile.firstName || '' };
+  outputModel.lastName = { value: profile.lastName || '' };
+  outputModel.dateOfBirth = { value: profile.dateOfBirth?.toISOString() || '' };
+  outputModel.country = { value: profile.country || '' };
+  outputModel.city = { value: profile.city || '' };
+  outputModel.aboutMe = { value: profile.aboutMe || '' };
   outputModel.followed = followedCheck(profile.subscribers, _userId || '');
   // теперь уже хз
   // outputModel.yourProfile = profile.yourProfile;

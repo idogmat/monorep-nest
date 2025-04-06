@@ -1,9 +1,13 @@
 import { Global, Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
+import { UserProfileResponse } from 'apps/libs/proto/generated/profile';
+import { firstValueFrom, lastValueFrom, Observable } from 'rxjs';
 
+const cleanString = (str: string) => {
+  return str.replace(/[\n\r\t]+/g, '').trim();
+};
 interface ProfileService {
-  GetUserProfile(data: { userId: string, profileUserId: string }): Observable<any>;
+  GetUserProfile(data: { userId: string, profileUserId: string }): Observable<UserProfileResponse>;
   GetUserProfiles(data: { userId: string }): Observable<any>;
 
 }
@@ -25,10 +29,11 @@ export class ProfileClientService implements OnModuleInit {
   // }
 
   async getProfile(userId: string, profileUserId: string) {
-    return this.profileService.GetUserProfile({ userId, profileUserId }).toPromise();
+    return firstValueFrom(await this.profileService.GetUserProfile({ userId, profileUserId }));
+
   }
 
   async getProfiles(userId: string) {
-    return this.profileService.GetUserProfiles({ userId }).toPromise();
+    return lastValueFrom(await this.profileService.GetUserProfiles({ userId }));
   }
 }

@@ -6,7 +6,7 @@
     "deleteOutDir": true,
     "webpack": true,
     "plugins": ["@nestjs/swagger/plugin"],
-    "assets": ["**/*.proto"],
+    "assets": ["../../libs/proto/*.proto"],
     "watchAssets": true,
     "tsConfigPath": "apps/gateway/tsconfig.app.json"
   },
@@ -19,6 +19,8 @@
       "entryFile": "main",
       "sourceRoot": "apps/gateway/src",
       "compilerOptions": {
+        "assets": ["../../libs/proto/*.proto"],
+        "watchAssets": true,
         "tsConfigPath": "apps/gateway/tsconfig.app.json"
       }
     },
@@ -37,6 +39,8 @@
       "entryFile": "main",
       "sourceRoot": "apps/profile/src",
       "compilerOptions": {
+        "assets": ["../../libs/proto/*.proto"],
+        "watchAssets": true,
         "tsConfigPath": "apps/profile/tsconfig.app.json"
       }
     }

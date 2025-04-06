@@ -13,6 +13,7 @@ import { EnhancedParseUUIDPipe } from '../../../../../libs/input.validate/check.
 import { Request } from 'express';
 import { AuthGuardOptional } from '../../../common/guard/authGuardOptional';
 import { ProfileClientService } from '../../../support.modules/grpc/grpc.service';
+import { ProfileMappingService } from '../application/profile.mapper';
 
 
 @ApiTags('Profile')
@@ -24,7 +25,7 @@ export class ProfileController {
     readonly profileService: ProfileService,
     readonly gateService: GateService,
     private readonly profileClientService: ProfileClientService,
-
+    private readonly profileMappingService: ProfileMappingService,
 
 
   ) {
@@ -43,7 +44,7 @@ export class ProfileController {
       const userId = req.user?.userId || ''
       const result = await this.profileClientService.getProfile(userId, id)
       console.log(result)
-      return result
+      return this.profileMappingService.profileMapping(result)
     } catch {
       //  throw error
     }
@@ -61,7 +62,7 @@ export class ProfileController {
       const userId = req.user?.userId || ''
       const result = await this.profileClientService.getProfiles(userId)
       console.log(result)
-      return result
+      return result.profiles.map(this.profileMappingService.profileMapping)
     } catch {
       // throw error
     }

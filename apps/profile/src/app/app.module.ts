@@ -38,7 +38,7 @@ import { join } from 'path';
             transport: Transport.GRPC,
             options: {
               package: 'profile',
-              protoPath: join(__dirname, 'proto/message.proto'),
+              protoPath: join(__dirname, 'profile.proto'),
             }
           }
         },

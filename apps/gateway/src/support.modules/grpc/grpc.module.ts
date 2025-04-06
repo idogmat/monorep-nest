@@ -3,7 +3,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join, resolve } from 'path';
 import { ProfileClientService } from './grpc.service';
-
 @Global()
 @Module({
   imports: [
@@ -16,8 +15,11 @@ import { ProfileClientService } from './grpc.service';
             transport: Transport.GRPC,
             options: {
               package: 'profile',
-              protoPath: join(__dirname, 'proto/message.proto'),
+              protoPath: join(__dirname, 'profile.proto'),
               url: configService.get('GATE_PROFILE_GRPC_URL'),
+              loader: {
+                includeDirs: ['node_modules/google-proto-files'],
+              },
             },
           }
         },

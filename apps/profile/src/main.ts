@@ -12,8 +12,11 @@ async function bootstrap() {
     transport: Transport.GRPC,
     options: {
       package: 'profile',
-      protoPath: join(__dirname, 'proto/message.proto'),
+      protoPath: join(__dirname, 'profile.proto'),
       url: grpc_url,
+      loader: {
+        includeDirs: ['node_modules/google-proto-files'],
+      },
     },
   });
 

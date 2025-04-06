@@ -5,6 +5,7 @@ import v8 from 'v8';
 import { useContainer } from 'class-validator';
 import { applyAppSettings, intervalRunner } from './settings/main.settings';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 

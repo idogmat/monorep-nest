@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { DeviceService } from '../user-accounts/devices/application/device.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { GateService } from '../../common/gate.service';
+import { ProfileMappingService } from './application/profile.mapper';
 
 @Module({
   imports: [
@@ -40,7 +41,13 @@ import { GateService } from '../../common/gate.service';
     //   },
     // ])
   ],
-  providers: [ProfileService, DeviceService, PrismaService, GateService],
+  providers: [
+    ProfileService,
+    DeviceService,
+    ProfileMappingService,
+    PrismaService,
+    GateService
+  ],
   controllers: [ProfileController],
   exports: []
 })
