@@ -1,4 +1,13 @@
-import { ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiParam,
+  ApiProperty,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import {
   Body,
   Controller, Delete, Get,
@@ -14,7 +23,6 @@ import { PostCreateModel } from './model/input/post.create.model';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ClientProxy, Ctx, EventPattern, Payload } from '@nestjs/microservices';
 import { diskStorage } from 'multer';
-import { randomUUID } from 'crypto';
 import { AuthGuard } from '../../../common/guard/authGuard';
 import { HttpService } from '@nestjs/axios';
 import { UploadPostPhotosCommand } from '../application/use-cases/upload.post.photos.use-case';
@@ -26,12 +34,16 @@ import {
 } from '../application/use-cases/update.post.status.on.file.upload.use-case';
 import { GetPostAndPhotoCommand } from '../application/use-cases/get.post.and.photo.use-case';
 import { AuthGuardOptional } from '../../../common/guard/authGuardOptional';
-import { PaginationSearchPostTerm} from './model/input/query.posts.model';
 import { Request } from 'express';
 import { GetAllPostsCommand } from '../application/use-cases/get.all.posts.use-case';
 import { PostUpdateModel } from './model/input/post.update.model';
 import { UpdatePostCommand } from '../application/use-cases/update.post.use-case';
 import { DeletePostCommand } from '../application/use-cases/delete.post.use-case';
+import { PaginationPostQueryDto } from './model/input/pagination.post.query.dto';
+import { PaginationSearchPostTerm } from './model/input/query.posts.model';
+import { PagedResponse } from '../../../common/pagination/paged.response';
+import { PostViewModel } from './model/output/post.view.model';
+import { PagedResponseOfPosts } from './model/output/paged.response.of.posts.model';
 
 
 
@@ -99,18 +111,30 @@ export class PostsController {
     return result.data;
   }
 
+  @Get()
   @UseGuards(AuthGuardOptional)
   @ApiOperation({ summary: 'Get a list of posts with pagination' })
-  @ApiResponse({ status: 200, description: 'List of posts' })
-  @Get()
+  @ApiQuery({ name: 'pageNumber', required: false })
+  @ApiQuery({ name: 'pageSize', required: false })
+  @ApiQuery({ name: 'sortBy', required: false })
+  @ApiQuery({ name: 'sortDirection', required: false })
+  @ApiQuery({ name: 'description', required: false })
+  @ApiQuery({ name: 'userId', required: false })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully fetched posts',
+    type: PagedResponseOfPosts,  // Указываем PagedResponse без указания типа
+  })
+
   async getPosts(
     @Req() req: Request,
     @Query()
-    queryDTO: PaginationSearchPostTerm){
+    queryDTO: PaginationPostQueryDto): Promise<PagedResponse<PostViewModel>>{
 
+    const pagination = new PaginationSearchPostTerm(queryDTO, ['createdAt', 'description']);
     const userId = req.user?.userId || ''
     return await this.commandBus.execute(
-      new GetAllPostsCommand(queryDTO, userId)
+      new GetAllPostsCommand(pagination, userId)
     )
   }
 

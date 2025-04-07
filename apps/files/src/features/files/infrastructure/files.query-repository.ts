@@ -18,9 +18,18 @@ export class FilesQueryRepository{
 
   }
 
-  async getPostsMedia(userId: string): Promise<PostMediaViewModel[]> {
+  async getPostsMedia(userId: string, postIds: string[]): Promise<PostMediaViewModel[]> {
 
-    const filter = !userId ? {} : {userId};
+    const filter: any = {};
+
+    if (userId) {
+      filter.userId = userId;
+    }
+
+    // Если посты (postIds) переданы, добавляем условие для фильтрации по постам
+    if (postIds && postIds.length > 0) {
+      filter.postId = { $in: postIds };  // Фильтруем по массиву postIds
+    }
 
     const postsMedia = await this.PostMediaModel.find(filter).exec();
 
