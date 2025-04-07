@@ -2,11 +2,12 @@ import { Injectable } from "@nestjs/common";
 import { createReadStream, unlinkSync } from "fs";
 import { GateService } from "../../../common/gate.service";
 import { InputProfileModel } from "../api/model/input.profile.model";
+import { ProfileClientService } from "../../../support.modules/grpc/grpc.service";
 
 @Injectable()
 export class ProfileService {
   constructor(
-    // @Inject('RABBITMQ_SERVICE') private readonly client: ClientProxy,
+    private readonly profileClientService: ProfileClientService,
     readonly gateService: GateService,
   ) { }
 
@@ -20,7 +21,7 @@ export class ProfileService {
     const readStream = createReadStream(`./tmp/${file.filename}`);
     try {
       const result = await Promise.allSettled([
-        this.gateService.filesServicePost(
+        await this.gateService.filesServicePost(
           'receive',
           readStream,
           {
@@ -29,13 +30,9 @@ export class ProfileService {
             'X-UserId': userId
           },
         ),
-        this.gateService.profileServicePut(
-          '',
-          profile,
-          {
-            'X-UserId': userId
-          },
-        )])
+        await this.profileClientService.updateProfile({
+          ...profile, userId
+        })])
       console.log(result)
     } catch (error) {
       // Обработка ошибок

@@ -6,6 +6,7 @@ import "google/protobuf/wrappers.proto";  // Подключаем обёртки
 service ProfileService {
   rpc GetUserProfile(UserProfileRequest) returns (UserProfileResponse);
   rpc GetUserProfiles(UserProfileRequest) returns (UserProfilesResponse);
+  rpc UpdateUserProfile(UpdateUserProfileRequest) returns (UpdateUserProfileResponse);
 }
 // Request messages
 message UserProfileRequest {
@@ -22,14 +23,30 @@ message UserProfilesResponse {
 message UserProfileResponse {
   string id = 1;
   string userId = 2;
-  google.protobuf.StringValue photoUrl = 3;         // Обёртка для пустых значений
-  google.protobuf.StringValue firstName = 4;        // Обёртка для пустых значений
-  google.protobuf.StringValue lastName = 5;         // Обёртка для пустых значений
-  google.protobuf.StringValue dateOfBirth = 6;      // Обёртка для пустых значений
-  google.protobuf.StringValue country = 7;          // Обёртка для пустых значений
-  google.protobuf.StringValue city = 8;             // Обёртка для пустых значений
-  google.protobuf.StringValue aboutMe = 9;          // Обёртка для пустых значений
-  bool followed = 10;
-  int32 subscribers = 11;
-  int32 subscriptions = 12;
+  string userName = 3;
+  google.protobuf.StringValue photoUrl = 4;         // Обёртка для пустых значений
+  google.protobuf.StringValue firstName = 5;        // Обёртка для пустых значений
+  google.protobuf.StringValue lastName = 6;         // Обёртка для пустых значений
+  google.protobuf.StringValue dateOfBirth = 7;      // Обёртка для пустых значений
+  google.protobuf.StringValue country = 8;          // Обёртка для пустых значений
+  google.protobuf.StringValue city = 9;             // Обёртка для пустых значений
+  google.protobuf.StringValue aboutMe = 10;          // Обёртка для пустых значений
+  bool followed = 11;
+  int32 subscribers = 12;
+  int32 subscriptions = 13;
+}
+
+message UpdateUserProfileRequest {
+  string userId = 1;
+  string userName = 2;
+  string firstName = 3;        
+  string lastName = 4;         
+  string dateOfBirth = 5;      
+  string country = 6;          
+  string city = 7;             
+  string aboutMe = 8;          
+}
+
+message UpdateUserProfileResponse {
+  string status = 1;        
 }

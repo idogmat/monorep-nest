@@ -7,6 +7,7 @@ import { EnhancedParseUUIDPipe } from 'apps/libs/input.validate/check.uuid-param
 import { InputSubscribeModel } from '../features/model/input.subscribe.model';
 import { Response } from 'express';
 import { OutputProfileModelMapper } from '../features/model/profile.output.model';
+import { UpdateUserProfileRequest } from '../../../libs/proto/generated/profile';
 
 @Controller()
 export class AppController {
@@ -38,6 +39,22 @@ export class AppController {
     console.log(ready)
 
     return { profiles: ready }
+  }
+
+  @GrpcMethod('ProfileService', 'UpdateUserProfile')
+  async updateProfileGrpc(
+    data: any
+  ) {
+    console.log(data, 'updateProfile')
+
+    try {
+      await this.profileService.updateProfileData(data.userId, data);
+      return { status: 'ok' };
+    } catch (error) {
+      console.log(error)
+      return { status: 'fail' };
+      console.warn(error)
+    }
   }
 
   @Get(':id')

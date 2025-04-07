@@ -24,6 +24,7 @@ export interface UserProfilesResponse {
 export interface UserProfileResponse {
   id: string;
   userId: string;
+  userName: string;
   /** Обёртка для пустых значений */
   photoUrl:
     | string
@@ -55,12 +56,25 @@ export interface UserProfileResponse {
   subscriptions: number;
 }
 
+export interface UpdateUserProfileRequest {
+  userId: string;
+  userName: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  country: string;
+  city: string;
+  aboutMe: string;
+}
+
 export const PROFILE_PACKAGE_NAME = "profile";
 
 export interface ProfileServiceClient {
   getUserProfile(request: UserProfileRequest, metadata?: Metadata): Observable<UserProfileResponse>;
 
   getUserProfiles(request: UserProfileRequest, metadata?: Metadata): Observable<UserProfilesResponse>;
+
+  updateUserProfile(request: UpdateUserProfileRequest, metadata?: Metadata): Observable<UserProfilesResponse>;
 }
 
 export interface ProfileServiceController {
@@ -73,11 +87,16 @@ export interface ProfileServiceController {
     request: UserProfileRequest,
     metadata?: Metadata,
   ): Promise<UserProfilesResponse> | Observable<UserProfilesResponse> | UserProfilesResponse;
+
+  updateUserProfile(
+    request: UpdateUserProfileRequest,
+    metadata?: Metadata,
+  ): Promise<UserProfilesResponse> | Observable<UserProfilesResponse> | UserProfilesResponse;
 }
 
 export function ProfileServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["getUserProfile", "getUserProfiles"];
+    const grpcMethods: string[] = ["getUserProfile", "getUserProfiles", "updateUserProfile"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("ProfileService", method)(constructor.prototype[method], method, descriptor);

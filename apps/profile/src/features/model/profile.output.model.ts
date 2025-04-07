@@ -29,6 +29,7 @@ export type ProfileWithSubscribers = Profile & Prisma.ProfileGetPayload<& typeof
 export class OutputProfileModel {
   id: string;
   userId: string;
+  userName: string;
   photoUrl: { value: string };
   firstName: { value: string };
   lastName: { value: string };
@@ -50,6 +51,7 @@ export const OutputProfileModelMapper = (profile: ProfileWithSubscribers, _userI
   const outputModel = new OutputProfileModel();
   outputModel.id = profile.id;
   outputModel.userId = profile.userId;
+  outputModel.userName = profile.userName;
   outputModel.photoUrl = { value: profile.photoUrl || '' };
   outputModel.firstName = { value: profile.firstName || '' };
   outputModel.lastName = { value: profile.lastName || '' };

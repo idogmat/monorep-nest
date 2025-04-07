@@ -69,6 +69,7 @@ export class ProfileController {
 
   }
 
+
   @Get(':id')
   @UseGuards(AuthGuardOptional)
   async getProfile(
@@ -115,7 +116,7 @@ export class ProfileController {
       filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
     }),
   }))
-  async uploadFile(
+  async uploadProfile(
     @Req() req,
     @Body() profile: InputProfileModel,
     @UploadedFile(new FileValidationPipe()) file: Express.Multer.File,
@@ -124,6 +125,7 @@ export class ProfileController {
     if (!file) throw new BadRequestException({
       message: 'Not a valid file'
     })
+    console.log(profile, 'profile')
     await this.profileService.updateProfile(file, profile, req.user.userId)
   }
 

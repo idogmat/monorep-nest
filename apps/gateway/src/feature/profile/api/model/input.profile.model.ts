@@ -4,6 +4,10 @@ import { IsString } from "class-validator";
 export class InputProfileModel {
   @ApiProperty({ type: String })
   @IsString()
+  userName: string
+
+  @ApiProperty({ type: String })
+  @IsString()
   firstName: string
 
   @ApiProperty({ type: String })
@@ -12,7 +16,15 @@ export class InputProfileModel {
 
   @ApiProperty({ type: String })
   @IsString()
-  userName: string
+  dateOfBirth: string
+
+  @ApiProperty({ type: String })
+  @IsString()
+  country: string
+
+  @ApiProperty({ type: String })
+  @IsString()
+  city: string
 
   @ApiProperty({ type: String })
   @IsString()

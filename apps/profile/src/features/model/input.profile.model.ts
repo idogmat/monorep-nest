@@ -1,16 +1,11 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsString } from "class-validator";
-
 export class InputProfileModel {
-
-  firstName: string
-
-  lastName: string
-
   userName: string
-
+  firstName: string
+  lastName: string
+  dateOfBirth: string
+  country: string
+  city: string
   aboutMe: string
-
 
 }
 
