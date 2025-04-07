@@ -1,4 +1,5 @@
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiConsumes,
   ApiOperation,
@@ -58,10 +59,41 @@ export class PostsController {
   ) {
   }
 
+
   @Post()
-  @ApiOperation({ summary: 'Create a new post' })
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Create a new post with files',
+    description: 'Upload files (up to 10) with post data. Max file size 2MB each.'
+  })
+  @ApiBody({
+    description: 'Post data with files',
+    schema: {
+      type: 'object',
+      properties: {
+        files: {
+          type: 'array',
+          items: {
+            type: 'string',
+            format: 'binary',
+          },
+          description: 'Array of files (images)',
+        },
+        description: {
+          type: 'string',
+          description: 'Post description text',
+          example: 'This is my awesome post!',
+        },
+        // Добавьте другие поля из PostCreateModel по аналогии
+      },
+    },
+  })
   @ApiConsumes('multipart/form-data')
   @ApiResponse({ status: 201, description: 'Post created successfully' })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - authentication required'
+  })
   @UseInterceptors(
     FilesInterceptor('files', 10, {
       storage: diskStorage({
@@ -139,6 +171,7 @@ export class PostsController {
   }
 
   @UseGuards(AuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Update an existing post' })
   @ApiParam({ name: 'postId', type: 'string', format: 'uuid', description: 'Post UUID' })
   @ApiBody({ type: PostUpdateModel })
@@ -161,6 +194,7 @@ export class PostsController {
   }
 
   @UseGuards(AuthGuard)
+  @ApiBearerAuth()
   @Delete(':postId')
   @ApiOperation({ summary: 'Delete a post' })
   @ApiParam({ name: 'postId', type: 'string', format: 'uuid', description: 'Post UUID' })

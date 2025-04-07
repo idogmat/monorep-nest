@@ -3,7 +3,11 @@ import { IsString, Length } from 'class-validator';
 
 
 export class PostCreateModel{
-  @ApiProperty({ type: String })
+  @ApiProperty({
+    description: 'Post description text',
+    example: 'This is my awesome post!',
+    required: true,
+  })
   @IsString()
   @Length(0, 500)
   description: string;
