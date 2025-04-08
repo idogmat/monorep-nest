@@ -1,10 +1,11 @@
 import { ConflictException, ForbiddenException, Injectable } from "@nestjs/common"
 import { PrismaService } from "./prisma/prisma.service"
-import { Profile } from 'node_modules/.prisma/profile-client';
+import { Profile, Prisma } from 'node_modules/.prisma/profile-client';
 import { ProfilePhotoInputModel } from "./model/profilePhoto.input.model";
 import { InputProfileModel } from "./model/input.profile.model";
-import { ProfileWithSubscribers } from "./model/profile.output.model";
+import { PaginationProfileWithSubscribers, ProfileWithSubscribers } from "./model/profile.output.model";
 import ts from "typescript";
+import { UserProfilesQuery } from "../../../libs/proto/generated/profile";
 
 
 
@@ -46,23 +47,50 @@ export class ProfileService {
     })
   }
 
-  async findMany(): Promise<ProfileWithSubscribers[]> {
-    const profiles = await this.prisma.profile.findMany({
-      include: {
-        subscribers: {
-          include: {
-            profile: true // Получаем связанные профили
-          }
-        },
-        subscriptions: {
-          include: {
-            subscriber: true // Получаем связанные профили
+  async findMany(query: UserProfilesQuery): Promise<PaginationProfileWithSubscribers> {
+    const { pageNumber, pageSize, sortBy, sortDirection } = query;
+    const userName = query?.userName
+
+    const where: Prisma.ProfileWhereInput = {};
+
+    if (userName) {
+      where.userName = {
+        contains: userName,
+        mode: 'insensitive',
+      };
+    }
+
+    const allowedSortFields: (keyof ProfileWithSubscribers)[] = [
+      'createdAt',
+    ];
+
+    const orderBy: Prisma.ProfileOrderByWithRelationInput = allowedSortFields.includes(sortBy as any)
+      ? { [sortBy]: sortDirection.toLowerCase() as 'asc' | 'desc' }
+      : { createdAt: 'desc' };
+
+    const [items, totalCount] = await this.prisma.$transaction([
+      this.prisma.profile.findMany({
+        where,
+        orderBy,
+        skip: (pageNumber - 1) * pageSize,
+        take: pageSize,
+        include: {
+          subscribers: {
+            include: {
+              profile: true
+            }
+          },
+          subscriptions: {
+            include: {
+              subscriber: true
+            }
           }
         }
-      }
-    });
+      }),
+      this.prisma.profile.count({ where }),
+    ]);
 
-    return profiles
+    return { items, totalCount, pageNumber, pageSize };
   }
 
   async updateProfilePhoto(data: ProfilePhotoInputModel): Promise<Profile> {

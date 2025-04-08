@@ -1,13 +1,9 @@
-import { Body, Controller, Get, Headers, NotFoundException, Param, Patch, Post, Put, Query, Req, Res } from '@nestjs/common';
+import { Controller, NotFoundException, } from '@nestjs/common';
 import { EventPattern, GrpcMethod } from '@nestjs/microservices';
 import { ProfileService } from '../features/profile.service';
 import { ProfilePhotoInputModel } from '../features/model/profilePhoto.input.model';
-import { InputProfileModel } from '../features/model/input.profile.model';
-import { EnhancedParseUUIDPipe } from 'apps/libs/input.validate/check.uuid-param';
-import { InputSubscribeModel } from '../features/model/input.subscribe.model';
-import { Response } from 'express';
 import { OutputProfileModelMapper } from '../features/model/profile.output.model';
-import { UpdateUserProfileRequest } from '../../../libs/proto/generated/profile';
+import { UserProfileQueryRequest } from '../../../libs/proto/generated/profile';
 
 @Controller()
 export class AppController {
@@ -27,18 +23,20 @@ export class AppController {
   }
 
   @GrpcMethod('ProfileService', 'GetUserProfiles')
-  async GetUserProfiles(data: { userId: string }) {
-    console.log(data?.userId)
+  async GetUserProfiles(data: UserProfileQueryRequest) {
+    console.log(data, 'UserProfileQueryRequest')
     let profileForMatchId = ''
     if (data?.userId) {
       const profile = await this.profileService.findByUserId(data?.userId)
       profileForMatchId = profile?.id
     }
-    const result = await this.profileService.findMany();
-    const ready = result.map(p => OutputProfileModelMapper(p, profileForMatchId))
-    console.log(ready)
+    const { items, pageNumber, pageSize, totalCount } = await this.profileService.findMany(data.query);
+    // console.log(result)
+    const mapped = items.map(p => OutputProfileModelMapper(p, profileForMatchId))
+    console.log({ items: mapped, pageNumber, pageSize, totalCount })
 
-    return { profiles: ready }
+    return { items: mapped, pageNumber, pageSize, totalCount }
+    return
   }
 
   @GrpcMethod('ProfileService', 'UpdateUserProfile')

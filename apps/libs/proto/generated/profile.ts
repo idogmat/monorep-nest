@@ -17,6 +17,19 @@ export interface UserProfileRequest {
   profileUserId: string;
 }
 
+export interface UserProfilesQuery {
+  sortBy: string;
+  sortDirection: string;
+  pageNumber: number;
+  pageSize: number;
+  userName: string;
+}
+
+export interface UserProfileQueryRequest {
+  userId: string;
+  query: UserProfilesQuery | undefined;
+}
+
 export interface UpdateUserProfileRequest {
   userId: string;
   userName: string;
@@ -26,6 +39,12 @@ export interface UpdateUserProfileRequest {
   country: string;
   city: string;
   aboutMe: string;
+}
+
+export interface CreateUserProfileRequest {
+  userId: string;
+  userName: string;
+  email: string;
 }
 
 export interface SubscribeProfileRequest {
@@ -70,9 +89,18 @@ export interface UserProfileResponse {
   followed: boolean;
   subscribers: number;
   subscriptions: number;
+  createdAt: string;
 }
 
-export interface StatusUserProfileResponse {
+export interface UpdateUserProfileResponse {
+  status: string;
+}
+
+export interface SubscribeUserProfileResponse {
+  status: string;
+}
+
+export interface CreateUserProfileResponse {
   status: string;
 }
 
@@ -81,11 +109,13 @@ export const PROFILE_PACKAGE_NAME = "profile";
 export interface ProfileServiceClient {
   getUserProfile(request: UserProfileRequest, metadata?: Metadata): Observable<UserProfileResponse>;
 
-  getUserProfiles(request: UserProfileRequest, metadata?: Metadata): Observable<UserProfilesResponse>;
+  getUserProfiles(request: UserProfileQueryRequest, metadata?: Metadata): Observable<UserProfilesResponse>;
 
-  updateUserProfile(request: UpdateUserProfileRequest, metadata?: Metadata): Observable<StatusUserProfileResponse>;
+  updateUserProfile(request: UpdateUserProfileRequest, metadata?: Metadata): Observable<UpdateUserProfileResponse>;
 
-  subscribeUserProfile(request: SubscribeProfileRequest, metadata?: Metadata): Observable<StatusUserProfileResponse>;
+  subscribeUserProfile(request: SubscribeProfileRequest, metadata?: Metadata): Observable<SubscribeUserProfileResponse>;
+
+  createUserProfile(request: CreateUserProfileRequest, metadata?: Metadata): Observable<CreateUserProfileResponse>;
 }
 
 export interface ProfileServiceController {
@@ -95,24 +125,35 @@ export interface ProfileServiceController {
   ): Promise<UserProfileResponse> | Observable<UserProfileResponse> | UserProfileResponse;
 
   getUserProfiles(
-    request: UserProfileRequest,
+    request: UserProfileQueryRequest,
     metadata?: Metadata,
   ): Promise<UserProfilesResponse> | Observable<UserProfilesResponse> | UserProfilesResponse;
 
   updateUserProfile(
     request: UpdateUserProfileRequest,
     metadata?: Metadata,
-  ): Promise<StatusUserProfileResponse> | Observable<StatusUserProfileResponse> | StatusUserProfileResponse;
+  ): Promise<UpdateUserProfileResponse> | Observable<UpdateUserProfileResponse> | UpdateUserProfileResponse;
 
   subscribeUserProfile(
     request: SubscribeProfileRequest,
     metadata?: Metadata,
-  ): Promise<StatusUserProfileResponse> | Observable<StatusUserProfileResponse> | StatusUserProfileResponse;
+  ): Promise<SubscribeUserProfileResponse> | Observable<SubscribeUserProfileResponse> | SubscribeUserProfileResponse;
+
+  createUserProfile(
+    request: CreateUserProfileRequest,
+    metadata?: Metadata,
+  ): Promise<CreateUserProfileResponse> | Observable<CreateUserProfileResponse> | CreateUserProfileResponse;
 }
 
 export function ProfileServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["getUserProfile", "getUserProfiles", "updateUserProfile", "subscribeUserProfile"];
+    const grpcMethods: string[] = [
+      "getUserProfile",
+      "getUserProfiles",
+      "updateUserProfile",
+      "subscribeUserProfile",
+      "createUserProfile",
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("ProfileService", method)(constructor.prototype[method], method, descriptor);

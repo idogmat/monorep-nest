@@ -25,7 +25,12 @@ const profileWithSubscribers = {
 // }
 
 export type ProfileWithSubscribers = Profile & Prisma.ProfileGetPayload<& typeof profileWithSubscribers>;
-
+export type PaginationProfileWithSubscribers = {
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+  items: ProfileWithSubscribers[] | [];
+}
 export class OutputProfileModel {
   id: string;
   userId: string;

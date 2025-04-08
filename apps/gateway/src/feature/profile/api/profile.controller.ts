@@ -6,7 +6,7 @@ import { ProfileService } from '../application/profile.service';
 import { mkdir } from 'fs/promises';
 import { AuthGuard } from '../../../common/guard/authGuard';
 import { GateService } from '../../../common/gate.service';
-import { InputProfileModel } from './model/input.profile.model';
+import { InputProfileModel } from './model/input/input.profile.model';
 import { FileValidationPipe } from '../../../../../libs/input.validate/check.file';
 import { EnhancedParseUUIDPipe } from '../../../../../libs/input.validate/check.uuid-param';
 import { Request } from 'express';
@@ -14,6 +14,10 @@ import { AuthGuardOptional } from '../../../common/guard/authGuardOptional';
 import { ProfileClientService } from '../../../support.modules/grpc/grpc.service';
 import { ProfileMappingService } from '../application/profile.mapper';
 import { ApiFileWithDto, UserProfileResponseDto } from './swagger.discription.ts';
+import { PaginationProfileQueryDto } from './model/input/pagination.profile.query.dto';
+import { PaginationSearchProfileTerm } from './model/input/query.profile.model';
+import { PagedResponseOfProfiles } from './model/output/paged.response.of.profiles.model';
+import { PagedResponse } from 'apps/gateway/src/common/pagination/paged.response';
 
 @ApiTags('Profile')
 @Controller('profile')
@@ -62,18 +66,21 @@ export class ProfileController {
   @ApiResponse({
     status: 200,
     description: 'Successfully fetched profiles',
-    type: UserProfileResponseDto
+    type: PagedResponseOfProfiles
   })
   async getProfilesGrpc(
     @Req() req: Request,
-    @Query() query: any
-    // @Res() res: Response
+    @Query() queryDTO: PaginationProfileQueryDto
   ) {
     try {
+      const query = new PaginationSearchProfileTerm(queryDTO, ['createdAt']);
+      console.log(query)
       const userId = req.user?.userId || ''
-      const result = await this.profileClientService.getProfiles(userId)
-      console.log(result)
-      return result.profiles.map(this.profileMappingService.profileMapping)
+      const { items, pageNumber, pageSize, totalCount } = await this.profileClientService.getProfiles({ userId, query })
+      // console.log(result)
+      const mapped = items.map(this.profileMappingService.profileMapping)
+      return new PagedResponse<UserProfileResponseDto>(mapped, totalCount, pageNumber, pageSize);
+
     } catch {
       // throw error
     }

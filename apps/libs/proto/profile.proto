@@ -9,6 +9,17 @@ message UserProfileRequest {
   string profileUserId = 2;
 }
 
+message UserProfilesQuery {
+  string sortBy=1 ;
+  string sortDirection=2 ;
+  int32 pageNumber=3 ;
+  int32 pageSize=4 ;
+  string userName=5 ;
+}
+message UserProfileQueryRequest {
+  string userId = 1;
+  UserProfilesQuery query = 2;
+}
 message UpdateUserProfileRequest {
   string userId = 1;
   string userName = 2;
@@ -34,7 +45,10 @@ message SubscribeProfileRequest {
 //  Response messages
 
 message UserProfilesResponse {
-  repeated UserProfileResponse profiles = 1;
+  repeated UserProfileResponse items = 1;
+  int32 pageNumber= 2;
+  int32 pageSize= 3;
+  int32 totalCount= 4;
 }
 
 message UserProfileResponse {
@@ -68,7 +82,7 @@ message CreateUserProfileResponse {
 
 service ProfileService {
   rpc GetUserProfile(UserProfileRequest) returns (UserProfileResponse);
-  rpc GetUserProfiles(UserProfileRequest) returns (UserProfilesResponse);
+  rpc GetUserProfiles(UserProfileQueryRequest) returns (UserProfilesResponse);
   rpc UpdateUserProfile(UpdateUserProfileRequest) returns (UpdateUserProfileResponse);
   rpc SubscribeUserProfile(SubscribeProfileRequest) returns (SubscribeUserProfileResponse);
   rpc CreateUserProfile(CreateUserProfileRequest) returns (CreateUserProfileResponse);

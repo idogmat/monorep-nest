@@ -30,30 +30,45 @@ export const ApiFileWithDto = <TModel extends Type<any>>(model: TModel, fileFiel
 export class UserProfileResponseDto implements UserProfileResponse {
   @ApiProperty({ type: String })
   id: string;
+
   @ApiProperty({ type: String })
   userId: string;
+
   @ApiProperty({ type: String })
   userName: string;
+
   @ApiProperty({ type: String })
   photoUrl: string;
+
   @ApiProperty({ type: String })
   firstName: string;
+
   @ApiProperty({ type: String })
   lastName: string;
+
   @ApiProperty({ type: String })
   dateOfBirth: string;
+
   @ApiProperty({ type: String })
   country: string;
+
   @ApiProperty({ type: String })
   city: string;
+
   @ApiProperty({ type: String })
   aboutMe: string;
+
   @ApiProperty({ type: Boolean })
   followed: boolean;
+
   @ApiProperty({ type: Number })
   subscribers: number;
+
   @ApiProperty({ type: Number })
   subscriptions: number;
+
+  @ApiProperty({ type: String })
+  createdAt: string;
 
 }
 
