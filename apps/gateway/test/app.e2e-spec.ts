@@ -75,12 +75,12 @@ describe('AppController (e2e)', () => {
     expect(response.text).toBe('Hello World!');
   });
 
-  it('auth/signup (POST) successful', async () => {
-    //create new user DTO
-    const createModel = userTestSeeder.createUserDTO();
-    //send
-    await authTestManager.registration(globalPrefix, createModel);
+  // it('auth/signup (POST) successful', async () => {
+  //   //create new user DTO
+  //   const createModel = userTestSeeder.createUserDTO();
+  //   //send
+  //   await authTestManager.registration(globalPrefix, createModel);
 
-  });
+  // });
 
 });

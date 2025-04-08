@@ -25,6 +25,7 @@ import { DeviceService } from './devices/application/device.service';
 import { DevicesController } from './devices/api/devices.controller';
 import { DeviceQueryRepository } from './devices/infrastructure/device.prisma.query-repository';
 import { GateService } from '../../common/gate.service';
+import { GrpcServiceModule } from '../../support.modules/grpc/grpc.module';
 
 const useCasesForAuth = [
   SignupUseCase,
@@ -37,6 +38,7 @@ const useCasesForAuth = [
   imports: [
     HttpModule,
     CqrsModule,
+    GrpcServiceModule,
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => {
         return {
