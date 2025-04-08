@@ -17,7 +17,7 @@ import { ApiFileWithDto, UserProfileResponseDto } from './swagger.discription.ts
 import { PaginationProfileQueryDto } from './model/input/pagination.profile.query.dto';
 import { PaginationSearchProfileTerm } from './model/input/query.profile.model';
 import { PagedResponseOfProfiles } from './model/output/paged.response.of.profiles.model';
-import { PagedResponse } from 'apps/gateway/src/common/pagination/paged.response';
+import { PagedResponse } from '../../../common/pagination/paged.response';
 
 @ApiTags('Profile')
 @Controller('profile')
