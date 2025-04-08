@@ -32,7 +32,7 @@ export class ProfileController {
     mkdir(this.uploadsDir, { recursive: true });
   }
 
-  @Get('grpc/:id')
+  @Get(':id')
   @UseGuards(AuthGuardOptional)
   async getProfileGrpc(
     @Req() req: Request,
@@ -51,7 +51,7 @@ export class ProfileController {
 
   }
 
-  @Get('grpc')
+  @Get()
   @UseGuards(AuthGuardOptional)
   async getProfilesGrpc(
     @Req() req: Request,
@@ -63,45 +63,6 @@ export class ProfileController {
       const result = await this.profileClientService.getProfiles(userId)
       console.log(result)
       return result.profiles.map(this.profileMappingService.profileMapping)
-    } catch {
-      // throw error
-    }
-
-  }
-
-
-  @Get(':id')
-  @UseGuards(AuthGuardOptional)
-  async getProfile(
-    @Req() req: Request,
-    @Param('id', new EnhancedParseUUIDPipe()) id: string
-    // @Res() res: Response
-  ) {
-    try {
-      const userId = req.user?.userId || ''
-      const { data } = await this.gateService.profileServiceGet(id, {
-        'X-UserId': userId
-      })
-      return data
-    } catch {
-      //  throw error
-    }
-
-  }
-
-  @Get()
-  @UseGuards(AuthGuardOptional)
-  async getProfiles(
-    @Req() req: Request,
-    @Query() query: any
-    // @Res() res: Response
-  ) {
-    try {
-      const userId = req.user?.userId || ''
-      const { data } = await this.gateService.profileServiceGet('', {
-        'X-UserId': userId
-      })
-      return data
     } catch {
       // throw error
     }
