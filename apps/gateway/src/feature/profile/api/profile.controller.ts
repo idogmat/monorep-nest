@@ -1,4 +1,4 @@
-import { ApiBearerAuth, ApiBody, ApiExtraModels, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BadRequestException, Body, Controller, ForbiddenException, Get, Param, Patch, Put, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -13,8 +13,7 @@ import { Request } from 'express';
 import { AuthGuardOptional } from '../../../common/guard/authGuardOptional';
 import { ProfileClientService } from '../../../support.modules/grpc/grpc.service';
 import { ProfileMappingService } from '../application/profile.mapper';
-import { ApiFileWithDto } from './swagger.discription.ts';
-
+import { ApiFileWithDto, UserProfileResponseDto } from './swagger.discription.ts';
 
 @ApiTags('Profile')
 @Controller('profile')
@@ -35,6 +34,11 @@ export class ProfileController {
   @Get(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuardOptional)
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully fetched profile',
+    type: UserProfileResponseDto,  // Указываем PagedResponse без указания типа
+  })
   async getProfileGrpc(
     @Req() req: Request,
     @Param('id', new EnhancedParseUUIDPipe()) id: string
@@ -55,6 +59,11 @@ export class ProfileController {
   @Get()
   @ApiBearerAuth()
   @UseGuards(AuthGuardOptional)
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully fetched profiles',
+    type: UserProfileResponseDto
+  })
   async getProfilesGrpc(
     @Req() req: Request,
     @Query() query: any

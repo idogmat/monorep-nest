@@ -20,6 +20,12 @@ message UpdateUserProfileRequest {
   string aboutMe = 8;          
 }
 
+message CreateUserProfileRequest {
+  string userId=1;
+  string userName=2;
+  string email=3;
+}
+
 message SubscribeProfileRequest {
   string userId = 1;
   string profileUserId = 2;
@@ -45,6 +51,7 @@ message UserProfileResponse {
   bool followed = 11;
   int32 subscribers = 12;
   int32 subscriptions = 13;
+  string createdAt = 14;
 }
 
 message UpdateUserProfileResponse {
@@ -55,10 +62,15 @@ message SubscribeUserProfileResponse {
   string status = 1;        
 }
 
+message CreateUserProfileResponse {
+  string status = 1; 
+}
+
 service ProfileService {
   rpc GetUserProfile(UserProfileRequest) returns (UserProfileResponse);
   rpc GetUserProfiles(UserProfileRequest) returns (UserProfilesResponse);
   rpc UpdateUserProfile(UpdateUserProfileRequest) returns (UpdateUserProfileResponse);
   rpc SubscribeUserProfile(SubscribeProfileRequest) returns (SubscribeUserProfileResponse);
+  rpc CreateUserProfile(CreateUserProfileRequest) returns (CreateUserProfileResponse);
 
 }

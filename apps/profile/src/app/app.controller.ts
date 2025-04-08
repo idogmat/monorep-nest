@@ -73,86 +73,20 @@ export class AppController {
     }
   }
 
-  @Get(':id')
-  async getProfile(
-    @Headers('X-UserId') userId,
-    @Param('id', new EnhancedParseUUIDPipe()) id: string
-  ) {
-    console.log(userId)
-    let profileForMatchId = ''
-    if (userId) {
-      const profile = await this.profileService.findByUserId(userId)
-      profileForMatchId = profile?.id
-    }
-    const result = await this.profileService.findByUserId(id)
-    if (!result) throw new NotFoundException()
-    return OutputProfileModelMapper(result, profileForMatchId)
-  }
-
-  @Get()
-  async getProfiles(
-    @Headers('X-UserId') userId,
-    // @Query() query: any
-    // @Req() req
-  ) {
-    console.log(userId)
-    let profileForMatchId = ''
-    if (userId) {
-      const profile = await this.profileService.findByUserId(userId)
-      profileForMatchId = profile?.id
-    }
-    const result = await this.profileService.findMany();
-
-    return result.map(p => OutputProfileModelMapper(p, profileForMatchId))
-  }
-
-  @Post()
+  @GrpcMethod('ProfileService', 'CreateUserProfile')
   async createProfile(
-    @Body() data: any
+    data: any
   ) {
+    console.log(data)
     try {
-      this.profileService.createProfile(data)
+      await this.profileService.createProfile(data)
+      return { status: 'ok' };
     } catch (error) {
       // save as error
       console.warn(error)
+      return { status: 'fail' };
     }
   }
-
-  @Put()
-  async updateProfile(
-    @Headers('X-UserId') userId,
-    @Body() data: InputProfileModel
-  ) {
-    console.log(data, 'updateProfile')
-    console.log(userId, 'userId')
-    try {
-      await this.profileService.updateProfileData(userId, data)
-    } catch (error) {
-      // save as error
-      console.warn(error)
-    }
-  }
-
-  @Post('subscribe')
-  async subscribe(
-    @Body() sub: InputSubscribeModel,
-    @Res() res: Response
-  ) {
-    // console.log(data, 'updateProfile')
-    console.log(sub, 'sub')
-    try {
-      const { userId, subscribeUserId } = sub
-      const result = await this.profileService.subscribe(userId, subscribeUserId)
-      console.log(result, 'result')
-      res.status(200).send()
-    } catch (error) {
-      //   // save as error
-      console.warn(error)
-      res.status(400).json(error.message)
-    }
-  }
-
-
 
   @EventPattern('load_profile_photo')
   async handleTestEvent(data: ProfilePhotoInputModel) {
@@ -164,10 +98,5 @@ export class AppController {
       // save as error
       console.warn(error)
     }
-  }
-
-  @EventPattern('test_rabbit')
-  async testRabbit(data: ProfilePhotoInputModel) {
-    console.log(data, 'test_rabbit')
   }
 }

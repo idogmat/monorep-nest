@@ -41,6 +41,7 @@ export class OutputProfileModel {
   followed: boolean;
   subscribers: number;
   subscriptions: number;
+  createdAt: string
   // TODO remove excess fields ---- case
   yourProfile: true;
   yourFriend: true
@@ -65,7 +66,7 @@ export const OutputProfileModelMapper = (profile: ProfileWithSubscribers, _userI
   // outputModel.yourFriend = profile.yourFriend;
   outputModel.subscribers = getCount(profile.subscribers);
   outputModel.subscriptions = getCount(profile.subscriptions);
-  // console.log(profile)
+  outputModel.createdAt = profile.createdAt.toISOString();
 
   return outputModel;
 };

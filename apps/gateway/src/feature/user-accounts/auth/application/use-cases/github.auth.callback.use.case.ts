@@ -14,6 +14,7 @@ import { DeviceInfoDto } from '../../api/models/shared/device.info.dto';
 import { DeviceService } from '../../../devices/application/device.service';
 import { RedisService } from '../../../../../support.modules/redis/redis.service';
 import { parseTimeToSeconds } from '../../../../../common/utils/parseTime';
+import { ProfileClientService } from '../../../../../support.modules/grpc/grpc.service';
 
 export class GithubAuthCallbackCommand {
   constructor(
@@ -33,6 +34,8 @@ export class GithubAuthCallbackUseCase implements ICommandHandler<GithubAuthCall
     readonly gateService: GateService,
     private deviceService: DeviceService,
     private readonly redisService: RedisService,
+    private readonly profileClientService: ProfileClientService,
+
   ) {
   }
   async execute(command: GithubAuthCallbackCommand): Promise<InterlayerNotice<GithubAuthResponseModel>> {
@@ -55,9 +58,7 @@ export class GithubAuthCallbackUseCase implements ICommandHandler<GithubAuthCall
       if (!user) {
         //create user and provider from google
         user = await this.userPrismaRepository.createUserWithProvider(userInfo.email, userInfo.email.split('@')[0], { githubId: userInfo.providerId.toString() });
-        const profile = await this.gateService.profileServicePost('', {
-          userId: user.id, userName: user.name, email: user.email
-        }, {})
+        const profile = await this.profileClientService.createUserProfile(user.id, user.name, user.email)
       } else {
         await this.linkGithubProvider(user, userInfo.providerId.toString());
       }

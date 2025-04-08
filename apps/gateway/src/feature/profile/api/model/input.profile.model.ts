@@ -34,23 +34,11 @@ export class InputProfileModel {
   swagger() {
 
     this.userName = 'string'
-
-
     this.firstName = 'string'
-
-
     this.lastName = 'string'
-
-
     this.dateOfBirth = '2025-04 -08T08: 57: 33.337Z'
-
-
     this.country = 'string'
-
-
     this.city = 'string'
-
-
     this.aboutMe = 'string'
 
     return this
