@@ -1,9 +1,8 @@
-import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { BadRequestException, Body, Controller, ForbiddenException, Get, Param, Patch, Put, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { ProfileService } from '../application/profile.service';
-import { HttpService } from '@nestjs/axios';
 import { mkdir } from 'fs/promises';
 import { AuthGuard } from '../../../common/guard/authGuard';
 import { GateService } from '../../../common/gate.service';
@@ -14,6 +13,7 @@ import { Request } from 'express';
 import { AuthGuardOptional } from '../../../common/guard/authGuardOptional';
 import { ProfileClientService } from '../../../support.modules/grpc/grpc.service';
 import { ProfileMappingService } from '../application/profile.mapper';
+import { ApiFileWithDto } from './swagger.discription.ts';
 
 
 @ApiTags('Profile')
@@ -33,6 +33,7 @@ export class ProfileController {
   }
 
   @Get(':id')
+  @ApiBearerAuth()
   @UseGuards(AuthGuardOptional)
   async getProfileGrpc(
     @Req() req: Request,
@@ -52,6 +53,7 @@ export class ProfileController {
   }
 
   @Get()
+  @ApiBearerAuth()
   @UseGuards(AuthGuardOptional)
   async getProfilesGrpc(
     @Req() req: Request,
@@ -70,6 +72,8 @@ export class ProfileController {
   }
 
   @Put('edit')
+  @ApiBearerAuth()
+  @ApiFileWithDto(InputProfileModel, 'file')
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
@@ -92,6 +96,7 @@ export class ProfileController {
   }
 
   @Patch('subscribe/:id')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard)
   async subscribe(
     @Req() req,
