@@ -17,6 +17,22 @@ export interface UserProfileRequest {
   profileUserId: string;
 }
 
+export interface UpdateUserProfileRequest {
+  userId: string;
+  userName: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  country: string;
+  city: string;
+  aboutMe: string;
+}
+
+export interface SubscribeProfileRequest {
+  userId: string;
+  profileUserId: string;
+}
+
 export interface UserProfilesResponse {
   profiles: UserProfileResponse[];
 }
@@ -56,15 +72,8 @@ export interface UserProfileResponse {
   subscriptions: number;
 }
 
-export interface UpdateUserProfileRequest {
-  userId: string;
-  userName: string;
-  firstName: string;
-  lastName: string;
-  dateOfBirth: string;
-  country: string;
-  city: string;
-  aboutMe: string;
+export interface StatusUserProfileResponse {
+  status: string;
 }
 
 export const PROFILE_PACKAGE_NAME = "profile";
@@ -74,7 +83,9 @@ export interface ProfileServiceClient {
 
   getUserProfiles(request: UserProfileRequest, metadata?: Metadata): Observable<UserProfilesResponse>;
 
-  updateUserProfile(request: UpdateUserProfileRequest, metadata?: Metadata): Observable<UserProfilesResponse>;
+  updateUserProfile(request: UpdateUserProfileRequest, metadata?: Metadata): Observable<StatusUserProfileResponse>;
+
+  subscribeUserProfile(request: SubscribeProfileRequest, metadata?: Metadata): Observable<StatusUserProfileResponse>;
 }
 
 export interface ProfileServiceController {
@@ -91,12 +102,17 @@ export interface ProfileServiceController {
   updateUserProfile(
     request: UpdateUserProfileRequest,
     metadata?: Metadata,
-  ): Promise<UserProfilesResponse> | Observable<UserProfilesResponse> | UserProfilesResponse;
+  ): Promise<StatusUserProfileResponse> | Observable<StatusUserProfileResponse> | StatusUserProfileResponse;
+
+  subscribeUserProfile(
+    request: SubscribeProfileRequest,
+    metadata?: Metadata,
+  ): Promise<StatusUserProfileResponse> | Observable<StatusUserProfileResponse> | StatusUserProfileResponse;
 }
 
 export function ProfileServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["getUserProfile", "getUserProfiles", "updateUserProfile"];
+    const grpcMethods: string[] = ["getUserProfile", "getUserProfiles", "updateUserProfile", "subscribeUserProfile"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("ProfileService", method)(constructor.prototype[method], method, descriptor);

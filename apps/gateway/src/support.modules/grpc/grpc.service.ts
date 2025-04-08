@@ -10,7 +10,7 @@ interface ProfileService {
   GetUserProfile(data: { userId: string, profileUserId: string }): Observable<UserProfileResponse>;
   GetUserProfiles(data: { userId: string }): Observable<any>;
   UpdateUserProfile(data: UpdateUserProfileRequest): Observable<any>;
-
+  SubscribeUserProfile(data: { userId: string, profileUserId: string }): Observable<any>;
 }
 
 @Injectable()
@@ -40,5 +40,11 @@ export class ProfileClientService implements OnModuleInit {
 
   async updateProfile(data: UpdateUserProfileRequest) {
     return lastValueFrom(await this.profileService.UpdateUserProfile(data));
+  }
+
+  async subscribeProfile(userId: string, profileUserId: string) {
+    console.log(userId, 'userId')
+    console.log(profileUserId, 'profileUserId')
+    return lastValueFrom(await this.profileService.SubscribeUserProfile({ userId, profileUserId }));
   }
 }

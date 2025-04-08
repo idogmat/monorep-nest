@@ -57,6 +57,22 @@ export class AppController {
     }
   }
 
+  @GrpcMethod('ProfileService', 'SubscribeUserProfile')
+  async subscribeProfileGrpc(
+    data: any
+  ) {
+    console.log('SubscribeUserProfile', data,)
+    try {
+      const { userId, profileUserId } = data
+      const result = await this.profileService.subscribe(userId, profileUserId)
+      console.log(result, 'result')
+      return { status: 'ok' };
+    } catch (error) {
+      console.warn(error)
+      return { status: 'fail' };
+    }
+  }
+
   @Get(':id')
   async getProfile(
     @Headers('X-UserId') userId,

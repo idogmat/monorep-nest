@@ -49,14 +49,10 @@ export class ProfileService {
     subscribeUserId
   ) {
     try {
-      const response = await this.gateService.profileServicePost(
-        'subscribe',
-        {
-          userId,
-          subscribeUserId
-        },
-        {},
-      )
+      console.log(userId,
+        subscribeUserId)
+      const response = await this.profileClientService.subscribeProfile(userId, subscribeUserId)
+      console.log(response, 'response')
       return response
     } catch (error) {
       console.error('Ошибка:', error.message);

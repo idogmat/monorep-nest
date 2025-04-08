@@ -126,7 +126,8 @@ export class ProfileController {
       message: 'Not a valid file'
     })
     console.log(profile, 'profile')
-    await this.profileService.updateProfile(file, profile, req.user.userId)
+    const response = await this.profileService.updateProfile(file, profile, req.user.userId)
+    console.log(response)
   }
 
   @Patch('subscribe/:id')

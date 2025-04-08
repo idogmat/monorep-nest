@@ -3,13 +3,24 @@ syntax = "proto3";
 package profile;
 import "google/protobuf/wrappers.proto";  // Подключаем обёртки
 
-service ProfileService {
-  rpc GetUserProfile(UserProfileRequest) returns (UserProfileResponse);
-  rpc GetUserProfiles(UserProfileRequest) returns (UserProfilesResponse);
-  rpc UpdateUserProfile(UpdateUserProfileRequest) returns (UpdateUserProfileResponse);
-}
 // Request messages
 message UserProfileRequest {
+  string userId = 1;
+  string profileUserId = 2;
+}
+
+message UpdateUserProfileRequest {
+  string userId = 1;
+  string userName = 2;
+  string firstName = 3;        
+  string lastName = 4;         
+  string dateOfBirth = 5;      
+  string country = 6;          
+  string city = 7;             
+  string aboutMe = 8;          
+}
+
+message SubscribeProfileRequest {
   string userId = 1;
   string profileUserId = 2;
 }
@@ -36,17 +47,18 @@ message UserProfileResponse {
   int32 subscriptions = 13;
 }
 
-message UpdateUserProfileRequest {
-  string userId = 1;
-  string userName = 2;
-  string firstName = 3;        
-  string lastName = 4;         
-  string dateOfBirth = 5;      
-  string country = 6;          
-  string city = 7;             
-  string aboutMe = 8;          
-}
-
 message UpdateUserProfileResponse {
   string status = 1;        
+}
+
+message SubscribeUserProfileResponse {
+  string status = 1;        
+}
+
+service ProfileService {
+  rpc GetUserProfile(UserProfileRequest) returns (UserProfileResponse);
+  rpc GetUserProfiles(UserProfileRequest) returns (UserProfilesResponse);
+  rpc UpdateUserProfile(UpdateUserProfileRequest) returns (UpdateUserProfileResponse);
+  rpc SubscribeUserProfile(SubscribeProfileRequest) returns (SubscribeUserProfileResponse);
+
 }
