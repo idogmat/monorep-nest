@@ -13,26 +13,26 @@ import { clearDatabase } from './utils/clear.database';
 import { GateService } from '../src/common/gate.service';
 import { GateServiceMock } from './mock/gate.service.mock';
 import { GrpcServiceModule } from '../src/support.modules/grpc/grpc.module';
-import { MessageClientService } from '../src/support.modules/grpc/grpc.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
+import { ProfileClientService } from '../src/support.modules/grpc/grpc.service';
 @Module({
   imports: [
     ClientsModule.register([
       {
-        name: 'MESSAGE_SERVICE',
+        name: 'PROFILE_SERVICE',
         transport: Transport.GRPC,
         options: {
-          package: 'message',
-          protoPath: join(__dirname, '../src/proto/message.proto'),
+          package: 'profile',
+          protoPath: join(__dirname, '../../libs/proto/profile.proto'),
           url: '0.0.0.0',
         },
       },
     ]),
   ],
   controllers: [],
-  providers: [MessageClientService],
-  exports: [MessageClientService],
+  providers: [ProfileClientService],
+  exports: [ProfileClientService],
 })
 export class GrpcServiceModuleMock { }
 describe('AppController (e2e)', () => {

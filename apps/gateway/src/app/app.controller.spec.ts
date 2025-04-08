@@ -1,27 +1,27 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppController } from './app.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { MessageClientService } from '../support.modules/grpc/grpc.service';
 import { join } from 'path';
 import { GrpcServiceModule } from '../support.modules/grpc/grpc.module';
 import { Module } from '@nestjs/common';
+import { ProfileClientService } from '../support.modules/grpc/grpc.service';
 @Module({
   imports: [
     ClientsModule.register([
       {
-        name: 'MESSAGE_SERVICE',
+        name: 'PROFILE_SERVICE',
         transport: Transport.GRPC,
         options: {
-          package: 'message',
-          protoPath: join(__dirname, '../proto/message.proto'),
+          package: 'profile',
+          protoPath: join(__dirname, '../../../libs/proto/profile.proto'),
           url: '0.0.0.0',
         },
       },
     ]),
   ],
   controllers: [],
-  providers: [MessageClientService],
-  exports: [MessageClientService],
+  providers: [ProfileClientService],
+  exports: [ProfileClientService],
 })
 export class GrpcServiceModuleMock { }
 

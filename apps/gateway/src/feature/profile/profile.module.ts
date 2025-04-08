@@ -9,6 +9,7 @@ import { DeviceService } from '../user-accounts/devices/application/device.servi
 import { PrismaService } from '../prisma/prisma.service';
 import { GateService } from '../../common/gate.service';
 import { ProfileMappingService } from './application/profile.mapper';
+import { GrpcServiceModule } from '../../support.modules/grpc/grpc.module';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { ProfileMappingService } from './application/profile.mapper';
       },
       inject: [ConfigService]
     }),
-
+    GrpcServiceModule
     // ClientsModule.registerAsync([
     //   {
     //     imports: [ConfigModule],
