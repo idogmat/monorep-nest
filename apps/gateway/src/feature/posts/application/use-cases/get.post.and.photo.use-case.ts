@@ -48,6 +48,7 @@ export class GetPostAndPhotoUseCase implements ICommandHandler<GetPostAndPhotoCo
       id: post.id,
       userId: post.authorId,
       description: post.title,
+      photoUploadStatus: post.photoUploadStatus,
       photoUrls: response.photoUrls,
       createdAt: post.createdAt.toISOString(),
       updatedAt: post.updatedAt.toISOString(),

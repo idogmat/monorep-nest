@@ -1,6 +1,6 @@
 // src/files.controller.ts
 import {
-  BadRequestException,
+  BadRequestException, Body,
   Controller, Get,
   Headers,
   HttpStatus,
@@ -39,21 +39,14 @@ export class FilesController {
     }
   }
 
-  @Get('rabbit')
-  async rabbitMqCheck(
-  ) {
-
-    this.rabbitClient.emit('test_rabbit', { message: 'test value' });
-
-
-  }
-
-  @Get('postsPhoto')
+  @Post('postsPhoto')
   async getPostsAndPhotos(
-    @Headers('X-UserId') userId: string
+    @Body('postIds') postIds: string[],
+    @Headers('X-UserId',
+    ) userId: string
   ) {
 
-    return this.filesQueryRepository.getPostsMedia(userId);
+    return this.filesQueryRepository.getPostsMedia(userId, postIds);
 
   }
 

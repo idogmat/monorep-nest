@@ -1,4 +1,6 @@
-import { ParsedQs } from "qs";
+import { PaginationPostQueryDto } from '../../feature/posts/api/model/input/pagination.post.query.dto';
+import { PaginationBaseDto } from './pagination.base.dto';
+import { PaginationProfileQueryDto } from '../../../../profile/src/features/model/pagination.profile.query.dto';
 
 export type SortDirectionType = "DESC" | "ASC";
 
@@ -8,7 +10,7 @@ export class Pagination {
   public readonly sortDirection: SortDirectionType;
   public readonly sortBy: string;
 
-  constructor(query: ParsedQs, sortProperties: string[] | []) {
+  constructor(query: PaginationBaseDto, sortProperties: string[] | []) {
     this.sortBy = this.getSortBy(query, sortProperties);
     this.sortDirection = this.getSortDirection(query);
     this.pageNumber = query?.pageNumber ? Number(query.pageNumber) : 1;
@@ -19,7 +21,7 @@ export class Pagination {
     return (this.pageNumber - 1) * this.pageSize;
   }
 
-  private getSortDirection(query: ParsedQs): SortDirectionType {
+  private getSortDirection(query: PaginationBaseDto): SortDirectionType {
     if (!query) return "DESC";
     let sortDirection: SortDirectionType = "DESC";
 
@@ -36,7 +38,7 @@ export class Pagination {
     return sortDirection;
   }
 
-  private getSortBy(query: ParsedQs, sortProperties: string[]): string {
+  private getSortBy(query: PaginationBaseDto, sortProperties: string[]): string {
 
     if (!query) return "createdAt";
 
@@ -72,7 +74,7 @@ export class Pagination {
 export class PaginationSearchUserTerm extends Pagination {
   public readonly name: string | null;
   public readonly email: string | null;
-  constructor(query: ParsedQs, sortProperties: string[]) {
+  constructor(query: PaginationProfileQueryDto, sortProperties: string[]) {
     super(query, sortProperties);
 
     this.name = query.name?.toString() || null;

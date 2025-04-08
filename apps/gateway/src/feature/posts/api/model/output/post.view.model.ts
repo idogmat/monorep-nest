@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsDate, IsOptional, IsString, IsUUID, Length } from 'class-validator';
+import { IsArray, IsDate, IsEnum, IsOptional, IsString, IsUUID, Length } from 'class-validator';
+import { PhotoUploadStatus } from '@prisma/client';
 
 export class PostViewModel {
   @ApiProperty({ type: String, format: 'uuid' })
@@ -28,4 +29,12 @@ export class PostViewModel {
   @ApiProperty({ type: String })
   @IsDate()
   updatedAt: string;
+
+  @ApiProperty({
+    enum: PhotoUploadStatus,
+    description: 'Статус загрузки фотографий',
+    example: PhotoUploadStatus.PENDING
+  })
+  @IsEnum(PhotoUploadStatus)
+  photoUploadStatus: PhotoUploadStatus;
 }
