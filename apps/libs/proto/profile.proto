@@ -66,6 +66,7 @@ message UserProfileResponse {
   int32 subscribers = 12;
   int32 subscriptions = 13;
   string createdAt = 14;
+  bool paymentAccount = 15;
 }
 
 message UpdateUserProfileResponse {

@@ -72,6 +72,7 @@ export const OutputProfileModelMapper = (profile: ProfileWithSubscribers, _userI
   outputModel.subscribers = getCount(profile.subscribers);
   outputModel.subscriptions = getCount(profile.subscriptions);
   outputModel.createdAt = profile.createdAt.toISOString();
+  outputModel.paymentAccount = profile.paymentAccount;
 
   return outputModel;
 };

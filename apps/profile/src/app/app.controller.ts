@@ -36,7 +36,6 @@ export class AppController {
     console.log({ items: mapped, pageNumber, pageSize, totalCount })
 
     return { items: mapped, pageNumber, pageSize, totalCount }
-    return
   }
 
   @GrpcMethod('ProfileService', 'UpdateUserProfile')
