@@ -25,7 +25,12 @@ const profileWithSubscribers = {
 // }
 
 export type ProfileWithSubscribers = Profile & Prisma.ProfileGetPayload<& typeof profileWithSubscribers>;
-
+export type PaginationProfileWithSubscribers = {
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+  items: ProfileWithSubscribers[] | [];
+}
 export class OutputProfileModel {
   id: string;
   userId: string;
@@ -41,6 +46,7 @@ export class OutputProfileModel {
   followed: boolean;
   subscribers: number;
   subscriptions: number;
+  createdAt: string
   // TODO remove excess fields ---- case
   yourProfile: true;
   yourFriend: true
@@ -65,7 +71,8 @@ export const OutputProfileModelMapper = (profile: ProfileWithSubscribers, _userI
   // outputModel.yourFriend = profile.yourFriend;
   outputModel.subscribers = getCount(profile.subscribers);
   outputModel.subscriptions = getCount(profile.subscriptions);
-  // console.log(profile)
+  outputModel.createdAt = profile.createdAt.toISOString();
+  outputModel.paymentAccount = profile.paymentAccount;
 
   return outputModel;
 };

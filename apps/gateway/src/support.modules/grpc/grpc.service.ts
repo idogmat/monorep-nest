@@ -1,6 +1,6 @@
-import { Global, Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { UpdateUserProfileRequest, UserProfileResponse } from '../../../../libs/proto/generated/profile';
+import { UpdateUserProfileRequest, UserProfileQueryRequest, UserProfileResponse } from '../../../../libs/proto/generated/profile';
 import { firstValueFrom, lastValueFrom, Observable } from 'rxjs';
 
 const cleanString = (str: string) => {
@@ -8,9 +8,10 @@ const cleanString = (str: string) => {
 };
 interface ProfileService {
   GetUserProfile(data: { userId: string, profileUserId: string }): Observable<UserProfileResponse>;
-  GetUserProfiles(data: { userId: string }): Observable<any>;
+  GetUserProfiles(data: UserProfileQueryRequest): Observable<any>;
   UpdateUserProfile(data: UpdateUserProfileRequest): Observable<any>;
   SubscribeUserProfile(data: { userId: string, profileUserId: string }): Observable<any>;
+  CreateUserProfile(data: { userId: string, userName: string, email: string }): Observable<any>;
 }
 
 @Injectable()
@@ -34,8 +35,8 @@ export class ProfileClientService implements OnModuleInit {
 
   }
 
-  async getProfiles(userId: string) {
-    return lastValueFrom(await this.profileService.GetUserProfiles({ userId }));
+  async getProfiles(data: UserProfileQueryRequest) {
+    return lastValueFrom(await this.profileService.GetUserProfiles(data));
   }
 
   async updateProfile(data: UpdateUserProfileRequest) {
@@ -46,5 +47,9 @@ export class ProfileClientService implements OnModuleInit {
     console.log(userId, 'userId')
     console.log(profileUserId, 'profileUserId')
     return lastValueFrom(await this.profileService.SubscribeUserProfile({ userId, profileUserId }));
+  }
+
+  async createUserProfile(userId: string, userName: string, email: string) {
+    return lastValueFrom(await this.profileService.CreateUserProfile({ userId, userName, email }));
   }
 }

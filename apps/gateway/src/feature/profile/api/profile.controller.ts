@@ -1,20 +1,23 @@
-import { ApiExtraModels, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BadRequestException, Body, Controller, ForbiddenException, Get, Param, Patch, Put, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { ProfileService } from '../application/profile.service';
-import { HttpService } from '@nestjs/axios';
 import { mkdir } from 'fs/promises';
 import { AuthGuard } from '../../../common/guard/authGuard';
 import { GateService } from '../../../common/gate.service';
-import { InputProfileModel } from './model/input.profile.model';
+import { InputProfileModel } from './model/input/input.profile.model';
 import { FileValidationPipe } from '../../../../../libs/input.validate/check.file';
 import { EnhancedParseUUIDPipe } from '../../../../../libs/input.validate/check.uuid-param';
 import { Request } from 'express';
 import { AuthGuardOptional } from '../../../common/guard/authGuardOptional';
 import { ProfileClientService } from '../../../support.modules/grpc/grpc.service';
 import { ProfileMappingService } from '../application/profile.mapper';
-
+import { ApiFileWithDto, UserProfileResponseDto } from './swagger.discription.ts';
+import { PaginationProfileQueryDto } from './model/input/pagination.profile.query.dto';
+import { PaginationSearchProfileTerm } from './model/input/query.profile.model';
+import { PagedResponseOfProfiles } from './model/output/paged.response.of.profiles.model';
+import { PagedResponse } from '../../../common/pagination/paged.response';
 
 @ApiTags('Profile')
 @Controller('profile')
@@ -33,7 +36,13 @@ export class ProfileController {
   }
 
   @Get(':id')
+  @ApiBearerAuth()
   @UseGuards(AuthGuardOptional)
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully fetched profile',
+    type: UserProfileResponseDto,  // Указываем PagedResponse без указания типа
+  })
   async getProfileGrpc(
     @Req() req: Request,
     @Param('id', new EnhancedParseUUIDPipe()) id: string
@@ -52,17 +61,26 @@ export class ProfileController {
   }
 
   @Get()
+  @ApiBearerAuth()
   @UseGuards(AuthGuardOptional)
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully fetched profiles',
+    type: PagedResponseOfProfiles
+  })
   async getProfilesGrpc(
     @Req() req: Request,
-    @Query() query: any
-    // @Res() res: Response
+    @Query() queryDTO: PaginationProfileQueryDto
   ) {
     try {
+      const query = new PaginationSearchProfileTerm(queryDTO, ['createdAt']);
+      console.log(query)
       const userId = req.user?.userId || ''
-      const result = await this.profileClientService.getProfiles(userId)
-      console.log(result)
-      return result.profiles.map(this.profileMappingService.profileMapping)
+      const { items, pageNumber, pageSize, totalCount } = await this.profileClientService.getProfiles({ userId, query })
+      // console.log(result)
+      const mapped = items.map(this.profileMappingService.profileMapping)
+      return new PagedResponse<UserProfileResponseDto>(mapped, totalCount, pageNumber, pageSize);
+
     } catch {
       // throw error
     }
@@ -70,6 +88,8 @@ export class ProfileController {
   }
 
   @Put('edit')
+  @ApiBearerAuth()
+  @ApiFileWithDto(InputProfileModel, 'file')
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
@@ -92,6 +112,7 @@ export class ProfileController {
   }
 
   @Patch('subscribe/:id')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard)
   async subscribe(
     @Req() req,

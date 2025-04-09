@@ -10,6 +10,7 @@ import { add } from 'date-fns';
 import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/users.prisma.repository';
 import { GateService } from '../../../../../common/gate.service';
 import { CreateUserData } from '../../../users/infrastructure/prisma/dto/create.user.data.dto';
+import { ProfileClientService } from '../../../../../support.modules/grpc/grpc.service';
 export class SignupCommand {
   constructor(public createInputUser: UserCreateModel) { }
 }
@@ -21,6 +22,8 @@ export class SignupUseCase implements ICommandHandler<SignupCommand> {
     private bcryptService: BcryptService,
     private emailService: EmailService,
     readonly gateService: GateService,
+    private readonly profileClientService: ProfileClientService,
+
   ) {
   }
 
@@ -44,9 +47,8 @@ export class SignupUseCase implements ICommandHandler<SignupCommand> {
 
     const user = await this.userPrismaRepository.createUser(userDto);
     console.log(user)
-    const profile = await this.gateService.profileServicePost('', {
-      userId: user.id, userName: login, email
-    }, {})
+    const profile = await this.profileClientService.createUserProfile(user.id, user.name, user.email)
+
     //TODO move send email to event handler
     try {
       this.emailService.sendRegisrtationEmail(

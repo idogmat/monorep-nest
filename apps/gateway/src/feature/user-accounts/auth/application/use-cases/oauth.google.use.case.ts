@@ -10,6 +10,7 @@ import { DeviceService } from '../../../devices/application/device.service';
 import { GateService } from '../../../../../common/gate.service';
 import { parseTimeToSeconds } from '../../../../../common/utils/parseTime';
 import { RedisService } from '../../../../../support.modules/redis/redis.service';
+import { ProfileClientService } from '../../../../../support.modules/grpc/grpc.service';
 
 export class OauthGoogleCommand {
   constructor(public googleTokenModel: GoogleTokenModel) {
@@ -26,6 +27,8 @@ export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
     private deviceService: DeviceService,
     readonly gateService: GateService,
     private readonly redisService: RedisService,
+    private readonly profileClientService: ProfileClientService,
+
   ) {
   }
 
@@ -44,9 +47,7 @@ export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
       if (!user) {
         //create user and provider from google
         user = await this.userPrismaRepository.createUserWithProvider(email, email.split('@')[0], { googleId: sub });
-        const profile = await this.gateService.profileServicePost('', {
-          userId: user.id, userName: user.name, email: user.email
-        }, {})
+        const profile = await this.profileClientService.createUserProfile(user.id, user.name, user.email)
       } else {
         await this.linkGoogleProvider(user, sub);
       }
