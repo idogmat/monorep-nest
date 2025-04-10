@@ -1,0 +1,82 @@
+import { BadRequestException, Body, Controller, Get, Header, Headers, Post, Req, Res } from '@nestjs/common';
+import { Request, Response } from 'express';
+import { PaymentsService } from '../applications/payments.service';
+import { CommandBus } from '@nestjs/cqrs';
+import { SubscribeCommand } from '../use-cases/subscribe.use-case';
+@Controller('payments')
+export class PaymentsController {
+  constructor(
+    private readonly paymentsService: PaymentsService,
+    private readonly commandBus: CommandBus,
+  ) { }
+
+  @Get('subscribe')
+  async getHello(
+    @Req() req: Request,
+    // @Body() 
+    @Res() res
+  ) {
+    // console.log(req.user.userId)
+    const userId = req.user?.userId || 'acf7924f-310f-40ec-bd2b-fc6382c337a2'
+    const product = 1
+    if (![1, 2, 3].includes(product)) throw new BadRequestException({ message: 'Wrong product key' })
+    // const result = await this.paymentsService.createPayment(userId, 1)
+    return this.commandBus.execute(
+      new SubscribeCommand(userId, 1)
+    );
+    // console.log(result)
+
+    // res.redirect(result.url)
+    // return 'Hello World!'
+  }
+
+  @Get('error')
+  async error(
+    @Req() req
+  ) {
+    return 'error'
+  }
+
+  @Get('success')
+  async succes(
+    @Req() req
+  ) {
+    console.log('success')
+    return 'success'
+  }
+
+  @Get('subscriptions/update')
+  async updatePayment(
+    @Req() req
+  ) {
+    const userId = req.user?.userId || 'acf7924f-310f-40ec-bd2b-fc6382c337a2'
+
+    const subscriptions = await this.paymentsService.updatePayment(userId, 1)
+    return subscriptions
+  }
+
+  @Get('subscriptions')
+  async getSubscriptions(
+    @Req() req
+  ) {
+    const userId = req.user?.userId || 'acf7924f-310f-40ec-bd2b-fc6382c337a2'
+
+    const result = await this.paymentsService.findCustomerByUserId(userId)
+    // return result
+    const subscriptions = await this.paymentsService.listCustomerSubscriptions(result.id)
+    return subscriptions
+  }
+
+
+
+  @Post('webhook')
+  async webHook(
+    @Req() req,
+    @Headers('stripe-signature') signature
+  ) {
+    console.log(req.rawBody, 'hook')
+    if (signature) await this.paymentsService.webHook(req.rawBody, signature)
+
+  }
+
+}
