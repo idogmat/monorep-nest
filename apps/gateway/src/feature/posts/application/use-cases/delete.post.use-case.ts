@@ -3,6 +3,8 @@ import { PostsPrismaRepository } from '../../infrastructure/prisma/posts.prisma.
 import { InterlayerNotice } from '../../../../common/error-handling/interlayer.notice';
 import { PostError } from '../../../../common/error-handling/post.error';
 import { ENTITY_POST } from '../../../../common/entities.constants';
+import { Inject } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 
 export class DeletePostCommand{
   constructor(
@@ -15,7 +17,10 @@ export class DeletePostCommand{
 @CommandHandler(DeletePostCommand)
 export class DeletePostUseCase implements ICommandHandler<DeletePostCommand>{
 
-  constructor(private postsPrismaRepository: PostsPrismaRepository) {
+  constructor(
+    private postsPrismaRepository: PostsPrismaRepository,
+    @Inject('RABBITMQ_POST_SERVICE') private readonly rabbitClient: ClientProxy,
+    ) {
   }
 
   async execute(command: DeletePostCommand){
@@ -38,5 +43,8 @@ export class DeletePostUseCase implements ICommandHandler<DeletePostCommand>{
     }
 
     await this.postsPrismaRepository.delete({id: command.postId});
+
+    const message = { postId: command.postId };
+    this.rabbitClient.emit('post_deleted', message);
   }
 }

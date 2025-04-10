@@ -4,7 +4,6 @@ import {
   ApiConsumes,
   ApiOperation,
   ApiParam,
-  ApiProperty,
   ApiQuery,
   ApiResponse,
   ApiTags,
@@ -124,11 +123,10 @@ export class PostsController {
   }
 
   @UseGuards(AuthGuardOptional)
-  @ApiOperation({ summary: 'Update an existing post' })
-  @ApiResponse({ status: 200, description: 'Post updated' })
+  @ApiOperation({ summary: 'Get post by id' })
+  @ApiResponse({ status: 200, description: 'Post updated', type: PostViewModel })
   @ApiResponse({ status: 403, description: 'Forbidden to update' })
   @ApiResponse({ status: 404, description: 'Post not found' })
-  @ApiBody({ type: PostUpdateModel })
   @Get(':postId')
   async getPost(@Param('postId', new ParseUUIDPipe()) postId: string,
                 @Req() req,){
@@ -205,15 +203,14 @@ export class PostsController {
                    @Req() req: Request,){
 
     const userId = req.user.userId;
-    const result = await this.commandBus.execute(
+    await this.commandBus.execute(
       new DeletePostCommand(postId, userId)
     )
-    if (result.hasError()) {
-      new ErrorProcessor(result).handleError();
-    }
+
   }
   @EventPattern('files_uploaded')
   async handleFileUploaded(@Payload() data: any,
+                           // eslint-disable-next-line @typescript-eslint/no-unused-vars
     @Ctx() context: any) {
     console.log('Received file uploaded message:', data);
     const { postId, files } = data;

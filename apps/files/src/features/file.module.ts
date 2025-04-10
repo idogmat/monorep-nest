@@ -15,10 +15,12 @@ import { PostMedia, PostMediaSchema } from './files/domain/post.media.entity';
 import { CreatePhotoForPostUseCase } from './files/application/use-cases/create.photo.for.post.use-case';
 import { UploadProfilePhotoUseCase } from './files/application/use-cases/upload.profile.photo.use-case';
 import { FilesQueryRepository } from './files/infrastructure/files.query-repository';
+import { DeletePhotoMediaUseCase } from './files/application/use-cases/delete.photo.media.use-case';
 
 const useCases = [
   CreatePhotoForPostUseCase,
-  UploadProfilePhotoUseCase
+  UploadProfilePhotoUseCase,
+  DeletePhotoMediaUseCase
 ];
 
 @Module({
