@@ -3,7 +3,7 @@ import { EventPattern, GrpcMethod } from '@nestjs/microservices';
 import { ProfileService } from '../features/profile.service';
 import { ProfilePhotoInputModel } from '../features/model/profilePhoto.input.model';
 import { OutputProfileModelMapper } from '../features/model/profile.output.model';
-import { UserProfileQueryRequest } from '../../../libs/proto/generated/profile';
+import { CreateUserProfileRequest, SubscribeProfileRequest, UpdateUserProfileRequest, UserProfileQueryRequest, UserProfileUpdateSubscribeRequest } from '../../../libs/proto/generated/profile';
 
 @Controller()
 export class AppController {
@@ -40,7 +40,7 @@ export class AppController {
 
   @GrpcMethod('ProfileService', 'UpdateUserProfile')
   async updateProfileGrpc(
-    data: any
+    data: UpdateUserProfileRequest
   ) {
     console.log(data, 'updateProfile')
 
@@ -56,7 +56,7 @@ export class AppController {
 
   @GrpcMethod('ProfileService', 'SubscribeUserProfile')
   async subscribeProfileGrpc(
-    data: any
+    data: SubscribeProfileRequest
   ) {
     console.log('SubscribeUserProfile', data,)
     try {
@@ -72,11 +72,26 @@ export class AppController {
 
   @GrpcMethod('ProfileService', 'CreateUserProfile')
   async createProfile(
-    data: any
+    data: CreateUserProfileRequest
   ) {
     console.log(data)
     try {
       await this.profileService.createProfile(data)
+      return { status: 'ok' };
+    } catch (error) {
+      // save as error
+      console.warn(error)
+      return { status: 'fail' };
+    }
+  }
+
+  @GrpcMethod('ProfileService', 'UpdateUserProfileSubscribe')
+  async updateProfileSubscribe(
+    data: UserProfileUpdateSubscribeRequest
+  ) {
+    console.log(data)
+    try {
+      await this.profileService.updateProfilePayment(data.userId, data.paymentAccount)
       return { status: 'ok' };
     } catch (error) {
       // save as error

@@ -8,6 +8,7 @@ import { SubscribeUseCase } from './use-cases/subscribe.use-case';
 import { CqrsModule } from '@nestjs/cqrs';
 import { PrismaService } from '../prisma/prisma.service';
 import { PaymentsRepository } from './infrastructure/payments.repository';
+import { WebhookUseCase } from './use-cases/webhook.use-case';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { PaymentsRepository } from './infrastructure/payments.repository';
     PrismaService,
     PaymentsRepository,
     PaymentsService,
-    SubscribeUseCase
+    SubscribeUseCase,
+    WebhookUseCase
   ],
   controllers: [PaymentsController],
   exports: [PaymentsService]

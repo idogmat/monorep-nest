@@ -26,35 +26,37 @@ export class SubscribeUseCase implements ICommandHandler<SubscribeCommand> {
     try {
       const { userId, productkey } = command
       const customer = await this.paymentsService.findOrCreateCustomer(userId)
-      const subscriptions = await this.paymentsService.listCustomerSubscriptions(customer.id)
-      console.log(subscriptions, 'subscriptions')
-      if (subscriptions.data?.[0]?.id) {
-        const updatedSubscription = await this.paymentsService.updatePayment(
-          subscriptions.data?.[0]?.id,
-          productkey,
-        )
-        const price = updatedSubscription.items.data[0]
-        console.log(updatedSubscription, 'updatedSubscription')
-        console.log(price, 'price')
-      } else {
-        const {
-          created,
-          client_reference_id: referenceUserId,
-          url
-        } = await this.paymentsService.createPayment(
-          customer,
-          productkey,
-          userId
-        )
-        const payment = {
-          createdAt: new Date(created * 1000).toISOString(),
-          customerId: customer.id,
-          userId: referenceUserId
-        }
-        console.log(url)
-        await this.paymentsRepository.createPayment(payment)
-        return { url }
+      // const subscriptions = await this.paymentsService.listCustomerSubscriptions(customer.id)
+      // console.log(subscriptions, 'subscriptions')
+      // if (subscriptions.data?.[0]?.id) {
+      //   const updatedSubscription = await this.paymentsService.updatePayment(
+      //     subscriptions.data?.[0]?.id,
+      //     productkey,
+      //   )
+      //   // current_period_end
+      //   // const price = updatedSubscription.items.data[0]
+      //   console.log(JSON.stringify(updatedSubscription), 'updatedSubscription')
+      //   // console.log(price, 'price')
+      // } else {
+      const {
+        created,
+        client_reference_id: referenceUserId,
+        url
+      } = await this.paymentsService.createPayment(
+        customer,
+        productkey,
+        userId
+      )
+      const payment = {
+        createdAt: new Date(created * 1000).toISOString(),
+        customerId: customer.id,
+        userId: referenceUserId
       }
+      console.log(url)
+      const ppp = await this.paymentsRepository.createPayment(payment)
+      console.log(ppp, 'ppp')
+      return { url }
+      // }
       return 'ok'
     } catch (error) {
 

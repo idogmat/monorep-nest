@@ -117,3 +117,13 @@ spec:
                  secretKeyRef:
                    name: gate-production-config-secret
                    key: GATE_PROFILE_GRPC_URL
+             - name: STRIPE_API_KEY
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: STRIPE_API_KEY
+             - name: STRIPE_WEBHOOK_SECRET
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: STRIPE_WEBHOOK_SECRET

@@ -9,6 +9,11 @@ message UserProfileRequest {
   string profileUserId = 2;
 }
 
+message UserProfileUpdateSubscribeRequest {
+  string userId = 1;
+  bool paymentAccount = 2;
+}
+
 message UserProfilesQuery {
   string sortBy=1 ;
   string sortDirection=2 ;
@@ -81,11 +86,16 @@ message CreateUserProfileResponse {
   string status = 1; 
 }
 
+message UserProfileUpdateSubscribeResponse {
+  string status = 1; 
+}
+
 service ProfileService {
   rpc GetUserProfile(UserProfileRequest) returns (UserProfileResponse);
   rpc GetUserProfiles(UserProfileQueryRequest) returns (UserProfilesResponse);
   rpc UpdateUserProfile(UpdateUserProfileRequest) returns (UpdateUserProfileResponse);
   rpc SubscribeUserProfile(SubscribeProfileRequest) returns (SubscribeUserProfileResponse);
   rpc CreateUserProfile(CreateUserProfileRequest) returns (CreateUserProfileResponse);
+  rpc UpdateUserProfileSubscribe(UserProfileUpdateSubscribeRequest) returns (UserProfileUpdateSubscribeResponse);
 
 }

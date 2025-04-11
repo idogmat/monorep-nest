@@ -17,6 +17,11 @@ export interface UserProfileRequest {
   profileUserId: string;
 }
 
+export interface UserProfileUpdateSubscribeRequest {
+  userId: string;
+  paymentAccount: boolean;
+}
+
 export interface UserProfilesQuery {
   sortBy: string;
   sortDirection: string;
@@ -53,7 +58,10 @@ export interface SubscribeProfileRequest {
 }
 
 export interface UserProfilesResponse {
-  profiles: UserProfileResponse[];
+  items: UserProfileResponse[];
+  pageNumber: number;
+  pageSize: number;
+  totalCount: number;
 }
 
 export interface UserProfileResponse {
@@ -90,6 +98,7 @@ export interface UserProfileResponse {
   subscribers: number;
   subscriptions: number;
   createdAt: string;
+  paymentAccount: boolean;
 }
 
 export interface UpdateUserProfileResponse {
@@ -101,6 +110,10 @@ export interface SubscribeUserProfileResponse {
 }
 
 export interface CreateUserProfileResponse {
+  status: string;
+}
+
+export interface UserProfileUpdateSubscribeResponse {
   status: string;
 }
 
@@ -116,6 +129,11 @@ export interface ProfileServiceClient {
   subscribeUserProfile(request: SubscribeProfileRequest, metadata?: Metadata): Observable<SubscribeUserProfileResponse>;
 
   createUserProfile(request: CreateUserProfileRequest, metadata?: Metadata): Observable<CreateUserProfileResponse>;
+
+  updateUserProfileSubscribe(
+    request: UserProfileUpdateSubscribeRequest,
+    metadata?: Metadata,
+  ): Observable<UserProfileUpdateSubscribeResponse>;
 }
 
 export interface ProfileServiceController {
@@ -143,6 +161,14 @@ export interface ProfileServiceController {
     request: CreateUserProfileRequest,
     metadata?: Metadata,
   ): Promise<CreateUserProfileResponse> | Observable<CreateUserProfileResponse> | CreateUserProfileResponse;
+
+  updateUserProfileSubscribe(
+    request: UserProfileUpdateSubscribeRequest,
+    metadata?: Metadata,
+  ):
+    | Promise<UserProfileUpdateSubscribeResponse>
+    | Observable<UserProfileUpdateSubscribeResponse>
+    | UserProfileUpdateSubscribeResponse;
 }
 
 export function ProfileServiceControllerMethods() {
@@ -153,6 +179,7 @@ export function ProfileServiceControllerMethods() {
       "updateUserProfile",
       "subscribeUserProfile",
       "createUserProfile",
+      "updateUserProfileSubscribe",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

@@ -46,6 +46,9 @@ export class UserProfileResponseDto implements UserProfileResponse {
   @ApiProperty({ type: String })
   lastName: string;
 
+  @ApiProperty({ type: Boolean })
+  paymentAccount: boolean;
+
   @ApiProperty({ type: String })
   dateOfBirth: string;
 

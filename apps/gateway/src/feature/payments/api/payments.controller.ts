@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { PaymentsService } from '../applications/payments.service';
 import { CommandBus } from '@nestjs/cqrs';
 import { SubscribeCommand } from '../use-cases/subscribe.use-case';
+import { WebhookCommand } from '../use-cases/webhook.use-case';
 @Controller('payments')
 export class PaymentsController {
   constructor(
@@ -22,7 +23,7 @@ export class PaymentsController {
     const product = 1
     if (![1, 2, 3].includes(product)) throw new BadRequestException({ message: 'Wrong product key' })
     return this.commandBus.execute(
-      new SubscribeCommand(userId, 1)
+      new SubscribeCommand(userId, 3)
     );
   }
 
@@ -35,7 +36,7 @@ export class PaymentsController {
   ) {
     // console.log(req.user.userId)
     const userId = req.user?.userId || 'acf7924f-310f-40ec-bd2b-fc6382c337a2'
-    const paymentId = req.user?.userId || '397dcdbe-7a4f-4230-95fa-50854f2d6f74'
+    const paymentId = req.user?.userId || '24602f5c-8cb4-4cde-a079-1fd8c92d747f'
     const subscriptions = await this.paymentsService.deletePayment(paymentId)
 
   }
@@ -85,9 +86,10 @@ export class PaymentsController {
     @Req() req,
     @Headers('stripe-signature') signature
   ) {
-    console.log(req.rawBody, 'hook')
-    if (signature) await this.paymentsService.webHook(req.rawBody, signature)
-
+    if (signature)
+      this.commandBus.execute(
+        new WebhookCommand(req.rawBody, signature)
+      );
   }
 
 }

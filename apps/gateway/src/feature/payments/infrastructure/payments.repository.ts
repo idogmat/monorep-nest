@@ -1,6 +1,7 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { Payment, Post } from '@prisma/client';
+import { $Enums, Payment, PaymentStatus, Post } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
+import { status } from '@grpc/grpc-js';
 
 @Injectable()
 export class PaymentsRepository {
@@ -27,6 +28,7 @@ export class PaymentsRepository {
     data: {
       subscriptionId: string,
       createdAt: string,
+      expiresAt: string,
       customerId: string,
       subType: string,
       amount: number,
@@ -35,6 +37,7 @@ export class PaymentsRepository {
     const {
       subscriptionId,
       createdAt,
+      expiresAt,
       customerId,
       subType,
       amount,
@@ -54,6 +57,7 @@ export class PaymentsRepository {
         data: {
           subscriptionId,
           createdAt,
+          expiresAt,
           subType,
           amount
         }
@@ -61,16 +65,49 @@ export class PaymentsRepository {
     })
   }
 
-  async updatePaymentExpire(
+  async updatePaymentProduct(
     data: {
       subscriptionId: string,
-      expiresAt: string,
+      subType: string,
+      amount: number,
+    }
+  ): Promise<Payment | null> {
+    const {
+      subscriptionId,
+      subType,
+      amount,
+    } = data;
+    return await this.prisma.$transaction(async (tx) => {
+      const payment = await tx.payment.findFirst({
+        where: {
+          subscriptionId,
+          deletedAt: null
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 1,
+      })
+      // console.log(payment, 'payment')
+      if (!payment) throw new ForbiddenException()
+      return await tx.payment.update({
+        where: { id: payment.id },
+        data: {
+          subType,
+          amount
+        }
+      })
+    })
+  }
+
+  async updatePaymentStatus(
+    data: {
+      subscriptionId: string,
+      status: PaymentStatus,
       userId: string,
     }
   ): Promise<Payment | null> {
     const {
       subscriptionId,
-      expiresAt,
+      status,
       userId,
     } = data;
     return await this.prisma.$transaction(async (tx) => {
@@ -87,7 +124,7 @@ export class PaymentsRepository {
       return await tx.payment.update({
         where: { id: payment.id },
         data: {
-          expiresAt
+          status: status
         }
       })
     })

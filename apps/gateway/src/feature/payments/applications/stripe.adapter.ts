@@ -14,8 +14,8 @@ export class StripeAdapter {
     this.stripe = new Stripe(this.configService.get('STRIPE_API_KEY'), {
       apiVersion: '2025-03-31.basil',
     });
-    this.successUrl = 'https://shuttle-c-accurate-dad.trycloudflare.com/api/v1/payments/success';
-    this.cancelUrl = 'https://shuttle-c-accurate-dad.trycloudflare.com/api/v1/payments/error';
+    this.successUrl = `${this.configService.get('BASE_URL')}/payments/success`;
+    this.cancelUrl = `${this.configService.get('BASE_URL')}/payments/error`;
   }
 
   async findCustomerByEmail(email: string): Promise<Stripe.Customer | null> {
@@ -103,7 +103,7 @@ export class StripeAdapter {
   }
 
   async webHook(buffer: Buffer, signature: string): Promise<Stripe.Event> {
-    const secret = 'whsec_SVNDV8JaDtDWZL4v4UBmwHbLKjGHVYsg'
+    const secret = this.configService.get('STRIPE_WEBHOOK_SECRET')
     const event = await this.stripe.webhooks.constructEvent(
       buffer,
       signature,

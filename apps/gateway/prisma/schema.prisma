@@ -62,13 +62,14 @@ model Post {
 }
 
 model Payment {
-  id              String    @id @default(uuid())
-  user            User      @relation("UserPayment", fields: [userId], references: [id])
-  userId          String    @db.VarChar(40)
-  subscriptionId  String?   @db.VarChar(40)
-  customerId      String    @db.VarChar(40)
-  payType         String?   @db.VarChar(40) @default("Stripe")
-  subType         String?   @db.VarChar(40)
+  id              String        @id @default(uuid())
+  user            User          @relation("UserPayment", fields: [userId], references: [id])
+  userId          String        @db.VarChar(40)
+  subscriptionId  String?       @db.VarChar(40)
+  customerId      String        @db.VarChar(40)
+  payType         String?       @db.VarChar(40) @default("Stripe")
+  subType         String?       @db.VarChar(40)
+  status          PaymentStatus @default(PENDING) 
   amount          Int?       
   createdAt       DateTime
   expiresAt       DateTime? 
@@ -83,4 +84,9 @@ enum PhotoUploadStatus {
   IN_PROGRESS
   COMPLETED
   FAILED
+}
+enum PaymentStatus {
+  CANCEL
+  PENDING
+  ACTIVE
 }

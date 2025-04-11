@@ -30,6 +30,7 @@ RUN yarn
 
 # Bundle app source code
 COPY --chown=node . .
+RUN yarn generate:proto
 RUN yarn prisma generate ${SERVICE}
 RUN yarn build:${SERVICE}
 

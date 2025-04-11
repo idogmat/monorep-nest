@@ -10,6 +10,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { GateService } from '../../common/gate.service';
 import { ProfileMappingService } from './application/profile.mapper';
 import { GrpcServiceModule } from '../../support.modules/grpc/grpc.module';
+import { UpdateAccountEvent } from '../payments/eventBus/updateAccount.event';
+import { UpdateAccountHandler } from './eventHandler/updateAccount.handler';
 
 @Module({
   imports: [
@@ -47,7 +49,8 @@ import { GrpcServiceModule } from '../../support.modules/grpc/grpc.module';
     DeviceService,
     ProfileMappingService,
     PrismaService,
-    GateService
+    GateService,
+    UpdateAccountHandler
   ],
   controllers: [ProfileController],
   exports: []

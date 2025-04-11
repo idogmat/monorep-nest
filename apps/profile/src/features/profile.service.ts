@@ -119,6 +119,13 @@ export class ProfileService {
     })
   }
 
+  async updateProfilePayment(userId: string, paymentAccount: boolean): Promise<Profile> {
+    return this.prisma.profile.update({
+      where: { userId },
+      data: { paymentAccount }
+    })
+  }
+
   async subscribe(userId: string, userProfileId: string): Promise<void> {
     return await this.prisma.$transaction(async (tx) => {
       const [subscriber, profile] = await Promise.all([

@@ -12,6 +12,8 @@ interface ProfileService {
   UpdateUserProfile(data: UpdateUserProfileRequest): Observable<any>;
   SubscribeUserProfile(data: { userId: string, profileUserId: string }): Observable<any>;
   CreateUserProfile(data: { userId: string, userName: string, email: string }): Observable<any>;
+  UpdateUserProfileSubscribe(data: { userId: string, paymentAccount: boolean }): Observable<any>;
+
 }
 
 @Injectable()
@@ -26,9 +28,6 @@ export class ProfileClientService implements OnModuleInit {
     this.profileService = this.client.getService<ProfileService>('ProfileService');
   }
 
-  // async getMessage(id: string) {
-  //   return this.messageService.GetMessage({ id }).toPromise();
-  // }
 
   async getProfile(userId: string, profileUserId: string) {
     return firstValueFrom(await this.profileService.GetUserProfile({ userId, profileUserId }));
@@ -44,12 +43,14 @@ export class ProfileClientService implements OnModuleInit {
   }
 
   async subscribeProfile(userId: string, profileUserId: string) {
-    console.log(userId, 'userId')
-    console.log(profileUserId, 'profileUserId')
     return lastValueFrom(await this.profileService.SubscribeUserProfile({ userId, profileUserId }));
   }
 
   async createUserProfile(userId: string, userName: string, email: string) {
     return lastValueFrom(await this.profileService.CreateUserProfile({ userId, userName, email }));
+  }
+
+  async updateUserProfileSubscribe(userId: string, paymentAccount: boolean) {
+    return lastValueFrom(await this.profileService.UpdateUserProfileSubscribe({ userId, paymentAccount }));
   }
 }
