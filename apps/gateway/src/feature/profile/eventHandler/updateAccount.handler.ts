@@ -1,6 +1,6 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { UpdateAccountEvent } from '../../payments/eventBus/updateAccount.event';
-import { ProfileClientService } from 'apps/gateway/src/support.modules/grpc/grpc.service';
+import { ProfileClientService } from '../../../support.modules/grpc/grpc.service';
 
 @EventsHandler(UpdateAccountEvent)
 export class UpdateAccountHandler implements IEventHandler<UpdateAccountEvent> {
