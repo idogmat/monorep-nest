@@ -8,10 +8,17 @@ export class PaymentsRepository {
   }
 
   async createPayment(data: { createdAt: string, customerId: string, userId: string }): Promise<Payment> {
-    console.log(data)
     return this.prisma.payment.create({
       data: {
         ...data
+      }
+    })
+  }
+
+  async findPaymentById(id: string): Promise<Payment> {
+    return this.prisma.payment.findFirst({
+      where: {
+        id
       }
     })
   }
@@ -34,7 +41,10 @@ export class PaymentsRepository {
     } = data;
     return await this.prisma.$transaction(async (tx) => {
       const payment = await tx.payment.findFirst({
-        where: { customerId },
+        where: {
+          customerId,
+          deletedAt: null
+        },
         orderBy: { createdAt: 'desc' },
         take: 1,
       })
@@ -65,7 +75,11 @@ export class PaymentsRepository {
     } = data;
     return await this.prisma.$transaction(async (tx) => {
       const payment = await tx.payment.findFirst({
-        where: { subscriptionId, userId },
+        where: {
+          subscriptionId,
+          userId,
+          deletedAt: null
+        },
         orderBy: { createdAt: 'desc' },
         take: 1,
       })
@@ -109,7 +123,10 @@ export class PaymentsRepository {
 
   async findByUserId(userId: string): Promise<Payment[] | []> {
     return this.prisma.payment.findMany({
-      where: { userId },
+      where: {
+        userId,
+        deletedAt: null
+      },
       orderBy: { createdAt: 'desc' }
     })
   }

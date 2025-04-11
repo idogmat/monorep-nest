@@ -54,15 +54,24 @@ export class PaymentsService {
   }
 
   async deletePayment(
-    customer,
-    product,
-    userId
+    paymentId
   ) {
-    return this.stripeAdapter.createCheckoutSession(
-      customer,
-      products[product].price,
-      userId
+
+    const payment = await this.paymentsRepository.findPaymentById(paymentId)
+    await this.paymentsRepository.markPaymentAsDeleted(
+      {
+        customerId: payment.customerId,
+        deletedAt: new Date().toISOString(),
+        subscriptionId: payment.subscriptionId
+      })
+    return this.stripeAdapter.deleteSubscription(
+      payment.subscriptionId
     )
+  }
+
+
+  async listCustomerSubscriptions(customerId: string) {
+    return this.stripeAdapter.listCustomerSubscriptions(customerId);
   }
 
   async webHook(
@@ -74,6 +83,8 @@ export class PaymentsService {
 
     switch (event.type) {
       case 'customer.subscription.created':
+        console.log(event.data.object)
+        console.log(JSON.stringify(event.data.object), 'customer.subscription.created')
         try {
           const {
             id: subscriptionId,
@@ -94,6 +105,8 @@ export class PaymentsService {
         }
         break;
       case 'checkout.session.completed':
+        console.log(event.data.object)
+        console.log(JSON.stringify(event.data.object), 'customer.subscription.completed')
         try {
           const {
             expires_at,
@@ -110,6 +123,40 @@ export class PaymentsService {
         } catch {
 
         }
+
+        break;
+
+      case 'customer.subscription.updated':
+        //   try {
+        //     const {
+
+        //       id: subscriptionId,
+        //       expires_at,
+        //       created,
+        //       client_reference_id: userId
+        //     } = event.data.object
+        //     const planId = (event.data.object as any)?.plan?.id
+        //     const customerId = (event.data.object as any)?.customer
+        //     const payment = {
+        //       subscriptionId,
+        //       customerId,
+        //       subType: productsName[planId],
+        //       expiresAt: new Date(Date.now() * 1000).toISOString(),
+        //       userId
+        //     }
+        //     const paymentExpire = {
+        //       subscriptionId,
+        //       customerId,
+        //       subType: productsName[planId],
+        //       expiresAt: new Date(Date.now() * 1000).toISOString(),
+        //       userId
+        //     }
+        console.log(event.data.object)
+        console.log(JSON.stringify(event.data.object), 'customer.subscription.updated')
+        // await this.paymentsRepository.updatePaymentExpire(payment)
+        // } catch {
+
+        // }
 
         break;
       case 'customer.subscription.deleted':
@@ -133,7 +180,4 @@ export class PaymentsService {
     }
   }
 
-  async listCustomerSubscriptions(customerId: string) {
-    return this.stripeAdapter.listCustomerSubscriptions(customerId);
-  }
 }

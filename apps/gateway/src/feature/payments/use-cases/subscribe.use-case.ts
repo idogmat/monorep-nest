@@ -27,13 +27,15 @@ export class SubscribeUseCase implements ICommandHandler<SubscribeCommand> {
       const { userId, productkey } = command
       const customer = await this.paymentsService.findOrCreateCustomer(userId)
       const subscriptions = await this.paymentsService.listCustomerSubscriptions(customer.id)
-      console.log(customer, 'customer')
+      console.log(subscriptions, 'subscriptions')
       if (subscriptions.data?.[0]?.id) {
         const updatedSubscription = await this.paymentsService.updatePayment(
           subscriptions.data?.[0]?.id,
           productkey,
         )
+        const price = updatedSubscription.items.data[0]
         console.log(updatedSubscription, 'updatedSubscription')
+        console.log(price, 'price')
       } else {
         const {
           created,
@@ -51,6 +53,7 @@ export class SubscribeUseCase implements ICommandHandler<SubscribeCommand> {
         }
         console.log(url)
         await this.paymentsRepository.createPayment(payment)
+        return { url }
       }
       return 'ok'
     } catch (error) {

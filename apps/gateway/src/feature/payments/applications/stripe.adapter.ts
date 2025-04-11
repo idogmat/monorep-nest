@@ -96,7 +96,7 @@ export class StripeAdapter {
     return updatedSubscription;
   }
 
-  async deleteSubscription(subscriptionId: string,): Promise<Stripe.Subscription> {
+  async deleteSubscription(subscriptionId: string): Promise<Stripe.Subscription> {
 
     const cancelSubscription = await this.stripe.subscriptions.cancel(subscriptionId);
     return cancelSubscription;
