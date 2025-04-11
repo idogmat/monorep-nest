@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { $Enums, Payment, PaymentStatus, Post } from '@prisma/client';
+import { $Enums, Payment, PaymentStatus, Post } from '../../../../prisma/generated/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { status } from '@grpc/grpc-js';
 

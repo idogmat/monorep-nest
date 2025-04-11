@@ -3,7 +3,7 @@ import { GoogleTokenModel } from '../../api/models/input/google.token.model';
 import { GoogleService } from '../../../../../common/provider/google.service';
 import { InterlayerNotice } from '../../../../../common/error-handling/interlayer.notice';
 import { AuthService } from '../auth.service';
-import { Provider, User } from '@prisma/client';
+import { Provider, User } from '../../../../../../prisma/generated/client';
 import { GoogleAuthResponseModel } from '../../api/models/shared/google.auth.response.model';
 import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/users.prisma.repository';
 import { DeviceService } from '../../../devices/application/device.service';

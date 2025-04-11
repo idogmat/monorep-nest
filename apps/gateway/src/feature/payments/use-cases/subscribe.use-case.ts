@@ -1,7 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { PaymentsService } from '../applications/payments.service';
-import { User } from '@prisma/client';
-import { randomUUID } from 'crypto';
 import { PaymentsRepository } from '../infrastructure/payments.repository';
 
 

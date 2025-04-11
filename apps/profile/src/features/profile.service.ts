@@ -1,6 +1,6 @@
 import { ConflictException, ForbiddenException, Injectable } from "@nestjs/common"
 import { PrismaService } from "./prisma/prisma.service"
-import { Profile, Prisma } from 'node_modules/.prisma/profile-client';
+import { Profile, Prisma } from '../../prisma/generated/profile-client';
 import { ProfilePhotoInputModel } from "./model/profilePhoto.input.model";
 import { InputProfileModel } from "./model/input.profile.model";
 import { PaginationProfileWithSubscribers, ProfileWithSubscribers } from "./model/profile.output.model";

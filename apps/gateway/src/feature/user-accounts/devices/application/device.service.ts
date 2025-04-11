@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { Device } from '@prisma/client';
+import { Device } from '../../../../../prisma/generated/client';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { DeviceModel } from '../api/models/device.model';
 import { IAuthUser } from '../../../../common/guard/authGuard';

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { User } from '@prisma/client';
 import Stripe from 'stripe';
 export type subscribeType = 1 | 2 | 3
 

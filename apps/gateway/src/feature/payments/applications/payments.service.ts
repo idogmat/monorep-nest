@@ -1,9 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { StripeAdapter } from "./stripe.adapter";
 import { UsersService } from "../../user-accounts/users/application/users.service";
-import { products, productsName } from "../helpers";
+import { products } from "../helpers";
 import { PaymentsRepository } from "../infrastructure/payments.repository";
-import { PaymentStatus } from "@prisma/client";
 
 @Injectable()
 export class PaymentsService {

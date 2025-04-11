@@ -1,5 +1,5 @@
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
-import { PaymentStatus } from '@prisma/client';
+import { PaymentStatus } from '../../../../prisma/generated/client';
 import { PaymentsRepository } from '../infrastructure/payments.repository';
 import { StripeAdapter } from '../applications/stripe.adapter';
 import { products, productsName } from '../helpers';

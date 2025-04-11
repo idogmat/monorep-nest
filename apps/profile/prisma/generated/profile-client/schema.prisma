@@ -1,0 +1,44 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("PROFILE_DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/profile-client"
+}
+
+model Profile {
+  id             String    @id @default(uuid())
+  userId         String    @unique
+  createdAt      DateTime  @default(now()) @map("created_at")
+  photoUrl       String?
+  email          String
+  paymentAccount Boolean   @default(false)
+  userName       String
+  aboutMe        String?   @db.VarChar(200)
+  firstName      String?
+  lastName       String?
+  dateOfBirth    DateTime?
+  country        String?
+  city           String?
+
+  subscriptions Subscription[] @relation("Subscriptions")
+  subscribers   Subscription[] @relation("Subscribers")
+
+  @@index([userName])
+  @@index([userId])
+  @@map("profiles")
+}
+
+model Subscription {
+  subscriberId String
+  profileId    String
+  createdAt    DateTime @default(now())
+
+  subscriber Profile @relation("Subscriptions", fields: [subscriberId], references: [id])
+  profile    Profile @relation("Subscribers", fields: [profileId], references: [id])
+
+  @@id([subscriberId, profileId])
+  @@map("subscriptions")
+}

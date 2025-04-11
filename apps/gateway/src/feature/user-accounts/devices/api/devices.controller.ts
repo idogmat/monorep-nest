@@ -3,7 +3,7 @@ import { DeviceService } from '../application/device.service';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../../../common/guard/authGuard';
 import { DeviceQueryRepository } from '../infrastructure/device.prisma.query-repository';
-import { Device } from '@prisma/client';
+import { Device } from '../../../../../prisma/generated/client';
 import { DeviceModel } from './models/device.model';
 
 @ApiTags('Devices')
