@@ -57,7 +57,7 @@ export class SubscribeUseCase implements ICommandHandler<SubscribeCommand> {
       // }
       return 'ok'
     } catch (error) {
-
+      console.log(error)
     }
 
   }
