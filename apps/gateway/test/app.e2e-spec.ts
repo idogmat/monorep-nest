@@ -6,7 +6,6 @@ import { AuthTestManager } from './utils/auth/auth.test.manager';
 import { EmailService } from '../src/common/email/email.service';
 import { EmailServiceMock } from './mock/email.service.mock';
 import request from 'supertest';
-import { userTestSeeder } from './utils/users/user.test.seeder';
 import dotenv from 'dotenv';
 import { PrismaService } from '../src/feature/prisma/prisma.service';
 import { clearDatabase } from './utils/clear.database';
@@ -16,8 +15,9 @@ import { GrpcServiceModule } from '../src/support.modules/grpc/grpc.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { ProfileClientService } from '../src/support.modules/grpc/grpc.service';
-import { StripeAdapter } from '../src/feature/payments/applications/stripe.adapter';
 import { StripeAdapterMock } from './mock/stripe.adapter.mok';
+import { PaymentCronService } from '../src/feature/payments/applications/payment.cron';
+import { PaymentCronServiceMock } from './mock/payment.cron.mock';
 @Module({
   imports: [
     ClientsModule.register([
@@ -55,6 +55,8 @@ describe('AppController (e2e)', () => {
       .useClass(GateServiceMock)
       .overrideProvider('STRIPE_ADAPTER')
       .useClass(StripeAdapterMock)
+      .overrideProvider(PaymentCronService)
+      .useClass(PaymentCronServiceMock)
       .overrideModule(GrpcServiceModule)
       .useModule(GrpcServiceModuleMock)
       .compile();
