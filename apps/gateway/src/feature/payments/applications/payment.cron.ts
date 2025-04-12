@@ -3,6 +3,7 @@ import { Cron, CronExpression } from "@nestjs/schedule";
 import { PaymentsRepository } from "../infrastructure/payments.repository";
 import { EventBus } from "@nestjs/cqrs";
 import { UpdateAccountEvent } from "../eventBus/updateAccount.event";
+import { Payment } from "../../../../prisma/generated/client";
 
 @Injectable()
 export class PaymentCronService {
@@ -24,8 +25,8 @@ export class PaymentCronService {
 
     if (expired.length) {
       for (const exp of expired) {
-        active?.forEach(act => {
-          if (act?.userId === exp.userId) {
+        active?.forEach((act: Payment) => {
+          if (act && act?.userId === exp.userId) {
             removeSub = removeSub.filter(e => e !== act?.userId)
           }
         })
