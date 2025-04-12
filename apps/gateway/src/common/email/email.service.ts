@@ -13,20 +13,21 @@ export class EmailService {
       email,
       confirmationCode,
     );
-    await this.emailAdapter.sandMail(dataMail);
+    // TODO EMAIL CRED
+    // await this.emailAdapter.sandMail(dataMail);
   }
   async sendVerifyEmail(email: string, confirmationCode: string) {
     const dataMail = this.emailRouter.getDataMailVerify(
       email,
       confirmationCode,
     );
-    await this.emailAdapter.sandMail(dataMail);
+    // await this.emailAdapter.sandMail(dataMail);
   }
   async sendRecoveryCode(email: string, recoveryCode: string) {
     const dataMail = this.emailRouter.getDataRecoveryPassword(
       email,
       recoveryCode,
     );
-    await this.emailAdapter.sandMail(dataMail);
+    // await this.emailAdapter.sandMail(dataMail);
   }
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Header, Headers, Post, Req, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Header, Headers, Param, Post, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { PaymentsService } from '../applications/payments.service';
 import { CommandBus } from '@nestjs/cqrs';
@@ -12,14 +12,15 @@ export class PaymentsController {
   ) { }
 
   // TODO POST AUARD
-  @Get('subscribe')
+  @Get('subscribe/:id')
   async subscribePayment(
     @Req() req: Request,
+    @Param('id') id: string
     // @Body() 
     // @Res() res
   ) {
     // console.log(req.user.userId)
-    const userId = req.user?.userId || 'acf7924f-310f-40ec-bd2b-fc6382c337a2'
+    const userId = id || 'acf7924f-310f-40ec-bd2b-fc6382c337a2'
     const product = 1
     if (![1, 2, 3].includes(product)) throw new BadRequestException({ message: 'Wrong product key' })
     return this.commandBus.execute(
