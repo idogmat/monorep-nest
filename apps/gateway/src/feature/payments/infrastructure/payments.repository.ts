@@ -1,7 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { $Enums, Payment, PaymentStatus, Post } from '../../../../prisma/generated/client';
+import { Payment, PaymentStatus } from '../../../../prisma/generated/client';
 import { PrismaService } from '../../prisma/prisma.service';
-import { status } from '@grpc/grpc-js';
 
 @Injectable()
 export class PaymentsRepository {
@@ -134,6 +133,7 @@ export class PaymentsRepository {
     data: {
       subscriptionId: string,
       customerId: string,
+      expiresAt: string,
       deletedAt: string,
     }
   ): Promise<Payment | null> {
@@ -141,6 +141,7 @@ export class PaymentsRepository {
       subscriptionId,
       customerId,
       deletedAt,
+      expiresAt
     } = data;
     return await this.prisma.$transaction(async (tx) => {
       const payment = await tx.payment.findFirst({
@@ -152,7 +153,35 @@ export class PaymentsRepository {
       return await tx.payment.update({
         where: { id: payment.id },
         data: {
-          deletedAt
+          deletedAt,
+          expiresAt,
+          status: PaymentStatus.CANCEL
+        }
+      })
+    })
+  }
+
+  async updatePaymentExpire(
+    data: {
+      subscriptionId: string,
+      expiresAt: string,
+    }
+  ): Promise<Payment | null> {
+    const {
+      subscriptionId,
+      expiresAt
+    } = data;
+    return await this.prisma.$transaction(async (tx) => {
+      const payment = await tx.payment.findFirst({
+        where: { subscriptionId },
+        orderBy: { createdAt: 'desc' },
+        take: 1,
+      })
+      if (!payment) throw new ForbiddenException()
+      return await tx.payment.update({
+        where: { id: payment.id },
+        data: {
+          expiresAt
         }
       })
     })
@@ -168,16 +197,51 @@ export class PaymentsRepository {
     })
   }
 
-  async updatePost(param: { id: string, data: Partial<Post> }) {
-    return this.prisma.post.update({
-      where: { id: param.id },
-      data: param.data
+  async checkExpiers(): Promise<
+    {
+      expired: Payment[] | [],
+      active: Payment[] | []
+    }
+  > {
+    const expired = await this.prisma.payment.findMany({
+      where: {
+        expiresAt: {
+          lt: new Date(),
+        },
+        status: PaymentStatus.ACTIVE
+      },
+      // orderBy: { createdAt: 'desc' }
+    });
+    const userIds = [...new Set(expired.map(p => p.userId))];
+    if (userIds.length === 0) {
+      // нет истёкших — возврат или логика по умолчанию
+      return { expired: [], active: [] };
+    }
+
+    // Шаг 3: получаем все платежи этих пользователей
+    const active = await this.prisma.payment.findMany({
+      where: {
+        userId: {
+          in: userIds,
+        },
+        expiresAt: {
+          gt: new Date(),
+        },
+        status: PaymentStatus.ACTIVE,
+      },
+    })
+    return { expired, active }
+  }
+
+  async toggleStatus(id: string): Promise<void> {
+    await this.prisma.payment.update({
+      where: {
+        id
+      },
+      data: {
+        status: PaymentStatus.CANCEL
+      }
     })
   }
 
-  async delete(param: { id: string }) {
-    await this.prisma.post.delete({
-      where: { id: param.id }
-    })
-  }
 }

@@ -9,12 +9,15 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { PrismaService } from '../prisma/prisma.service';
 import { PaymentsRepository } from './infrastructure/payments.repository';
 import { WebhookUseCase } from './use-cases/webhook.use-case';
+import { PaymentCronService } from './applications/payment.cron';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
     ConfigModule,
     CqrsModule,
-    UsersAccountsModule
+    UsersAccountsModule,
+    ScheduleModule.forRoot()
   ],
   providers: [
     {
@@ -30,7 +33,8 @@ import { WebhookUseCase } from './use-cases/webhook.use-case';
     PaymentsRepository,
     PaymentsService,
     SubscribeUseCase,
-    WebhookUseCase
+    WebhookUseCase,
+    PaymentCronService
   ],
   controllers: [PaymentsController],
   exports: [PaymentsService]

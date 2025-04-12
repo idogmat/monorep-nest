@@ -28,11 +28,10 @@ export class WebhookUseCase implements ICommandHandler<WebhookCommand> {
 
     const { buffer, signature } = command
     const event = await this.stripeAdapter.webHook(buffer, signature)
-    console.log(JSON.stringify(event), 'event')
+    // console.log(event)
+
     switch (event.type) {
       case 'customer.subscription.created':
-        console.log(event.data.object)
-        console.log(JSON.stringify(event.data.object), 'customer.subscription.created')
         try {
           const {
             id: subscriptionId,
@@ -55,8 +54,6 @@ export class WebhookUseCase implements ICommandHandler<WebhookCommand> {
         }
         break;
       case 'checkout.session.completed':
-        console.log(event.data.object)
-        console.log(JSON.stringify(event.data.object), 'customer.subscription.completed')
         try {
           const {
             client_reference_id: userId
@@ -68,7 +65,6 @@ export class WebhookUseCase implements ICommandHandler<WebhookCommand> {
             status,
             userId
           }
-          console.log(event.data.object)
           await this.paymentsRepository.updatePaymentStatus(payment)
           this.eventBus.publish(new UpdateAccountEvent(userId, true));
         } catch {
@@ -78,49 +74,36 @@ export class WebhookUseCase implements ICommandHandler<WebhookCommand> {
         break;
 
       case 'customer.subscription.updated':
-        //   try {
-        //     const {
+        try {
+          const {
+            id: subscriptionId,
+          } = event.data.object
+          const object = event.data.object.items?.data?.[0]
+          const { current_period_end, } = object
 
-        //       id: subscriptionId,
-        //       expires_at,
-        //       created,
-        //       client_reference_id: userId
-        //     } = event.data.object
-        //     const planId = (event.data.object as any)?.plan?.id
-        //     const customerId = (event.data.object as any)?.customer
-        //     const payment = {
-        //       subscriptionId,
-        //       customerId,
-        //       subType: productsName[planId],
-        //       expiresAt: new Date(Date.now() * 1000).toISOString(),
-        //       userId
-        //     }
-        //     const paymentExpire = {
-        //       subscriptionId,
-        //       customerId,
-        //       subType: productsName[planId],
-        //       expiresAt: new Date(Date.now() * 1000).toISOString(),
-        //       userId
-        //     }
-        console.log(event.data.object)
-        console.log(JSON.stringify(event.data.object), 'customer.subscription.updated')
-        // await this.paymentsRepository.updatePaymentExpire(payment)
-        // } catch {
+          const payment = {
+            subscriptionId,
+            expiresAt: new Date(current_period_end * 1000).toISOString(),
+          }
+          await this.paymentsRepository.updatePaymentExpire(payment)
+        } catch {
 
-        // }
+        }
 
         break;
       case 'customer.subscription.deleted':
         try {
           const { id, customer, canceled_at } = event.data.object
 
-          // const result = await this.stripeAdapter.deleteSubscription(id)
-          await this.paymentsRepository.markPaymentAsDeleted({
+          const object = event.data.object.items?.data?.[0]
+          const { current_period_end, } = object
+          const payment = {
             subscriptionId: id,
+            expiresAt: new Date(current_period_end * 1000).toISOString(),
+            deletedAt: new Date(canceled_at * 1000).toISOString(),
             customerId: customer as string,
-            deletedAt: new Date(canceled_at * 1000).toISOString()
-          })
-          // console.log(result)
+          }
+          await this.paymentsRepository.markPaymentAsDeleted(payment)
         } catch {
 
         }

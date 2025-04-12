@@ -39,10 +39,9 @@ export class StripeAdapter {
     product,
     userId
   ): Promise<Stripe.Checkout.Session> {
-
+    console.log(product, 'product-ebt')
     return this.stripe.checkout.sessions.create({
       customer: customer.id,
-      // customer_email:
       line_items: [
         {
           price: product,

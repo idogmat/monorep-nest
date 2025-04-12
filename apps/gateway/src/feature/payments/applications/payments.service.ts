@@ -65,12 +65,6 @@ export class PaymentsService {
   ) {
 
     const payment = await this.paymentsRepository.findPaymentById(paymentId)
-    await this.paymentsRepository.markPaymentAsDeleted(
-      {
-        customerId: payment.customerId,
-        deletedAt: new Date().toISOString(),
-        subscriptionId: payment.subscriptionId
-      })
     return this.stripeAdapter.deleteSubscription(
       payment.subscriptionId
     )
