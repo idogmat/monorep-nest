@@ -16,6 +16,8 @@ import { GrpcServiceModule } from '../src/support.modules/grpc/grpc.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { ProfileClientService } from '../src/support.modules/grpc/grpc.service';
+import { StripeAdapter } from '../src/feature/payments/applications/stripe.adapter';
+import { StripeAdapterMock } from './mock/stripe.adapter.mok';
 @Module({
   imports: [
     ClientsModule.register([
@@ -51,6 +53,8 @@ describe('AppController (e2e)', () => {
       .useClass(EmailServiceMock)
       .overrideProvider(GateService)
       .useClass(GateServiceMock)
+      .overrideProvider('STRIPE_ADAPTER')
+      .useClass(StripeAdapterMock)
       .overrideModule(GrpcServiceModule)
       .useModule(GrpcServiceModuleMock)
       .compile();
