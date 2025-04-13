@@ -66,7 +66,7 @@ export class WebhookUseCase implements ICommandHandler<WebhookCommand> {
             userId
           }
           await this.paymentsRepository.updatePaymentStatus(payment)
-          this.eventBus.publish(new UpdateAccountEvent(userId, true));
+          this.eventBus.publish(new UpdateAccountEvent([{ userId, paymentAccount: true }]));
         } catch {
 
         }

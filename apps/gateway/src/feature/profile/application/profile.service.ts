@@ -60,6 +60,19 @@ export class ProfileService {
     }
   }
 
+  async subscribeProfile(
+    userId: string,
+    paymentAccount: boolean
+  ) {
+    try {
+      const response = await this.profileClientService.updateUserProfileSubscribe(userId, paymentAccount)
+      return response
+    } catch (error) {
+      console.error('Ошибка:', error.message);
+      throw error;
+    }
+  }
+
   // async chunkSlicer(file) {
   //   const fileStream = Readable.from(file.buffer); // Создаем поток из буфера
   //   let chunkIndex = 0;

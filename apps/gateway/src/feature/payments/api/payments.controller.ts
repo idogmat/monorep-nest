@@ -35,7 +35,6 @@ export class PaymentsController {
   ) {
     const userId = req.user?.userId
     const product = payload.subscribeType
-    if (![1, 2, 3].includes(product)) throw new BadRequestException({ message: 'Wrong product key' })
     return this.commandBus.execute(
       new SubscribeCommand(userId, product)
     );

@@ -48,7 +48,7 @@ export class PaymentsService {
     )
   }
 
-  async createPayment(
+  async activateSubscribe(
     customer,
     product,
     userId

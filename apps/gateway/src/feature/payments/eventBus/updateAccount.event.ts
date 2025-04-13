@@ -1,3 +1,7 @@
+export interface UserAccounts {
+  userId: string;
+  paymentAccount: boolean
+}
 export class UpdateAccountEvent {
-  constructor(public readonly userId: string, public readonly paymentAccount: boolean) { }
+  constructor(public readonly users: UserAccounts[]) { }
 }

@@ -13,15 +13,16 @@ export class PaymentCronService {
     private readonly eventBus: EventBus
   ) { }
   // "*/10 * * * * *" 10sec
-  @Cron(CronExpression.EVERY_10_MINUTES) // Каждые 10 минут
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async handleCron() {
-    const { active, expired } = await this.paymentsRepository.checkExpiers()
-    let removeSub = expired.map((rem, _, array) => {
-      if (!array.includes(rem.userId)) return rem.userId
-    }
-    )
-    // console.log(active)
-    // console.log(expired)
+    const { active, expired }: { active: Payment[]; expired: (Payment | undefined)[] } =
+      await this.paymentsRepository.checkExpiers();
+    let removeSub = expired.reduce((acc: string[], rem: Payment | undefined): string[] => {
+      if (rem?.userId && !acc.includes(rem?.userId)) acc.push(rem.userId)
+      return acc
+    }, [] as string[])
+    console.log(active)
+    console.log(expired)
 
     if (expired.length) {
       for (const exp of expired) {
@@ -31,7 +32,7 @@ export class PaymentCronService {
           }
         })
         const { subscriptionId, customerId, expiresAt } = exp
-        this.paymentsRepository.markPaymentAsDeleted({
+        await this.paymentsRepository.markPaymentAsDeleted({
           subscriptionId,
           customerId,
           expiresAt: expiresAt?.toISOString(),
@@ -40,10 +41,8 @@ export class PaymentCronService {
       }
     }
     if (removeSub.length) {
-      // console.log(removeSub)
-      for (const r of removeSub) {
-        this.eventBus.publish(new UpdateAccountEvent(r, false));
-      }
+      const message = removeSub.map(e => ({ userId: e, paymentAccount: false }))
+      this.eventBus.publish(new UpdateAccountEvent(message));
 
       this.logger.log('Subscriptions updated');
     }

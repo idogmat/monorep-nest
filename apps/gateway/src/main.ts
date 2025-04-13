@@ -27,9 +27,17 @@ async function bootstrap() {
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
-      urls: [rabbit], // Подключение к RabbitMQ
-      queue: 'post_queue', // Очередь, в которую будут отправляться сообщения
-      queueOptions: { durable: false }, // Очередь не сохраняет сообщения после перезапуска
+      urls: [rabbit],
+      queue: 'post_queue',
+      queueOptions: { durable: false },
+    },
+  });
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: [rabbit],
+      queue: 'profile_queue',
+      queueOptions: { durable: false },
     },
   });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });

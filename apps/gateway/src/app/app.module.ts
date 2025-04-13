@@ -41,34 +41,6 @@ import { PaymentsModule } from '../feature/payments/payments.module';
         },
         inject: [ConfigService],
       },
-      // {
-      //   imports: [ConfigModule],
-      //   name: 'MESSAGE_PACKAGE',
-      //   useFactory: (configService: ConfigService) => {
-      //     return {
-      //       transport: Transport.GRPC,
-      //       options: {
-      //         package: 'message',
-      //         protoPath: join(__dirname, 'message.proto'),
-      //         url: 'localhost:3814',
-      //       },
-      //     }
-      //   },
-      //   inject: [ConfigService],
-      // },
-
-      // {
-      //   name: 'GATE-SERVICE',
-      //   imports: [ConfigModule], // Импорт з
-      //   useFactory: (configService: ConfigService) => ({
-      //     transport: Transport.TCP,
-      //     options: {
-      //       host: 'gate-service', // Или IP-адрес сервера
-      //       port: Number(configService.get('PROFILE_SERVICE_PORT')),
-      //     },
-      //   }),
-      //   inject: [ConfigService]
-      // }
     ]),
     GrpcServiceModule,
     UsersAccountsModule,

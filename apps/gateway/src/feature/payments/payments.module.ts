@@ -12,13 +12,31 @@ import { WebhookUseCase } from './use-cases/webhook.use-case';
 import { PaymentCronService } from './applications/payment.cron';
 import { ScheduleModule } from '@nestjs/schedule';
 import { PaymentsQueryRepository } from './infrastructure/payments.query-repository';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
     ConfigModule,
     CqrsModule,
     UsersAccountsModule,
-    ScheduleModule.forRoot()
+    ScheduleModule.forRoot(),
+    ClientsModule.registerAsync([
+      {
+        imports: [ConfigModule],
+        name: 'RABBITMQ_PROFILE_SERVICE',
+        useFactory: (configService: ConfigService) => {
+          return {
+            transport: Transport.RMQ,
+            options: {
+              urls: configService.get<string[]>('RABBIT_URLS'),
+              queue: 'profile_queue',
+              queueOptions: { durable: false },
+            },
+          }
+        },
+        inject: [ConfigService],
+      }
+    ])
   ],
   providers: [
     {

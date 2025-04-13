@@ -18,6 +18,7 @@ import { ProfileClientService } from '../src/support.modules/grpc/grpc.service';
 import { StripeAdapterMock } from './mock/stripe.adapter.mok';
 import { PaymentCronService } from '../src/feature/payments/applications/payment.cron';
 import { PaymentCronServiceMock } from './mock/payment.cron.mock';
+import { ProfileCronService } from '../src/feature/profile/application/profile.cron';
 @Module({
   imports: [
     ClientsModule.register([
@@ -56,6 +57,8 @@ describe('AppController (e2e)', () => {
       .overrideProvider('STRIPE_ADAPTER')
       .useClass(StripeAdapterMock)
       .overrideProvider(PaymentCronService)
+      .useClass(PaymentCronServiceMock)
+      .overrideProvider(ProfileCronService)
       .useClass(PaymentCronServiceMock)
       .overrideModule(GrpcServiceModule)
       .useModule(GrpcServiceModuleMock)

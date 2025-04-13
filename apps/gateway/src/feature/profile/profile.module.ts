@@ -12,6 +12,8 @@ import { ProfileMappingService } from './application/profile.mapper';
 import { GrpcServiceModule } from '../../support.modules/grpc/grpc.module';
 import { UpdateAccountEvent } from '../payments/eventBus/updateAccount.event';
 import { UpdateAccountHandler } from './eventHandler/updateAccount.handler';
+import { FileService } from '../../../../libs/file.service';
+import { ProfileCronService } from './application/profile.cron';
 
 @Module({
   imports: [
@@ -50,7 +52,9 @@ import { UpdateAccountHandler } from './eventHandler/updateAccount.handler';
     ProfileMappingService,
     PrismaService,
     GateService,
-    UpdateAccountHandler
+    UpdateAccountHandler,
+    FileService,
+    ProfileCronService
   ],
   controllers: [ProfileController],
   exports: []

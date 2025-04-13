@@ -28,7 +28,7 @@ export class SubscribeUseCase implements ICommandHandler<SubscribeCommand> {
         created,
         client_reference_id: referenceUserId,
         url
-      } = await this.paymentsService.createPayment(
+      } = await this.paymentsService.activateSubscribe(
         customer,
         productkey,
         userId
