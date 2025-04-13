@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { ForbiddenException, Inject, Injectable } from "@nestjs/common";
 import { StripeAdapter } from "./stripe.adapter";
 import { UsersService } from "../../user-accounts/users/application/users.service";
 import { products } from "../helpers";
@@ -61,10 +61,12 @@ export class PaymentsService {
   }
 
   async deletePayment(
-    paymentId
+    paymentId,
+    userId
   ) {
 
     const payment = await this.paymentsRepository.findPaymentById(paymentId)
+    if (payment?.userId !== userId) throw new ForbiddenException()
     return this.stripeAdapter.deleteSubscription(
       payment.subscriptionId
     )

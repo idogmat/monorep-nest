@@ -11,6 +11,7 @@ import { PaymentsRepository } from './infrastructure/payments.repository';
 import { WebhookUseCase } from './use-cases/webhook.use-case';
 import { PaymentCronService } from './applications/payment.cron';
 import { ScheduleModule } from '@nestjs/schedule';
+import { PaymentsQueryRepository } from './infrastructure/payments.query-repository';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     },
     PrismaService,
     PaymentsRepository,
+    PaymentsQueryRepository,
     PaymentsService,
     SubscribeUseCase,
     WebhookUseCase,

@@ -1,8 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { JwtService } from "@nestjs/jwt";
 import { Request } from "express";
-import { DeviceService } from "../../feature/user-accounts/devices/application/device.service";
 import { RedisService } from "../../support.modules/redis/redis.service";
 
 export interface IAuthUser {
@@ -16,9 +13,6 @@ export interface IAuthUser {
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
-    private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
-    private readonly deviceService: DeviceService,
     private readonly redisService: RedisService,
 
   ) { }

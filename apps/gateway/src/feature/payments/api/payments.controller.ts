@@ -1,69 +1,85 @@
-import { BadRequestException, Body, Controller, Get, Header, Headers, Param, Post, Req, Res } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { BadRequestException, Body, Controller, ForbiddenException, Get, Headers, HttpCode, Param, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
+import { Request } from 'express';
 import { PaymentsService } from '../applications/payments.service';
 import { CommandBus } from '@nestjs/cqrs';
 import { SubscribeCommand } from '../use-cases/subscribe.use-case';
 import { WebhookCommand } from '../use-cases/webhook.use-case';
+import { AuthGuard } from '../../../../src/common/guard/authGuard';
+import { SubscribeDto, SubscribeProductDto } from './model/input/input.subscribe';
+import { PaginationPaymentsQueryDto } from './model/input/pagination.query';
+import { PaginationSearchPaymentsTerm } from './model/input/payments.query.model';
+import { PaymentsQueryRepository } from '../infrastructure/payments.query-repository';
+import { mapToViewModel, PagedResponseOfPayments } from './model/output/paged.payments.model';
+import { ApiBearerAuth, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { PaymentUrlModel } from './model/output/url.model';
 @Controller('payments')
 export class PaymentsController {
   constructor(
     private readonly paymentsService: PaymentsService,
+    private readonly paymentsQueryRepository: PaymentsQueryRepository,
     private readonly commandBus: CommandBus,
   ) { }
 
-  // TODO POST AUARD
-  @Get('subscribe/:id')
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 201,
+    description: 'Create payment url',
+    type: PaymentUrlModel
+  })
+  @UseGuards(AuthGuard)
+  @Post('subscribe')
   async subscribePayment(
     @Req() req: Request,
-    @Param('id') id: string
-    // @Body() 
-    // @Res() res
+    @Body() payload: SubscribeProductDto
+
   ) {
-    // console.log(req.user.userId)
-    const userId = id || 'acf7924f-310f-40ec-bd2b-fc6382c337a2'
-    const product = 1
+    const userId = req.user?.userId
+    const product = payload.subscribeType
     if (![1, 2, 3].includes(product)) throw new BadRequestException({ message: 'Wrong product key' })
     return this.commandBus.execute(
-      new SubscribeCommand(userId, 1)
+      new SubscribeCommand(userId, product)
     );
   }
 
-  // TODO POST AUARD
-  @Get('unsubscribe/:id')
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 204,
+    description: 'Successfully unsubscribed',
+  })
+  @HttpCode(204)
+  @UseGuards(AuthGuard)
+  @Post('unsubscribe')
   async unsubscribePayment(
     @Req() req: Request,
-    @Param('id') id: string
-    // @Body() 
-    // @Res() res
+    @Body() payload: SubscribeDto
+
   ) {
-    // console.log(req.user.userId)
-    const userId = id || 'acf7924f-310f-40ec-bd2b-fc6382c337a2'
-    const paymentId = req.user?.userId || 'a19ec874-aa69-4fbc-a3b4-4cc022f229bc'
-    const subscriptions = await this.paymentsService.deletePayment(id)
+    const userId = req.user?.userId
+    const paymentId = payload.paymentId
+    await this.paymentsService.deletePayment(userId, paymentId)
 
   }
 
-  // @Get('subscriptions/update')
-  // async updatePayment(
-  //   @Req() req
-  // ) {
-  //   const userId = req.user?.userId || 'acf7924f-310f-40ec-bd2b-fc6382c337a2'
-
-  //   const subscriptions = await this.paymentsService.updatePayment(userId, 1)
-  //   return subscriptions
-  // }
-
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully fetched payments',
+    type: PagedResponseOfPayments,
+  })
+  @ApiQuery({ name: 'pageNumber', required: false })
+  @ApiQuery({ name: 'pageSize', required: false })
+  @ApiQuery({ name: 'sortBy', required: false })
+  @ApiQuery({ name: 'sortDirection', required: false })
+  @UseGuards(AuthGuard)
   @Get('subscriptions')
   async getSubscriptions(
     @Req() req,
-    @Param('id') id: string
+    @Query() queryDTO: PaginationPaymentsQueryDto
   ) {
-    const userId = id || 'acf7924f-310f-40ec-bd2b-fc6382c337a2'
-
-    const result = await this.paymentsService.findCustomerByUserId(userId)
-    // return result
-    const subscriptions = await this.paymentsService.listCustomerSubscriptions(result.id)
-    return subscriptions
+    const userId = req.user?.userId;
+    const query = new PaginationSearchPaymentsTerm(queryDTO, ['createdAt', 'expiresAt']);
+    const { items, totalCount, pageNumber, pageSize } = await this.paymentsQueryRepository.getAllPayments(userId, query)
+    return mapToViewModel({ items, totalCount, pageNumber, pageSize })
   }
 
 
