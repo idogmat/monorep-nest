@@ -38,4 +38,4 @@ RUN yarn build:${SERVICE}
 
 EXPOSE ${PORT}
 
-CMD yarn 'start:profile'
+CMD yarn 'start:payments'
