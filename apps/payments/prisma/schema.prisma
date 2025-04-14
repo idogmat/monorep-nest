@@ -1,0 +1,50 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("PAYMENTS_DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/payments-client"
+}
+
+model Payment {
+  id              String        @id @default(uuid())
+  userId          String        @db.VarChar(40)
+  subscriptionId  String?       @db.VarChar(40)
+  customerId      String        @db.VarChar(40)
+  payType         String?       @db.VarChar(40) @default("Stripe")
+  subType         String?       @db.VarChar(40)
+  status          PaymentStatus @default(PENDING) 
+  amount          Int?       
+  createdAt       DateTime
+  expiresAt       DateTime? 
+  deletedAt       DateTime?
+
+  @@map("payments")
+  @@index([userId])
+}
+
+model Notification {
+  id              String        @id @default(uuid())
+  userId          String        @db.VarChar(40)
+  createdAt       DateTime      @default(now())
+  expiresAt       DateTime? 
+  type            NotifyStatus
+  // status          NotifyStatus
+
+  @@map("notifications")
+  @@index([userId])
+}
+
+enum PaymentStatus {
+  CANCEL
+  PENDING
+  ACTIVE
+}
+
+enum NotifyStatus {
+  subscribe
+  PENDING
+  ACTIVE
+}

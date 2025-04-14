@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package profile;
+import "google/protobuf/wrappers.proto";  // Подключаем обёртки
+
+// Request messages
+message UserProfileRequest {
+  string userId = 1;
+  string profileUserId = 2;
+}
+
+message UserProfileUpdateSubscribeRequest {
+  string userId = 1;
+  bool paymentAccount = 2;
+}
+
+message UserProfilesQuery {
+  string sortBy=1 ;
+  string sortDirection=2 ;
+  int32 pageNumber=3 ;
+  int32 pageSize=4 ;
+  string userName=5 ;
+}
+message UserProfileQueryRequest {
+  string userId = 1;
+  UserProfilesQuery query = 2;
+}
+message UpdateUserProfileRequest {
+  string userId = 1;
+  string userName = 2;
+  string firstName = 3;        
+  string lastName = 4;         
+  string dateOfBirth = 5;      
+  string country = 6;          
+  string city = 7;             
+  string aboutMe = 8;          
+}
+
+message CreateUserProfileRequest {
+  string userId=1;
+  string userName=2;
+  string email=3;
+}
+
+message SubscribeProfileRequest {
+  string userId = 1;
+  string profileUserId = 2;
+}
+
+//  Response messages
+
+message UserProfilesResponse {
+  repeated UserProfileResponse items = 1;
+  int32 pageNumber= 2;
+  int32 pageSize= 3;
+  int32 totalCount= 4;
+}
+
+message UserProfileResponse {
+  string id = 1;
+  string userId = 2;
+  string userName = 3;
+  google.protobuf.StringValue photoUrl = 4;         // Обёртка для пустых значений
+  google.protobuf.StringValue firstName = 5;        // Обёртка для пустых значений
+  google.protobuf.StringValue lastName = 6;         // Обёртка для пустых значений
+  google.protobuf.StringValue dateOfBirth = 7;      // Обёртка для пустых значений
+  google.protobuf.StringValue country = 8;          // Обёртка для пустых значений
+  google.protobuf.StringValue city = 9;             // Обёртка для пустых значений
+  google.protobuf.StringValue aboutMe = 10;          // Обёртка для пустых значений
+  bool followed = 11;
+  int32 subscribers = 12;
+  int32 subscriptions = 13;
+  string createdAt = 14;
+  bool paymentAccount = 15;
+}
+
+message UpdateUserProfileResponse {
+  string status = 1;        
+}
+
+message SubscribeUserProfileResponse {
+  string status = 1;        
+}
+
+message CreateUserProfileResponse {
+  string status = 1; 
+}
+
+message UserProfileUpdateSubscribeResponse {
+  string status = 1; 
+}
+
+service ProfileService {
+  rpc GetUserProfile(UserProfileRequest) returns (UserProfileResponse);
+  rpc GetUserProfiles(UserProfileQueryRequest) returns (UserProfilesResponse);
+  rpc UpdateUserProfile(UpdateUserProfileRequest) returns (UpdateUserProfileResponse);
+  rpc SubscribeUserProfile(SubscribeProfileRequest) returns (SubscribeUserProfileResponse);
+  rpc CreateUserProfile(CreateUserProfileRequest) returns (CreateUserProfileResponse);
+  rpc UpdateUserProfileSubscribe(UserProfileUpdateSubscribeRequest) returns (UserProfileUpdateSubscribeResponse);
+
+}

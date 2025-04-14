@@ -33,7 +33,10 @@
     "start:dev:files": "nest start files --watch",
     "build:profile": "nest build profile",
     "start:profile": "node dist/apps/profile/main",
-    "start:dev:profile": "nest start profile --watch"
+    "start:dev:profile": "nest start profile --watch",
+    "build:payments": "nest build payments",
+    "start:payments": "node dist/apps/payments/main",
+    "start:dev:payments": "nest start payments --watch"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.758.0",
