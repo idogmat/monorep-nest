@@ -1,5 +1,4 @@
-import { execSync } from "child_process";
-
+const { execSync } = require("child_process");
 const type = process.argv[2];
 const service = process.argv[3];
 if (!service || !type) {

@@ -1,10 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
-import cookieParser from 'cookie-parser';
-import v8 from 'v8';
 import { useContainer } from 'class-validator';
-import { applyAppSettings, intervalRunner } from './settings/main.settings';
+import { applyAppSettings} from './settings/main.settings';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { rawBody: true });

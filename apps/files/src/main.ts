@@ -10,6 +10,16 @@ async function bootstrap() {
 
   const app = await NestFactory.create<INestApplication>(AppModule)
   const { port, env, host, rabbit } = applyAppSettings(app)
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: [rabbit],
+      queue: 'file_queue',
+      queueOptions: { durable: false },
+    },
+  });
+
   app.use(json({ limit: '10gb' }));
   app.use(urlencoded({ extended: true, limit: '10gb' }));
 
