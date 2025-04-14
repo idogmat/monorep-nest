@@ -172,6 +172,14 @@ exports.Prisma.PaymentScalarFieldEnum = {
   deletedAt: 'deletedAt'
 };
 
+exports.Prisma.NotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt',
+  type: 'type'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -199,12 +207,19 @@ exports.PaymentStatus = exports.$Enums.PaymentStatus = {
   ACTIVE: 'ACTIVE'
 };
 
+exports.NotifyStatus = exports.$Enums.NotifyStatus = {
+  subscribe: 'subscribe',
+  PENDING: 'PENDING',
+  ACTIVE: 'ACTIVE'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Provider: 'Provider',
   Device: 'Device',
   Post: 'Post',
-  Payment: 'Payment'
+  Payment: 'Payment',
+  Notification: 'Notification'
 };
 
 /**

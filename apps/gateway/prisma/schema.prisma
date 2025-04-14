@@ -26,6 +26,7 @@ model User {
   providers  Provider? @relation("UserProvider")
   devices  Device[] @relation("UserDevice")
   payments  Payment[] @relation("UserPayment")
+  notifications  Notification[] @relation("UserNotification")
   @@map("users")
 }
 
@@ -79,6 +80,19 @@ model Payment {
   @@index([userId])
 }
 
+model Notification {
+  id              String        @id @default(uuid())
+  user            User          @relation("UserNotification", fields: [userId], references: [id])
+  userId          String        @db.VarChar(40)
+  createdAt       DateTime      @default(now())
+  expiresAt       DateTime? 
+  type            NotifyStatus
+  // status          NotifyStatus
+
+  @@map("notifications")
+  @@index([userId])
+}
+
 enum PhotoUploadStatus {
   PENDING
   IN_PROGRESS
@@ -87,6 +101,12 @@ enum PhotoUploadStatus {
 }
 enum PaymentStatus {
   CANCEL
+  PENDING
+  ACTIVE
+}
+
+enum NotifyStatus {
+  subscribe
   PENDING
   ACTIVE
 }

@@ -13,6 +13,7 @@ import { ProfileModule } from '../feature/profile/profile.module';
 import { RedisModule } from '../support.modules/redis/redis.module';
 import { GrpcServiceModule } from '../support.modules/grpc/grpc.module';
 import { PaymentsModule } from '../feature/payments/payments.module';
+import { NotificationsModule } from '../feature/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -46,7 +47,8 @@ import { PaymentsModule } from '../feature/payments/payments.module';
     UsersAccountsModule,
     PostsModule,
     ProfileModule,
-    PaymentsModule
+    PaymentsModule,
+    NotificationsModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

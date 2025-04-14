@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ProfileController } from './api/profile.controller';
 import { ProfileService } from './application/profile.service';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 import { JwtModule } from '@nestjs/jwt';
 import { DeviceService } from '../user-accounts/devices/application/device.service';
@@ -10,7 +9,6 @@ import { PrismaService } from '../prisma/prisma.service';
 import { GateService } from '../../common/gate.service';
 import { ProfileMappingService } from './application/profile.mapper';
 import { GrpcServiceModule } from '../../support.modules/grpc/grpc.module';
-import { UpdateAccountEvent } from '../payments/eventBus/updateAccount.event';
 import { UpdateAccountHandler } from './eventHandler/updateAccount.handler';
 import { FileService } from '../../../../libs/file.service';
 import { ProfileCronService } from './application/profile.cron';

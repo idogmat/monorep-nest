@@ -5,6 +5,7 @@ import { StripeAdapter } from '../applications/stripe.adapter';
 import { products, productsName } from '../helpers';
 import { UpdateAccountEvent } from '../eventBus/updateAccount.event';
 import { Inject } from '@nestjs/common';
+import { NotifySubscribeEvent } from '../eventBus/notify.event';
 
 
 export class WebhookCommand {
@@ -65,8 +66,10 @@ export class WebhookUseCase implements ICommandHandler<WebhookCommand> {
             status,
             userId
           }
-          await this.paymentsRepository.updatePaymentStatus(payment)
+          const sub = await this.paymentsRepository.updatePaymentStatus(payment)
+          console.log(sub, 'sub')
           this.eventBus.publish(new UpdateAccountEvent([{ userId, paymentAccount: true }]));
+          this.eventBus.publish(new NotifySubscribeEvent({ userId, expiresAt: sub.expiresAt?.toISOString() }));
         } catch {
 
         }
