@@ -5,8 +5,8 @@ interface ParsedDate {
   seconds: number
   milliseconds: number
 }
-export function findDiffDate(created: Date, expires: Date) {
-  const date1: Date = new Date(created);
+export function findDiffDate(expires: Date) {
+  const date1: Date = new Date();
   const date2: Date = new Date(expires);
 
   const diffInMs = Math.abs(date2.getTime() - date1.getTime());

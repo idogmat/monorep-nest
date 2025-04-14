@@ -69,10 +69,10 @@ export class NotificationsSocket implements OnGatewayConnection, OnGatewayDiscon
       console.log(notifications)
       const mapped = notifications.reduce((acc, e) => {
         if (acc?.expiresAt) acc = e
-        if (acc.expiresAt < e.expiresAt) acc = e
+        if (acc.expiresAt > new Date() && acc.createdAt < new Date()) acc = e
         return acc
       })
-      const result = findDiffDate(mapped.createdAt, mapped.expiresAt)
+      const result = findDiffDate(mapped.expiresAt)
       client.emit('notifications-response', { result });
     } catch (error) {
 
