@@ -1,9 +1,8 @@
-import { BadRequestException, Body, Controller, ForbiddenException, Get, Headers, HttpCode, Param, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 import { PaymentsService } from '../applications/payments.service';
 import { CommandBus } from '@nestjs/cqrs';
 import { SubscribeCommand } from '../use-cases/subscribe.use-case';
-import { WebhookCommand } from '../use-cases/webhook.use-case';
 import { AuthGuard } from '../../../../src/common/guard/authGuard';
 import { SubscribeDto, SubscribeProductDto } from './model/input/input.subscribe';
 import { PaginationPaymentsQueryDto } from './model/input/pagination.query';
@@ -83,15 +82,6 @@ export class PaymentsController {
 
 
 
-  @Post('webhook')
-  async webHook(
-    @Req() req,
-    @Headers('stripe-signature') signature
-  ) {
-    if (signature)
-      this.commandBus.execute(
-        new WebhookCommand(req.rawBody, signature)
-      );
-  }
+
 
 }

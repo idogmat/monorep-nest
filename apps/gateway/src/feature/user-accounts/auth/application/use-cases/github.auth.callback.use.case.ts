@@ -14,7 +14,7 @@ import { DeviceInfoDto } from '../../api/models/shared/device.info.dto';
 import { DeviceService } from '../../../devices/application/device.service';
 import { RedisService } from '../../../../../support.modules/redis/redis.service';
 import { parseTimeToSeconds } from '../../../../../common/utils/parseTime';
-import { ProfileClientService } from '../../../../../support.modules/grpc/grpc.service';
+import { ProfileClientService } from '../../../../../support.modules/grpc/grpc.profile.service';
 
 export class GithubAuthCallbackCommand {
   constructor(

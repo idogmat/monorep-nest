@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { useContainer } from 'class-validator';
-import { applyAppSettings} from './settings/main.settings';
+import { applyAppSettings } from './settings/main.settings';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import cookieParser from 'cookie-parser';
 
@@ -40,9 +40,6 @@ async function bootstrap() {
     },
   });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
-
-
-
 
   await app.startAllMicroservices();
   await app.listen(port, () => {

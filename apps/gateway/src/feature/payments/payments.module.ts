@@ -54,7 +54,8 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     PaymentsService,
     SubscribeUseCase,
     WebhookUseCase,
-    PaymentCronService
+    PaymentCronService,
+
   ],
   controllers: [PaymentsController],
   exports: [PaymentsService]

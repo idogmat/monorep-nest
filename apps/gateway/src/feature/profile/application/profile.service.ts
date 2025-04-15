@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { createReadStream, unlinkSync } from "fs";
 import { GateService } from "../../../common/gate.service";
 import { InputProfileModel } from "../api/model/input/input.profile.model";
-import { ProfileClientService } from "../../../support.modules/grpc/grpc.service";
+import { ProfileClientService } from "../../../support.modules/grpc/grpc.profile.service";
 
 @Injectable()
 export class ProfileService {

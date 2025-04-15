@@ -3,9 +3,6 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { UpdateUserProfileRequest, UserProfileQueryRequest, UserProfileResponse } from '../../../../libs/proto/generated/profile';
 import { firstValueFrom, lastValueFrom, Observable } from 'rxjs';
 
-const cleanString = (str: string) => {
-  return str.replace(/[\n\r\t]+/g, '').trim();
-};
 interface ProfileService {
   GetUserProfile(data: { userId: string, profileUserId: string }): Observable<UserProfileResponse>;
   GetUserProfiles(data: UserProfileQueryRequest): Observable<any>;
@@ -21,7 +18,7 @@ export class ProfileClientService implements OnModuleInit {
   private profileService: ProfileService;
 
   constructor(
-    @Inject('PROFILE_SERVICE') private client: ClientGrpc, // Имя должно совпадать
+    @Inject('PROFILE_SERVICE') private client: ClientGrpc,
   ) { }
 
   onModuleInit() {

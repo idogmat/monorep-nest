@@ -11,7 +11,7 @@ import { FileValidationPipe } from '../../../../../libs/input.validate/check.fil
 import { EnhancedParseUUIDPipe } from '../../../../../libs/input.validate/check.uuid-param';
 import { Request } from 'express';
 import { AuthGuardOptional } from '../../../common/guard/authGuardOptional';
-import { ProfileClientService } from '../../../support.modules/grpc/grpc.service';
+import { ProfileClientService } from '../../../support.modules/grpc/grpc.profile.service';
 import { ProfileMappingService } from '../application/profile.mapper';
 import { ApiFileWithDto, UserProfileResponseDto } from './swagger.discription.ts';
 import { PaginationProfileQueryDto } from './model/input/pagination.profile.query.dto';

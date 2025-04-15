@@ -3,22 +3,30 @@ import { applyAppSettings } from './settings/main.settings';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { AppModule } from './app/app.module';
+import express from 'express'
+import { useContainer } from 'class-validator';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const { port, env, host, rabbit } = applyAppSettings(app)
+  const { port, env, host, rabbit, grpc_url } = applyAppSettings(app)
+  // app.use('/payments/webhook', express.raw({ type: '*/*' }));
+  app.enableCors({
+    origin: '*',
+    credentials: true
+  });
 
-  // app.connectMicroservice<MicroserviceOptions>({
-  //   transport: Transport.GRPC,
-  //   options: {
-  //     package: 'payments',
-  //     protoPath: join(__dirname, 'payments.proto'),
-  //     url: grpc_url,
-  //     loader: {
-  //       includeDirs: ['node_modules/google-proto-files'],
-  //     },
-  //   },
-  // });
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.GRPC,
+    options: {
+      package: 'payments',
+      protoPath: join(__dirname, 'payments.proto'),
+      url: grpc_url,
+      loader: {
+        includeDirs: ['node_modules/google-proto-files'],
+      },
+    },
+  });
 
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
@@ -29,11 +37,15 @@ async function bootstrap() {
     },
   });
 
-  // Запускаем все микросервисы
+
+
+  // useContainer(app.select(AppModule), { fallbackOnErrors: true });
+
   await app.startAllMicroservices();
 
-  await app.listen(port);
+  await app.listen(port, () => {
+    console.log(`Service is listening on port ${port} , on ${env}  mode`);
+  });
 
-  console.log(`Service is listening on port ${port} , on ${env} mode`);
 }
 bootstrap();

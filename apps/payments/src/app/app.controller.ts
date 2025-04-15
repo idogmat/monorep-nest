@@ -1,21 +1,69 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Headers, Post, Req } from '@nestjs/common';
+import { GrpcMethod } from '@nestjs/microservices';
+import { PaymentsService } from '../features/applications/payments.service';
+import { PaymentsRepository } from '../features/infrastructure/payments.repository';
+import { CommandBus } from '@nestjs/cqrs';
+import { WebhookCommand } from '../features/use-cases/webhook.use-case';
+import { UserForSubscribe } from '../../../libs/proto/generated/payments';
 
 
 @Controller()
 export class AppController {
-  constructor() { }
+  constructor(
+    private readonly paymentsService: PaymentsService,
+    private readonly paymentsRepository: PaymentsRepository,
+    private readonly commandBus: CommandBus,
+  ) {
 
-  // @GrpcMethod('ProfileService', 'GetUserProfile')
-  // async GetUserProfile(data: { userId: string, profileUserId: string }) {
-  //   console.log(data)
-  //   let profileForMatchId = ''
-  //   if (data?.userId) {
-  //     const profile = await this.profileService.findByUserId(data?.userId)
-  //     profileForMatchId = profile?.id
-  //   }
-  //   const result = await this.profileService.findByUserId(data.profileUserId)
-  //   if (!result) throw new NotFoundException()
-  //   return OutputProfileModelMapper(result, profileForMatchId)
+  }
+
+  @GrpcMethod('PaymentsService', 'CreateSubscribe')
+  async GetUserProfile(data: { user: UserForSubscribe, productkey: number }) {
+    try {
+      console.log(data)
+      const { user, productkey } = data
+      const customer = await this.paymentsService.findOrCreateCustomer(user)
+      const {
+        created,
+        client_reference_id: referenceUserId,
+        url
+      } = await this.paymentsService.activateSubscribe(
+        customer,
+        productkey,
+        user.id
+      )
+      const payment = {
+        createdAt: new Date(created * 1000).toISOString(),
+        customerId: customer.id,
+        userId: referenceUserId
+      }
+      console.log(url)
+      await this.paymentsRepository.createPayment(payment)
+      return { url, status: 'ok' }
+    } catch (error) {
+      return { url: '', status: 'fail' }
+    }
+
+  }
+
+  // @Get()
+  // async hello(
+  //   @Req() req,
+  // ) {
+  //   return 'ok'
+  // }
+
+
+  // @Post('webhook')
+  // async webHook(
+  //   @Req() req,
+  //   @Headers('stripe-signature') signature
+  // ) {
+  //   console.log('ebt')
+  //   if (signature)
+  //     this.commandBus.execute(
+  //       new WebhookCommand(req.rawBody, signature)
+  //     );
   // }
 
   // @GrpcMethod('ProfileService', 'GetUserProfiles')

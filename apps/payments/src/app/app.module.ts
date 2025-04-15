@@ -13,6 +13,7 @@ import { PaymentsService } from "../features/applications/payments.service";
 import { PaymentCronService } from "../features/applications/payment.cron";
 import { AppController } from "./app.controller";
 import { getConfiguration } from "../settings/getConfiguration";
+import { PaymentsController } from "../features/api/payments.controller";
 
 @Module({
   imports: [
@@ -58,6 +59,6 @@ import { getConfiguration } from "../settings/getConfiguration";
     WebhookUseCase,
     PaymentCronService
   ],
-  controllers: [AppController],
+  controllers: [AppController, PaymentsController],
 })
 export class AppModule { }

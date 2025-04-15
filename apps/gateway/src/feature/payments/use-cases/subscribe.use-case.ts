@@ -1,6 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { PaymentsService } from '../applications/payments.service';
 import { PaymentsRepository } from '../infrastructure/payments.repository';
+import { PaymentsClientService } from '../../../support.modules/grpc/grpc.payments.service';
+import { UsersService } from '../../user-accounts/users/application/users.service';
 
 
 export class SubscribeCommand {
@@ -15,32 +17,20 @@ export class SubscribeCommand {
 export class SubscribeUseCase implements ICommandHandler<SubscribeCommand> {
 
   constructor(
-    private readonly paymentsService: PaymentsService,
-    private readonly paymentsRepository: PaymentsRepository
+    private readonly paymentsClientService: PaymentsClientService,
+    private readonly usersService: UsersService,
 
   ) { }
 
   async execute(command: SubscribeCommand) {
     try {
-      const { userId, productkey } = command
-      const customer = await this.paymentsService.findOrCreateCustomer(userId)
-      const {
-        created,
-        client_reference_id: referenceUserId,
-        url
-      } = await this.paymentsService.activateSubscribe(
-        customer,
-        productkey,
-        userId
-      )
-      const payment = {
-        createdAt: new Date(created * 1000).toISOString(),
-        customerId: customer.id,
-        userId: referenceUserId
-      }
-      console.log(url)
-      const ppp = await this.paymentsRepository.createPayment(payment)
-      return { url }
+      const { userId, productkey } = command;
+      const { id, email, name } = await this.usersService.findById(userId);
+      const user = { id, email, name }
+      const result = await this.paymentsClientService.createSubscribe(user, productkey);
+      console.log(result)
+
+      return { result }
     } catch (error) {
       console.log(error)
     }

@@ -18,10 +18,10 @@ export const getConfiguration = () => {
       ? process.env.NODE_ENV.trim()
       : 'DEVELOPMENT') as EnvironmentsTypes,
     PORT: process.env.PORT,
-    PROFILE_LOCAL_PORT: process.env.PROFILE_LOCAL_PORT,
+    PAYMENTS_LOCAL_PORT: process.env.PAYMENTS_LOCAL_PORT,
     RABBIT_URLS: process.env.RABBIT_URLS?.split(','),
     DATABASE_URL: process.env.DATABASE_URL,
-    CONNECT_PORT: process.env.CONNECT_PORT,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     STRIPE_API_KEY: process.env.STRIPE_API_KEY,
   };
 };

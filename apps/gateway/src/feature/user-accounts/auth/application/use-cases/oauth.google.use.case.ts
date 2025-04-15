@@ -10,7 +10,7 @@ import { DeviceService } from '../../../devices/application/device.service';
 import { GateService } from '../../../../../common/gate.service';
 import { parseTimeToSeconds } from '../../../../../common/utils/parseTime';
 import { RedisService } from '../../../../../support.modules/redis/redis.service';
-import { ProfileClientService } from '../../../../../support.modules/grpc/grpc.service';
+import { ProfileClientService } from '../../../../../support.modules/grpc/grpc.profile.service';
 
 export class OauthGoogleCommand {
   constructor(public googleTokenModel: GoogleTokenModel) {

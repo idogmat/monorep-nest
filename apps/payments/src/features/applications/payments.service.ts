@@ -12,16 +12,14 @@ export class PaymentsService {
 
   }
 
-  async findCustomerByUserId(userId) {
-    const user = { email: 'await this.usersService.findById(userId)' }
+  async findCustomerByUserId(user) {
     const customer = await this.stripeAdapter.findCustomerByEmail(user.email)
     return customer
   }
 
   async findOrCreateCustomer(
-    userId,
+    user,
   ) {
-    const user = { email: 'await this.usersService.findById(userId)', name: 'await this.usersService.findById(userId)' }
     let customer = await this.stripeAdapter.findCustomerByEmail(user.email)
     if (!customer) {
       customer = await this.stripeAdapter.createCustomer(user.email, user.name)

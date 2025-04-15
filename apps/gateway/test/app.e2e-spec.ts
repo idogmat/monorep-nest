@@ -14,7 +14,7 @@ import { GateServiceMock } from './mock/gate.service.mock';
 import { GrpcServiceModule } from '../src/support.modules/grpc/grpc.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
-import { ProfileClientService } from '../src/support.modules/grpc/grpc.service';
+import { ProfileClientService } from '../src/support.modules/grpc/grpc.profile.service';
 import { StripeAdapterMock } from './mock/stripe.adapter.mok';
 import { PaymentCronService } from '../src/feature/payments/applications/payment.cron';
 import { PaymentCronServiceMock } from './mock/payment.cron.mock';

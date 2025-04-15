@@ -12,12 +12,13 @@ export const applyAppSettings = (app: INestApplication): {
   env: string;
   host: string;
   rabbit: string;
+  grpc_url: string;
 } => {
-  const { port, env, host, rabbit, } = getEnv(app)
+  const { port, env, host, rabbit, grpc_url } = getEnv(app)
   setAppPrefix(app, APP_PREFIX);
   setAppPipes(app);
 
-  return { port, env, host, rabbit, }
+  return { port, env, host, rabbit, grpc_url }
 };
 
 const getEnv = (app: INestApplication) => {
@@ -25,17 +26,13 @@ const getEnv = (app: INestApplication) => {
   const env = configService.get<EnvironmentsTypes>('NODE_ENV')
   const port = configService.get<number>('PORT') || configService.get<number>('PAYMENTS_LOCAL_PORT');
   const rabbit = configService.get<string>('RABBIT_URLS')?.toString() || '';
-  // const grpc_url = configService.get<string>('PROFILE_GRPC_URL')?.toString() || '';
+  const grpc_url = configService.get<string>('PAYMENTS_GRPC_URL')?.toString() || '';
   const host = env !== 'DEVELOPMENT' ? '0.0.0.0' : 'localhost';
-  return { port, env, host, rabbit }
+  return { port, env, host, rabbit, grpc_url }
 }
 const setAppPrefix = (app: INestApplication, prefix: string) => {
   app.setGlobalPrefix(prefix);
 };
-const checkEnv = (envMode: string) => {
-  return envMode !== 'DEVELOPMENT' ? 'PORT' : 'PROFILE_LOCAL_PORT'
-}
-
 
 const setAppPipes = (app: INestApplication) => {
   app.useGlobalPipes(
