@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { User } from "@prisma/client";
+import { User } from "../../../../../../../prisma/generated/client";
 
 export class AuthMeOutputModel {
   @ApiProperty({ type: String })

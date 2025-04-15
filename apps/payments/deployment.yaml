@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: DEPLOYMENT_NAME
+  namespace: NAMESPACE
+  labels:
+    app: PROJECT
+spec:
+  selector:
+    matchLabels:
+      project: PROJECT
+  template:
+    metadata:
+      namespace: NAMESPACE
+      labels:
+        project: PROJECT
+    spec:
+      containers:
+         - name: PROJECT
+           image: REGISTRY_HOSTNAME/PROJECT:TAG_VERSION
+           ports:
+             - containerPort: PORT_CONTAINER
+
+           env:
+             - name: STRIPE_API_KEY
+               valueFrom:
+                 secretKeyRef:
+                   name: payments-production-config-secret
+                   key: STRIPE_API_KEY
+             - name: PAYMENTS_DB_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: payments-production-config-secret
+                   key: PAYMENTS_DB_URL
+             - name: RABBIT_URLS
+               valueFrom:
+                 secretKeyRef:
+                   name: payments-production-config-secret
+                   key: RABBIT_URLS
+             - name: PAYMENTS_GRPC_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: payments-production-config-secret
+                   key: PAYMENTS_GRPC_URL
+             - name: NODE_ENV
+               valueFrom:
+                 secretKeyRef:
+                   name: payments-production-config-secret
+                   key: NODE_ENV
+             - name: STRIPE_WEBHOOK_SECRET
+               valueFrom:
+                 secretKeyRef:
+                   name: payments-production-config-secret
+                   key: STRIPE_WEBHOOK_SECRET
+             - name: BASE_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: payments-production-config-secret
+                   key: BASE_URL

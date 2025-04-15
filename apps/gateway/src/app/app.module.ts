@@ -12,6 +12,8 @@ import { PostsModule } from '../feature/posts/posts.module';
 import { ProfileModule } from '../feature/profile/profile.module';
 import { RedisModule } from '../support.modules/redis/redis.module';
 import { GrpcServiceModule } from '../support.modules/grpc/grpc.module';
+import { PaymentsModule } from '../feature/payments/payments.module';
+import { NotificationsModule } from '../feature/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -40,39 +42,13 @@ import { GrpcServiceModule } from '../support.modules/grpc/grpc.module';
         },
         inject: [ConfigService],
       },
-      // {
-      //   imports: [ConfigModule],
-      //   name: 'MESSAGE_PACKAGE',
-      //   useFactory: (configService: ConfigService) => {
-      //     return {
-      //       transport: Transport.GRPC,
-      //       options: {
-      //         package: 'message',
-      //         protoPath: join(__dirname, 'message.proto'),
-      //         url: 'localhost:3814',
-      //       },
-      //     }
-      //   },
-      //   inject: [ConfigService],
-      // },
-
-      // {
-      //   name: 'GATE-SERVICE',
-      //   imports: [ConfigModule], // Импорт з
-      //   useFactory: (configService: ConfigService) => ({
-      //     transport: Transport.TCP,
-      //     options: {
-      //       host: 'gate-service', // Или IP-адрес сервера
-      //       port: Number(configService.get('PROFILE_SERVICE_PORT')),
-      //     },
-      //   }),
-      //   inject: [ConfigService]
-      // }
     ]),
     GrpcServiceModule,
     UsersAccountsModule,
     PostsModule,
-    ProfileModule
+    ProfileModule,
+    PaymentsModule,
+    NotificationsModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

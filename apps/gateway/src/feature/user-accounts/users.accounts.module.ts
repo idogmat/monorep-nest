@@ -69,6 +69,6 @@ const useCasesForAuth = [
     ...useCasesForAuth
   ],
   controllers: [UsersController, AuthController, DevicesController],
-  exports: [HttpModule, JwtModule, DeviceService]
+  exports: [HttpModule, JwtModule, DeviceService, UsersService]
 })
 export class UsersAccountsModule { }

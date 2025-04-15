@@ -1,6 +1,6 @@
 import { ConflictException, ForbiddenException, Injectable } from "@nestjs/common"
 import { PrismaService } from "./prisma/prisma.service"
-import { Profile, Prisma } from 'node_modules/.prisma/profile-client';
+import { Profile, Prisma } from '../../prisma/generated/profile-client';
 import { ProfilePhotoInputModel } from "./model/profilePhoto.input.model";
 import { InputProfileModel } from "./model/input.profile.model";
 import { PaginationProfileWithSubscribers, ProfileWithSubscribers } from "./model/profile.output.model";
@@ -116,6 +116,13 @@ export class ProfileService {
         where: { userId },
         data: { ...data }
       })
+    })
+  }
+
+  async updateProfilePayment(userId: string, paymentAccount: boolean): Promise<Profile> {
+    return this.prisma.profile.update({
+      where: { userId },
+      data: { paymentAccount }
     })
   }
 

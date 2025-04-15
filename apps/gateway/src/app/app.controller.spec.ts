@@ -4,7 +4,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { GrpcServiceModule } from '../support.modules/grpc/grpc.module';
 import { Module } from '@nestjs/common';
-import { ProfileClientService } from '../support.modules/grpc/grpc.service';
+import { ProfileClientService } from '../support.modules/grpc/grpc.profile.service';
 @Module({
   imports: [
     ClientsModule.register([

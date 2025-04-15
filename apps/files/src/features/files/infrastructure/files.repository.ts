@@ -18,4 +18,8 @@ export class FilesRepository{
       const newFile = await this.PostMediaModel.createNewPost( this.PostMediaModel, data);
       return newFile.save();
   }
+
+ async deletePostMedia(postId: string) {
+    await this.PostMediaModel.deleteOne({postId});
+  }
 }

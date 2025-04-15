@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
-import { Post, Prisma } from '@prisma/client';
+import { Post, Prisma } from '../../../../../prisma/generated/client';
 import { PostViewModel } from '../../api/model/output/post.view.model';
 import { PaginationSearchPostTerm } from '../../api/model/input/query.posts.model';
 
@@ -10,7 +10,7 @@ export class PostsQueryRepository {
   }
 
 
-  async getAllPosts(authUserId?: string, queryDto?: PaginationSearchPostTerm){
+  async getAllPosts(authUserId?: string, queryDto?: PaginationSearchPostTerm) {
 
     const { pageNumber, pageSize, sortBy, sortDirection, userId: queryUserId, description } = queryDto;
 
@@ -49,13 +49,13 @@ export class PostsQueryRepository {
       this.prisma.post.count({ where }),
     ]);
 
-    return { items, totalCount, pageNumber, pageSize};
+    return { items, totalCount, pageNumber, pageSize };
 
   }
 
   async getPostById(param: { id: string }) {
     const post = await this.prisma.post.findFirst({
-      where: {id: param.id}
+      where: { id: param.id }
     })
 
     if (!post) {
@@ -65,7 +65,7 @@ export class PostsQueryRepository {
     return this.mapPostToViewModel(post as Post);
   }
 
-  mapPostToViewModel(post: Post): PostViewModel{
+  mapPostToViewModel(post: Post): PostViewModel {
     return {
       id: post.id,
       userId: post.authorId,

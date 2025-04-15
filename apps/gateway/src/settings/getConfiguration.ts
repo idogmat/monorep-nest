@@ -22,6 +22,7 @@ export const getConfiguration = () => {
     CONNECT_PORT: process.env.CONNECT_PORT,
     RABBIT_URLS: process.env.RABBIT_URLS?.split(','),
     FILES_TCP: process.env.FILES_TCP,
+    STRIPE_API_KEY: process.env.STRIPE_API_KEY,
     DB: {
       type: 'postgres',
       host: process.env.DB_HOST,

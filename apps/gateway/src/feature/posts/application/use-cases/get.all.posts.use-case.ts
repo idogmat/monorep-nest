@@ -1,12 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { GateService } from '../../../../common/gate.service';
 import { PostsQueryRepository } from '../../infrastructure/prisma/posts-query-repository.service';
-import { Post } from '@prisma/client';
+import { Post } from '../../../../../prisma/generated/client';
 import { PostViewModel } from '../../api/model/output/post.view.model';
 import { PaginationSearchPostTerm } from '../../api/model/input/query.posts.model';
 import { PagedResponse } from '../../../../common/pagination/paged.response';
 
-export class GetAllPostsCommand{
+export class GetAllPostsCommand {
   constructor(
     public queryDto: PaginationSearchPostTerm,
     public userId: string,
@@ -15,17 +15,18 @@ export class GetAllPostsCommand{
 }
 
 @CommandHandler(GetAllPostsCommand)
-export class GetAllPostsUseCase implements  ICommandHandler<GetAllPostsCommand>{
+export class GetAllPostsUseCase implements ICommandHandler<GetAllPostsCommand> {
 
-  constructor(private readonly gateService: GateService,
-              private readonly postsQueryRepository: PostsQueryRepository ) {
+  constructor(
+    private readonly gateService: GateService,
+    private readonly postsQueryRepository: PostsQueryRepository
+  ) {
   }
 
-  async execute(command: GetAllPostsCommand) : Promise<PagedResponse<PostViewModel>>
-  {
+  async execute(command: GetAllPostsCommand): Promise<PagedResponse<PostViewModel>> {
 
-    try{
-      const {items, totalCount, pageNumber, pageSize} = await this.postsQueryRepository.getAllPosts(command.userId, command.queryDto);
+    try {
+      const { items, totalCount, pageNumber, pageSize } = await this.postsQueryRepository.getAllPosts(command.userId, command.queryDto);
 
       const postIds = items.map(post => post.id);
 
@@ -43,18 +44,18 @@ export class GetAllPostsUseCase implements  ICommandHandler<GetAllPostsCommand>{
 
       return pageResponse;
 
-    } catch (error){
+    } catch (error) {
       throw error;
     }
 
 
   }
 
-  mapToViewModel(posts: Post[], dataOfPhoto: any ): PostViewModel[]{
+  mapToViewModel(posts: Post[], dataOfPhoto: any): PostViewModel[] {
 
     return posts.map(post => {
       const mediaData = dataOfPhoto[post.id] || {};
-      return{
+      return {
         id: post.id,
         userId: post.authorId,
         createdAt: post.createdAt.toISOString(),

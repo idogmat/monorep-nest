@@ -6,7 +6,6 @@ import { AuthTestManager } from './utils/auth/auth.test.manager';
 import { EmailService } from '../src/common/email/email.service';
 import { EmailServiceMock } from './mock/email.service.mock';
 import request from 'supertest';
-import { userTestSeeder } from './utils/users/user.test.seeder';
 import dotenv from 'dotenv';
 import { PrismaService } from '../src/feature/prisma/prisma.service';
 import { clearDatabase } from './utils/clear.database';
@@ -15,7 +14,11 @@ import { GateServiceMock } from './mock/gate.service.mock';
 import { GrpcServiceModule } from '../src/support.modules/grpc/grpc.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
-import { ProfileClientService } from '../src/support.modules/grpc/grpc.service';
+import { ProfileClientService } from '../src/support.modules/grpc/grpc.profile.service';
+import { StripeAdapterMock } from './mock/stripe.adapter.mok';
+import { PaymentCronServiceMock } from './mock/payment.cron.mock';
+import { ProfileCronService } from '../src/feature/profile/application/profile.cron';
+import { PaymentsClientService } from '../src/support.modules/grpc/grpc.payments.service';
 @Module({
   imports: [
     ClientsModule.register([
@@ -28,11 +31,20 @@ import { ProfileClientService } from '../src/support.modules/grpc/grpc.service';
           url: '0.0.0.0',
         },
       },
+      {
+        name: 'PAYMENTS_SERVICE',
+        transport: Transport.GRPC,
+        options: {
+          package: 'payments',
+          protoPath: join(__dirname, '../../libs/proto/payments.proto'),
+          url: '0.0.0.0',
+        },
+      },
     ]),
   ],
   controllers: [],
-  providers: [ProfileClientService],
-  exports: [ProfileClientService],
+  providers: [ProfileClientService, PaymentsClientService],
+  exports: [ProfileClientService, PaymentsClientService],
 })
 export class GrpcServiceModuleMock { }
 describe('AppController (e2e)', () => {
@@ -51,6 +63,10 @@ describe('AppController (e2e)', () => {
       .useClass(EmailServiceMock)
       .overrideProvider(GateService)
       .useClass(GateServiceMock)
+      .overrideProvider('STRIPE_ADAPTER')
+      .useClass(StripeAdapterMock)
+      .overrideProvider(ProfileCronService)
+      .useClass(PaymentCronServiceMock)
       .overrideModule(GrpcServiceModule)
       .useModule(GrpcServiceModuleMock)
       .compile();

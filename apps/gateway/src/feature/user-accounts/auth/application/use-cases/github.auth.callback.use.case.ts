@@ -7,14 +7,14 @@ import { ENTITY_USER } from '../../../../../common/entities.constants';
 import { AuthService } from '../auth.service';
 import { ConfigService } from '@nestjs/config';
 import { GithubAuthResponseModel } from '../../api/models/shared/github.auth.response.model';
-import { Device, Provider, User } from '@prisma/client';
+import { Device, Provider, User } from '../../../../../../prisma/generated/client';
 import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/users.prisma.repository';
 import { GateService } from '../../../../../common/gate.service';
 import { DeviceInfoDto } from '../../api/models/shared/device.info.dto';
 import { DeviceService } from '../../../devices/application/device.service';
 import { RedisService } from '../../../../../support.modules/redis/redis.service';
 import { parseTimeToSeconds } from '../../../../../common/utils/parseTime';
-import { ProfileClientService } from '../../../../../support.modules/grpc/grpc.service';
+import { ProfileClientService } from '../../../../../support.modules/grpc/grpc.profile.service';
 
 export class GithubAuthCallbackCommand {
   constructor(

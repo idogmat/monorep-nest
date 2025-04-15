@@ -2,7 +2,8 @@ import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join, resolve } from 'path';
-import { ProfileClientService } from './grpc.service';
+import { ProfileClientService } from './grpc.profile.service';
+import { PaymentsClientService } from './grpc.payments.service';
 @Global()
 @Module({
   imports: [
@@ -25,10 +26,28 @@ import { ProfileClientService } from './grpc.service';
         },
         inject: [ConfigService],
       },
+      {
+        imports: [ConfigModule],
+        name: 'PAYMENTS_SERVICE',
+        useFactory: (configService: ConfigService) => {
+          return {
+            transport: Transport.GRPC,
+            options: {
+              package: 'payments',
+              protoPath: join(__dirname, 'payments.proto'),
+              url: configService.get('GATE_PAYMENTS_GRPC_URL'),
+              loader: {
+                includeDirs: ['node_modules/google-proto-files'],
+              },
+            },
+          }
+        },
+        inject: [ConfigService],
+      },
     ]),
   ],
   controllers: [],
-  providers: [ProfileClientService],
-  exports: [ProfileClientService],
+  providers: [ProfileClientService, PaymentsClientService],
+  exports: [ProfileClientService, PaymentsClientService],
 })
 export class GrpcServiceModule { }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { PostMedia, PostMediaDocument, PostMediaModelType } from '../domain/post.media.entity';
+import { PostMedia, PostMediaDocument} from '../domain/post.media.entity';
 import { Model } from 'mongoose';
 import { LocationViewModel, PostMediaViewModel } from '../api/model/output/location.view.model';
 
@@ -16,6 +16,10 @@ export class FilesQueryRepository{
     const locations = await this.PostMediaModel.find({ postId }).exec();
     return  {postId, photoUrls: locations.map((item) => item.location)};
 
+  }
+
+  async getPhotoMediaByPostId(postId: string){
+    return this.PostMediaModel.find({postId}).exec();
   }
 
   async getPostsMedia(userId: string, postIds: string[]): Promise<PostMediaViewModel[]> {

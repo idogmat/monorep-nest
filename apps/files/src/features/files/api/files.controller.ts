@@ -9,7 +9,7 @@ import {
   Req,
   Res, UploadedFiles, UseInterceptors,
 } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, EventPattern, Payload } from '@nestjs/microservices';
 import { join } from 'path';
 import { createReadStream, createWriteStream, existsSync, mkdirSync, readdirSync, unlinkSync } from 'fs';
 import { Request } from 'express';
@@ -21,7 +21,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { UploadProfilePhotoCommand } from '../application/use-cases/upload.profile.photo.use-case';
 import { FilesQueryRepository } from '../infrastructure/files.query-repository';
 import { LocationViewModel } from './model/output/location.view.model';
-import { Query } from 'mongoose';
+import { DeletePhotoMediaCommand } from '../application/use-cases/delete.photo.media.use-case';
 
 @Controller()
 export class FilesController {
@@ -142,6 +142,18 @@ export class FilesController {
     res.json({ message: 'File merge started' });
   }
 
+  @EventPattern('post_deleted')
+  async handlePostDeleted(@Payload() data: { postId: string }) {
+
+    const { postId } = data;
+    console.log("Hello, I am here");
+    await this.commandBus.execute(
+      new DeletePhotoMediaCommand(postId)
+    );
+    // 1. Удалить записи о фотографиях из MongoDB
+    // 2. Удалить файлы из Яндекс S3 (если нужно)
+    // и т.п.
+  }
 
 }
 

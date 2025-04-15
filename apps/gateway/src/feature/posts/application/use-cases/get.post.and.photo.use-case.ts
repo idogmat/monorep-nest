@@ -6,7 +6,7 @@ import { ENTITY_POST } from '../../../../common/entities.constants';
 import { GateService } from '../../../../common/gate.service';
 import { LocationViewModel } from '../../../../../../files/src/features/files/api/model/output/location.view.model';
 import { PostViewModel } from '../../api/model/output/post.view.model';
-import { Post } from '@prisma/client';
+import { Post } from '../../../../../prisma/generated/client';
 
 export class GetPostAndPhotoCommand {
   constructor(
@@ -43,7 +43,7 @@ export class GetPostAndPhotoUseCase implements ICommandHandler<GetPostAndPhotoCo
 
   }
 
-  private mapPostViewModel(post: Post, response: LocationViewModel): PostViewModel{
+  private mapPostViewModel(post: Post, response: LocationViewModel): PostViewModel {
     return {
       id: post.id,
       userId: post.authorId,

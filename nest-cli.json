@@ -43,6 +43,17 @@
         "watchAssets": true,
         "tsConfigPath": "apps/profile/tsconfig.app.json"
       }
+    },
+    "payments": {
+      "type": "application",
+      "root": "apps/payments",
+      "entryFile": "main",
+      "sourceRoot": "apps/payments/src",
+      "compilerOptions": {
+        "assets": ["../../libs/proto/payments.proto"],
+        "watchAssets": true,
+        "tsConfigPath": "apps/payments/tsconfig.app.json"
+      }
     }
   }
 }

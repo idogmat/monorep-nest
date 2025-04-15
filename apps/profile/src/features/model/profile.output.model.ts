@@ -1,6 +1,5 @@
 
-import { Prisma } from 'node_modules/.prisma/profile-client';
-import { Profile } from 'node_modules/.prisma/profile-client';
+import { Profile, Prisma } from '../../../prisma/generated/profile-client';
 
 const profileWithSubscribers = {
   include: {
