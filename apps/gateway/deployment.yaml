@@ -127,3 +127,8 @@ spec:
                  secretKeyRef:
                    name: gate-production-config-secret
                    key: STRIPE_WEBHOOK_SECRET
+             - name: GATE_PAYMENTS_GRPC_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: GATE_PAYMENTS_GRPC_URL
