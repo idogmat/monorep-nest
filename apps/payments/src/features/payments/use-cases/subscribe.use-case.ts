@@ -44,6 +44,7 @@ export class SubscribeUseCase implements ICommandHandler<SubscribeCommand> {
       return { url, status: 'ok' }
     } catch (error) {
       console.log(error)
+      return { url: '', status: 'fail' }
     }
 
   }

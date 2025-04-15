@@ -31,7 +31,6 @@ export class PaymentsService {
     subscriptionId,
     product,
   ) {
-    console.log(products[product], subscriptionId)
     await this.paymentsRepository.updatePaymentProduct({
       subscriptionId,
       subType: products[product].name,
@@ -49,8 +48,6 @@ export class PaymentsService {
     product,
     userId
   ) {
-    console.log(products)
-    console.log(product)
     return this.stripeAdapter.createCheckoutSession(
       customer,
       products[product?.toString()].price,
