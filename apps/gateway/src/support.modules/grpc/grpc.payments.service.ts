@@ -1,7 +1,7 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { UserForSubscribe } from '../../../../libs/proto/generated/payments';
-import { firstValueFrom, Observable } from 'rxjs';
+import { firstValueFrom, lastValueFrom, Observable } from 'rxjs';
 
 interface PaymentsService {
   CreateSubscribe(data: { user: UserForSubscribe, productkey: number }): Observable<any>;
@@ -22,7 +22,7 @@ export class PaymentsClientService implements OnModuleInit {
 
 
   async createSubscribe(user: UserForSubscribe, productkey: number) {
-    return firstValueFrom(await this.profileService.CreateSubscribe({ user, productkey }));
+    return lastValueFrom(await this.profileService.CreateSubscribe({ user, productkey }));
 
   }
 

@@ -6,15 +6,11 @@ import { AppModule } from './app/app.module';
 import express from 'express'
 import { useContainer } from 'class-validator';
 import cookieParser from 'cookie-parser';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const { port, env, host, rabbit, grpc_url } = applyAppSettings(app)
-  // app.use('/payments/webhook', express.raw({ type: '*/*' }));
-  app.enableCors({
-    origin: '*',
-    credentials: true
-  });
 
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.GRPC,
@@ -37,15 +33,19 @@ async function bootstrap() {
     },
   });
 
+  app.use(cookieParser());
+  // app.enableCors({
+  //   origin: '*',
+  //   credentials: true
+  // });
 
-
-  // useContainer(app.select(AppModule), { fallbackOnErrors: true });
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   await app.startAllMicroservices();
 
-  await app.listen(port, () => {
-    console.log(`Service is listening on port ${port} , on ${env}  mode`);
-  });
+  await app.listen(port, '0.0.0.0')
+  console.log(`Service is listening on port ${port} , on ${env}  mode`);
+
 
 }
 bootstrap();

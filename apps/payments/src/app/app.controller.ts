@@ -41,6 +41,7 @@ export class AppController {
       await this.paymentsRepository.createPayment(payment)
       return { url, status: 'ok' }
     } catch (error) {
+      console.log(error)
       return { url: '', status: 'fail' }
     }
 

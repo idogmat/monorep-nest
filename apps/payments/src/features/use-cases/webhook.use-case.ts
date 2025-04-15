@@ -112,8 +112,9 @@ export class WebhookUseCase implements ICommandHandler<WebhookCommand> {
         }
         break;
       default:
-        // Unexpected event type
         console.log(`Unhandled event type ${event.type}.`);
+
+        break;
     }
   }
 

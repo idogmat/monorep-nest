@@ -1,4 +1,4 @@
-import { Controller, Get, Headers, Post, Req } from '@nestjs/common';
+import { Controller, Get, Headers, HttpCode, HttpStatus, Post, Req } from '@nestjs/common';
 
 import { CommandBus } from '@nestjs/cqrs';
 import { WebhookCommand } from '../use-cases/webhook.use-case';
@@ -23,11 +23,11 @@ export class PaymentsController {
 
 
   @Post('webhook')
+  @HttpCode(200)
   async webHook(
     @Req() req,
     @Headers('stripe-signature') signature
   ) {
-    console.log('ebt')
     if (signature)
       this.commandBus.execute(
         new WebhookCommand(req.rawBody, signature)
