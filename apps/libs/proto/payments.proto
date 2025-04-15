@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package payments;
+import "google/protobuf/wrappers.proto";
 
 // Request messages
 message UserForSubscribe {
@@ -11,10 +12,21 @@ message UserForSubscribe {
 
 message CreateSubscribeRequest {
   UserForSubscribe user = 1;
-  int32 productkey = 2;
+  int32 productKey = 2;
 }
 
+message GetSubscribesQuery {
+    string sortBy = 1;
+    string sortDirection = 2;
+    int32 pageNumber = 3;
+    int32 pageSize = 4;
+    string userId = 5;
+}
 
+message UnSubscribeRequest {
+  string userId = 1;
+  string paymentId = 2;
+}
 //  Response messages
 
 message CreateSubscribeResponse {
@@ -22,10 +34,33 @@ message CreateSubscribeResponse {
   string status = 2;         
 }
 
+message Payment {
+  string id = 1;
+  string userId = 2;
+  string subscriptionId = 3;
+  string createdAt = 4;
+  string expiresAt = 5;
+  google.protobuf.StringValue deletedAt = 6;
+  string payType = 7;
+  string subType = 8;
+  string status = 9;
+  int32 amount = 10;
 
+}
 
+message PaymentsResponse {
+  repeated Payment items = 1;
+  int32 pageNumber = 2;
+  int32 pageSize = 3;
+  int32 totalCount = 4;
+}
+
+message UnSubscribeResponse {
+  string status = 1;
+}
 
 service PaymentsService {
   rpc CreateSubscribe(CreateSubscribeRequest) returns (CreateSubscribeResponse);
-
+  rpc GetSubscribes(GetSubscribesQuery) returns (PaymentsResponse);
+  rpc UnSubscribe(UnSubscribeRequest) returns (UnSubscribeResponse);
 }

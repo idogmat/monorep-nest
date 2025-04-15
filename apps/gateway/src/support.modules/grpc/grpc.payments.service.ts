@@ -1,48 +1,49 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { UserForSubscribe } from '../../../../libs/proto/generated/payments';
+import { GetSubscribesQuery, UnSubscribeRequest, UserForSubscribe } from '../../../../libs/proto/generated/payments';
 import { firstValueFrom, lastValueFrom, Observable } from 'rxjs';
 
 interface PaymentsService {
-  CreateSubscribe(data: { user: UserForSubscribe, productkey: number }): Observable<any>;
-
+  CreateSubscribe(data: { user: UserForSubscribe, productKey: number }): Observable<any>;
+  GetSubscribes(data: GetSubscribesQuery): Observable<any>;
+  UnSubscribe(data: UnSubscribeRequest): Observable<any>;
 }
 
 @Injectable()
 export class PaymentsClientService implements OnModuleInit {
-  private profileService: PaymentsService;
+  private paymentsService: PaymentsService;
 
   constructor(
     @Inject('PAYMENTS_SERVICE') private client: ClientGrpc, // Имя должно совпадать
   ) { }
 
   onModuleInit() {
-    this.profileService = this.client.getService<PaymentsService>('PaymentsService');
+    this.paymentsService = this.client.getService<PaymentsService>('PaymentsService');
   }
 
 
-  async createSubscribe(user: UserForSubscribe, productkey: number) {
-    return lastValueFrom(await this.profileService.CreateSubscribe({ user, productkey }));
+  async createSubscribe(user: UserForSubscribe, productKey: number) {
+    return lastValueFrom(await this.paymentsService.CreateSubscribe({ user, productKey }));
 
   }
 
-  // async getProfiles(data: UserProfileQueryRequest) {
-  //   return lastValueFrom(await this.profileService.GetUserProfiles(data));
-  // }
+  async getProfiles(data: GetSubscribesQuery) {
+    return lastValueFrom(await this.paymentsService.GetSubscribes(data));
+  }
 
-  // async updateProfile(data: UpdateUserProfileRequest) {
-  //   return lastValueFrom(await this.profileService.UpdateUserProfile(data));
-  // }
+  async unSubscribe(data: UnSubscribeRequest) {
+    return lastValueFrom(await this.paymentsService.UnSubscribe(data));
+  }
 
   // async subscribeProfile(userId: string, profileUserId: string) {
-  //   return lastValueFrom(await this.profileService.SubscribeUserProfile({ userId, profileUserId }));
+  //   return lastValueFrom(await this.paymentsService.SubscribeUserProfile({ userId, profileUserId }));
   // }
 
   // async createUserProfile(userId: string, userName: string, email: string) {
-  //   return lastValueFrom(await this.profileService.CreateUserProfile({ userId, userName, email }));
+  //   return lastValueFrom(await this.paymentsService.CreateUserProfile({ userId, userName, email }));
   // }
 
   // async updateUserProfileSubscribe(userId: string, paymentAccount: boolean) {
-  //   return lastValueFrom(await this.profileService.UpdateUserProfileSubscribe({ userId, paymentAccount }));
+  //   return lastValueFrom(await this.paymentsService.UpdateUserProfileSubscribe({ userId, paymentAccount }));
   // }
 }

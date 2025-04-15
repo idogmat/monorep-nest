@@ -15,11 +15,11 @@ message UserProfileUpdateSubscribeRequest {
 }
 
 message UserProfilesQuery {
-  string sortBy=1 ;
-  string sortDirection=2 ;
-  int32 pageNumber=3 ;
-  int32 pageSize=4 ;
-  string userName=5 ;
+  string sortBy = 1;
+  string sortDirection = 2;
+  int32 pageNumber = 3;
+  int32 pageSize = 4;
+  string userName = 5;
 }
 message UserProfileQueryRequest {
   string userId = 1;
@@ -51,9 +51,9 @@ message SubscribeProfileRequest {
 
 message UserProfilesResponse {
   repeated UserProfileResponse items = 1;
-  int32 pageNumber= 2;
-  int32 pageSize= 3;
-  int32 totalCount= 4;
+  int32 pageNumber = 2;
+  int32 pageSize = 3;
+  int32 totalCount = 4;
 }
 
 message UserProfileResponse {

@@ -49,16 +49,18 @@ export class PaymentsService {
     product,
     userId
   ) {
+    console.log(products)
+    console.log(product)
     return this.stripeAdapter.createCheckoutSession(
       customer,
-      products[product].price,
+      products[product?.toString()].price,
       userId
     )
   }
 
   async deletePayment(
-    paymentId,
-    userId
+    userId,
+    paymentId
   ) {
 
     const payment = await this.paymentsRepository.findPaymentById(paymentId)

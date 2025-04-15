@@ -4,7 +4,8 @@ import { PaymentsService } from '../features/applications/payments.service';
 import { PaymentsRepository } from '../features/infrastructure/payments.repository';
 import { CommandBus } from '@nestjs/cqrs';
 import { WebhookCommand } from '../features/use-cases/webhook.use-case';
-import { UserForSubscribe } from '../../../libs/proto/generated/payments';
+import { GetSubscribesQuery, UnSubscribeRequest, UserForSubscribe } from '../../../libs/proto/generated/payments';
+import { PaymentsQueryRepository } from '../features/infrastructure/payments.query-repository';
 
 
 @Controller()
@@ -12,16 +13,17 @@ export class AppController {
   constructor(
     private readonly paymentsService: PaymentsService,
     private readonly paymentsRepository: PaymentsRepository,
+    private readonly paymentsQueryRepository: PaymentsQueryRepository,
     private readonly commandBus: CommandBus,
   ) {
 
   }
 
   @GrpcMethod('PaymentsService', 'CreateSubscribe')
-  async GetUserProfile(data: { user: UserForSubscribe, productkey: number }) {
+  async createSubscribe(data: { user: UserForSubscribe, productKey: number }) {
     try {
       console.log(data)
-      const { user, productkey } = data
+      const { user, productKey } = data
       const customer = await this.paymentsService.findOrCreateCustomer(user)
       const {
         created,
@@ -29,7 +31,7 @@ export class AppController {
         url
       } = await this.paymentsService.activateSubscribe(
         customer,
-        productkey,
+        productKey,
         user.id
       )
       const payment = {
@@ -40,6 +42,36 @@ export class AppController {
       console.log(url)
       await this.paymentsRepository.createPayment(payment)
       return { url, status: 'ok' }
+    } catch (error) {
+      console.log(error)
+      return { url: '', status: 'fail' }
+    }
+
+  }
+
+  @GrpcMethod('PaymentsService', 'GetSubscribes')
+  async getSubscribes(data: GetSubscribesQuery) {
+    try {
+      console.log(data)
+
+      const result = await this.paymentsQueryRepository.getAllPayments(data)
+      console.log(result)
+      return result
+    } catch (error) {
+      console.log(error)
+      return { url: '', status: 'fail' }
+    }
+
+  }
+
+  @GrpcMethod('PaymentsService', 'UnSubscribe')
+  async UnSubscribe(data: UnSubscribeRequest) {
+    try {
+      console.log(data)
+      const { userId, paymentId } = data;
+      const result = await this.paymentsService.deletePayment(userId, paymentId)
+      console.log(result)
+      return result
     } catch (error) {
       console.log(error)
       return { url: '', status: 'fail' }

@@ -20,7 +20,20 @@ export interface UserForSubscribe {
 
 export interface CreateSubscribeRequest {
   user: UserForSubscribe | undefined;
-  productkey: number;
+  productKey: number;
+}
+
+export interface GetSubscribesQuery {
+  sortBy: string;
+  sortDirection: string;
+  pageNumber: number;
+  pageSize: number;
+  userId: string;
+}
+
+export interface UnSubscribeRequest {
+  userId: string;
+  paymentId: string;
 }
 
 export interface CreateSubscribeResponse {
@@ -28,10 +41,38 @@ export interface CreateSubscribeResponse {
   status: string;
 }
 
+export interface Payment {
+  id: string;
+  userId: string;
+  subscriptionId: string;
+  createdAt: string;
+  expiresAt: string;
+  deletedAt: string | undefined;
+  payType: string;
+  subType: string;
+  status: string;
+  amount: number;
+}
+
+export interface PaymentsResponse {
+  items: Payment[];
+  pageNumber: number;
+  pageSize: number;
+  totalCount: number;
+}
+
+export interface UnSubscribeResponse {
+  status: string;
+}
+
 export const PAYMENTS_PACKAGE_NAME = "payments";
 
 export interface PaymentsServiceClient {
   createSubscribe(request: CreateSubscribeRequest, metadata?: Metadata): Observable<CreateSubscribeResponse>;
+
+  getSubscribes(request: GetSubscribesQuery, metadata?: Metadata): Observable<PaymentsResponse>;
+
+  unSubscribe(request: UnSubscribeRequest, metadata?: Metadata): Observable<UnSubscribeResponse>;
 }
 
 export interface PaymentsServiceController {
@@ -39,11 +80,21 @@ export interface PaymentsServiceController {
     request: CreateSubscribeRequest,
     metadata?: Metadata,
   ): Promise<CreateSubscribeResponse> | Observable<CreateSubscribeResponse> | CreateSubscribeResponse;
+
+  getSubscribes(
+    request: GetSubscribesQuery,
+    metadata?: Metadata,
+  ): Promise<PaymentsResponse> | Observable<PaymentsResponse> | PaymentsResponse;
+
+  unSubscribe(
+    request: UnSubscribeRequest,
+    metadata?: Metadata,
+  ): Promise<UnSubscribeResponse> | Observable<UnSubscribeResponse> | UnSubscribeResponse;
 }
 
 export function PaymentsServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createSubscribe"];
+    const grpcMethods: string[] = ["createSubscribe", "getSubscribes", "unSubscribe"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("PaymentsService", method)(constructor.prototype[method], method, descriptor);

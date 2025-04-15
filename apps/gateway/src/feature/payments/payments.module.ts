@@ -1,21 +1,12 @@
 import { Module } from '@nestjs/common';
-import { StripeAdapter } from './applications/stripe.adapter';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { PaymentsService } from './applications/payments.service';
 import { PaymentsController } from './api/payments.controller';
 import { UsersAccountsModule } from '../user-accounts/users.accounts.module';
-import { SubscribeUseCase } from './use-cases/subscribe.use-case';
 import { CqrsModule } from '@nestjs/cqrs';
 import { PrismaService } from '../prisma/prisma.service';
-import { PaymentsRepository } from './infrastructure/payments.repository';
-import { WebhookUseCase } from './use-cases/webhook.use-case';
-import { PaymentCronService } from './applications/payment.cron';
 import { ScheduleModule } from '@nestjs/schedule';
-import { PaymentsQueryRepository } from './infrastructure/payments.query-repository';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { UsersService } from '../user-accounts/users/application/users.service';
 import { GrpcServiceModule } from '../../support.modules/grpc/grpc.module';
-import { PaymentsClientService } from '../../support.modules/grpc/grpc.payments.service';
 
 @Module({
   imports: [
@@ -43,24 +34,9 @@ import { PaymentsClientService } from '../../support.modules/grpc/grpc.payments.
     ])
   ],
   providers: [
-    {
-      provide: 'STRIPE_ADAPTER',
-      useFactory: (configService: ConfigService) => {
-        return new StripeAdapter(
-          configService,
-        );
-      },
-      inject: [ConfigService],
-    },
     PrismaService,
-    PaymentsRepository,
-    PaymentsQueryRepository,
-    PaymentsService,
-    SubscribeUseCase,
-    WebhookUseCase,
-    PaymentCronService,
   ],
   controllers: [PaymentsController],
-  exports: [PaymentsService]
+  exports: []
 })
 export class PaymentsModule { }

@@ -1,22 +1,19 @@
 import { Body, Controller, Get, HttpCode, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
-import { PaymentsService } from '../applications/payments.service';
-import { CommandBus } from '@nestjs/cqrs';
-import { SubscribeCommand } from '../use-cases/subscribe.use-case';
 import { AuthGuard } from '../../../../src/common/guard/authGuard';
 import { SubscribeDto, SubscribeProductDto } from './model/input/input.subscribe';
 import { PaginationPaymentsQueryDto } from './model/input/pagination.query';
 import { PaginationSearchPaymentsTerm } from './model/input/payments.query.model';
-import { PaymentsQueryRepository } from '../infrastructure/payments.query-repository';
 import { mapToViewModel, PagedResponseOfPayments } from './model/output/paged.payments.model';
 import { ApiBearerAuth, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { PaymentUrlModel } from './model/output/url.model';
+import { PaymentsClientService } from 'apps/gateway/src/support.modules/grpc/grpc.payments.service';
+import { UsersService } from '../../user-accounts/users/application/users.service';
 @Controller('payments')
 export class PaymentsController {
   constructor(
-    private readonly paymentsService: PaymentsService,
-    private readonly paymentsQueryRepository: PaymentsQueryRepository,
-    private readonly commandBus: CommandBus,
+    private readonly paymentsClientService: PaymentsClientService,
+    private readonly usersService: UsersService,
   ) { }
 
   @ApiBearerAuth()
@@ -34,9 +31,9 @@ export class PaymentsController {
   ) {
     const userId = req.user?.userId
     const product = payload.subscribeType
-    return this.commandBus.execute(
-      new SubscribeCommand(userId, product)
-    );
+    const { id, email, name } = await this.usersService.findById(userId)
+    return await this.paymentsClientService.createSubscribe({ id, email, name }, product)
+
   }
 
   @ApiBearerAuth()
@@ -54,7 +51,7 @@ export class PaymentsController {
   ) {
     const userId = req.user?.userId
     const paymentId = payload.paymentId
-    await this.paymentsService.deletePayment(userId, paymentId)
+    await this.paymentsClientService.unSubscribe({ paymentId, userId })
 
   }
 
@@ -76,12 +73,10 @@ export class PaymentsController {
   ) {
     const userId = req.user?.userId;
     const query = new PaginationSearchPaymentsTerm(queryDTO, ['createdAt', 'expiresAt']);
-    const { items, totalCount, pageNumber, pageSize } = await this.paymentsQueryRepository.getAllPayments(userId, query)
+    console.log(queryDTO)
+    console.log(query)
+    const { items, totalCount, pageNumber, pageSize } = await this.paymentsClientService.getProfiles({ ...query, userId })
+    console.log(items)
     return mapToViewModel({ items, totalCount, pageNumber, pageSize })
   }
-
-
-
-
-
 }
