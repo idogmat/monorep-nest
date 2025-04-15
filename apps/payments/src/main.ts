@@ -11,7 +11,7 @@ import * as bodyParser from 'body-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const { port, env, host, rabbit, grpc_url } = applyAppSettings(app)
-
+  app.init()
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.GRPC,
     options: {
@@ -43,7 +43,6 @@ async function bootstrap() {
 
   await app.startAllMicroservices();
 
-  await app.listen(port, '0.0.0.0')
   console.log(`Service is listening on port ${port} , on ${env}  mode`);
 
 

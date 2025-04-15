@@ -3,7 +3,7 @@ import { Cron, CronExpression } from "@nestjs/schedule";
 import { PaymentsRepository } from "../infrastructure/payments.repository";
 import { EventBus } from "@nestjs/cqrs";
 import { UpdateAccountEvent } from "../eventBus/updateAccount.event";
-import { Payment } from "../../../prisma/generated/payments-client";
+import { Payment } from "../../../../prisma/generated/payments-client";
 
 @Injectable()
 export class PaymentCronService {

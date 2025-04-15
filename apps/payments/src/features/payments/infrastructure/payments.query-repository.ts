@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { GetSubscribesQuery } from '../../../../libs/proto/generated/payments';
-import { Prisma } from '../../../prisma/generated/payments-client';
+import { PrismaService } from '../../prisma/prisma.service';
+import { GetSubscribesQuery } from '../../../../../libs/proto/generated/payments';
+import { Prisma } from '../../../../prisma/generated/payments-client';
 
 
 @Injectable()

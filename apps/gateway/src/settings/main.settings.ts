@@ -20,6 +20,8 @@ export const applyAppSettings = (app: INestApplication): { port: number; env: st
 
   setAppPipes(app);
 
+  // modifyHook(app);
+
   setAppExceptionsFilters(app);
   return { port, env, rabbit }
 };
@@ -35,6 +37,34 @@ const getEnv = (app: INestApplication) => {
 const setAppPrefix = (app: INestApplication, prefix: string) => {
   app.setGlobalPrefix(prefix);
 };
+
+
+const modifyHook = (app: INestApplication) => {
+  app.use('/api/v1/payments/webhook', (req, res, next) => {
+    if (req.headers['stripe-signature']) {
+      let data = '';
+
+      req.setEncoding('utf8');
+
+      req.on('data', (chunk) => {
+        data += chunk;
+      });
+
+      req.on('end', () => {
+        try {
+          req.rawBody = Buffer.from(data);
+          req.body = JSON.parse(data); // 👈 это безопасно, Stripe ожидает JSON
+          next();
+        } catch (err) {
+          console.error('Webhook JSON parse error:', err);
+          res.status(400).send('Invalid JSON');
+        }
+      });
+    } else {
+      res.status(400).send()
+    }
+  });
+}
 
 const setSwagger = (app: INestApplication, prefix: string) => {
   // if (env !== EnvironmentMode.PRODUCTION) {

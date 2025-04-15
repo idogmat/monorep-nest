@@ -27,6 +27,13 @@ message UnSubscribeRequest {
   string userId = 1;
   string paymentId = 2;
 }
+
+message WebhookRequest {
+  bytes buffer = 1;
+  string signature = 2;
+}
+
+
 //  Response messages
 
 message CreateSubscribeResponse {
@@ -59,8 +66,13 @@ message UnSubscribeResponse {
   string status = 1;
 }
 
+message WebhookResponse {
+  string status = 1;
+}
+
 service PaymentsService {
   rpc CreateSubscribe(CreateSubscribeRequest) returns (CreateSubscribeResponse);
   rpc GetSubscribes(GetSubscribesQuery) returns (PaymentsResponse);
   rpc UnSubscribe(UnSubscribeRequest) returns (UnSubscribeResponse);
+  rpc Webhook(WebhookRequest) returns (WebhookResponse);
 }

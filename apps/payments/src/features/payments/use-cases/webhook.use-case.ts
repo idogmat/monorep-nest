@@ -1,14 +1,12 @@
-import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { PaymentsRepository } from '../infrastructure/payments.repository';
 import { StripeAdapter } from '../applications/stripe.adapter';
 import { products, productsName } from '../helpers';
-import { UpdateAccountEvent } from '../eventBus/updateAccount.event';
 import { Inject } from '@nestjs/common';
-import { NotifySubscribeEvent } from '../eventBus/notify.event';
-import { PaymentStatus } from '../../../prisma/generated/payments-client';
+import { PaymentStatus } from '../../../../prisma/generated/payments-client';
 
 
-export class WebhookCommand {
+export class WebHookPaymentCommand {
   constructor(
     public buffer: Buffer<ArrayBufferLike>,
     public signature: string,
@@ -16,20 +14,20 @@ export class WebhookCommand {
   }
 }
 
-@CommandHandler(WebhookCommand)
-export class WebhookUseCase implements ICommandHandler<WebhookCommand> {
+@CommandHandler(WebHookPaymentCommand)
+export class WebHookPaymentUseCase implements ICommandHandler<WebHookPaymentCommand> {
 
   constructor(
     @Inject("STRIPE_ADAPTER") private readonly stripeAdapter: StripeAdapter,
     private readonly paymentsRepository: PaymentsRepository,
-    private readonly eventBus: EventBus
+    // private readonly eventBus: EventBus
   ) { }
 
-  async execute(command: WebhookCommand) {
-
+  async execute(command: WebHookPaymentCommand) {
+    console.log(command, 'command')
     const { buffer, signature } = command
     const event = await this.stripeAdapter.webHook(buffer, signature)
-    // console.log(event)
+    console.log(event)
 
     switch (event.type) {
       case 'customer.subscription.created':
@@ -68,8 +66,8 @@ export class WebhookUseCase implements ICommandHandler<WebhookCommand> {
           }
           const sub = await this.paymentsRepository.updatePaymentStatus(payment)
           console.log(sub, 'sub')
-          this.eventBus.publish(new UpdateAccountEvent([{ userId, paymentAccount: true }]));
-          this.eventBus.publish(new NotifySubscribeEvent({ userId, expiresAt: sub.expiresAt?.toISOString() }));
+          // this.eventBus.publish(new UpdateAccountEvent([{ userId, paymentAccount: true }]));
+          // this.eventBus.publish(new NotifySubscribeEvent({ userId, expiresAt: sub.expiresAt?.toISOString() }));
         } catch {
 
         }

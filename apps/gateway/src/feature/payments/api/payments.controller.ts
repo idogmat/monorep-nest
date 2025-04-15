@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Headers, HttpCode, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthGuard } from '../../../../src/common/guard/authGuard';
 import { SubscribeDto, SubscribeProductDto } from './model/input/input.subscribe';
@@ -78,5 +78,21 @@ export class PaymentsController {
     const { items, totalCount, pageNumber, pageSize } = await this.paymentsClientService.getProfiles({ ...query, userId })
     console.log(items)
     return mapToViewModel({ items, totalCount, pageNumber, pageSize })
+  }
+
+  @Post('webhook')
+  @HttpCode(200)
+  async webHook(
+    @Req() req,
+    @Headers('stripe-signature') signature
+  ) {
+    console.log(req.rawBody, 'req.rawBody')
+    if (signature) {
+      const result = await this.paymentsClientService.webhook({ buffer: req.rawBody, signature })
+      console.log(result)
+    }
+    // this.commandBus.execute(
+    // new WebhookCommand(req.rawBody, signature)
+
   }
 }

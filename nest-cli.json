@@ -50,7 +50,7 @@
       "entryFile": "main",
       "sourceRoot": "apps/payments/src",
       "compilerOptions": {
-        "assets": ["../../libs/proto/*.proto"],
+        "assets": ["../../libs/proto/payments.proto"],
         "watchAssets": true,
         "tsConfigPath": "apps/payments/tsconfig.app.json"
       }

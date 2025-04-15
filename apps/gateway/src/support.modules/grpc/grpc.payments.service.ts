@@ -1,12 +1,13 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { GetSubscribesQuery, UnSubscribeRequest, UserForSubscribe } from '../../../../libs/proto/generated/payments';
+import { GetSubscribesQuery, UnSubscribeRequest, UserForSubscribe, WebhookResponse, WebhookRequest } from '../../../../libs/proto/generated/payments';
 import { firstValueFrom, lastValueFrom, Observable } from 'rxjs';
 
 interface PaymentsService {
   CreateSubscribe(data: { user: UserForSubscribe, productKey: number }): Observable<any>;
   GetSubscribes(data: GetSubscribesQuery): Observable<any>;
   UnSubscribe(data: UnSubscribeRequest): Observable<any>;
+  Webhook(data: WebhookRequest): Observable<WebhookResponse>;
 }
 
 @Injectable()
@@ -33,6 +34,10 @@ export class PaymentsClientService implements OnModuleInit {
 
   async unSubscribe(data: UnSubscribeRequest) {
     return lastValueFrom(await this.paymentsService.UnSubscribe(data));
+  }
+
+  async webhook(data: WebhookRequest) {
+    return lastValueFrom(await this.paymentsService.Webhook(data));
   }
 
   // async subscribeProfile(userId: string, profileUserId: string) {

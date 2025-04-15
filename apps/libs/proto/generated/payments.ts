@@ -36,6 +36,11 @@ export interface UnSubscribeRequest {
   paymentId: string;
 }
 
+export interface WebhookRequest {
+  buffer: Uint8Array;
+  signature: string;
+}
+
 export interface CreateSubscribeResponse {
   url: string;
   status: string;
@@ -65,6 +70,10 @@ export interface UnSubscribeResponse {
   status: string;
 }
 
+export interface WebhookResponse {
+  status: string;
+}
+
 export const PAYMENTS_PACKAGE_NAME = "payments";
 
 export interface PaymentsServiceClient {
@@ -73,6 +82,8 @@ export interface PaymentsServiceClient {
   getSubscribes(request: GetSubscribesQuery, metadata?: Metadata): Observable<PaymentsResponse>;
 
   unSubscribe(request: UnSubscribeRequest, metadata?: Metadata): Observable<UnSubscribeResponse>;
+
+  webhook(request: WebhookRequest, metadata?: Metadata): Observable<WebhookResponse>;
 }
 
 export interface PaymentsServiceController {
@@ -90,11 +101,16 @@ export interface PaymentsServiceController {
     request: UnSubscribeRequest,
     metadata?: Metadata,
   ): Promise<UnSubscribeResponse> | Observable<UnSubscribeResponse> | UnSubscribeResponse;
+
+  webhook(
+    request: WebhookRequest,
+    metadata?: Metadata,
+  ): Promise<WebhookResponse> | Observable<WebhookResponse> | WebhookResponse;
 }
 
 export function PaymentsServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createSubscribe", "getSubscribes", "unSubscribe"];
+    const grpcMethods: string[] = ["createSubscribe", "getSubscribes", "unSubscribe", "webhook"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("PaymentsService", method)(constructor.prototype[method], method, descriptor);

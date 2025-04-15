@@ -17,7 +17,7 @@ export const applyAppSettings = (app: INestApplication): {
   const { port, env, host, rabbit, grpc_url } = getEnv(app)
   setAppPrefix(app, APP_PREFIX);
   setAppPipes(app);
-  modifyHook(app)
+
   return { port, env, host, rabbit, grpc_url }
 };
 
@@ -34,32 +34,7 @@ const setAppPrefix = (app: INestApplication, prefix: string) => {
   app.setGlobalPrefix(prefix);
 };
 
-const modifyHook = (app: INestApplication) => {
-  app.use('/api/v1/payments/webhook', (req, res, next) => {
-    if (req.headers['stripe-signature']) {
-      let data = '';
 
-      req.setEncoding('utf8');
-
-      req.on('data', (chunk) => {
-        data += chunk;
-      });
-
-      req.on('end', () => {
-        try {
-          req.rawBody = Buffer.from(data);
-          req.body = JSON.parse(data); // 👈 это безопасно, Stripe ожидает JSON
-          next();
-        } catch (err) {
-          console.error('Webhook JSON parse error:', err);
-          res.status(400).send('Invalid JSON');
-        }
-      });
-    } else {
-      res.status(400).send()
-    }
-  });
-}
 
 const setAppPipes = (app: INestApplication) => {
   app.useGlobalPipes(
