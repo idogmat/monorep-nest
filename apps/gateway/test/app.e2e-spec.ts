@@ -19,6 +19,7 @@ import { StripeAdapterMock } from './mock/stripe.adapter.mok';
 import { PaymentCronService } from '../src/feature/payments/applications/payment.cron';
 import { PaymentCronServiceMock } from './mock/payment.cron.mock';
 import { ProfileCronService } from '../src/feature/profile/application/profile.cron';
+import { PaymentsClientService } from '../src/support.modules/grpc/grpc.payments.service';
 @Module({
   imports: [
     ClientsModule.register([
@@ -31,11 +32,20 @@ import { ProfileCronService } from '../src/feature/profile/application/profile.c
           url: '0.0.0.0',
         },
       },
+      {
+        name: 'PAYMENTS_SERVICE',
+        transport: Transport.GRPC,
+        options: {
+          package: 'payments',
+          protoPath: join(__dirname, '../../libs/proto/payments.proto'),
+          url: '0.0.0.0',
+        },
+      },
     ]),
   ],
   controllers: [],
-  providers: [ProfileClientService],
-  exports: [ProfileClientService],
+  providers: [ProfileClientService, PaymentsClientService],
+  exports: [ProfileClientService, PaymentsClientService],
 })
 export class GrpcServiceModuleMock { }
 describe('AppController (e2e)', () => {

@@ -13,12 +13,16 @@ import { PaymentCronService } from './applications/payment.cron';
 import { ScheduleModule } from '@nestjs/schedule';
 import { PaymentsQueryRepository } from './infrastructure/payments.query-repository';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { UsersService } from '../user-accounts/users/application/users.service';
+import { GrpcServiceModule } from '../../support.modules/grpc/grpc.module';
+import { PaymentsClientService } from '../../support.modules/grpc/grpc.payments.service';
 
 @Module({
   imports: [
     ConfigModule,
     CqrsModule,
     UsersAccountsModule,
+    GrpcServiceModule,
     ScheduleModule.forRoot(),
     ClientsModule.registerAsync([
       {
@@ -55,7 +59,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     SubscribeUseCase,
     WebhookUseCase,
     PaymentCronService,
-
   ],
   controllers: [PaymentsController],
   exports: [PaymentsService]
