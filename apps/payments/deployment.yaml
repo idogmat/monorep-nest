@@ -47,3 +47,8 @@ spec:
                  secretKeyRef:
                    name: payments-production-config-secret
                    key: STRIPE_WEBHOOK_SECRET
+             - name: STRIPE_WEBHOOK_SECRET
+               valueFrom:
+                 secretKeyRef:
+                   name: payments-production-config-secret
+                   key: STRIPE_WEBHOOK_SECRET
