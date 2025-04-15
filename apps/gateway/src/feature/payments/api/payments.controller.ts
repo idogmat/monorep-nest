@@ -7,7 +7,7 @@ import { PaginationSearchPaymentsTerm } from './model/input/payments.query.model
 import { mapToViewModel, PagedResponseOfPayments } from './model/output/paged.payments.model';
 import { ApiBearerAuth, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { PaymentUrlModel } from './model/output/url.model';
-import { PaymentsClientService } from 'apps/gateway/src/support.modules/grpc/grpc.payments.service';
+import { PaymentsClientService } from '../../../support.modules/grpc/grpc.payments.service';
 import { UsersService } from '../../user-accounts/users/application/users.service';
 @Controller('payments')
 export class PaymentsController {
