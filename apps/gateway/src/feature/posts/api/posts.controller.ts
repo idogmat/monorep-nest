@@ -109,18 +109,17 @@ export class PostsController {
 
     const userId = req.user.userId;
 
-    const viewModel = await this.commandBus.execute(
+    const postId = await this.commandBus.execute(
       new CreatePostCommand(postCreateModel.description, userId, 'IN_PROGRESS')
     )
 
     const result = await this.commandBus.execute(
-      new UploadPostPhotosCommand(files, userId, viewModel.id)
+      new UploadPostPhotosCommand(files, userId, postId)
     )
 
     if (result.hasError()) {
       new ErrorProcessor(result).handleError();
     }
-
   }
 
   @UseGuards(AuthGuardOptional)
