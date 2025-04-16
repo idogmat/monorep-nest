@@ -1,5 +1,5 @@
 import { Controller, Get, Headers, Post, Req } from '@nestjs/common';
-import { GrpcMethod } from '@nestjs/microservices';
+import { Ctx, EventPattern, GrpcMethod, Payload, RmqContext } from '@nestjs/microservices';
 import { PaymentsService } from '../applications/payments.service';
 import { PaymentsRepository } from '../infrastructure/payments.repository';
 import { CommandBus } from '@nestjs/cqrs';
@@ -18,6 +18,26 @@ export class PaymentsController {
     private readonly commandBus: CommandBus,
   ) {
 
+  }
+
+
+  @EventPattern()
+  handleTest(
+    @Payload() data: any,
+    @Ctx() context: RmqContext,
+  ) {
+    // const channel = context.getChannelRef();
+    const message = context.getMessage();
+    switch (message.fields.routingKey) {
+      case 'delay_payments_queue':
+        // console.log(message)
+        console.log(data)
+        break;
+      default:
+        break
+    }
+    // if (message.fields.routingKey === )
+    // console.log('Received test_payments message:', data);
   }
 
   @GrpcMethod('PaymentsService', 'CreateSubscribe')
