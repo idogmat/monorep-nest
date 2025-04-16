@@ -109,17 +109,18 @@ export class PostsController {
 
     const userId = req.user.userId;
 
-    const postId = await this.commandBus.execute(
+    const viewModel = await this.commandBus.execute(
       new CreatePostCommand(postCreateModel.description, userId, 'IN_PROGRESS')
     )
 
     const result = await this.commandBus.execute(
-      new UploadPostPhotosCommand(files, userId, postId)
+      new UploadPostPhotosCommand(files, userId, viewModel.id)
     )
 
     if (result.hasError()) {
       new ErrorProcessor(result).handleError();
     }
+
   }
 
   @UseGuards(AuthGuardOptional)
@@ -142,7 +143,6 @@ export class PostsController {
   }
 
   @Get()
-  @UseGuards(AuthGuardOptional)
   @ApiOperation({ summary: 'Get a list of posts with pagination' })
   @ApiQuery({ name: 'pageNumber', required: false })
   @ApiQuery({ name: 'pageSize', required: false })
@@ -155,7 +155,6 @@ export class PostsController {
     description: 'Successfully fetched posts',
     type: PagedResponseOfPosts,  // Указываем PagedResponse без указания типа
   })
-
   async getPosts(
     @Req() req: Request,
     @Query()
