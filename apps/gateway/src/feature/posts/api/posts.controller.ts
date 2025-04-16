@@ -142,7 +142,6 @@ export class PostsController {
   }
 
   @Get()
-  @UseGuards(AuthGuardOptional)
   @ApiOperation({ summary: 'Get a list of posts with pagination' })
   @ApiQuery({ name: 'pageNumber', required: false })
   @ApiQuery({ name: 'pageSize', required: false })
@@ -155,7 +154,6 @@ export class PostsController {
     description: 'Successfully fetched posts',
     type: PagedResponseOfPosts,  // Указываем PagedResponse без указания типа
   })
-
   async getPosts(
     @Req() req: Request,
     @Query()
