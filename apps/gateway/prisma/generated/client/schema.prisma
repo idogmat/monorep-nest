@@ -25,7 +25,6 @@ model User {
   posts            Post[]         @relation("UserPost")
   providers        Provider?      @relation("UserProvider")
   devices          Device[]       @relation("UserDevice")
-  payments         Payment[]      @relation("UserPayment")
   notifications    Notification[] @relation("UserNotification")
 
   @@map("users")
@@ -66,24 +65,6 @@ model Post {
   @@map("posts")
 }
 
-model Payment {
-  id             String        @id @default(uuid())
-  user           User          @relation("UserPayment", fields: [userId], references: [id])
-  userId         String        @db.VarChar(40)
-  subscriptionId String?       @db.VarChar(40)
-  customerId     String        @db.VarChar(40)
-  payType        String?       @default("Stripe") @db.VarChar(40)
-  subType        String?       @db.VarChar(40)
-  status         PaymentStatus @default(PENDING)
-  amount         Int?
-  createdAt      DateTime
-  expiresAt      DateTime?
-  deletedAt      DateTime?
-
-  @@index([userId])
-  @@map("payments")
-}
-
 model Notification {
   id        String       @id @default(uuid())
   user      User         @relation("UserNotification", fields: [userId], references: [id])
@@ -91,7 +72,6 @@ model Notification {
   createdAt DateTime     @default(now())
   expiresAt DateTime?
   type      NotifyStatus
-  // status          NotifyStatus
 
   @@index([userId])
   @@map("notifications")

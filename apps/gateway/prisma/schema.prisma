@@ -25,7 +25,6 @@ model User {
   posts     Post[] @relation("UserPost")
   providers  Provider? @relation("UserProvider")
   devices  Device[] @relation("UserDevice")
-  payments  Payment[] @relation("UserPayment")
   notifications  Notification[] @relation("UserNotification")
   @@map("users")
 }
