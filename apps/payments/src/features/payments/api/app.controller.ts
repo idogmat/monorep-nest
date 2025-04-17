@@ -1,5 +1,5 @@
-import { Controller, Get, Headers, Post, Req } from '@nestjs/common';
-import { Ctx, EventPattern, GrpcMethod, Payload, RmqContext } from '@nestjs/microservices';
+import { Controller, Get, Headers, Inject, Post, Req } from '@nestjs/common';
+import { ClientProxy, Ctx, EventPattern, GrpcMethod, Payload, RmqContext } from '@nestjs/microservices';
 import { PaymentsService } from '../applications/payments.service';
 import { PaymentsRepository } from '../infrastructure/payments.repository';
 import { CommandBus } from '@nestjs/cqrs';
@@ -16,6 +16,7 @@ export class PaymentsController {
     private readonly paymentsRepository: PaymentsRepository,
     private readonly paymentsQueryRepository: PaymentsQueryRepository,
     private readonly commandBus: CommandBus,
+    @Inject('RABBITMQ_PAYMENTS_NOTIFICATIONS_SERVICE') private readonly rabbitClient: ClientProxy,
   ) {
 
   }
@@ -27,10 +28,13 @@ export class PaymentsController {
     @Ctx() context: RmqContext,
   ) {
     // const channel = context.getChannelRef();
+    console.log(data)
     const message = context.getMessage();
+    console.log(message.fields.routingKey)
     switch (message.fields.routingKey) {
       case 'delay_payments_queue':
         // console.log(message)
+        this.rabbitClient.emit('new_subscribe', message)
         console.log(data)
         break;
       default:
@@ -85,11 +89,10 @@ export class PaymentsController {
   @GrpcMethod('PaymentsService', 'Webhook')
   async WebHook(data: WebhookRequest) {
     try {
-      console.log(data, 'data')
       const { buffer, signature } = data;
       await this.commandBus.execute(new WebHookPaymentCommand(buffer as any, signature))
       // console.log(result)
-      return 'result'
+      return { status: 'ok' }
     } catch (error) {
       console.log(error)
       return { status: 'fail' }

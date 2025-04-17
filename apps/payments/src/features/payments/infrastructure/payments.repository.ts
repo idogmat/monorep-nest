@@ -215,7 +215,7 @@ export class PaymentsRepository {
     });
     const userIds = [...new Set(expired.map(p => p.userId))];
     if (userIds.length === 0) {
-      // нет истёкших — возврат или логика по умолчанию
+      // нет истёкших
       return { expired: [], active: [] };
     }
 

@@ -39,6 +39,16 @@ async function bootstrap() {
       queueOptions: { durable: false },
     },
   });
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: [rabbit],
+      queue: 'payments_notification_queue',
+      queueOptions: { durable: true },
+      noAck: false
+    },
+  });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   await app.startAllMicroservices();

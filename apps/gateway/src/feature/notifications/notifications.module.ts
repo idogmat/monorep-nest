@@ -4,6 +4,7 @@ import { NotificationsRepository } from './infrastrucrure/notifications.reposito
 import { NotifySubscribeHandler } from './eventHandler/notify.handler';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisModule } from '../../support.modules/redis/redis.module';
+import { NotificationsController } from './api/notifications.controller';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { RedisModule } from '../../support.modules/redis/redis.module';
     NotificationsRepository,
     NotifySubscribeHandler,
   ],
-  controllers: [],
+  controllers: [NotificationsController],
   exports: [NotificationsSocket]
 })
 export class NotificationsModule { }

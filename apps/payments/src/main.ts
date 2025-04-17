@@ -23,14 +23,14 @@ async function bootstrap() {
     },
   });
   console.log('gRPC microservice connected');
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.RMQ,
-    options: {
-      urls: [rabbit],
-      queue: 'payments_queue',
-      queueOptions: { durable: true },
-    },
-  });
+  // app.connectMicroservice<MicroserviceOptions>({
+  //   transport: Transport.RMQ,
+  //   options: {
+  //     urls: [rabbit],
+  //     queue: 'payments_queue',
+  //     queueOptions: { durable: true },
+  //   },
+  // });
 
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,

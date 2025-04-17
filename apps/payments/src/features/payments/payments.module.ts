@@ -30,21 +30,36 @@ const useCases = [
     CqrsModule,
     ScheduleModule.forRoot(),
     ClientsModule.registerAsync([
-      // {
-      //   imports: [ConfigModule],
-      //   name: 'RABBITMQ_PAYMENTS_SERVICE',
-      //   useFactory: (configService: ConfigService) => {
-      //     return {
-      //       transport: Transport.RMQ,
-      //       options: {
-      //         urls: configService.get<string[]>('RABBIT_URLS'),
-      //         queue: 'payments_queue',
-      //         queueOptions: { durable: true },
-      //       },
-      //     }
-      //   },
-      //   inject: [ConfigService],
-      // }
+      {
+        imports: [ConfigModule],
+        name: 'RABBITMQ_PAYMENTS_SERVICE',
+        useFactory: (configService: ConfigService) => {
+          return {
+            transport: Transport.RMQ,
+            options: {
+              urls: configService.get<string[]>('RABBIT_URLS'),
+              queue: 'payments_queue',
+              queueOptions: { durable: true },
+            },
+          }
+        },
+        inject: [ConfigService],
+      },
+      {
+        imports: [ConfigModule],
+        name: 'RABBITMQ_PAYMENTS_NOTIFICATIONS_SERVICE',
+        useFactory: (configService: ConfigService) => {
+          return {
+            transport: Transport.RMQ,
+            options: {
+              urls: configService.get<string[]>('RABBIT_URLS'),
+              queue: 'payments_notification_queue',
+              queueOptions: { durable: true },
+            },
+          }
+        },
+        inject: [ConfigService],
+      }
     ])
   ],
   providers: [
@@ -52,6 +67,15 @@ const useCases = [
       provide: 'STRIPE_ADAPTER',
       useFactory: (configService: ConfigService) => {
         return new StripeAdapter(
+          configService,
+        );
+      },
+      inject: [ConfigService],
+    },
+    {
+      provide: 'DELAY_RABBIT_SERVICE',
+      useFactory: (configService: ConfigService) => {
+        return new DelayRabbitService(
           configService,
         );
       },
