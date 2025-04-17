@@ -17,6 +17,13 @@ export class PaymentsService {
     return customer
   }
 
+
+  async findPaymentByUserId(
+    userId
+  ) {
+    return await this.paymentsRepository.findPaymentByUserId(userId)
+  }
+
   async findOrCreateCustomer(
     user,
   ) {
@@ -59,7 +66,6 @@ export class PaymentsService {
     userId,
     paymentId
   ) {
-
     const payment = await this.paymentsRepository.findPaymentById(paymentId)
     if (payment?.userId !== userId) throw new ForbiddenException()
     return this.stripeAdapter.deleteSubscription(
