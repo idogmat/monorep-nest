@@ -38,22 +38,5 @@ export class NotificationsController {
       // Если true, сообщение будет заново поставлено в очередь. Если false — попадёт в dead-letter (если настроен) или будет утеряно
       channel.nack(message, false, false);
     }
-    // 
-
-    // const message = context.getMessage();
-    // console.log(message.fields.routingKey)
-    // switch (message.fields.routingKey) {
-    //   case 'delay_payments_queue':
-    //     // console.log(message)
-    //     this.rabbitClient.emit('new_subscribe', message)
-    //     console.log(data)
-    //     break;
-    //   default:
-    //     break
-    // }
-    // if (message.fields.routingKey === )
-    // console.log('Received test_payments message:', data);
   }
-
-
 }

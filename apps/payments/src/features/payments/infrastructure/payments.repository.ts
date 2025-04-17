@@ -16,6 +16,18 @@ export class PaymentsRepository {
     })
   }
 
+  async findPaymentByUserId(userId: string): Promise<Payment[] | []> {
+    return this.prisma.payment.findMany({
+      where: {
+        userId,
+        expiresAt: {
+          not: null
+        },
+        status: PaymentStatus.ACTIVE
+      }
+    })
+  }
+
   async findPaymentById(id: string): Promise<Payment> {
     return this.prisma.payment.findFirst({
       where: {
@@ -102,19 +114,19 @@ export class PaymentsRepository {
     data: {
       subscriptionId: string,
       status: PaymentStatus,
-      userId: string,
+      customerId: string,
     }
   ): Promise<Payment | null> {
     const {
       subscriptionId,
       status,
-      userId,
+      customerId,
     } = data;
     return await this.prisma.$transaction(async (tx) => {
       const payment = await tx.payment.findFirst({
         where: {
           subscriptionId,
-          userId,
+          customerId,
           deletedAt: null
         },
         orderBy: { createdAt: 'desc' },
