@@ -4,6 +4,7 @@ import { StripeAdapter } from '../applications/stripe.adapter';
 import { products, productsName } from '../helpers';
 import { Inject } from '@nestjs/common';
 import { PaymentStatus } from '../../../../prisma/generated/payments-client';
+import { DelayRabbitService } from '../applications/delay.rabbit.service';
 
 
 export class WebHookPaymentCommand {
@@ -20,14 +21,15 @@ export class WebHookPaymentUseCase implements ICommandHandler<WebHookPaymentComm
   constructor(
     @Inject("STRIPE_ADAPTER") private readonly stripeAdapter: StripeAdapter,
     private readonly paymentsRepository: PaymentsRepository,
+    @Inject('DELAY_RABBIT_SERVICE') private readonly delayRabbitService: DelayRabbitService,
     // private readonly eventBus: EventBus
   ) { }
 
   async execute(command: WebHookPaymentCommand) {
-    console.log(command, 'command')
+    // console.log(command, 'command')
     const { buffer, signature } = command
     const event = await this.stripeAdapter.webHook(buffer, signature)
-    console.log(event)
+    // console.log(event)
 
     switch (event.type) {
       case 'customer.subscription.created':
@@ -66,6 +68,7 @@ export class WebHookPaymentUseCase implements ICommandHandler<WebHookPaymentComm
           }
           const sub = await this.paymentsRepository.updatePaymentStatus(payment)
           console.log(sub, 'sub')
+          this.delayRabbitService.publishWith30SecondsDelay('delay_payments_queue', sub)
           // this.eventBus.publish(new UpdateAccountEvent([{ userId, paymentAccount: true }]));
           // this.eventBus.publish(new NotifySubscribeEvent({ userId, expiresAt: sub.expiresAt?.toISOString() }));
         } catch {

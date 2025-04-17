@@ -3,7 +3,8 @@ import { PaymentsModule } from "../features/payments/payments.module";
 
 
 @Module({
-  imports: [PaymentsModule
+  imports: [
+    PaymentsModule
   ],
   providers: [
 

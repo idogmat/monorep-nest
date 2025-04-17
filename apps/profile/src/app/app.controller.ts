@@ -1,5 +1,5 @@
 import { Controller, NotFoundException, } from '@nestjs/common';
-import { EventPattern, GrpcMethod } from '@nestjs/microservices';
+import { Ctx, EventPattern, GrpcMethod, Payload, RmqContext } from '@nestjs/microservices';
 import { ProfileService } from '../features/profile.service';
 import { ProfilePhotoInputModel } from '../features/model/profilePhoto.input.model';
 import { OutputProfileModelMapper } from '../features/model/profile.output.model';
@@ -101,11 +101,27 @@ export class AppController {
   }
 
   @EventPattern('load_profile_photo')
-  async handleTestEvent(data: ProfilePhotoInputModel) {
-    console.log(data, 'handleTestEvent')
+  async handleLoadProfilePhoto(data: ProfilePhotoInputModel) {
+    console.log(data, 'load_profile_photo')
 
     try {
       await this.profileService.updateProfilePhoto(data)
+    } catch (error) {
+      // save as error
+      console.warn(error)
+    }
+  }
+
+  @EventPattern('update_profile_account')
+  async updateProfileAccount(
+    data:
+      { userId: string, paymentAccount: boolean }[]
+  ) {
+    console.log(data, 'update_profile_account')
+    try {
+      for (const u of data) {
+        await this.profileService.updateProfilePayment(u.userId, u.paymentAccount)
+      }
     } catch (error) {
       // save as error
       console.warn(error)

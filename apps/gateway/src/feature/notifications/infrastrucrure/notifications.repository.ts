@@ -19,13 +19,11 @@ export class NotificationsRepository {
     })
   }
 
-  async getNotifications(userId: string): Promise<Notification[]> {
+  async getNotificationsSubscribe(userId: string): Promise<Notification[]> {
     return this.prisma.notification.findMany({
       where: {
         userId,
-        // expiresAt: {
-        //   gte: new Date()
-        // }
+        type: NotifyStatus.subscribe
       },
       orderBy: { expiresAt: 'desc' }
     })

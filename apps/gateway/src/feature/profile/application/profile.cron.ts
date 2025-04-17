@@ -11,17 +11,17 @@ export class ProfileCronService {
     private readonly fileService: FileService,
   ) { }
   // "*/10 * * * * *" 10sec
-  @Cron(CronExpression.EVERY_10_MINUTES)
-  async handleCron() {
-    const events = await this.fileService.processEvents()
-    console.log(events)
-    for (const event of events) {
-      await this.profileService.subscribeProfile(event.userId, event.paymentAccount)
-      console.log('Processing event:', event);
-    }
-    await this.fileService.deleteFileResult()
+  // @Cron(CronExpression.EVERY_10_MINUTES)
+  // async handleCron() {
+  //   const events = await this.fileService.processEvents()
+  //   console.log(events)
+  //   for (const event of events) {
+  //     await this.profileService.subscribeProfile(event.userId, event.paymentAccount)
+  //     console.log('Processing event:', event);
+  //   }
+  //   await this.fileService.deleteFileResult()
 
-    this.logger.log('Profile updated');
+  //   this.logger.log('Profile updated');
 
-  }
+  // }
 }

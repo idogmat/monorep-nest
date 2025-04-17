@@ -1,19 +1,24 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as amqplib from 'amqplib';
 
 @Injectable()
 export class DelayRabbitService implements OnModuleInit {
   private channel: amqplib.Channel;
+  private amqp: string;
+  constructor(private configService: ConfigService) {
+    this.amqp = this.configService.get('RABBIT_URLS')[0];
+  }
 
   async onModuleInit() {
-    const conn = await amqplib.connect('amqp://user:password@localhost:5672');
+    const conn = await amqplib.connect(this.amqp);
     this.channel = await conn.createChannel();
   }
 
   async publishWith30SecondsDelay(destinationQueue: string, payload: any) {
     const delayExchange = 'temp_delay_exchange';
     const delayQueue = `delay_30000_payments_queue`;
-
+    console.log('send')
     await this.channel.assertExchange(delayExchange, 'direct', { durable: true });
 
     await this.channel.assertQueue(delayQueue, {
