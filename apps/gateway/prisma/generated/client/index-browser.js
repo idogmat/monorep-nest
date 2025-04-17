@@ -158,20 +158,6 @@ exports.Prisma.PostScalarFieldEnum = {
   photoUploadStatus: 'photoUploadStatus'
 };
 
-exports.Prisma.PaymentScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  subscriptionId: 'subscriptionId',
-  customerId: 'customerId',
-  payType: 'payType',
-  subType: 'subType',
-  status: 'status',
-  amount: 'amount',
-  createdAt: 'createdAt',
-  expiresAt: 'expiresAt',
-  deletedAt: 'deletedAt'
-};
-
 exports.Prisma.NotificationScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -201,12 +187,6 @@ exports.PhotoUploadStatus = exports.$Enums.PhotoUploadStatus = {
   FAILED: 'FAILED'
 };
 
-exports.PaymentStatus = exports.$Enums.PaymentStatus = {
-  CANCEL: 'CANCEL',
-  PENDING: 'PENDING',
-  ACTIVE: 'ACTIVE'
-};
-
 exports.NotifyStatus = exports.$Enums.NotifyStatus = {
   subscribe: 'subscribe',
   PENDING: 'PENDING',
@@ -218,7 +198,6 @@ exports.Prisma.ModelName = {
   Provider: 'Provider',
   Device: 'Device',
   Post: 'Post',
-  Payment: 'Payment',
   Notification: 'Notification'
 };
 
