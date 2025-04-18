@@ -67,14 +67,11 @@ export class NotificationsSocket implements OnGatewayConnection, OnGatewayDiscon
       console.log('📩 Received from client:', client.data.user);
       const notifications = await this.notificationsRepository.getNotificationsSubscribe(client.data.user)
       console.log(notifications)
-      const mapped = notifications.reduce((acc, e) => {
-        if (acc?.expiresAt) acc = e
-        if (acc.expiresAt > new Date() && acc.createdAt < new Date()) acc = e
-        return acc
-      })
-      const result = findDiffDate(mapped.expiresAt)
-      client.emit('notifications-response', { result });
-      this.server.to(users.get(client.data.user)).emit('notifications-response', { result: 'sdsdsddsd' });
+      if (notifications?.[0]?.expiresAt) {
+        const result = findDiffDate(notifications[0].expiresAt)
+        client.emit('notifications-response', result);
+      }
+      // this.server.to(users.get(client.data.user)).emit('notifications-response', { result: 'sdsdsddsd' });
     } catch (error) {
       console.warn('socket content error')
     }

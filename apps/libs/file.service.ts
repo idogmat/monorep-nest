@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { promises as fs } from 'fs';
 import { join } from 'path';
-import { UserAccounts } from '../gateway/src/feature/payments/eventBus/updateAccount.event';
 
 @Injectable()
 export class FileService {
@@ -12,9 +11,9 @@ export class FileService {
     // создаем директорию, если нет
     fs.mkdir(this.sourcePath, { recursive: true }).catch(() => { });
   }
-  async appendToJsonFile(newItems: UserAccounts[]) {
+  async appendToJsonFile(newItems: any[]) {
     try {
-      let existingData: UserAccounts[] = [];
+      let existingData: any[] = [];
       await this.exists(join(this.sourcePath, this.source));
       try {
         const fileContent = await fs.readFile(join(this.sourcePath, this.source), 'utf-8');

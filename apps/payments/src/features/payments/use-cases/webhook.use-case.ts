@@ -5,6 +5,7 @@ import { products, productsName } from '../helpers';
 import { Inject } from '@nestjs/common';
 import { PaymentStatus } from '../../../../prisma/generated/payments-client';
 import { DelayRabbitService } from '../applications/delay.rabbit.service';
+import { ClientProxy } from '@nestjs/microservices';
 
 
 export class WebHookPaymentCommand {
@@ -22,6 +23,7 @@ export class WebHookPaymentUseCase implements ICommandHandler<WebHookPaymentComm
     @Inject("STRIPE_ADAPTER") private readonly stripeAdapter: StripeAdapter,
     private readonly paymentsRepository: PaymentsRepository,
     @Inject('DELAY_RABBIT_SERVICE') private readonly delayRabbitService: DelayRabbitService,
+    @Inject('RABBITMQ_PROFILE_SERVICE') private readonly rabbitClient: ClientProxy
     // private readonly eventBus: EventBus
   ) { }
 
@@ -67,7 +69,10 @@ export class WebHookPaymentUseCase implements ICommandHandler<WebHookPaymentComm
             customerId: typeof customerId === 'string' ? customerId : customerId.id
           }
           const sub = await this.paymentsRepository.updatePaymentStatus(payment)
+          console.log(sub)
           this.delayRabbitService.publishWith30SecondsDelay('delay_payments_queue', sub)
+
+          this.rabbitClient.emit('update_profile_account', [{ userId: sub.userId, paymentAccount: true }])
         } catch {
 
         }

@@ -18,7 +18,7 @@ export class NotificationsController {
 
 
   @EventPattern('new_subscribe')
-  async handleTest(
+  async handleNewSubscribe(
     @Payload() data: any,
     @Ctx() context: RmqContext,
   ) {
@@ -30,6 +30,7 @@ export class NotificationsController {
       await this.notificationsRepository.createNotificationBySubscribe(payment.userId, payment.expiresAt)
       const result = findDiffDate(payment?.expiresAt)
       this.notificationsSocket.sendNotifies(payment.userId, result, 'new_subscribe')
+      // this.notificationsRepository.createNotificationBySubscribe(payment.userId, payment.expiresAt)
       channel.ack(message);
     } catch (error) {
       console.warn(error)

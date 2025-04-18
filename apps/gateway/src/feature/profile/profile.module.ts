@@ -9,9 +9,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { GateService } from '../../common/gate.service';
 import { ProfileMappingService } from './application/profile.mapper';
 import { GrpcServiceModule } from '../../support.modules/grpc/grpc.module';
-import { UpdateAccountHandler } from './eventHandler/updateAccount.handler';
 import { FileService } from '../../../../libs/file.service';
-import { ProfileCronService } from './application/profile.cron';
 
 @Module({
   imports: [
@@ -50,9 +48,7 @@ import { ProfileCronService } from './application/profile.cron';
     ProfileMappingService,
     PrismaService,
     GateService,
-    UpdateAccountHandler,
     FileService,
-    ProfileCronService
   ],
   controllers: [ProfileController],
   exports: []

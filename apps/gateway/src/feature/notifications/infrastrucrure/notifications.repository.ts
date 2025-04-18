@@ -23,6 +23,9 @@ export class NotificationsRepository {
     return this.prisma.notification.findMany({
       where: {
         userId,
+        expiresAt: {
+          gt: new Date()
+        },
         type: NotifyStatus.subscribe
       },
       orderBy: { expiresAt: 'desc' }
