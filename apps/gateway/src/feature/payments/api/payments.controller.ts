@@ -73,10 +73,7 @@ export class PaymentsController {
   ) {
     const userId = req.user?.userId;
     const query = new PaginationSearchPaymentsTerm(queryDTO, ['createdAt', 'expiresAt']);
-    console.log(queryDTO)
-    console.log(query)
     const { items, totalCount, pageNumber, pageSize } = await this.paymentsClientService.getProfiles({ ...query, userId })
-    console.log(items)
     return mapToViewModel({ items, totalCount, pageNumber, pageSize })
   }
 
@@ -86,13 +83,8 @@ export class PaymentsController {
     @Req() req,
     @Headers('stripe-signature') signature
   ) {
-    console.log(req.rawBody, 'req.rawBody')
     if (signature) {
       const result = await this.paymentsClientService.webhook({ buffer: req.rawBody, signature })
-      console.log(result)
     }
-    // this.commandBus.execute(
-    // new WebhookCommand(req.rawBody, signature)
-
   }
 }

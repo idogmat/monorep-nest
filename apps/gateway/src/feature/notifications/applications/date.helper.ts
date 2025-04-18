@@ -5,7 +5,7 @@ interface ParsedDate {
   seconds: number
   milliseconds: number
 }
-export function findDiffDate(expires: Date) {
+export function findDiffDate(expires: Date | string) {
   const date1: Date = new Date();
   const date2: Date = new Date(expires);
 

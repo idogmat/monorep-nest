@@ -25,26 +25,8 @@ model Payment {
   @@map("payments")
 }
 
-model Notification {
-  id        String       @id @default(uuid())
-  userId    String       @db.VarChar(40)
-  createdAt DateTime     @default(now())
-  expiresAt DateTime?
-  type      NotifyStatus
-  // status          NotifyStatus
-
-  @@index([userId])
-  @@map("notifications")
-}
-
 enum PaymentStatus {
   CANCEL
-  PENDING
-  ACTIVE
-}
-
-enum NotifyStatus {
-  subscribe
   PENDING
   ACTIVE
 }

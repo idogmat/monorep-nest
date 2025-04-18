@@ -25,6 +25,16 @@ export class SubscribeUseCase implements ICommandHandler<SubscribeCommand> {
     try {
       const { user, productKey } = command
       const customer = await this.paymentsService.findOrCreateCustomer(user)
+      const existPayments = await this.paymentsService.findPaymentByUserId(user.id)
+      console.log(existPayments, 'existPayment')
+
+      if (existPayments.length) {
+        await Promise.all(
+          existPayments.map((exist) =>
+            this.paymentsService.deletePayment(user.id, exist.id),
+          ),
+        );
+      }
       const {
         created,
         client_reference_id: referenceUserId,

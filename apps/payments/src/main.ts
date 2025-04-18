@@ -11,7 +11,6 @@ import * as bodyParser from 'body-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const { port, env, host, rabbit, grpc_url } = applyAppSettings(app)
-  app.init()
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.GRPC,
     options: {
@@ -23,17 +22,29 @@ async function bootstrap() {
       },
     },
   });
+  console.log('gRPC microservice connected');
+  // app.connectMicroservice<MicroserviceOptions>({
+  //   transport: Transport.RMQ,
+  //   options: {
+  //     urls: [rabbit],
+  //     queue: 'payments_queue',
+  //     queueOptions: { durable: true },
+  //   },
+  // });
 
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
       urls: [rabbit],
-      queue: 'payments_queue',
-      queueOptions: { durable: false },
+      queue: 'delay_payments_queue',
+      queueOptions: { durable: true },
     },
   });
+  console.log('RabbitMQ microservice connected');
 
   app.use(cookieParser());
+  await app.init()
+
   // app.enableCors({
   //   origin: '*',
   //   credentials: true

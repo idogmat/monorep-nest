@@ -4,6 +4,8 @@ import { StripeAdapter } from '../applications/stripe.adapter';
 import { products, productsName } from '../helpers';
 import { Inject } from '@nestjs/common';
 import { PaymentStatus } from '../../../../prisma/generated/payments-client';
+import { DelayRabbitService } from '../applications/delay.rabbit.service';
+import { ClientProxy } from '@nestjs/microservices';
 
 
 export class WebHookPaymentCommand {
@@ -20,15 +22,17 @@ export class WebHookPaymentUseCase implements ICommandHandler<WebHookPaymentComm
   constructor(
     @Inject("STRIPE_ADAPTER") private readonly stripeAdapter: StripeAdapter,
     private readonly paymentsRepository: PaymentsRepository,
+    @Inject('DELAY_RABBIT_SERVICE') private readonly delayRabbitService: DelayRabbitService,
+    @Inject('RABBITMQ_PROFILE_SERVICE') private readonly rabbitClient: ClientProxy
     // private readonly eventBus: EventBus
   ) { }
 
   async execute(command: WebHookPaymentCommand) {
-    console.log(command, 'command')
+    // console.log(command, 'command')
     const { buffer, signature } = command
     const event = await this.stripeAdapter.webHook(buffer, signature)
-    console.log(event)
-
+    // console.log(event, event.type)
+    // console.log(JSON.stringify(event), event.type)
     switch (event.type) {
       case 'customer.subscription.created':
         try {
@@ -52,22 +56,23 @@ export class WebHookPaymentUseCase implements ICommandHandler<WebHookPaymentComm
 
         }
         break;
-      case 'checkout.session.completed':
+      case 'invoice.payment_succeeded':
         try {
           const {
-            client_reference_id: userId
+            customer: customerId
           } = event.data.object
-          const subscriptionId = (event.data.object as any).subscription
-          const status: PaymentStatus = event.data.object.status === 'complete' ? PaymentStatus.ACTIVE : PaymentStatus.CANCEL;
+          const { subscriptionId } = (event.data.object as any)
+          const status: PaymentStatus = event.data.object.status === 'paid' ? PaymentStatus.ACTIVE : PaymentStatus.CANCEL;
           const payment = {
             subscriptionId,
             status,
-            userId
+            customerId: typeof customerId === 'string' ? customerId : customerId.id
           }
           const sub = await this.paymentsRepository.updatePaymentStatus(payment)
-          console.log(sub, 'sub')
-          // this.eventBus.publish(new UpdateAccountEvent([{ userId, paymentAccount: true }]));
-          // this.eventBus.publish(new NotifySubscribeEvent({ userId, expiresAt: sub.expiresAt?.toISOString() }));
+          console.log(sub)
+          this.delayRabbitService.publishWith30SecondsDelay('delay_payments_queue', sub)
+
+          this.rabbitClient.emit('update_profile_account', [{ userId: sub.userId, paymentAccount: true }])
         } catch {
 
         }

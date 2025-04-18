@@ -64,18 +64,29 @@ export class NotificationsSocket implements OnGatewayConnection, OnGatewayDiscon
     @ConnectedSocket() client: Socket
   ): Promise<void> {
     try {
-      console.log('📩 Received from client:', client);
-      const notifications = await this.notificationsRepository.getNotifications(client.data.user)
+      console.log('📩 Received from client:', client.data.user);
+      const notifications = await this.notificationsRepository.getNotificationsSubscribe(client.data.user)
       console.log(notifications)
-      const mapped = notifications.reduce((acc, e) => {
-        if (acc?.expiresAt) acc = e
-        if (acc.expiresAt > new Date() && acc.createdAt < new Date()) acc = e
-        return acc
-      })
-      const result = findDiffDate(mapped.expiresAt)
-      client.emit('notifications-response', { result });
+      if (notifications?.[0]?.expiresAt) {
+        const result = findDiffDate(notifications[0].expiresAt)
+        client.emit('notifications-response', result);
+      }
+      // this.server.to(users.get(client.data.user)).emit('notifications-response', { result: 'sdsdsddsd' });
     } catch (error) {
-
+      console.warn('socket content error')
+    }
+  }
+  async sendNotifies(userId: string, payload: any, type?: string): Promise<void> {
+    try {
+      const clientKey = users.get(userId)
+      if (!clientKey) return
+      const result = { ...payload }
+      if (type) {
+        Object.assign(result, { type });
+      }
+      this.server.to(clientKey).emit('notifications-response', result);
+    } catch (error) {
+      console.warn('socket content error')
     }
   }
 }
