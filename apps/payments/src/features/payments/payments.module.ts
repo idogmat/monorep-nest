@@ -59,6 +59,21 @@ const useCases = [
           }
         },
         inject: [ConfigService],
+      },
+      {
+        imports: [ConfigModule],
+        name: 'RABBITMQ_PROFILE_SERVICE',
+        useFactory: (configService: ConfigService) => {
+          return {
+            transport: Transport.RMQ,
+            options: {
+              urls: configService.get<string[]>('RABBIT_URLS'),
+              queue: 'profile_queue',
+              queueOptions: { durable: true },
+            },
+          }
+        },
+        inject: [ConfigService],
       }
     ])
   ],

@@ -67,7 +67,7 @@ const useCases = [
             options: {
               urls: configService.get<string[]>('RABBIT_URLS'),
               queue: 'profile_queue',
-              queueOptions: { durable: false },
+              queueOptions: { durable: true },
             },
           }
         },

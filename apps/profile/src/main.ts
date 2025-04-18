@@ -20,21 +20,21 @@ async function bootstrap() {
     },
   });
 
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.RMQ,
-    options: {
-      urls: [rabbit],
-      queue: 'payments_queue',
-      queueOptions: { durable: true },
-    },
-  });
+  // app.connectMicroservice<MicroserviceOptions>({
+  //   transport: Transport.RMQ,
+  //   options: {
+  //     urls: [rabbit],
+  //     queue: 'payments_queue',
+  //     queueOptions: { durable: true },
+  //   },
+  // });
 
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
       urls: [rabbit],
       queue: 'profile_queue',
-      queueOptions: { durable: false },
+      queueOptions: { durable: true },
     },
   });
 

@@ -3,22 +3,17 @@ import { Cron, CronExpression } from "@nestjs/schedule";
 import { PaymentsRepository } from "../infrastructure/payments.repository";
 import { Payment } from "../../../../prisma/generated/payments-client";
 import { ClientProxy } from "@nestjs/microservices";
-import { DelayRabbitService } from "./delay.rabbit.service";
 @Injectable()
 export class PaymentsCronService {
   private readonly logger = new Logger(PaymentsCronService.name);
   constructor(
     private readonly paymentsRepository: PaymentsRepository,
     @Inject('RABBITMQ_PAYMENTS_SERVICE') private readonly rabbitClient: ClientProxy,
-    private readonly delayRabbitService: DelayRabbitService,
 
 
   ) { }
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async handleCron() {
-    // this.delayRabbitService.publishWith30SecondsDelay('delay_payments_queue', { test: 'test' })
-    // this.delayRabbitService.publishWith30SecondsDelay('delay_payments_queue', { test: 'test' })
-
     this.logger.log('Subscriptions update start');
     const { active, expired }: { active: Payment[]; expired: (Payment | undefined)[] } =
       await this.paymentsRepository.checkExpiers();
