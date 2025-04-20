@@ -10,26 +10,12 @@ import { CreatePostUseCases } from './application/use-cases/create.post.use.case
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { DeviceService } from '../user-accounts/devices/application/device.service';
-import { UploadPostPhotosUseCase } from './application/use-cases/upload.post.photos.use-case';
 import { GateService } from '../../common/gate.service';
 import { PostsQueryRepository } from './infrastructure/prisma/posts-query-repository.service';
-import {
-  UpdatePostStatusOnFileUploadUseCases
-} from './application/use-cases/update.post.status.on.file.upload.use-case';
-import { GetPostAndPhotoUseCase } from './application/use-cases/get.post.and.photo.use-case';
-import { GetAllPostsUseCase } from './application/use-cases/get.all.posts.use-case';
-import { UpdatePostUseCase } from './application/use-cases/update.post.use-case';
-import { DeletePostUseCase } from './application/use-cases/delete.post.use-case';
-
+import { PostMicroserviceService } from './application/services/post.microservice.service';
 
 const useCasesForPost = [
-  CreatePostUseCases,
-  UploadPostPhotosUseCase,
-  UpdatePostStatusOnFileUploadUseCases,
-  GetPostAndPhotoUseCase,
-  GetAllPostsUseCase,
-  UpdatePostUseCase,
-  DeletePostUseCase]
+  CreatePostUseCases]
 @Module({
   imports: [
     HttpModule,
@@ -37,23 +23,6 @@ const useCasesForPost = [
     MulterModule.register({
       dest: './uploads',
     }),
-    ClientsModule.registerAsync([
-      {
-        imports: [ConfigModule],
-        name: 'TCP_SERVICE',
-        useFactory: (configService: ConfigService) => {
-          return {
-            transport: Transport.TCP,
-            options: {
-              host: configService.get('FILES_TCP'),
-              port: configService.get('CONNECT_PORT'),  // Порт, на который отправляется запрос в Service B
-
-            },
-          };
-        },
-        inject: [ConfigService],
-      },
-    ]),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => {
         return {
@@ -87,6 +56,7 @@ const useCasesForPost = [
     PrismaService,
     DeviceService,
     GateService,
+    PostMicroserviceService,
     ...useCasesForPost
   ],
   controllers: [PostsController],

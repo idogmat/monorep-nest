@@ -23,14 +23,14 @@ async function bootstrap() {
     credentials: true
   });
   const { port, env, rabbit } = applyAppSettings(app)
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.RMQ,
-    options: {
-      urls: [rabbit],
-      queue: 'post_queue',
-      queueOptions: { durable: false },
-    },
-  });
+  // app.connectMicroservice<MicroserviceOptions>({
+  //   transport: Transport.RMQ,
+  //   options: {
+  //     urls: [rabbit],
+  //     queue: 'post_queue',
+  //     queueOptions: { durable: false },
+  //   },
+  // });
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
@@ -51,7 +51,9 @@ async function bootstrap() {
   });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
+  await app.init();
   await app.startAllMicroservices();
+
   await app.listen(port, () => {
     console.log('App starting listen port: ', port);
     console.log('ENV: ', env);
