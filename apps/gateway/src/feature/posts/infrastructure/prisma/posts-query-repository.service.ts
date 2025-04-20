@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { Post, Prisma } from '../../../../../prisma/generated/client';
 import { PostViewModel } from '../../api/model/output/post.view.model';
-import { PaginationSearchPostTerm } from '../../api/model/input/query.posts.model';
+import { PaginationSearchPostTerm } from '../../../../../../libs/common/pagination/query.posts.model';
+
 
 @Injectable()
 export class PostsQueryRepository {

@@ -11,7 +11,7 @@ import {
 import {
   Body,
   Controller, Delete, Get,
-  Inject, Param, ParseUUIDPipe,
+  Param, ParseUUIDPipe,
   Post, Put, Query,
   Req,
   UploadedFiles,
@@ -21,30 +21,18 @@ import {
 import { CommandBus } from '@nestjs/cqrs';
 import { PostCreateModel } from './model/input/post.create.model';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { ClientProxy, Ctx, EventPattern, Payload } from '@nestjs/microservices';
 import { diskStorage } from 'multer';
 import { AuthGuard } from '../../../common/guard/authGuard';
-import { HttpService } from '@nestjs/axios';
-import { UploadPostPhotosCommand } from '../application/use-cases/upload.post.photos.use-case';
 import { ErrorProcessor } from '../../../common/error-handling/error.processor';
 import { CreatePostCommand } from '../application/use-cases/create.post.use.cases';
-import { PostsPrismaRepository } from '../infrastructure/prisma/posts.prisma.repository';
-import {
-  UpdatePostStatusOnFileUploadCommand
-} from '../application/use-cases/update.post.status.on.file.upload.use-case';
-import { GetPostAndPhotoCommand } from '../application/use-cases/get.post.and.photo.use-case';
-import { AuthGuardOptional } from '../../../common/guard/authGuardOptional';
 import { Request } from 'express';
-import { GetAllPostsCommand } from '../application/use-cases/get.all.posts.use-case';
 import { PostUpdateModel } from './model/input/post.update.model';
-import { UpdatePostCommand } from '../application/use-cases/update.post.use-case';
-import { DeletePostCommand } from '../application/use-cases/delete.post.use-case';
 import { PaginationPostQueryDto } from './model/input/pagination.post.query.dto';
-import { PaginationSearchPostTerm } from './model/input/query.posts.model';
-import { PagedResponse } from '../../../common/pagination/paged.response';
 import { PostViewModel } from './model/output/post.view.model';
 import { PagedResponseOfPosts } from './model/output/paged.response.of.posts.model';
-
+import { InterlayerNotice } from '../../../../../libs/common/error-handling/interlayer.notice';
+import { PaginationSearchPostTerm } from '../../../../../libs/common/pagination/query.posts.model';
+import { PostMicroserviceService } from '../application/services/post.microservice.service';
 
 
 @ApiTags('Posts')
@@ -52,9 +40,7 @@ import { PagedResponseOfPosts } from './model/output/paged.response.of.posts.mod
 export class PostsController {
   constructor(
     private commandBus: CommandBus,
-    private readonly httpService: HttpService,
-    private readonly postsPrismaRepository: PostsPrismaRepository,
-    @Inject('TCP_SERVICE') private readonly client: ClientProxy
+    private postMicroserviceService: PostMicroserviceService
   ) {
   }
 
@@ -63,7 +49,7 @@ export class PostsController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Create a new post with files',
-    description: 'Upload files (up to 10) with post data. Max file size 2MB each.'
+    description: 'Upload files (up to 10) with post data. Max file size 2MB each.',
   })
   @ApiBody({
     description: 'Post data with files',
@@ -88,10 +74,10 @@ export class PostsController {
     },
   })
   @ApiConsumes('multipart/form-data')
-  @ApiResponse({ status: 201, description: 'Post created successfully' })
+  @ApiResponse({ status: 201, description: 'Post created successfully', type: PostViewModel })
   @ApiResponse({
     status: 401,
-    description: 'Unauthorized - authentication required'
+    description: 'Unauthorized - authentication required',
   })
   @UseInterceptors(
     FilesInterceptor('files', 10, {
@@ -100,45 +86,37 @@ export class PostsController {
         filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
       }),
       limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
-    }) as any
+    }) as any,
   )
   @UseGuards(AuthGuard)
   async createPost(@Req() req,
-    @Body() postCreateModel: PostCreateModel,
-    @UploadedFiles() files: Express.Multer.File[]) {
+                   @Body() postCreateModel: PostCreateModel,
+                   @UploadedFiles() files: Express.Multer.File[]) {
 
     const userId = req.user.userId;
 
-    const postId = await this.commandBus.execute(
-      new CreatePostCommand(postCreateModel.description, userId, 'IN_PROGRESS')
-    )
-
     const result = await this.commandBus.execute(
-      new UploadPostPhotosCommand(files, userId, postId)
-    )
+      new CreatePostCommand(userId, files, postCreateModel),
+    ) as InterlayerNotice;
 
-    if (result.hasError()) {
-      new ErrorProcessor(result).handleError();
-    }
-  }
-
-  @UseGuards(AuthGuardOptional)
-  @ApiOperation({ summary: 'Get post by id' })
-  @ApiResponse({ status: 200, description: 'Post updated', type: PostViewModel })
-  @ApiResponse({ status: 403, description: 'Forbidden to update' })
-  @ApiResponse({ status: 404, description: 'Post not found' })
-  @Get(':postId')
-  async getPost(@Param('postId', new ParseUUIDPipe()) postId: string,
-                @Req() req,){
-
-    const userId = req.user?.userId || ''
-    const result = await this.commandBus.execute(
-      new GetPostAndPhotoCommand(postId, userId)
-    )
     if (result.hasError()) {
       new ErrorProcessor(result).handleError();
     }
     return result.data;
+
+  }
+
+  @Get(':postId')
+  @ApiOperation({ summary: 'Get post by id' })
+  @ApiResponse({ status: 200, description: 'Post updated', type: PostViewModel })
+  @ApiResponse({ status: 403, description: 'Forbidden to update' })
+  @ApiResponse({ status: 404, description: 'Post not found' })
+  async getPost(
+    @Param('postId', new ParseUUIDPipe()) postId: string,
+  ) {
+
+    return await this.postMicroserviceService.getPostById(postId);
+
   }
 
   @Get()
@@ -157,16 +135,16 @@ export class PostsController {
   async getPosts(
     @Req() req: Request,
     @Query()
-    queryDTO: PaginationPostQueryDto): Promise<PagedResponse<PostViewModel>>{
+      queryDTO: PaginationPostQueryDto) {
 
     const pagination = new PaginationSearchPostTerm(queryDTO, ['createdAt', 'description']);
-    const userId = req.user?.userId || ''
-    return await this.commandBus.execute(
-      new GetAllPostsCommand(pagination, userId)
-    )
+
+    return await this.postMicroserviceService.getPosts(pagination);
+
   }
 
   @UseGuards(AuthGuard)
+  @Put(':postId')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update an existing post' })
   @ApiParam({ name: 'postId', type: 'string', format: 'uuid', description: 'Post UUID' })
@@ -174,19 +152,21 @@ export class PostsController {
   @ApiResponse({ status: 200, description: 'Post updated' })
   @ApiResponse({ status: 403, description: 'Forbidden to update' })
   @ApiResponse({ status: 404, description: 'Post not found' })
-  @Put(':postId')
   async updatePost(@Param('postId', new ParseUUIDPipe()) postId: string,
-                @Body() updateModel: PostUpdateModel,
-                @Req() req: Request,){
+                   @Body() updateModel: PostUpdateModel,
+                   @Req() req: Request) {
 
     const userId = req.user.userId;
-    const result = await this.commandBus.execute(
-      new UpdatePostCommand(postId, userId, updateModel.description)
-    )
-    if (result.hasError()) {
-      new ErrorProcessor(result).handleError();
+
+    const param = {
+      postId,
+      userId,
+      updateDto: updateModel
     }
-    return result.data;
+    const {data} = await this.postMicroserviceService.updatePost(param);
+
+    return data;
+
   }
 
   @UseGuards(AuthGuard)
@@ -198,22 +178,17 @@ export class PostsController {
   @ApiResponse({ status: 403, description: 'Forbidden to delete' })
   @ApiResponse({ status: 404, description: 'Post not found' })
   async deletePost(@Param('postId', new ParseUUIDPipe()) postId: string,
-                   @Req() req: Request,){
+                   @Req() req: Request) {
 
     const userId = req.user.userId;
-    await this.commandBus.execute(
-      new DeletePostCommand(postId, userId)
-    )
+
+    const param = {
+      postId,
+      userId
+    }
+
+    await this.postMicroserviceService.deletePost(param);
 
   }
-  @EventPattern('files_uploaded')
-  async handleFileUploaded(@Payload() data: any,
-                           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    @Ctx() context: any) {
-    console.log('Received file uploaded message:', data);
-    const { postId, files } = data;
-    await this.commandBus.execute(
-      new UpdatePostStatusOnFileUploadCommand(postId, files)
-    )
-  }
+
 }
