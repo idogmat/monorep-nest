@@ -245,8 +245,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.6.0
-   * Query Engine version: f676762280b54cd07c770017ed3711ddde35f37a
+   * Prisma Client JS version: 6.5.0
+   * Query Engine version: 173f8d54f8d52e692c7e27e72a88314ec7aeff60
    */
   export type PrismaVersion = {
     client: string
@@ -1678,7 +1678,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Post model
-   */
+   */ 
   interface PostFieldRefs {
     readonly id: FieldRef<"Post", 'String'>
     readonly createdAt: FieldRef<"Post", 'DateTime'>
@@ -2779,7 +2779,7 @@ export namespace Prisma {
 
   /**
    * Fields of the File model
-   */
+   */ 
   interface FileFieldRefs {
     readonly id: FieldRef<"File", 'String'>
     readonly createdAt: FieldRef<"File", 'DateTime'>
@@ -3268,7 +3268,7 @@ export namespace Prisma {
 
 
   /**
-   * Field references
+   * Field references 
    */
 
 

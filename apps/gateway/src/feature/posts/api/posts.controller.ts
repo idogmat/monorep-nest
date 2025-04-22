@@ -89,9 +89,11 @@ export class PostsController {
     }) as any,
   )
   @UseGuards(AuthGuard)
-  async createPost(@Req() req,
-                   @Body() postCreateModel: PostCreateModel,
-                   @UploadedFiles() files: Express.Multer.File[]) {
+  async createPost(
+    @Req() req,
+    @Body() postCreateModel: PostCreateModel,
+    @UploadedFiles() files: Express.Multer.File[]
+  ) {
 
     const userId = req.user.userId;
 
@@ -135,7 +137,8 @@ export class PostsController {
   async getPosts(
     @Req() req: Request,
     @Query()
-      queryDTO: PaginationPostQueryDto) {
+    queryDTO: PaginationPostQueryDto
+  ) {
 
     const pagination = new PaginationSearchPostTerm(queryDTO, ['createdAt', 'description']);
 
@@ -153,8 +156,8 @@ export class PostsController {
   @ApiResponse({ status: 403, description: 'Forbidden to update' })
   @ApiResponse({ status: 404, description: 'Post not found' })
   async updatePost(@Param('postId', new ParseUUIDPipe()) postId: string,
-                   @Body() updateModel: PostUpdateModel,
-                   @Req() req: Request) {
+    @Body() updateModel: PostUpdateModel,
+    @Req() req: Request) {
 
     const userId = req.user.userId;
 
@@ -163,7 +166,7 @@ export class PostsController {
       userId,
       updateDto: updateModel
     }
-    const {data} = await this.postMicroserviceService.updatePost(param);
+    const { data } = await this.postMicroserviceService.updatePost(param);
 
     return data;
 
@@ -178,7 +181,7 @@ export class PostsController {
   @ApiResponse({ status: 403, description: 'Forbidden to delete' })
   @ApiResponse({ status: 404, description: 'Post not found' })
   async deletePost(@Param('postId', new ParseUUIDPipe()) postId: string,
-                   @Req() req: Request) {
+    @Req() req: Request) {
 
     const userId = req.user.userId;
 

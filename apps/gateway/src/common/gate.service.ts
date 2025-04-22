@@ -67,7 +67,7 @@ export class GateService {
 
     const response = await lastValueFrom(this.httpService.get(
       url,
-      {headers}
+      { headers }
     ));
 
     return response;
@@ -113,7 +113,7 @@ export class GateService {
 
     const { data } = await lastValueFrom(this.httpService.get<T>(
       url,
-      {headers, params}
+      { headers, params }
     ));
 
     return data;
