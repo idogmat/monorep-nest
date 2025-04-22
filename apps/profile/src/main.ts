@@ -41,7 +41,7 @@ async function bootstrap() {
   // Запускаем все микросервисы
   await app.startAllMicroservices();
 
-  await app.listen(port);
+  // await app.listen(port);
 
   console.log(`Service is listening on port ${port} , on ${env} mode`);
 }
