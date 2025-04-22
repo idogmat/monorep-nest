@@ -26,15 +26,12 @@ export const applyAppSettings = (app: INestApplication): {
 const getEnv = (app: INestApplication) => {
   const configService = app.get(ConfigService);
   const env = configService.get<EnvironmentsTypes>('NODE_ENV')
-  const port = configService.get<number>(checkEnv(env)) || 3000;
+  const port = configService.get<number>('PORT') || configService.get<number>('POST_LOCAL_PORT');
   const host = env !== 'DEVELOPMENT' ? '0.0.0.0' : 'localhost';
   const rabbit = configService.get<string>('RABBIT_URLS')?.toString() || '';
   return { port, env, host, rabbit }
 }
 
-const checkEnv = (envMode: string) => {
-  return envMode !== 'DEVELOPMENT' ? 'PORT' : 'POST_LOCAL_PORT'
-}
 const setAppPrefix = (app: INestApplication, prefix: string) => {
   app.setGlobalPrefix(prefix);
 };
