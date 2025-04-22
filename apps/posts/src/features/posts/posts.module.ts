@@ -29,7 +29,7 @@ const useCasesForPost = [
   UpdatePostUseCase,
   DeletePostUseCase]
 @Module({
-  imports:[
+  imports: [
     HttpModule,
     CqrsModule,
     MulterModule.register({
@@ -45,7 +45,7 @@ const useCasesForPost = [
             options: {
               urls: configService.get<string[]>('RABBIT_URLS'),
               queue: 'file_queue',
-              queueOptions: { durable: false },
+              queueOptions: { durable: true },
             },
           }
         },
@@ -63,4 +63,4 @@ const useCasesForPost = [
   controllers: [PostsController],
   exports: [HttpModule]
 })
-export class PostModule {}
+export class PostModule { }

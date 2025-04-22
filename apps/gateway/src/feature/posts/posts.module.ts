@@ -42,7 +42,7 @@ const useCasesForPost = [
             options: {
               urls: configService.get<string[]>('RABBIT_URLS'),
               queue: 'file_queue',
-              queueOptions: { durable: false },
+              queueOptions: { durable: true },
             },
           }
         },
