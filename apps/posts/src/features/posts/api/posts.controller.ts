@@ -63,9 +63,6 @@ export class PostsController {
     } catch (e) {
       throw new Error('Invalid postData JSON');
     }
-    console.log('Post data:', postData);
-    console.log('User:', userId);
-    console.log('Files:', files.length);
 
     const postId = await this.commandBus.execute(
       new CreatePostCommand(postData.description, userId, 'IN_PROGRESS'),

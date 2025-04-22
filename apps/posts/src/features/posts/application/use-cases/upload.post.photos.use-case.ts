@@ -57,8 +57,7 @@ export class UploadPostPhotosUseCase implements ICommandHandler<UploadPostPhotos
     try {
       const response = await this.gateService.filesServicePost('upload_files',
         formData, headers)
-      console.log("response file ---------", response.data);
-      return new InterlayerNotice<null>;
+
     } catch (error) {
       console.error('Error during file upload:', error);
       return InterlayerNotice.createErrorNotice(
