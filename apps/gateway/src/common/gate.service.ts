@@ -110,7 +110,7 @@ export class GateService {
   async postServiceGet<T = any>(path: string, headers, params): Promise<T> {
 
     const url = [this.postService, path].join('/');
-
+    console.log(url, 'url')
     const { data } = await lastValueFrom(this.httpService.get<T>(
       url,
       { headers, params }
