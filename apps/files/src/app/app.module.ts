@@ -4,7 +4,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { getConfiguration } from '../../../gateway/src/settings/getConfiguration';
 import { AppController } from './app.controller';
 import { FileModule } from '../features/file.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -12,13 +12,19 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
       load: [getConfiguration]
     }),
-    ClientsModule.register([  // Здесь правильно используется ClientsModule для регистрации микросервисов
+    ClientsModule.registerAsync([  // Здесь правильно используется ClientsModule для регистрации микросервисов
       {
         name: 'TCP_SERVICE',  // Имя микросервиса
-        transport: Transport.TCP,  // Тип транспорта
-        options: {
-          host: 'localhost',
-          port: 3795,  // Порт, на котором работает микросервис `files`
+        imports: [ConfigModule],
+        inject: [ConfigService],
+        useFactory: (configService: ConfigService) => {
+          return {
+            transport: Transport.TCP,
+            options: {
+              host: configService.get<string>('FILES_TCP'),
+              port: configService.get<number>('FILE_LOCAL_PORT'),
+            },
+          };
         },
       },
     ]),

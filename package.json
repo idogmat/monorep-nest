@@ -36,7 +36,10 @@
     "start:dev:profile": "nest start profile --watch",
     "build:payments": "nest build payments",
     "start:payments": "node dist/apps/payments/main",
-    "start:dev:payments": "nest start payments --watch"
+    "start:dev:payments": "nest start payments --watch",
+    "build:posts": "nest build posts",
+    "start:posts": "node dist/apps/posts/main",
+    "start:dev:posts": "nest start posts --watch"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.758.0",
@@ -60,7 +63,7 @@
     "@nestjs/swagger": "^11.0.6",
     "@nestjs/throttler": "^6.4.0",
     "@nestjs/websockets": "^11.0.16",
-    "@prisma/client": "^6.4.1",
+    "@prisma/client": "^6.6.0",
     "@types/form-data": "^2.5.2",
     "@types/multer": "^1.4.12",
     "amqp-connection-manager": "^4.1.14",
@@ -114,7 +117,7 @@
     "globals": "^16.0.0",
     "jest": "^29.5.0",
     "prettier": "^3.0.0",
-    "prisma": "^6.4.1",
+    "prisma": "^6.6.0",
     "source-map-support": "^0.5.21",
     "supertest": "^7.0.0",
     "ts-jest": "^29.1.0",

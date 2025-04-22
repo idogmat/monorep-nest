@@ -1,23 +1,27 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { PostsPrismaRepository } from '../../infrastructure/prisma/posts.prisma.repository';
-import { PhotoUploadStatus } from '../../../../../prisma/generated/client';
+import { PostMicroserviceService } from '../services/post.microservice.service';
+import { PostCreateModel } from '../../api/model/input/post.create.model';
+import { InterlayerNotice } from '../../../../../../libs/common/error-handling/interlayer.notice';
 
 export class CreatePostCommand {
-  constructor(public title: string,
-    public userId: string,
-    public photoUploadStatus: PhotoUploadStatus) {
+  constructor(
+    public readonly userId: string,
+    public readonly files: Express.Multer.File[],
+    public readonly dto: PostCreateModel) {
   }
 }
 @CommandHandler(CreatePostCommand)
 export class CreatePostUseCases implements ICommandHandler<CreatePostCommand> {
-  constructor(private postsPrismaRepository: PostsPrismaRepository) {
+  constructor(
+    private postMicroserviceService: PostMicroserviceService,
+  ) {
   }
 
-  async execute(command: CreatePostCommand): Promise<string> {
+  async execute(command: CreatePostCommand): Promise<InterlayerNotice> {
 
-    const newPost = await this.postsPrismaRepository.createPost(command.userId,
-      command.title, command.photoUploadStatus);
+    const { files, userId, dto } = command;
 
-    return newPost.id;
+    return this.postMicroserviceService.createPost(dto, files, userId);
+
   }
 }
