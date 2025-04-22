@@ -21,3 +21,14 @@ spec:
            ports:
              - containerPort: PORT_CONTAINER
 
+           env:
+             - name: RABBIT_URLS
+               valueFrom:
+                 secretKeyRef:
+                   name: posts-production-config-secret
+                   key: RABBIT_URLS
+             - name: POSTS_DB_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: posts-production-config-secret
+                   key: POSTS_DB_URL

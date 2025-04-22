@@ -174,11 +174,12 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "POSTS_DB_URL",
-        "value": "postgresql://neondb_owner:npg_hL3ma7nKUlZT@ep-dry-snow-a29u6l5h-pooler.eu-central-1.aws.neon.tech/prisma_migrate_shadow_db_c8b8a722-efac-4df7-829f-c82fcf562086?sslmode=require"
+        "value": null
       }
     }
   },

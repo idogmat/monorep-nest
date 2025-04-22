@@ -15,7 +15,7 @@ async function bootstrap() {
     options: {
       urls: [rabbit],
       queue: 'post_queue',
-      queueOptions: { durable: false },
+      queueOptions: { durable: true },
     },
   });
 
