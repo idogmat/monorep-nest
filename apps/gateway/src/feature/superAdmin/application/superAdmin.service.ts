@@ -2,7 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { ProfileClientService } from "apps/gateway/src/support.modules/grpc/grpc.profile.service";
 import { UsersService } from "../../user-accounts/users/application/users.service";
 import { ProfileMappingService } from "../../profile/application/profile.mapper";
-import { PaginationSearchUserGqlTerm } from "../api/utils/pagination";
+import { PaginationSearchPostGqlTerm, PaginationSearchUserGqlTerm } from '../api/utils/pagination';
+import { PostMicroserviceService } from '../../posts/application/services/post.microservice.service';
 
 @Injectable()
 export class SuperAdminService {
@@ -10,6 +11,7 @@ export class SuperAdminService {
     private readonly profileClientService: ProfileClientService,
     private readonly profileMappingService: ProfileMappingService,
     private readonly usersService: UsersService,
+    private postMicroserviceService: PostMicroserviceService
   ) { }
   async findUsers(query: PaginationSearchUserGqlTerm
   ): Promise<{ users: any[], totalCount: number }> {
@@ -44,6 +46,22 @@ export class SuperAdminService {
     } catch (e) {
       console.log(e, 'fail')
       return false;
+    }
+
+  }
+
+  async findPosts(query: PaginationSearchPostGqlTerm
+  )
+    // : Promise<{ users: any[], totalCount: number }>
+  {
+
+    try {
+   return await this.postMicroserviceService.getPosts(query);
+
+    } catch (e) {
+
+      console.log(e, 'fail')
+      return { posts: [], totalCount: 0 };
     }
 
   }

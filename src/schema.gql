@@ -11,9 +11,27 @@ type Mutation {
   deleteUser(id: String!): Boolean!
 }
 
+type PaginatedPost {
+  items: [Post!]!
+  page: Int!
+  pageSize: Int!
+  pagesCount: Int!
+  totalCount: Int!
+}
+
 type PaginatedUsers {
   totalCount: Float!
   users: [User!]!
+}
+
+type Post {
+  createdAt: DateTime!
+  description: String!
+  id: String!
+  photoUploadStatus: String!
+  photoUrls: [String!]!
+  updatedAt: DateTime!
+  userId: String!
 }
 
 type Profile {
@@ -33,6 +51,7 @@ type Profile {
 }
 
 type Query {
+  posts(description: String, limit: Int, offset: Int, sortBy: String, sortDirection: String, userId: String): PaginatedPost!
   users(limit: Int, name: String, offset: Int, sortBy: String, sortDirection: String): PaginatedUsers!
 }
 

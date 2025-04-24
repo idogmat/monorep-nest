@@ -56,6 +56,6 @@ const useCasesForPost = [
     ...useCasesForPost
   ],
   controllers: [PostsController],
-  exports: [HttpModule]
+  exports: [HttpModule, GateService, PostMicroserviceService]
 })
 export class PostsModule { }

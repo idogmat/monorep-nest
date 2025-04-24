@@ -8,6 +8,7 @@ import { GrpcServiceModule } from "../../support.modules/grpc/grpc.module";
 import { UsersAccountsModule } from "../user-accounts/users.accounts.module";
 import { ProfileModule } from "../profile/profile.module";
 import { PostsModule } from '../posts/posts.module';
+import { PostMicroserviceService } from '../posts/application/services/post.microservice.service';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { PostsModule } from '../posts/posts.module';
     GrpcServiceModule,
     UsersAccountsModule,
     ProfileModule,
-    PostsModule
+    PostsModule,
+
   ],
   providers: [SuperAdminService, SuperAdminResolver],
   controllers: []

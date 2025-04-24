@@ -80,6 +80,12 @@ export class PaginationUserQueryDto extends PaginationGqlDto {
   name?: string;
 }
 
+export class PaginationPostQueryDto extends PaginationGqlDto {
+
+  userId?: string;
+  description?: string;
+}
+
 export class PaginationSearchUserGqlTerm extends Pagination {
   public readonly name: string | null;
 
@@ -88,5 +94,29 @@ export class PaginationSearchUserGqlTerm extends Pagination {
 
     this.name = query?.name ? query.name.toString() : null;
 
+  }
+}
+
+export class PaginationSearchPostGqlTerm extends Pagination {
+  public readonly userId: string | null;
+  public readonly description: string | null;
+
+  constructor(query: PaginationPostQueryDto, sortProperties: string[]) {
+    super(query, sortProperties);
+
+    this.userId = query?.userId ? query.userId.toString() : null;
+    this.description = query?.description ? query.description.toString() : null;
+
+  }
+
+  public toQueryParams(): Record<string, string> {
+    const entries = Object.entries(this)
+      .filter(([_, value]) => value !== null && value !== undefined)
+      .reduce((acc, [key, value]) => {
+        acc[key] = String(value);
+        return acc;
+      }, {} as Record<string, string>);
+
+    return entries;
   }
 }
