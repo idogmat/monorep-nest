@@ -7,6 +7,7 @@ import { SuperAdminResolver } from "./api/superAdmin.resolver";
 import { GrpcServiceModule } from "../../support.modules/grpc/grpc.module";
 import { UsersAccountsModule } from "../user-accounts/users.accounts.module";
 import { ProfileModule } from "../profile/profile.module";
+import { PostsModule } from '../posts/posts.module';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { ProfileModule } from "../profile/profile.module";
     }),
     GrpcServiceModule,
     UsersAccountsModule,
-    ProfileModule
+    ProfileModule,
+    PostsModule
   ],
   providers: [SuperAdminService, SuperAdminResolver],
   controllers: []

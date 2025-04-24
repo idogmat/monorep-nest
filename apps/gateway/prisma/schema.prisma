@@ -24,7 +24,6 @@ model User {
   expirationDate      DateTime?
   banned              Boolean @default(false)
   bannedReason        String?
-  posts               Post[] @relation("UserPost")
   providers           Provider? @relation("UserProvider")
   devices             Device[] @relation("UserDevice")
   notifications       Notification[] @relation("UserNotification")
@@ -50,18 +49,6 @@ model Device {
   @@map("devices")
 }
 
-model Post {
-  id                String   @id @default(uuid())
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  deletedAt         DateTime?
-  published         Boolean  @default(false)
-  title             String   @db.VarChar(255)
-  authorId          String?
-  author            User?    @relation("UserPost", fields: [authorId], references: [id])
-  photoUploadStatus PhotoUploadStatus   @default(PENDING)  // Статус загрузки фотографий
-  @@map("posts")
-}
 
 model Notification {
   id              String        @id @default(uuid())

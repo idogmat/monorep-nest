@@ -5,13 +5,11 @@ import { PostsController } from './api/posts.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { PostsPrismaRepository } from './infrastructure/prisma/posts.prisma.repository';
 import { CreatePostUseCases } from './application/use-cases/create.post.use.cases';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { DeviceService } from '../user-accounts/devices/application/device.service';
 import { GateService } from '../../common/gate.service';
-import { PostsQueryRepository } from './infrastructure/prisma/posts-query-repository.service';
 import { PostMicroserviceService } from './application/services/post.microservice.service';
 
 const useCasesForPost = [
@@ -51,8 +49,6 @@ const useCasesForPost = [
     ])
   ],
   providers: [
-    PostsPrismaRepository,
-    PostsQueryRepository,
     PrismaService,
     DeviceService,
     GateService,

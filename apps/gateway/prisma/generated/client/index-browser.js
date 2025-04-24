@@ -149,17 +149,6 @@ exports.Prisma.DeviceScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.PostScalarFieldEnum = {
-  id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  deletedAt: 'deletedAt',
-  published: 'published',
-  title: 'title',
-  authorId: 'authorId',
-  photoUploadStatus: 'photoUploadStatus'
-};
-
 exports.Prisma.NotificationScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -182,13 +171,6 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.PhotoUploadStatus = exports.$Enums.PhotoUploadStatus = {
-  PENDING: 'PENDING',
-  IN_PROGRESS: 'IN_PROGRESS',
-  COMPLETED: 'COMPLETED',
-  FAILED: 'FAILED'
-};
-
 exports.NotifyStatus = exports.$Enums.NotifyStatus = {
   subscribe: 'subscribe',
   PENDING: 'PENDING',
@@ -199,7 +181,6 @@ exports.Prisma.ModelName = {
   User: 'User',
   Provider: 'Provider',
   Device: 'Device',
-  Post: 'Post',
   Notification: 'Notification'
 };
 
