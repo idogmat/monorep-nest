@@ -30,6 +30,12 @@ export class SuperAdminResolver {
     return this.superAdminService.findUsers(sanitizedQuery);
   }
 
+  @UseGuards(GqlBasicAuthGuard)
+  @Mutation(() => Boolean)
+  async deleteUser(@Args('id', { type: () => String }) id: string): Promise<boolean> {
+    if (!id) return false
+    return this.superAdminService.deleteUser(id);
+  }
   // @Mutation(() => User)
   // createUser(@Args('createUserInput') input: CreateUserInput) {
   //   return this.userService.create(input);

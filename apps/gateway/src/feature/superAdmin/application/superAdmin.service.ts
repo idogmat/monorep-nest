@@ -32,4 +32,19 @@ export class SuperAdminService {
     }
 
   }
+
+  async deleteUser(id: string): Promise<boolean> {
+    try {
+      // const profileUserDelete = await this.profileClientService.deleteProfileByUserId({ users: ids })
+
+      // const resultUserDelete = await this.usersService.deleteUser(id)
+
+      return true
+
+    } catch (e) {
+      console.log(e, 'fail')
+      return false;
+    }
+
+  }
 }

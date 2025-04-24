@@ -28,7 +28,7 @@ export class PaymentsClientService implements OnModuleInit {
 
   }
 
-  async getProfiles(data: GetSubscribesQuery) {
+  async getSubscribes(data: GetSubscribesQuery) {
     return lastValueFrom(await this.paymentsService.GetSubscribes(data));
   }
 
