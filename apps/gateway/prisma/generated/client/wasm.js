@@ -134,6 +134,15 @@ exports.Prisma.UserScalarFieldEnum = {
   bannedReason: 'bannedReason'
 };
 
+exports.Prisma.SuperAdminScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  email: 'email',
+  name: 'name',
+  passwordHash: 'passwordHash',
+  admin: 'admin'
+};
+
 exports.Prisma.ProviderScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -179,6 +188,7 @@ exports.NotifyStatus = exports.$Enums.NotifyStatus = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  SuperAdmin: 'SuperAdmin',
   Provider: 'Provider',
   Device: 'Device',
   Notification: 'Notification'

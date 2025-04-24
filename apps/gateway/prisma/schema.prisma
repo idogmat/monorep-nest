@@ -30,6 +30,16 @@ model User {
   @@map("users")
 }
 
+model SuperAdmin {
+  id                  String   @id @default(uuid())
+  createdAt           DateTime @default(now()) @map("created_at")
+  email               String   @unique
+  name                String
+  passwordHash        String
+  admin               Boolean  @default(true)
+  @@map("super-admins")
+}
+
 model Provider {
   id        String   @id @default(uuid())
   user      User     @relation("UserProvider", fields: [userId], references: [id])
