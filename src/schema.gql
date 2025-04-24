@@ -1,0 +1,49 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type PaginatedUsers {
+  totalCount: Float!
+  users: [User!]!
+}
+
+type Profile {
+  aboutMe: String
+  city: String
+  country: String
+  createdAt: DateTime!
+  dateOfBirth: DateTime
+  email: String!
+  firstName: String
+  id: String!
+  lastName: String
+  paymentAccount: Boolean!
+  photoUrl: String
+  userId: String!
+  userName: String!
+}
+
+type Query {
+  users(limit: Int, name: String, offset: Int, sortBy: String, sortDirection: String): PaginatedUsers!
+}
+
+type User {
+  codeExpiration: DateTime
+  confirmationCode: String
+  createdAt: DateTime!
+  deletedAt: DateTime
+  email: String!
+  expirationDate: DateTime
+  id: String!
+  isConfirmed: Boolean!
+  name: String
+  passwordHash: String
+  profile: Profile
+  recoveryCode: String
+  updatedAt: DateTime!
+}

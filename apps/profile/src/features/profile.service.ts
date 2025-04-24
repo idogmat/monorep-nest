@@ -23,6 +23,28 @@ export class ProfileService {
     })
   }
 
+  async findForGql(users: string[]): Promise<ProfileWithSubscribers[]> {
+    return await this.prisma.profile.findMany({
+      where: {
+        userId: {
+          in: users
+        }
+      },
+      include: {
+        subscribers: {
+          include: {
+            profile: true // Получаем связанные профили
+          }
+        },
+        subscriptions: {
+          include: {
+            subscriber: true // Получаем связанные профили
+          }
+        }
+      }
+    })
+  }
+
   async findById(id: string): Promise<any> {
     return this.prisma.profile.findFirst({
       where: { id }

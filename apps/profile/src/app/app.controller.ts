@@ -3,7 +3,7 @@ import { Ctx, EventPattern, GrpcMethod, Payload, RmqContext } from '@nestjs/micr
 import { ProfileService } from '../features/profile.service';
 import { ProfilePhotoInputModel } from '../features/model/profilePhoto.input.model';
 import { OutputProfileModelMapper } from '../features/model/profile.output.model';
-import { CreateUserProfileRequest, SubscribeProfileRequest, UpdateUserProfileRequest, UserProfileQueryRequest, UserProfileUpdateSubscribeRequest } from '../../../libs/proto/generated/profile';
+import { CreateUserProfileRequest, SubscribeProfileRequest, UpdateUserProfileRequest, UserProfileQueryRequest, UserProfilesGQLRequest, UserProfileUpdateSubscribeRequest } from '../../../libs/proto/generated/profile';
 
 @Controller()
 export class AppController {
@@ -93,6 +93,23 @@ export class AppController {
     try {
       await this.profileService.updateProfilePayment(data.userId, data.paymentAccount)
       return { status: 'ok' };
+    } catch (error) {
+      // save as error
+      console.warn(error)
+      return { status: 'fail' };
+    }
+  }
+
+  @GrpcMethod('ProfileService', 'GetUserProfilesGQL')
+  async GetUserProfilesGQL(
+    data: UserProfilesGQLRequest
+  ) {
+    try {
+      const { users } = data
+      const result = await this.profileService.findForGql(users)
+      const profiles = result.map(p => OutputProfileModelMapper(p))
+
+      return { profiles };
     } catch (error) {
       // save as error
       console.warn(error)

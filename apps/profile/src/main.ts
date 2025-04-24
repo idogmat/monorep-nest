@@ -20,15 +20,6 @@ async function bootstrap() {
     },
   });
 
-  // app.connectMicroservice<MicroserviceOptions>({
-  //   transport: Transport.RMQ,
-  //   options: {
-  //     urls: [rabbit],
-  //     queue: 'payments_queue',
-  //     queueOptions: { durable: true },
-  //   },
-  // });
-
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
@@ -38,10 +29,7 @@ async function bootstrap() {
     },
   });
 
-  // Запускаем все микросервисы
   await app.startAllMicroservices();
-
-  // await app.listen(port);
 
   console.log(`Service is listening on port ${port} , on ${env} mode`);
 }

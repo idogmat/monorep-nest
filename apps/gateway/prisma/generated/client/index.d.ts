@@ -316,8 +316,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.5.0
-   * Query Engine version: 173f8d54f8d52e692c7e27e72a88314ec7aeff60
+   * Prisma Client JS version: 6.6.0
+   * Query Engine version: f676762280b54cd07c770017ed3711ddde35f37a
    */
   export type PrismaVersion = {
     client: string
@@ -1349,6 +1349,8 @@ export namespace Prisma {
     recoveryCode: string | null
     passwordHash: string | null
     expirationDate: Date | null
+    banned: boolean | null
+    bannedReason: string | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -1364,6 +1366,8 @@ export namespace Prisma {
     recoveryCode: string | null
     passwordHash: string | null
     expirationDate: Date | null
+    banned: boolean | null
+    bannedReason: string | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -1379,6 +1383,8 @@ export namespace Prisma {
     recoveryCode: number
     passwordHash: number
     expirationDate: number
+    banned: number
+    bannedReason: number
     _all: number
   }
 
@@ -1396,6 +1402,8 @@ export namespace Prisma {
     recoveryCode?: true
     passwordHash?: true
     expirationDate?: true
+    banned?: true
+    bannedReason?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -1411,6 +1419,8 @@ export namespace Prisma {
     recoveryCode?: true
     passwordHash?: true
     expirationDate?: true
+    banned?: true
+    bannedReason?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -1426,6 +1436,8 @@ export namespace Prisma {
     recoveryCode?: true
     passwordHash?: true
     expirationDate?: true
+    banned?: true
+    bannedReason?: true
     _all?: true
   }
 
@@ -1514,6 +1526,8 @@ export namespace Prisma {
     recoveryCode: string | null
     passwordHash: string | null
     expirationDate: Date | null
+    banned: boolean
+    bannedReason: string | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -1546,6 +1560,8 @@ export namespace Prisma {
     recoveryCode?: boolean
     passwordHash?: boolean
     expirationDate?: boolean
+    banned?: boolean
+    bannedReason?: boolean
     posts?: boolean | User$postsArgs<ExtArgs>
     providers?: boolean | User$providersArgs<ExtArgs>
     devices?: boolean | User$devicesArgs<ExtArgs>
@@ -1566,6 +1582,8 @@ export namespace Prisma {
     recoveryCode?: boolean
     passwordHash?: boolean
     expirationDate?: boolean
+    banned?: boolean
+    bannedReason?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1581,6 +1599,8 @@ export namespace Prisma {
     recoveryCode?: boolean
     passwordHash?: boolean
     expirationDate?: boolean
+    banned?: boolean
+    bannedReason?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -1596,9 +1616,11 @@ export namespace Prisma {
     recoveryCode?: boolean
     passwordHash?: boolean
     expirationDate?: boolean
+    banned?: boolean
+    bannedReason?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "deletedAt" | "email" | "name" | "confirmationCode" | "codeExpiration" | "isConfirmed" | "recoveryCode" | "passwordHash" | "expirationDate", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "deletedAt" | "email" | "name" | "confirmationCode" | "codeExpiration" | "isConfirmed" | "recoveryCode" | "passwordHash" | "expirationDate" | "banned" | "bannedReason", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     posts?: boolean | User$postsArgs<ExtArgs>
     providers?: boolean | User$providersArgs<ExtArgs>
@@ -1630,6 +1652,8 @@ export namespace Prisma {
       recoveryCode: string | null
       passwordHash: string | null
       expirationDate: Date | null
+      banned: boolean
+      bannedReason: string | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -2055,7 +2079,7 @@ export namespace Prisma {
 
   /**
    * Fields of the User model
-   */ 
+   */
   interface UserFieldRefs {
     readonly id: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
@@ -2069,6 +2093,8 @@ export namespace Prisma {
     readonly recoveryCode: FieldRef<"User", 'String'>
     readonly passwordHash: FieldRef<"User", 'String'>
     readonly expirationDate: FieldRef<"User", 'DateTime'>
+    readonly banned: FieldRef<"User", 'Boolean'>
+    readonly bannedReason: FieldRef<"User", 'String'>
   }
     
 
@@ -3191,7 +3217,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Provider model
-   */ 
+   */
   interface ProviderFieldRefs {
     readonly id: FieldRef<"Provider", 'String'>
     readonly userId: FieldRef<"Provider", 'String'>
@@ -4248,7 +4274,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Device model
-   */ 
+   */
   interface DeviceFieldRefs {
     readonly id: FieldRef<"Device", 'String'>
     readonly userId: FieldRef<"Device", 'String'>
@@ -5342,7 +5368,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Post model
-   */ 
+   */
   interface PostFieldRefs {
     readonly id: FieldRef<"Post", 'String'>
     readonly createdAt: FieldRef<"Post", 'DateTime'>
@@ -6422,7 +6448,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Notification model
-   */ 
+   */
   interface NotificationFieldRefs {
     readonly id: FieldRef<"Notification", 'String'>
     readonly userId: FieldRef<"Notification", 'String'>
@@ -6869,7 +6895,9 @@ export namespace Prisma {
     isConfirmed: 'isConfirmed',
     recoveryCode: 'recoveryCode',
     passwordHash: 'passwordHash',
-    expirationDate: 'expirationDate'
+    expirationDate: 'expirationDate',
+    banned: 'banned',
+    bannedReason: 'bannedReason'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -6946,7 +6974,7 @@ export namespace Prisma {
 
 
   /**
-   * Field references 
+   * Field references
    */
 
 
@@ -7046,6 +7074,8 @@ export namespace Prisma {
     recoveryCode?: StringNullableFilter<"User"> | string | null
     passwordHash?: StringNullableFilter<"User"> | string | null
     expirationDate?: DateTimeNullableFilter<"User"> | Date | string | null
+    banned?: BoolFilter<"User"> | boolean
+    bannedReason?: StringNullableFilter<"User"> | string | null
     posts?: PostListRelationFilter
     providers?: XOR<ProviderNullableScalarRelationFilter, ProviderWhereInput> | null
     devices?: DeviceListRelationFilter
@@ -7065,6 +7095,8 @@ export namespace Prisma {
     recoveryCode?: SortOrderInput | SortOrder
     passwordHash?: SortOrderInput | SortOrder
     expirationDate?: SortOrderInput | SortOrder
+    banned?: SortOrder
+    bannedReason?: SortOrderInput | SortOrder
     posts?: PostOrderByRelationAggregateInput
     providers?: ProviderOrderByWithRelationInput
     devices?: DeviceOrderByRelationAggregateInput
@@ -7087,6 +7119,8 @@ export namespace Prisma {
     recoveryCode?: StringNullableFilter<"User"> | string | null
     passwordHash?: StringNullableFilter<"User"> | string | null
     expirationDate?: DateTimeNullableFilter<"User"> | Date | string | null
+    banned?: BoolFilter<"User"> | boolean
+    bannedReason?: StringNullableFilter<"User"> | string | null
     posts?: PostListRelationFilter
     providers?: XOR<ProviderNullableScalarRelationFilter, ProviderWhereInput> | null
     devices?: DeviceListRelationFilter
@@ -7106,6 +7140,8 @@ export namespace Prisma {
     recoveryCode?: SortOrderInput | SortOrder
     passwordHash?: SortOrderInput | SortOrder
     expirationDate?: SortOrderInput | SortOrder
+    banned?: SortOrder
+    bannedReason?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -7127,6 +7163,8 @@ export namespace Prisma {
     recoveryCode?: StringNullableWithAggregatesFilter<"User"> | string | null
     passwordHash?: StringNullableWithAggregatesFilter<"User"> | string | null
     expirationDate?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    banned?: BoolWithAggregatesFilter<"User"> | boolean
+    bannedReason?: StringNullableWithAggregatesFilter<"User"> | string | null
   }
 
   export type ProviderWhereInput = {
@@ -7372,6 +7410,8 @@ export namespace Prisma {
     recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
+    banned?: boolean
+    bannedReason?: string | null
     posts?: PostCreateNestedManyWithoutAuthorInput
     providers?: ProviderCreateNestedOneWithoutUserInput
     devices?: DeviceCreateNestedManyWithoutUserInput
@@ -7391,6 +7431,8 @@ export namespace Prisma {
     recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
+    banned?: boolean
+    bannedReason?: string | null
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
     providers?: ProviderUncheckedCreateNestedOneWithoutUserInput
     devices?: DeviceUncheckedCreateNestedManyWithoutUserInput
@@ -7410,6 +7452,8 @@ export namespace Prisma {
     recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    banned?: BoolFieldUpdateOperationsInput | boolean
+    bannedReason?: NullableStringFieldUpdateOperationsInput | string | null
     posts?: PostUpdateManyWithoutAuthorNestedInput
     providers?: ProviderUpdateOneWithoutUserNestedInput
     devices?: DeviceUpdateManyWithoutUserNestedInput
@@ -7429,6 +7473,8 @@ export namespace Prisma {
     recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    banned?: BoolFieldUpdateOperationsInput | boolean
+    bannedReason?: NullableStringFieldUpdateOperationsInput | string | null
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
     providers?: ProviderUncheckedUpdateOneWithoutUserNestedInput
     devices?: DeviceUncheckedUpdateManyWithoutUserNestedInput
@@ -7448,6 +7494,8 @@ export namespace Prisma {
     recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
+    banned?: boolean
+    bannedReason?: string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -7463,6 +7511,8 @@ export namespace Prisma {
     recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    banned?: BoolFieldUpdateOperationsInput | boolean
+    bannedReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -7478,6 +7528,8 @@ export namespace Prisma {
     recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    banned?: BoolFieldUpdateOperationsInput | boolean
+    bannedReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ProviderCreateInput = {
@@ -7824,6 +7876,8 @@ export namespace Prisma {
     recoveryCode?: SortOrder
     passwordHash?: SortOrder
     expirationDate?: SortOrder
+    banned?: SortOrder
+    bannedReason?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -7839,6 +7893,8 @@ export namespace Prisma {
     recoveryCode?: SortOrder
     passwordHash?: SortOrder
     expirationDate?: SortOrder
+    banned?: SortOrder
+    bannedReason?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -7854,6 +7910,8 @@ export namespace Prisma {
     recoveryCode?: SortOrder
     passwordHash?: SortOrder
     expirationDate?: SortOrder
+    banned?: SortOrder
+    bannedReason?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -8714,6 +8772,8 @@ export namespace Prisma {
     recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
+    banned?: boolean
+    bannedReason?: string | null
     posts?: PostCreateNestedManyWithoutAuthorInput
     devices?: DeviceCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -8732,6 +8792,8 @@ export namespace Prisma {
     recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
+    banned?: boolean
+    bannedReason?: string | null
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
     devices?: DeviceUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -8766,6 +8828,8 @@ export namespace Prisma {
     recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    banned?: BoolFieldUpdateOperationsInput | boolean
+    bannedReason?: NullableStringFieldUpdateOperationsInput | string | null
     posts?: PostUpdateManyWithoutAuthorNestedInput
     devices?: DeviceUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -8784,6 +8848,8 @@ export namespace Prisma {
     recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    banned?: BoolFieldUpdateOperationsInput | boolean
+    bannedReason?: NullableStringFieldUpdateOperationsInput | string | null
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
     devices?: DeviceUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -8802,6 +8868,8 @@ export namespace Prisma {
     recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
+    banned?: boolean
+    bannedReason?: string | null
     posts?: PostCreateNestedManyWithoutAuthorInput
     providers?: ProviderCreateNestedOneWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -8820,6 +8888,8 @@ export namespace Prisma {
     recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
+    banned?: boolean
+    bannedReason?: string | null
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
     providers?: ProviderUncheckedCreateNestedOneWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -8854,6 +8924,8 @@ export namespace Prisma {
     recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    banned?: BoolFieldUpdateOperationsInput | boolean
+    bannedReason?: NullableStringFieldUpdateOperationsInput | string | null
     posts?: PostUpdateManyWithoutAuthorNestedInput
     providers?: ProviderUpdateOneWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -8872,6 +8944,8 @@ export namespace Prisma {
     recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    banned?: BoolFieldUpdateOperationsInput | boolean
+    bannedReason?: NullableStringFieldUpdateOperationsInput | string | null
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
     providers?: ProviderUncheckedUpdateOneWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -8890,6 +8964,8 @@ export namespace Prisma {
     recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
+    banned?: boolean
+    bannedReason?: string | null
     providers?: ProviderCreateNestedOneWithoutUserInput
     devices?: DeviceCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -8908,6 +8984,8 @@ export namespace Prisma {
     recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
+    banned?: boolean
+    bannedReason?: string | null
     providers?: ProviderUncheckedCreateNestedOneWithoutUserInput
     devices?: DeviceUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -8942,6 +9020,8 @@ export namespace Prisma {
     recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    banned?: BoolFieldUpdateOperationsInput | boolean
+    bannedReason?: NullableStringFieldUpdateOperationsInput | string | null
     providers?: ProviderUpdateOneWithoutUserNestedInput
     devices?: DeviceUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -8960,6 +9040,8 @@ export namespace Prisma {
     recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    banned?: BoolFieldUpdateOperationsInput | boolean
+    bannedReason?: NullableStringFieldUpdateOperationsInput | string | null
     providers?: ProviderUncheckedUpdateOneWithoutUserNestedInput
     devices?: DeviceUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -8978,6 +9060,8 @@ export namespace Prisma {
     recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
+    banned?: boolean
+    bannedReason?: string | null
     posts?: PostCreateNestedManyWithoutAuthorInput
     providers?: ProviderCreateNestedOneWithoutUserInput
     devices?: DeviceCreateNestedManyWithoutUserInput
@@ -8996,6 +9080,8 @@ export namespace Prisma {
     recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
+    banned?: boolean
+    bannedReason?: string | null
     posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
     providers?: ProviderUncheckedCreateNestedOneWithoutUserInput
     devices?: DeviceUncheckedCreateNestedManyWithoutUserInput
@@ -9030,6 +9116,8 @@ export namespace Prisma {
     recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    banned?: BoolFieldUpdateOperationsInput | boolean
+    bannedReason?: NullableStringFieldUpdateOperationsInput | string | null
     posts?: PostUpdateManyWithoutAuthorNestedInput
     providers?: ProviderUpdateOneWithoutUserNestedInput
     devices?: DeviceUpdateManyWithoutUserNestedInput
@@ -9048,6 +9136,8 @@ export namespace Prisma {
     recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    banned?: BoolFieldUpdateOperationsInput | boolean
+    bannedReason?: NullableStringFieldUpdateOperationsInput | string | null
     posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
     providers?: ProviderUncheckedUpdateOneWithoutUserNestedInput
     devices?: DeviceUncheckedUpdateManyWithoutUserNestedInput

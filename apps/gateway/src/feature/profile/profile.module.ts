@@ -24,23 +24,6 @@ import { FileService } from '../../../../libs/file.service';
       inject: [ConfigService]
     }),
     GrpcServiceModule
-    // ClientsModule.registerAsync([
-    //   {
-    //     imports: [ConfigModule],
-    //     name: 'RABBITMQ_SERVICE',
-    //     useFactory: (configService: ConfigService) => {
-    //       return {
-    //         transport: Transport.RMQ,
-    //         options: {
-    //           urls: configService.get<string[]>('RABBIT_URLS'),
-    //           queue: 'file_queue',
-    //           queueOptions: { durable: false },
-    //         },
-    //       }
-    //     },
-    //     inject: [ConfigService],
-    //   },
-    // ])
   ],
   providers: [
     ProfileService,
@@ -51,6 +34,6 @@ import { FileService } from '../../../../libs/file.service';
     FileService,
   ],
   controllers: [ProfileController],
-  exports: []
+  exports: [ProfileMappingService]
 })
 export class ProfileModule { }

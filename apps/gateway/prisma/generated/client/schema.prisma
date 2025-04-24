@@ -22,6 +22,8 @@ model User {
   recoveryCode     String?
   passwordHash     String?
   expirationDate   DateTime?
+  banned           Boolean        @default(false)
+  bannedReason     String?
   posts            Post[]         @relation("UserPost")
   providers        Provider?      @relation("UserProvider")
   devices          Device[]       @relation("UserDevice")
@@ -58,8 +60,8 @@ model Post {
   deletedAt         DateTime?
   published         Boolean           @default(false)
   title             String            @db.VarChar(255)
-  author            User?             @relation("UserPost", fields: [authorId], references: [id])
   authorId          String?
+  author            User?             @relation("UserPost", fields: [authorId], references: [id])
   photoUploadStatus PhotoUploadStatus @default(PENDING) // Статус загрузки фотографий
 
   @@map("posts")

@@ -14,6 +14,7 @@ import { RedisModule } from '../support.modules/redis/redis.module';
 import { GrpcServiceModule } from '../support.modules/grpc/grpc.module';
 import { PaymentsModule } from '../feature/payments/payments.module';
 import { NotificationsModule } from '../feature/notifications/notifications.module';
+import { SuperAdminModule } from '../feature/superAdmin/superAdmin.module';
 
 @Module({
   imports: [
@@ -48,7 +49,8 @@ import { NotificationsModule } from '../feature/notifications/notifications.modu
     PostsModule,
     ProfileModule,
     PaymentsModule,
-    NotificationsModule
+    NotificationsModule,
+    SuperAdminModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

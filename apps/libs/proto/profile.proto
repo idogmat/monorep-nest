@@ -14,6 +14,10 @@ message UserProfileUpdateSubscribeRequest {
   bool paymentAccount = 2;
 }
 
+message UserProfilesGQLRequest {
+  repeated string users = 1;
+}
+
 message UserProfilesQuery {
   string sortBy = 1;
   string sortDirection = 2;
@@ -74,6 +78,10 @@ message UserProfileResponse {
   bool paymentAccount = 15;
 }
 
+message UserProfilesGQLResponse {
+  repeated UserProfileResponse profiles = 1;
+}
+
 message UpdateUserProfileResponse {
   string status = 1;        
 }
@@ -97,5 +105,6 @@ service ProfileService {
   rpc SubscribeUserProfile(SubscribeProfileRequest) returns (SubscribeUserProfileResponse);
   rpc CreateUserProfile(CreateUserProfileRequest) returns (CreateUserProfileResponse);
   rpc UpdateUserProfileSubscribe(UserProfileUpdateSubscribeRequest) returns (UserProfileUpdateSubscribeResponse);
+  rpc GetUserProfilesGQL(UserProfilesGQLRequest) returns (UserProfilesGQLResponse);
 
 }

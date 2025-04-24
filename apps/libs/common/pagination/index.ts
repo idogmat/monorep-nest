@@ -33,6 +33,10 @@ export class Pagination {
         sortDirection = "ASC";
         break;
       }
+      default: {
+        sortDirection = "DESC";
+        break;
+      }
     }
     return sortDirection;
   }

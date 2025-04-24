@@ -22,6 +22,10 @@ export interface UserProfileUpdateSubscribeRequest {
   paymentAccount: boolean;
 }
 
+export interface UserProfilesGQLRequest {
+  users: string[];
+}
+
 export interface UserProfilesQuery {
   sortBy: string;
   sortDirection: string;
@@ -101,6 +105,10 @@ export interface UserProfileResponse {
   paymentAccount: boolean;
 }
 
+export interface UserProfilesGQLResponse {
+  profiles: UserProfileResponse[];
+}
+
 export interface UpdateUserProfileResponse {
   status: string;
 }
@@ -134,6 +142,8 @@ export interface ProfileServiceClient {
     request: UserProfileUpdateSubscribeRequest,
     metadata?: Metadata,
   ): Observable<UserProfileUpdateSubscribeResponse>;
+
+  getUserProfilesGql(request: UserProfilesGQLRequest, metadata?: Metadata): Observable<UserProfilesGQLResponse>;
 }
 
 export interface ProfileServiceController {
@@ -169,6 +179,11 @@ export interface ProfileServiceController {
     | Promise<UserProfileUpdateSubscribeResponse>
     | Observable<UserProfileUpdateSubscribeResponse>
     | UserProfileUpdateSubscribeResponse;
+
+  getUserProfilesGql(
+    request: UserProfilesGQLRequest,
+    metadata?: Metadata,
+  ): Promise<UserProfilesGQLResponse> | Observable<UserProfilesGQLResponse> | UserProfilesGQLResponse;
 }
 
 export function ProfileServiceControllerMethods() {
@@ -180,6 +195,7 @@ export function ProfileServiceControllerMethods() {
       "subscribeUserProfile",
       "createUserProfile",
       "updateUserProfileSubscribe",
+      "getUserProfilesGql",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
