@@ -1,4 +1,4 @@
-import { ConflictException, ForbiddenException, Injectable } from "@nestjs/common"
+import { BadRequestException, ConflictException, ForbiddenException, Injectable } from "@nestjs/common"
 import { PrismaService } from "./prisma/prisma.service"
 import { Profile, Prisma } from '../../prisma/generated/profile-client';
 import { ProfilePhotoInputModel } from "./model/profilePhoto.input.model";
@@ -24,6 +24,8 @@ export class ProfileService {
   }
 
   async deleteProfile(userId: string): Promise<any> {
+    const profile = await this.prisma.profile.findUnique({ where: { userId } })
+    if (!profile) throw new BadRequestException()
     return this.prisma.profile.delete({
       where: { userId }
     })
