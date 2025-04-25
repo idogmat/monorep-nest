@@ -37,6 +37,7 @@ export class SuperAdminResolver {
     if (!id) return false
     return this.superAdminService.deleteUser(id);
   }
+
   @UseGuards(GqlBasicAuthGuard)
   @Query(() => PaginatedPost)
   posts(

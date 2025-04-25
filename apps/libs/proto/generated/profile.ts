@@ -61,6 +61,10 @@ export interface SubscribeProfileRequest {
   profileUserId: string;
 }
 
+export interface DeleteProfileGQLRequest {
+  userId: string;
+}
+
 export interface UserProfilesResponse {
   items: UserProfileResponse[];
   pageNumber: number;
@@ -125,6 +129,10 @@ export interface UserProfileUpdateSubscribeResponse {
   status: string;
 }
 
+export interface DeleteProfileGQLResponse {
+  status: string;
+}
+
 export const PROFILE_PACKAGE_NAME = "profile";
 
 export interface ProfileServiceClient {
@@ -144,6 +152,8 @@ export interface ProfileServiceClient {
   ): Observable<UserProfileUpdateSubscribeResponse>;
 
   getUserProfilesGql(request: UserProfilesGQLRequest, metadata?: Metadata): Observable<UserProfilesGQLResponse>;
+
+  deleteProfilesGql(request: DeleteProfileGQLRequest, metadata?: Metadata): Observable<DeleteProfileGQLResponse>;
 }
 
 export interface ProfileServiceController {
@@ -184,6 +194,11 @@ export interface ProfileServiceController {
     request: UserProfilesGQLRequest,
     metadata?: Metadata,
   ): Promise<UserProfilesGQLResponse> | Observable<UserProfilesGQLResponse> | UserProfilesGQLResponse;
+
+  deleteProfilesGql(
+    request: DeleteProfileGQLRequest,
+    metadata?: Metadata,
+  ): Promise<DeleteProfileGQLResponse> | Observable<DeleteProfileGQLResponse> | DeleteProfileGQLResponse;
 }
 
 export function ProfileServiceControllerMethods() {
@@ -196,6 +211,7 @@ export function ProfileServiceControllerMethods() {
       "createUserProfile",
       "updateUserProfileSubscribe",
       "getUserProfilesGql",
+      "deleteProfilesGql",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

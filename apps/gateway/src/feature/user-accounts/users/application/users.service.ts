@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { User } from '../../../../../prisma/generated/client';
 import { PrismaService } from '../../../prisma/prisma.service';
@@ -23,6 +23,12 @@ export class UsersService {
 
   async getAllUsers(): Promise<User[]> {
     return this.prisma.user.findMany();
+  }
+
+  async deleteUser(id: string): Promise<User | null> {
+    const user = await this.prisma.user.findUnique({ where: { id } })
+    if (!user) throw new BadRequestException()
+    return this.prisma.user.delete({ where: { id } });
   }
 
   async getAllUsersGql(query: PaginationSearchUserGqlTerm): Promise<{ users: User[] } & { totalCount: number }> {

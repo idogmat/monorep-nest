@@ -23,6 +23,12 @@ export class ProfileService {
     })
   }
 
+  async deleteProfile(userId: string): Promise<any> {
+    return this.prisma.profile.delete({
+      where: { userId }
+    })
+  }
+
   async findForGql(users: string[]): Promise<ProfileWithSubscribers[]> {
     return await this.prisma.profile.findMany({
       where: {
