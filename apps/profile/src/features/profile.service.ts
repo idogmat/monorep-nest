@@ -31,6 +31,15 @@ export class ProfileService {
     })
   }
 
+  async banProfile(userId: string): Promise<any> {
+    const profile = await this.prisma.profile.findUnique({ where: { userId } })
+    if (!profile) throw new BadRequestException()
+    return this.prisma.profile.update({
+      where: { userId },
+      data: { banned: true }
+    })
+  }
+
   async findForGql(users: string[]): Promise<ProfileWithSubscribers[]> {
     return await this.prisma.profile.findMany({
       where: {

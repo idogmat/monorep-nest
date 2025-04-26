@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { DeleteProfileGQLRequest, UpdateUserProfileRequest, UserProfileQueryRequest, UserProfileResponse, UserProfilesGQLRequest } from '../../../../libs/proto/generated/profile';
+import { BanProfileGQLRequest, DeleteProfileGQLRequest, UpdateUserProfileRequest, UserProfileQueryRequest, UserProfileResponse, UserProfilesGQLRequest } from '../../../../libs/proto/generated/profile';
 import { firstValueFrom, lastValueFrom, Observable } from 'rxjs';
 
 interface ProfileService {
@@ -12,7 +12,7 @@ interface ProfileService {
   UpdateUserProfileSubscribe(data: { userId: string, paymentAccount: boolean }): Observable<any>;
   GetUserProfilesGQL(data: UserProfilesGQLRequest): Observable<any>;
   DeleteProfilesGQL(data: DeleteProfileGQLRequest): Observable<any>;
-
+  BanProfileGQL(data: BanProfileGQLRequest): Observable<any>;
 }
 
 @Injectable()
@@ -59,5 +59,9 @@ export class ProfileClientService implements OnModuleInit {
 
   async deleteProfilesGQL(data: DeleteProfileGQLRequest) {
     return lastValueFrom(await this.profileService.DeleteProfilesGQL(data));
+  }
+
+  async banProfileGQL(data: DeleteProfileGQLRequest) {
+    return lastValueFrom(await this.profileService.BanProfileGQL(data));
   }
 }

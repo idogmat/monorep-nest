@@ -65,6 +65,10 @@ export interface DeleteProfileGQLRequest {
   userId: string;
 }
 
+export interface BanProfileGQLRequest {
+  userId: string;
+}
+
 export interface UserProfilesResponse {
   items: UserProfileResponse[];
   pageNumber: number;
@@ -133,6 +137,10 @@ export interface DeleteProfileGQLResponse {
   status: string;
 }
 
+export interface BanProfileGQLResponse {
+  status: string;
+}
+
 export const PROFILE_PACKAGE_NAME = "profile";
 
 export interface ProfileServiceClient {
@@ -154,6 +162,8 @@ export interface ProfileServiceClient {
   getUserProfilesGql(request: UserProfilesGQLRequest, metadata?: Metadata): Observable<UserProfilesGQLResponse>;
 
   deleteProfilesGql(request: DeleteProfileGQLRequest, metadata?: Metadata): Observable<DeleteProfileGQLResponse>;
+
+  banProfileGql(request: BanProfileGQLRequest, metadata?: Metadata): Observable<BanProfileGQLResponse>;
 }
 
 export interface ProfileServiceController {
@@ -199,6 +209,11 @@ export interface ProfileServiceController {
     request: DeleteProfileGQLRequest,
     metadata?: Metadata,
   ): Promise<DeleteProfileGQLResponse> | Observable<DeleteProfileGQLResponse> | DeleteProfileGQLResponse;
+
+  banProfileGql(
+    request: BanProfileGQLRequest,
+    metadata?: Metadata,
+  ): Promise<BanProfileGQLResponse> | Observable<BanProfileGQLResponse> | BanProfileGQLResponse;
 }
 
 export function ProfileServiceControllerMethods() {
@@ -212,6 +227,7 @@ export function ProfileServiceControllerMethods() {
       "updateUserProfileSubscribe",
       "getUserProfilesGql",
       "deleteProfilesGql",
+      "banProfileGql",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

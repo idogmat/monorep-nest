@@ -31,6 +31,12 @@ export class UsersService {
     return this.prisma.user.delete({ where: { id } });
   }
 
+  async banUser(id: string, bannedReason: string): Promise<User | null> {
+    const user = await this.prisma.user.findUnique({ where: { id } })
+    if (!user) throw new BadRequestException()
+    return this.prisma.user.update({ where: { id }, data: { banned: true, bannedReason } });
+  }
+
   async getAllUsersGql(query: PaginationSearchUserGqlTerm): Promise<{ users: User[] } & { totalCount: number }> {
     const settings = {
       skip: query.offset ?? 0,

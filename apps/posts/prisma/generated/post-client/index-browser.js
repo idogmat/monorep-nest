@@ -125,6 +125,7 @@ exports.Prisma.PostScalarFieldEnum = {
   published: 'published',
   title: 'title',
   userId: 'userId',
+  banned: 'banned',
   photoUploadStatus: 'photoUploadStatus'
 };
 

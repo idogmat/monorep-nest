@@ -108,9 +108,7 @@ export class GateService {
     return response;
   }
   async postServiceGet<T = any>(path: string, headers, params): Promise<T> {
-
     const url = [this.postService, path].join('/');
-    console.log(url, 'url')
     const { data } = await lastValueFrom(this.httpService.get<T>(
       url,
       { headers, params }
@@ -120,17 +118,7 @@ export class GateService {
 
   }
   async profileServiceGet(path, headers) {
-    // console.log(query, 'query-gate')
-    // console.log(Object.entries(query))
-    // for (const el of query) {
-    //   console.log(el)
-    // }
     const url = [this.profileService, path].join('/')
-    // if (!query) {
-    //   url = `${url}&${query}`
-    // }
-    console.log(url)
-
     const response = await lastValueFrom(this.httpService.get(
       url,
       { headers }

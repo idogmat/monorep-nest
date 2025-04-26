@@ -33,10 +33,24 @@ export class SuperAdminResolver {
 
   @UseGuards(GqlBasicAuthGuard)
   @Mutation(() => Boolean)
-  async deleteUser(@Args('id', { type: () => String }) id: string): Promise<boolean> {
+  async deleteUser(
+    @Args('id', { type: () => String }) id: string
+  ): Promise<boolean> {
     if (!id) return false
     return this.superAdminService.deleteUser(id);
   }
+
+  @UseGuards(GqlBasicAuthGuard)
+  @Mutation(() => Boolean)
+  async bunUser(
+    @Args('id', { type: () => String }) id: string,
+    @Args('banReason', { type: () => String }) banReason: string
+  ): Promise<boolean> {
+    if (!id || !banReason) return false
+    console.log(id, banReason)
+    return this.superAdminService.banUser(id, banReason);
+  }
+
 
   @UseGuards(GqlBasicAuthGuard)
   @Query(() => PaginatedPost)

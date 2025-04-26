@@ -30,6 +30,7 @@ const useCasesForPost = [
       },
       inject: [ConfigService]
     }),
+    // TODO for what?
     ClientsModule.registerAsync([
       {
         imports: [ConfigModule],

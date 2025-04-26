@@ -55,6 +55,10 @@ message DeleteProfileGQLRequest {
   string userId = 1;
 }
 
+message BanProfileGQLRequest {
+  string userId = 1;
+}
+
 //  Response messages
 
 message UserProfilesResponse {
@@ -106,6 +110,10 @@ message DeleteProfileGQLResponse {
   string status = 1; 
 }
 
+message BanProfileGQLResponse {
+  string status = 1; 
+}
+
 service ProfileService {
   rpc GetUserProfile(UserProfileRequest) returns (UserProfileResponse);
   rpc GetUserProfiles(UserProfileQueryRequest) returns (UserProfilesResponse);
@@ -115,5 +123,6 @@ service ProfileService {
   rpc UpdateUserProfileSubscribe(UserProfileUpdateSubscribeRequest) returns (UserProfileUpdateSubscribeResponse);
   rpc GetUserProfilesGQL(UserProfilesGQLRequest) returns (UserProfilesGQLResponse);
   rpc DeleteProfilesGQL(DeleteProfileGQLRequest) returns (DeleteProfileGQLResponse);
+  rpc BanProfileGQL(BanProfileGQLRequest) returns (BanProfileGQLResponse);
 
 }

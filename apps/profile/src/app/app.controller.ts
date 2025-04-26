@@ -133,6 +133,21 @@ export class AppController {
     }
   }
 
+  @GrpcMethod('ProfileService', 'BanProfileGQL')
+  async banProfileGQL(
+    data: DeleteProfileGQLRequest
+  ) {
+    try {
+      const result = await this.profileService.banProfile(data.userId)
+      console.log(result)
+      return { status: 'ok' };
+    } catch (error) {
+      // save as error
+      console.warn(error)
+      return { status: 'fail' };
+    }
+  }
+
   @EventPattern('load_profile_photo')
   async handleLoadProfilePhoto(data: ProfilePhotoInputModel) {
     console.log(data, 'load_profile_photo')

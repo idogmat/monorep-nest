@@ -9,9 +9,12 @@ import { UsersAccountsModule } from "../user-accounts/users.accounts.module";
 import { ProfileModule } from "../profile/profile.module";
 import { PostsModule } from '../posts/posts.module';
 import { PostMicroserviceService } from '../posts/application/services/post.microservice.service';
+import { ClientsModule, Transport } from "@nestjs/microservices";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 
 @Module({
   imports: [
+    PostsModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'), // Генерация схемы на лету
@@ -23,8 +26,23 @@ import { PostMicroserviceService } from '../posts/application/services/post.micr
     GrpcServiceModule,
     UsersAccountsModule,
     ProfileModule,
-    PostsModule,
-
+    ClientsModule.registerAsync([
+      {
+        imports: [ConfigModule],
+        name: 'RABBITMQ_POST_BAN_SERVICE',
+        useFactory: (configService: ConfigService) => {
+          return {
+            transport: Transport.RMQ,
+            options: {
+              urls: configService.get<string[]>('RABBIT_URLS'),
+              queue: 'post_queue',
+              queueOptions: { durable: true },
+            },
+          }
+        },
+        inject: [ConfigService],
+      },
+    ])
   ],
   providers: [SuperAdminService, SuperAdminResolver],
   controllers: []
