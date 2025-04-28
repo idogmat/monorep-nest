@@ -27,29 +27,6 @@ export class GateService {
       : this.configService.get('POST_PROD_SERVICE')
   }
 
-  async profileServicePost(path, payload, headers) {
-    console.log([this.profileService, path].join('/'))
-    const response = await lastValueFrom(this.httpService.post(
-      [this.profileService, path].join('/'),
-      payload,
-      {
-        headers
-      }
-    ));
-    return response
-  }
-
-  async profileServicePut(path, payload, headers) {
-    const response = await lastValueFrom(this.httpService.put(
-      this.profileService,
-      payload,
-      {
-        headers
-      }
-    ));
-    return response
-  }
-
   async filesServicePost(path, payload, headers) {
     const response = await lastValueFrom(this.httpService.post(
       [this.fileService, path].join('/'),
@@ -117,14 +94,4 @@ export class GateService {
     return data;
 
   }
-  async profileServiceGet(path, headers) {
-    const url = [this.profileService, path].join('/')
-    const response = await lastValueFrom(this.httpService.get(
-      url,
-      { headers }
-    ));
-    return response
-  }
-
-
 }
