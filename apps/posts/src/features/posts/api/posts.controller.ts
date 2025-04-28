@@ -12,7 +12,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { CreatePostCommand } from '../application/use-cases/create.post.use.cases';
 import { UploadPostPhotosCommand } from '../application/use-cases/upload.post.photos.use-case';
-import { Ctx, EventPattern, Payload } from '@nestjs/microservices';
+import { Ctx, EventPattern, MessagePattern, Payload, RmqContext, RpcException } from '@nestjs/microservices';
 import {
   UpdatePostStatusOnFileUploadCommand
 } from '../application/use-cases/update.post.status.on.file.upload.use-case';
@@ -153,16 +153,13 @@ export class PostsController {
   }
 
   @EventPattern('ban_posts')
-  async banPosts(
+  async handleBanPost(
     @Payload() userId: string,
   ) {
     try {
-      console.log(userId, 'ban_posts')
-      if (!userId) return;
       await this.postsPrismaRepository.markAsBanned(userId)
     } catch (error) {
-      console.error('Ошибка в команде:', error);
+      console.error('fail', error);
     }
-
   }
 }

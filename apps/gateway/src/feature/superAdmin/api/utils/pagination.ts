@@ -97,6 +97,16 @@ export class PaginationSearchUserGqlTerm extends Pagination {
   }
 }
 
+export class PaginationSearchPaymentGqlTerm extends Pagination {
+  public readonly name: string | null;
+
+  constructor(query: PaginationUserQueryDto, sortProperties: string[]) {
+    super(query, sortProperties);
+    this.name = query?.name ? query.name.toString() : null;
+
+  }
+}
+
 export class PaginationSearchPostGqlTerm extends Pagination {
   public readonly userId: string | null;
   public readonly description: string | null;

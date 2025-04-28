@@ -2,10 +2,11 @@ import { Inject, Injectable } from "@nestjs/common";
 import { ProfileClientService } from "apps/gateway/src/support.modules/grpc/grpc.profile.service";
 import { UsersService } from "../../user-accounts/users/application/users.service";
 import { ProfileMappingService } from "../../profile/application/profile.mapper";
-import { PaginationSearchPostGqlTerm, PaginationSearchUserGqlTerm } from '../api/utils/pagination';
+import { PaginationSearchPaymentGqlTerm, PaginationSearchPostGqlTerm, PaginationSearchUserGqlTerm } from '../api/utils/pagination';
 import { PostMicroserviceService } from '../../posts/application/services/post.microservice.service';
 import { DeviceService } from "../../user-accounts/devices/application/device.service";
 import { ClientProxy } from "@nestjs/microservices";
+import { firstValueFrom } from "rxjs";
 
 @Injectable()
 export class SuperAdminService {
@@ -36,7 +37,28 @@ export class SuperAdminService {
       console.log(e, 'fail')
       return { users: [], totalCount: 0 };
     }
+  }
 
+  async findPayments(query: PaginationSearchPaymentGqlTerm
+  ): Promise<{ payments: any[], totalCount: number }> {
+    try {
+      console.log(query)
+      // const { users, totalCount } = await this.usersService.getAllUsersGql(query)
+      // const ids = users.map(u => u.id)
+      // const { profiles } = await this.profileClientService.getUserProfilesGQL({ users: ids })
+      // const mappedProfiles = profiles.map(this.profileMappingService.profileMapping)
+      // return {
+      //   users: users.map(user => ({
+      //     ...user,
+      //     profile: mappedProfiles.find(p => p.userId === user.id)
+      //   })), totalCount
+      // }
+
+    } catch (e) {
+
+      console.log(e, 'fail')
+      return { payments: [], totalCount: 0 };
+    }
   }
 
   async deleteUser(userId: string): Promise<boolean> {
@@ -63,7 +85,6 @@ export class SuperAdminService {
       const userBanned = await this.usersService.banUser(userId, bannedReason)
       console.log(userBanned)
       this.rabbitClient.emit('ban_posts', userId);
-
       return true
     } catch (e) {
       console.log(e, 'fail')
