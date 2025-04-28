@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { ProfileClientService } from "apps/gateway/src/support.modules/grpc/grpc.profile.service";
+import { ProfileClientService } from "../../../support.modules/grpc/grpc.profile.service";
 import { UsersService } from "../../user-accounts/users/application/users.service";
 import { ProfileMappingService } from "../../profile/application/profile.mapper";
 import { PaginationSearchPaymentGqlTerm, PaginationSearchPostGqlTerm, PaginationSearchUserGqlTerm } from '../api/utils/pagination';
