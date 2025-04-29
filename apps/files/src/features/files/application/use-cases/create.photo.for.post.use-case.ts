@@ -77,7 +77,12 @@ export class CreatePhotoForPostUseCase implements ICommandHandler<CreatePhotoFor
         timestamp: new Date(),
       };
 
-      this.rabbitClient.emit('files_uploaded', message);
+      try {
+        this.rabbitClient.emit('files_uploaded', message);
+      } catch (e) {
+        console.error("Send to files_uploaded files -> posts", e)
+      }
+
     }
   }
 
