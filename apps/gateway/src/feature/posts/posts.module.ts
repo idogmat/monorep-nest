@@ -15,6 +15,7 @@ import { ProfileModule } from '../profile/profile.module';
 import { PostGraphqlService } from './application/services/post.graphql.service';
 import { UsersAccountsModule } from '../user-accounts/users.accounts.module';
 import { UserLoader } from '../user-accounts/devices/loaders/user.loader';
+import { PostFieldResolver } from './api/post-field.resolver';
 
 const useCasesForPost = [
   CreatePostUseCases]
@@ -44,6 +45,7 @@ const useCasesForPost = [
     GateService,
     PostMicroserviceService,
     PostResolver,
+    PostFieldResolver,
     UserLoader,
     PostGraphqlService,
     ...useCasesForPost

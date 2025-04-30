@@ -32,12 +32,4 @@ export class PostResolver {
     return this.postGraphqlService.findPosts(sanitizedQuery);
   }
 
-  @ResolveField(() => String, { name: 'userName', nullable: true })
-  async resolveUserName(@Parent() post: Post): Promise<string | null> {
-    const user = await this.userLoader.batchUsers.load(post.userId);
-    // const user = await this.usersService.findById(post.userId);
-    console.log("this is user", post.userId);
-    return user?.name ?? null;
-
-  }
 }
