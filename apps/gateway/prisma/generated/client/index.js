@@ -190,7 +190,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\PROJECTS\\instagram\\myin-gram-monorep\\apps\\gateway\\prisma\\generated\\client",
+      "value": "C:\\JS\\it-incubator\\monorep-nest\\apps\\gateway\\prisma\\generated\\client",
       "fromEnvVar": null
     },
     "config": {
@@ -204,7 +204,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\PROJECTS\\instagram\\myin-gram-monorep\\apps\\gateway\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\JS\\it-incubator\\monorep-nest\\apps\\gateway\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

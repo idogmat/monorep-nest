@@ -8,7 +8,6 @@ import { GrpcServiceModule } from "../../support.modules/grpc/grpc.module";
 import { UsersAccountsModule } from "../user-accounts/users.accounts.module";
 import { ProfileModule } from "../profile/profile.module";
 import { PostsModule } from '../posts/posts.module';
-import { PostMicroserviceService } from '../posts/application/services/post.microservice.service';
 import { ClientsModule, Transport } from "@nestjs/microservices";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 

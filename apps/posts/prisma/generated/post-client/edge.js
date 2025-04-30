@@ -147,7 +147,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\PROJECTS\\instagram\\myin-gram-monorep\\apps\\posts\\prisma\\generated\\post-client",
+      "value": "C:\\JS\\it-incubator\\monorep-nest\\apps\\posts\\prisma\\generated\\post-client",
       "fromEnvVar": null
     },
     "config": {
@@ -161,7 +161,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\PROJECTS\\instagram\\myin-gram-monorep\\apps\\posts\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\JS\\it-incubator\\monorep-nest\\apps\\posts\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -174,11 +174,12 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "POSTS_DB_URL",
-        "value": "postgresql://neondb_owner:npg_hL3ma7nKUlZT@ep-dry-snow-a29u6l5h-pooler.eu-central-1.aws.neon.tech/posts?sslmode=require"
+        "value": null
       }
     }
   },

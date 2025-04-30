@@ -62,4 +62,15 @@ export class UsersService {
 
     return { users, totalCount };
   }
+
+  async getUsersByIds(ids: string[]) {
+
+    return this.prisma.user.findMany({
+      where: {
+        id: {
+          in: ids,
+        }
+      }
+    })
+  }
 }

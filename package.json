@@ -81,6 +81,7 @@
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.7",
     "crypto": "^1.0.1",
+    "dataloader": "^2.2.3",
     "date-fns": "^4.1.0",
     "dotenv-cli": "^8.0.0",
     "form-data": "^4.0.2",

@@ -25,12 +25,21 @@ export class Post {
   id: string;
 
   @Field()
-  userId: string;
-
-  @Field()
   description: string;
 
   @Field()
+  userId: string;
+
+  @Field({ nullable: true })
+  userName: string;
+
+  @Field({ nullable: true })
+  photoUrlProfile: string;
+
+  @Field({ nullable: true })
+  paymentAccount: boolean;
+
+  @Field({ nullable: true })
   photoUploadStatus: string;
 
   @Field(() => [String])

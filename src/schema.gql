@@ -55,10 +55,13 @@ type Post {
   createdAt: DateTime!
   description: String!
   id: String!
-  photoUploadStatus: String!
+  paymentAccount: Boolean
+  photoUploadStatus: String
+  photoUrlProfile: String
   photoUrls: [String!]!
   updatedAt: DateTime!
   userId: String!
+  userName: String
 }
 
 type Profile {

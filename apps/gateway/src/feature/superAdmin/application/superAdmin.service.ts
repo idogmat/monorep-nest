@@ -92,19 +92,5 @@ export class SuperAdminService {
     }
   }
 
-  async findPosts(query: PaginationSearchPostGqlTerm
-  )
-  // : Promise<{ users: any[], totalCount: number }>
-  {
 
-    try {
-      return await this.postMicroserviceService.getPosts(query);
-
-    } catch (e) {
-
-      console.log(e, 'fail')
-      return { posts: [], totalCount: 0 };
-    }
-
-  }
 }

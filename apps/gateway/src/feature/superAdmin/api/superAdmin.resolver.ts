@@ -1,10 +1,9 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int} from '@nestjs/graphql';
 import { SuperAdminService } from '../application/superAdmin.service';
 import { UseGuards } from '@nestjs/common';
 import { GqlBasicAuthGuard } from '../../../common/guard/gqlBasicAuthGuard';
 import { PaginatedUsers, User } from './models/user.schema';
-import { PaginationSearchPaymentGqlTerm, PaginationSearchPostGqlTerm, PaginationSearchUserGqlTerm } from './utils/pagination';
-import { PaginatedPost } from './models/post.schema';
+import { PaginationSearchPaymentGqlTerm, PaginationSearchUserGqlTerm } from './utils/pagination';
 import { PaginatedPayments } from './models/payment.schema';
 
 @Resolver(() => User)
@@ -53,25 +52,23 @@ export class SuperAdminResolver {
   }
 
 
-  @UseGuards(GqlBasicAuthGuard)
-  @Query(() => PaginatedPost)
-  posts(
-    @Args('offset', { type: () => Int, nullable: true }) offset?: number,
-    @Args('limit', { type: () => Int, nullable: true }) limit?: number,
-    @Args('sortBy', { type: () => String, nullable: true }) sortBy?: string,
-    @Args('sortDirection', { type: () => String, nullable: true }) sortDirection?: 'asc' | 'desc',
-    @Args('userId', { type: () => String, nullable: true }) userId?: string,
-    @Args('description', { type: () => String, nullable: true }) description?: string,
-  ) {
-    const sanitizedQuery = new PaginationSearchPostGqlTerm(
-      {
-        offset: offset,
-        limit: limit,
-        sortBy, sortDirection, userId, description
-      }
-      , ['createdAt', 'userId']);
-    return this.superAdminService.findPosts(sanitizedQuery);
-  }
+  // @UseGuards(GqlBasicAuthGuard)
+  // @Query(() => PaginatedPost)
+  // posts(
+  //   @Args() args: PostsQueryArgs
+  // ) {
+  //   const sanitizedQuery = new PaginationSearchPostGqlTerm(
+  //     {
+  //       offset: args.offset,
+  //       limit: args.limit,
+  //       sortBy: args.sortBy,
+  //       sortDirection: args.sortDirection,
+  //       userId: args.userId,
+  //       description: args.description
+  //     }
+  //     , ['createdAt', 'userId']);
+  //   return this.superAdminService.findPosts(sanitizedQuery);
+  // }
 
   @UseGuards(GqlBasicAuthGuard)
   @Query(() => PaginatedPayments)
