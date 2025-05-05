@@ -26,7 +26,7 @@ import { ErrorProcessor } from '../../../../../libs/common/error-handling/error.
 import { UpdatePostCommand } from '../application/use-cases/update.post.use-case';
 import { DeletePostCommand } from '../application/use-cases/delete.post.use-case';
 import { PostsPrismaRepository } from '../infrastructure/prisma/posts.prisma.repository';
-
+import { PaginationSearchPostGqlTerm } from '../../../../../gateway/src/feature/superAdmin/api/utils/pagination';
 
 @Controller()
 export class PostsController {
@@ -99,14 +99,21 @@ export class PostsController {
     queryDTO: PaginationSearchPostTerm,
   ) {
 
-    const result = await this.commandBus.execute(
+    return this.commandBus.execute(
       new GetAllPostsCommand(queryDTO),
     );
 
-    return result;
-
   }
 
+  @Get('get-posts-gql')
+  async getPostsGQL(
+    @Query()
+      queryDTO: PaginationSearchPostGqlTerm,
+  ) {
+
+    return this.postsQueryRepository.getAllPostsGQL(queryDTO);
+
+  }
   @Put('update-post')
   async updatePost(
     @Headers('X-PostId') postId: string,

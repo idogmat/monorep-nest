@@ -6,17 +6,8 @@ export class PaginatedPost {
   @Field(() => Int)
   totalCount: number;
 
-  @Field(() => Int)
-  pagesCount: number;
-
-  @Field(() => Int)
-  page: number;
-
-  @Field(() => Int)
-  pageSize: number;
-
   @Field(() => [Post])
-  items: Post[];
+  posts: Post[];
 }
 
 @ObjectType()
@@ -32,6 +23,9 @@ export class Post {
 
   @Field({ nullable: true })
   userName: string;
+
+  @Field()
+  banned: boolean;
 
   @Field({ nullable: true })
   photoUrlProfile: string;

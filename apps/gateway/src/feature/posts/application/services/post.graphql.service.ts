@@ -11,11 +11,10 @@ export class PostGraphqlService {
   ) { }
   async findPosts(query: PaginationSearchPostGqlTerm
   )
-  // : Promise<{ users: any[], totalCount: number }>
   {
 
     try {
-      return await this.postMicroserviceService.getPosts(query);
+      return await this.postMicroserviceService.getPostsGQL(query);
 
     } catch (e) {
 

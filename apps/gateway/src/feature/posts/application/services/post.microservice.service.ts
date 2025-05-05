@@ -78,12 +78,19 @@ export class PostMicroserviceService {
 
   }
 
-  async getPosts(queryDto: PaginationSearchPostTerm|PaginationSearchPostGqlTerm) {
+  async getPosts(queryDto: PaginationSearchPostTerm) {
 
     return await this.gateService.postServiceGet<InterlayerNotice<PagedResponse<PostViewModel>>>('get-posts', {}, queryDto.toQueryParams());
 
   }
 
+  async getPostsGQL(queryDto: PaginationSearchPostGqlTerm) {
+
+    const result = await this.gateService.postServiceGet<InterlayerNotice<PagedResponse<PostViewModel>>>('get-posts-gql', {}, queryDto.toQueryParams());
+
+    console.log("result---------------------------",result);
+    return result;
+  }
 
   async updatePost(param: { updateDto: PostUpdateModel; postId: string; userId: string }) {
     const headers = {

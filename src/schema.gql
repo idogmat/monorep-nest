@@ -18,10 +18,7 @@ type PaginatedPayments {
 }
 
 type PaginatedPost {
-  items: [Post!]!
-  page: Int!
-  pageSize: Int!
-  pagesCount: Int!
+  posts: [Post!]!
   totalCount: Int!
 }
 
@@ -52,6 +49,7 @@ enum PaymentStatus {
 }
 
 type Post {
+  banned: String
   createdAt: DateTime!
   description: String!
   id: String!
@@ -87,6 +85,7 @@ type Query {
 }
 
 type User {
+  banned: Boolean!
   codeExpiration: DateTime
   confirmationCode: String
   createdAt: DateTime!

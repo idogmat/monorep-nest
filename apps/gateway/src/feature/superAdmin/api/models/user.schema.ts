@@ -50,4 +50,7 @@ export class User {
 
   @Field(() => Profile, { nullable: true })
   profile?: Profile;
+
+  @Field()
+  banned: boolean;
 }

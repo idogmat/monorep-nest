@@ -2,11 +2,11 @@ import { Inject, Injectable } from "@nestjs/common";
 import { ProfileClientService } from "../../../support.modules/grpc/grpc.profile.service";
 import { UsersService } from "../../user-accounts/users/application/users.service";
 import { ProfileMappingService } from "../../profile/application/profile.mapper";
-import { PaginationSearchPaymentGqlTerm, PaginationSearchPostGqlTerm, PaginationSearchUserGqlTerm } from '../api/utils/pagination';
+import { PaginationSearchPaymentGqlTerm, PaginationSearchUserGqlTerm } from '../api/utils/pagination';
 import { PostMicroserviceService } from '../../posts/application/services/post.microservice.service';
 import { DeviceService } from "../../user-accounts/devices/application/device.service";
 import { ClientProxy } from "@nestjs/microservices";
-import { firstValueFrom } from "rxjs";
+
 
 @Injectable()
 export class SuperAdminService {
