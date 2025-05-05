@@ -10,28 +10,38 @@ import { ProfileModule } from "../profile/profile.module";
 import { PostsModule } from '../posts/posts.module';
 import { ClientsModule, Transport } from "@nestjs/microservices";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { LoaderFactoryService } from './loaders/loader.factory.service';
-import { LoaderModule } from './loaders/loader.module';
+import { UserLoader } from '../user-accounts/devices/loaders/user.loader';
+import { ProfileLoader } from '../profile/application/profile.loader';
 
 @Module({
   imports: [
     PostsModule,
-    LoaderModule,
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
-      imports: [LoaderModule], // добавь сюда модуль, где находится LoaderFactoryService, если он в другом модуле
-      inject: [LoaderFactoryService],
-      useFactory: async (loaderFactory: LoaderFactoryService) => ({
+      imports: [UsersAccountsModule, ProfileModule], // добавь сюда модуль, где находится LoaderFactoryService, если он в другом модуле
+      inject: [],
+      useFactory: async () => ({
         autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
         sortSchema: true,
         playground: true,
-        path: 'api/v1/graphql',
-        context: ({ req }) => {
-          return {
-            loaders: loaderFactory.createLoaders(),
-          };
-        },
+        path: '/api/v1/graphql',
+        // Убираем context, если не нужно передавать лоадеры в контекст
       }),
+      // useFactory: async (
+      //   userLoader: UserLoader,
+      //   profileLoader: ProfileLoader,
+      // ) => ({
+      //   autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      //   sortSchema: true,
+      //   playground: true,
+      //   path: '/api/v1/graphql',
+      //   context: ({ req }) => ({
+      //     loaders: {
+      //       userLoader: userLoader.loader,
+      //       profileLoader: profileLoader.loader,
+      //     },
+      //   }),
+      // }),
     }),
     GrpcServiceModule,
     UsersAccountsModule,

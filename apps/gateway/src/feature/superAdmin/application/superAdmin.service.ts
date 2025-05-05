@@ -7,7 +7,6 @@ import { PostMicroserviceService } from '../../posts/application/services/post.m
 import { DeviceService } from "../../user-accounts/devices/application/device.service";
 import { ClientProxy } from "@nestjs/microservices";
 
-
 @Injectable()
 export class SuperAdminService {
   constructor(

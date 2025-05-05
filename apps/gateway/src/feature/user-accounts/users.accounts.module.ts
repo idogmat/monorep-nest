@@ -26,6 +26,7 @@ import { DevicesController } from './devices/api/devices.controller';
 import { DeviceQueryRepository } from './devices/infrastructure/device.prisma.query-repository';
 import { GateService } from '../../common/gate.service';
 import { GrpcServiceModule } from '../../support.modules/grpc/grpc.module';
+import { UserLoader } from './devices/loaders/user.loader';
 
 const useCasesForAuth = [
   SignupUseCase,
@@ -66,9 +67,10 @@ const useCasesForAuth = [
     DeviceService,
     DeviceQueryRepository,
     GateService,
+    UserLoader,
     ...useCasesForAuth
   ],
   controllers: [UsersController, AuthController, DevicesController],
-  exports: [HttpModule, JwtModule, DeviceService, UsersService]
+  exports: [HttpModule, JwtModule, DeviceService, UsersService, UserLoader]
 })
 export class UsersAccountsModule { }

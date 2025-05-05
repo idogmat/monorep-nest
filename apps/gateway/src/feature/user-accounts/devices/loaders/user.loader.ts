@@ -6,7 +6,7 @@ import { User } from '../../../superAdmin/api/models/user.schema';
 export class UserLoader {
   constructor(private readonly usersService: UsersService) {}
 
-  public readonly batchUsers = new DataLoader<string, User | null>(async (userIds) => {
+  public readonly loader  = new DataLoader<string, User | null>(async (userIds) => {
 
     console.log('BATCHING FOR IDS:', userIds);
 

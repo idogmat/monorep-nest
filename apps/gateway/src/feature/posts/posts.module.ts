@@ -13,6 +13,8 @@ import { PostMicroserviceService } from './application/services/post.microservic
 import { ProfileModule } from '../profile/profile.module';
 import { PostGraphqlService } from '../superAdmin/application/post.graphql.service';
 import { UsersAccountsModule } from '../user-accounts/users.accounts.module';
+import { PostResolver } from '../superAdmin/api/resolvers/post.resolver';
+import { PostFieldResolver } from '../superAdmin/api/resolvers/post-field.resolver';
 
 const useCasesForPost = [
   CreatePostUseCases]
@@ -42,6 +44,8 @@ const useCasesForPost = [
     GateService,
     PostMicroserviceService,
     PostGraphqlService,
+    PostResolver,
+    PostFieldResolver,
     ...useCasesForPost
   ],
   controllers: [PostsController],

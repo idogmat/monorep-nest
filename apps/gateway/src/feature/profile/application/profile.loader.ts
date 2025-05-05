@@ -6,7 +6,7 @@ import { ProfileClientService } from '../../../support.modules/grpc/grpc.profile
 export class ProfileLoader {
   constructor(private readonly profileClientService: ProfileClientService)  {}
 
-  public readonly batchProfiles = new DataLoader<string, any | null>(
+  public readonly loader = new DataLoader<string, any | null>(
     async (userIds: readonly string[]) => {
       console.log('BATCHING FOR IDS ProfileLoader:', userIds);
       const response = await this.profileClientService.getUserProfilesGQL({
