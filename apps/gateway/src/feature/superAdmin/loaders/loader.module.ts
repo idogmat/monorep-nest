@@ -23,7 +23,8 @@ import { ProfileClientService } from '../../../support.modules/grpc/grpc.profile
     PostGraphqlService,
     PostMicroserviceService,
     GateService,
-    PostFieldResolver],
+    PostFieldResolver,
+    ProfileClientService],
   exports: [LoaderFactoryService, PostResolver], // Экспортируем сервис, чтобы другие модули могли его использовать
 })
 export class LoaderModule {}

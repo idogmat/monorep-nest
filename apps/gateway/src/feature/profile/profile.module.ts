@@ -35,6 +35,6 @@ import { ProfileClientService } from '../../support.modules/grpc/grpc.profile.se
     FileService,
   ],
   controllers: [ProfileController],
-  exports: [ProfileMappingService, ProfileClientService ]
+  exports: [ProfileMappingService ]
 })
 export class ProfileModule { }
