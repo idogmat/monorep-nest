@@ -3,24 +3,35 @@ import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from "path";
 import { SuperAdminService } from "./application/superAdmin.service";
-import { SuperAdminResolver } from "./api/superAdmin.resolver";
+import { SuperAdminResolver } from "./api/resolvers/superAdmin.resolver";
 import { GrpcServiceModule } from "../../support.modules/grpc/grpc.module";
 import { UsersAccountsModule } from "../user-accounts/users.accounts.module";
 import { ProfileModule } from "../profile/profile.module";
 import { PostsModule } from '../posts/posts.module';
 import { ClientsModule, Transport } from "@nestjs/microservices";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { LoaderFactoryService } from './loaders/loader.factory.service';
+import { LoaderModule } from './loaders/loader.module';
 
 @Module({
   imports: [
     PostsModule,
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    LoaderModule,
+    GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'), // Генерация схемы на лету
-      sortSchema: true,
-      playground: true, // GraphQL UI
-      context: ({ req }) => ({ req }),
-      path: 'api/v1/graphql'
+      imports: [LoaderModule], // добавь сюда модуль, где находится LoaderFactoryService, если он в другом модуле
+      inject: [LoaderFactoryService],
+      useFactory: async (loaderFactory: LoaderFactoryService) => ({
+        autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+        sortSchema: true,
+        playground: true,
+        path: 'api/v1/graphql',
+        context: ({ req }) => {
+          return {
+            loaders: loaderFactory.createLoaders(),
+          };
+        },
+      }),
     }),
     GrpcServiceModule,
     UsersAccountsModule,

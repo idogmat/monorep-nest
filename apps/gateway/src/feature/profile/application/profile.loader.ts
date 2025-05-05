@@ -8,10 +8,12 @@ export class ProfileLoader {
 
   public readonly batchProfiles = new DataLoader<string, any | null>(
     async (userIds: readonly string[]) => {
+      console.log('BATCHING FOR IDS ProfileLoader:', userIds);
       const response = await this.profileClientService.getUserProfilesGQL({
         users: userIds as string[],
       });
-      console.log("response.profiles---------", response.profiles);
+
+      if (!response.profiles) return userIds.map(() => null);
       const profileMap = new Map(response.profiles.map(profile => [profile.userId, profile]));
       return  userIds.map(id => profileMap.get(id) ?? null);
     }

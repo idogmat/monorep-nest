@@ -1,10 +1,10 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
-import { PaginatedPost, Post } from './model/input/post.schema';
+import { PaginatedPost, Post } from '../models/post.schema';
 import { UseGuards } from '@nestjs/common';
-import { GqlBasicAuthGuard } from '../../../common/guard/gqlBasicAuthGuard';
-import { PostsQueryArgs } from './model/input/posts.query.args';
-import { PaginationSearchPostGqlTerm } from '../../superAdmin/api/utils/pagination';
-import { PostGraphqlService } from '../application/services/post.graphql.service';
+import { GqlBasicAuthGuard } from '../../../../common/guard/gqlBasicAuthGuard';
+import { PostsQueryArgs } from '../../../posts/api/model/input/posts.query.args';
+import { PaginationSearchPostGqlTerm } from '../utils/pagination';
+import { PostGraphqlService } from '../../application/post.graphql.service';
 
 @Resolver(() => Post)
 export class PostResolver {

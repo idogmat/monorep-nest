@@ -1,10 +1,10 @@
 import { Resolver, Query, Mutation, Args, Int} from '@nestjs/graphql';
-import { SuperAdminService } from '../application/superAdmin.service';
+import { SuperAdminService } from '../../application/superAdmin.service';
 import { UseGuards } from '@nestjs/common';
-import { GqlBasicAuthGuard } from '../../../common/guard/gqlBasicAuthGuard';
-import { PaginatedUsers, User } from './models/user.schema';
-import { PaginationSearchPaymentGqlTerm, PaginationSearchUserGqlTerm } from './utils/pagination';
-import { PaginatedPayments } from './models/payment.schema';
+import { GqlBasicAuthGuard } from '../../../../common/guard/gqlBasicAuthGuard';
+import { PaginatedUsers, User } from '../models/user.schema';
+import { PaginationSearchPaymentGqlTerm, PaginationSearchUserGqlTerm } from '../utils/pagination';
+import { PaginatedPayments } from '../models/payment.schema';
 
 @Resolver(() => User)
 export class SuperAdminResolver {

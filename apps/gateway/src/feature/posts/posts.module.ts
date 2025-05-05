@@ -10,13 +10,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { DeviceService } from '../user-accounts/devices/application/device.service';
 import { GateService } from '../../common/gate.service';
 import { PostMicroserviceService } from './application/services/post.microservice.service';
-import { PostResolver } from './api/post.resolver';
 import { ProfileModule } from '../profile/profile.module';
-import { PostGraphqlService } from './application/services/post.graphql.service';
+import { PostGraphqlService } from '../superAdmin/application/post.graphql.service';
 import { UsersAccountsModule } from '../user-accounts/users.accounts.module';
-import { UserLoader } from '../user-accounts/devices/loaders/user.loader';
-import { PostFieldResolver } from './api/post-field.resolver';
-import { ProfileLoader } from '../profile/application/profile.loader';
 
 const useCasesForPost = [
   CreatePostUseCases]
@@ -45,14 +41,10 @@ const useCasesForPost = [
     DeviceService,
     GateService,
     PostMicroserviceService,
-    PostResolver,
-    PostFieldResolver,
-    UserLoader,
-    ProfileLoader,
     PostGraphqlService,
     ...useCasesForPost
   ],
   controllers: [PostsController],
-  exports: [HttpModule, GateService, PostMicroserviceService, PostResolver, PostGraphqlService]
+  exports: [HttpModule, GateService, PostMicroserviceService, PostGraphqlService ]
 })
 export class PostsModule { }

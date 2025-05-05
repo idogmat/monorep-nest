@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PostMicroserviceService } from './post.microservice.service';
-import { PaginationSearchPostGqlTerm } from '../../../superAdmin/api/utils/pagination';
+import { PostMicroserviceService } from '../../posts/application/services/post.microservice.service';
+import { PaginationSearchPostGqlTerm } from '../api/utils/pagination';
 
 @Injectable()
 export class PostGraphqlService {
