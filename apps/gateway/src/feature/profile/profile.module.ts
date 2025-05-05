@@ -10,6 +10,7 @@ import { GateService } from '../../common/gate.service';
 import { ProfileMappingService } from './application/profile.mapper';
 import { GrpcServiceModule } from '../../support.modules/grpc/grpc.module';
 import { FileService } from '../../../../libs/file.service';
+import { ProfileClientService } from '../../support.modules/grpc/grpc.profile.service';
 
 @Module({
   imports: [
@@ -34,6 +35,6 @@ import { FileService } from '../../../../libs/file.service';
     FileService,
   ],
   controllers: [ProfileController],
-  exports: [ProfileMappingService]
+  exports: [ProfileMappingService, ProfileClientService ]
 })
 export class ProfileModule { }

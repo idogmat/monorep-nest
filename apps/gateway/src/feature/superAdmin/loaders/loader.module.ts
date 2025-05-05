@@ -8,6 +8,7 @@ import { PostGraphqlService } from '../application/post.graphql.service';
 import { PostMicroserviceService } from '../../posts/application/services/post.microservice.service';
 import { GateService } from '../../../common/gate.service';
 import { PostFieldResolver } from '../api/resolvers/post-field.resolver';
+import { ProfileClientService } from '../../../support.modules/grpc/grpc.profile.service';
 
 @Module({
   imports:[
