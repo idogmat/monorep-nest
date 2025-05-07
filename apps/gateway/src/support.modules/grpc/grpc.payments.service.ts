@@ -1,11 +1,12 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { GetSubscribesQuery, UnSubscribeRequest, UserForSubscribe, WebhookResponse, WebhookRequest } from '../../../../libs/proto/generated/payments';
+import { GetSubscribesQuery, UnSubscribeRequest, UserForSubscribe, WebhookResponse, WebhookRequest, GetSubscribesGqlQuery } from '../../../../libs/proto/generated/payments';
 import { firstValueFrom, lastValueFrom, Observable } from 'rxjs';
 
 interface PaymentsService {
   CreateSubscribe(data: { user: UserForSubscribe, productKey: number }): Observable<any>;
   GetSubscribes(data: GetSubscribesQuery): Observable<any>;
+  GetSubscribesGql(data: GetSubscribesGqlQuery): Observable<any>;
   UnSubscribe(data: UnSubscribeRequest): Observable<any>;
   Webhook(data: WebhookRequest): Observable<WebhookResponse>;
 }
@@ -30,6 +31,10 @@ export class PaymentsClientService implements OnModuleInit {
 
   async getSubscribes(data: GetSubscribesQuery) {
     return lastValueFrom(await this.paymentsService.GetSubscribes(data));
+  }
+
+  async getSubscribesGql(data: GetSubscribesGqlQuery) {
+    return lastValueFrom(await this.paymentsService.GetSubscribesGql(data));
   }
 
   async unSubscribe(data: UnSubscribeRequest) {

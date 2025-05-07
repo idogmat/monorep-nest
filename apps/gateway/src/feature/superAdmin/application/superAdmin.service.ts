@@ -6,11 +6,13 @@ import { PaginationSearchPaymentGqlTerm, PaginationSearchUserGqlTerm } from '../
 import { PostMicroserviceService } from '../../posts/application/services/post.microservice.service';
 import { DeviceService } from "../../user-accounts/devices/application/device.service";
 import { ClientProxy } from "@nestjs/microservices";
+import { PaymentsClientService } from "apps/gateway/src/support.modules/grpc/grpc.payments.service";
 
 @Injectable()
 export class SuperAdminService {
   constructor(
     private readonly profileClientService: ProfileClientService,
+    private readonly paymentsClientService: PaymentsClientService,
     private readonly profileMappingService: ProfileMappingService,
     private readonly usersService: UsersService,
     private readonly deviceService: DeviceService,
@@ -39,24 +41,16 @@ export class SuperAdminService {
   }
 
   async findPayments(query: PaginationSearchPaymentGqlTerm
-  ): Promise<{ payments: any[], totalCount: number }> {
+  ): Promise<{ items: any[], totalCount: number }> {
     try {
       console.log(query)
-      // const { users, totalCount } = await this.usersService.getAllUsersGql(query)
-      // const ids = users.map(u => u.id)
-      // const { profiles } = await this.profileClientService.getUserProfilesGQL({ users: ids })
-      // const mappedProfiles = profiles.map(this.profileMappingService.profileMapping)
-      // return {
-      //   users: users.map(user => ({
-      //     ...user,
-      //     profile: mappedProfiles.find(p => p.userId === user.id)
-      //   })), totalCount
-      // }
+      const { items, totalCount } = await this.paymentsClientService.getSubscribesGql(query)
+      return { items, totalCount }
 
     } catch (e) {
 
       console.log(e, 'fail')
-      return { payments: [], totalCount: 0 };
+      return { items: [], totalCount: 0 };
     }
   }
 

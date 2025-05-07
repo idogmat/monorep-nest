@@ -1,10 +1,11 @@
-import { Resolver, Query, Mutation, Args, Int} from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { SuperAdminService } from '../../application/superAdmin.service';
 import { UseGuards } from '@nestjs/common';
 import { GqlBasicAuthGuard } from '../../../../common/guard/gqlBasicAuthGuard';
 import { PaginatedUsers, User } from '../models/user.schema';
 import { PaginationSearchPaymentGqlTerm, PaginationSearchUserGqlTerm } from '../utils/pagination';
 import { PaginatedPayments } from '../models/payment.schema';
+import e from 'express';
 
 @Resolver(() => User)
 export class SuperAdminResolver {
@@ -51,46 +52,35 @@ export class SuperAdminResolver {
     return this.superAdminService.banUser(id, banReason);
   }
 
-
-  // @UseGuards(GqlBasicAuthGuard)
-  // @Query(() => PaginatedPost)
-  // posts(
-  //   @Args() args: PostsQueryArgs
-  // ) {
-  //   const sanitizedQuery = new PaginationSearchPostGqlTerm(
-  //     {
-  //       offset: args.offset,
-  //       limit: args.limit,
-  //       sortBy: args.sortBy,
-  //       sortDirection: args.sortDirection,
-  //       userId: args.userId,
-  //       description: args.description
-  //     }
-  //     , ['createdAt', 'userId']);
-  //   return this.superAdminService.findPosts(sanitizedQuery);
-  // }
-
   @UseGuards(GqlBasicAuthGuard)
   @Query(() => PaginatedPayments)
-  payments(
+  async payments(
     @Args('offset', { type: () => Int, nullable: true }) offset?: number,
     @Args('limit', { type: () => Int, nullable: true }) limit?: number,
     @Args('sortBy', { type: () => String, nullable: true }) sortBy?: string,
     @Args('sortDirection', { type: () => String, nullable: true }) sortDirection?: 'asc' | 'desc',
-    @Args('name', { type: () => String, nullable: true }) name?: string,
+    @Args('userId', { type: () => String, nullable: true }) userId?: string,
   ) {
     const sanitizedQuery = new PaginationSearchPaymentGqlTerm(
       {
         offset: offset,
         limit: limit,
-        sortBy, sortDirection, name
+        sortBy, sortDirection, userId
       }
-      , ['createdAt', 'amount', 'name']);
-    // return this.superAdminService.findPayments(sanitizedQuery);
-    return { payments: [], totalCount: 0 };
+      , ['createdAt', 'amount']);
+    console.log(sanitizedQuery)
+    const res = await this.superAdminService.findPayments(sanitizedQuery);
+    console.log(res, 'res')
+    let payments = []
+    if (res.items?.length) {
+      payments = res.items.map(i => ({
+        ...i,
+        createdAt: i.createdAt ? new Date(i.createdAt).toISOString() : null,
+        expiresAt: i.expiresAt ? new Date(i.expiresAt).toISOString() : null,
+        deletedAt: i.deletedAt ? new Date(i.deletedAt).toISOString() : null
+      }))
+    }
+    return { payments, totalCount: res.totalCount };
   }
-  // @Mutation(() => User)
-  // createUser(@Args('createUserInput') input: CreateUserInput) {
-  //   return this.userService.create(input);
-  // }
+
 }

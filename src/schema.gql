@@ -13,8 +13,8 @@ type Mutation {
 }
 
 type PaginatedPayments {
+  payments: [Payment!]!
   totalCount: Float!
-  users: [Payment!]!
 }
 
 type PaginatedPost {
@@ -29,10 +29,10 @@ type PaginatedUsers {
 
 type Payment {
   amount: Int
-  createdAt: DateTime!
+  createdAt: String
   customerId: String!
-  deletedAt: DateTime
-  expiresAt: DateTime
+  deletedAt: String
+  expiresAt: String
   id: ID!
   payType: String
   profile: Profile
@@ -43,8 +43,8 @@ type Payment {
 }
 
 enum PaymentStatus {
-  COMPLETED
-  FAILED
+  ACTIVE
+  CANCEL
   PENDING
 }
 
@@ -79,7 +79,7 @@ type Profile {
 }
 
 type Query {
-  payments(limit: Int, name: String, offset: Int, sortBy: String, sortDirection: String): PaginatedPayments!
+  payments(limit: Int, offset: Int, sortBy: String, sortDirection: String, userId: String): PaginatedPayments!
   posts(description: String, limit: Int, offset: Int, sortBy: String, sortDirection: String, userId: String): PaginatedPost!
   users(limit: Int, name: String, offset: Int, sortBy: String, sortDirection: String): PaginatedUsers!
 }

@@ -138,7 +138,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\JS\\it-incubator\\monorep-nest\\apps\\payments\\prisma\\generated\\payments-client",
+      "value": "C:\\PROJECTS\\instagram\\myin-gram-monorep\\apps\\payments\\prisma\\generated\\payments-client",
       "fromEnvVar": null
     },
     "config": {
@@ -152,7 +152,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\JS\\it-incubator\\monorep-nest\\apps\\payments\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\PROJECTS\\instagram\\myin-gram-monorep\\apps\\payments\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

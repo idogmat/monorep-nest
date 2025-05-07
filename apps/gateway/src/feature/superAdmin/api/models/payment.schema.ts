@@ -3,15 +3,15 @@ import { Profile } from "./profile.schema";
 @ObjectType()
 export class PaginatedPayments {
   @Field(() => [Payment])
-  users: Payment[];
+  payments: Payment[];
 
   @Field()
   totalCount?: number;
 }
 export enum PaymentStatus {
+  ACTIVE = 'ACTIVE',
+  CANCEL = 'CANCEL',
   PENDING = 'PENDING',
-  COMPLETED = 'COMPLETED',
-  FAILED = 'FAILED',
 }
 
 registerEnumType(PaymentStatus, {
@@ -38,20 +38,20 @@ export class Payment {
   @Field({ nullable: true })
   subType?: string;
 
-  @Field(() => PaymentStatus)
+  @Field(() => PaymentStatus || null)
   status: PaymentStatus;
 
   @Field(() => Int, { nullable: true })
   amount?: number;
 
-  @Field()
-  createdAt: Date;
+  @Field({ nullable: true })
+  createdAt: string;
 
   @Field({ nullable: true })
-  expiresAt?: Date;
+  expiresAt?: string;
 
   @Field({ nullable: true })
-  deletedAt?: Date;
+  deletedAt?: string;
 
   @Field(() => Profile, { nullable: true })
   profile?: Profile;

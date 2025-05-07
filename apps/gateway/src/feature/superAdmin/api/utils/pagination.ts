@@ -79,6 +79,11 @@ export class PaginationUserQueryDto extends PaginationGqlDto {
 
   name?: string;
 }
+export class PaginationPaymentsQueryDto extends PaginationGqlDto {
+
+  userId?: string;
+}
+
 
 export class PaginationPostQueryDto extends PaginationGqlDto {
 
@@ -98,11 +103,11 @@ export class PaginationSearchUserGqlTerm extends Pagination {
 }
 
 export class PaginationSearchPaymentGqlTerm extends Pagination {
-  public readonly name: string | null;
+  public readonly userId: string | null;
 
-  constructor(query: PaginationUserQueryDto, sortProperties: string[]) {
+  constructor(query: PaginationPaymentsQueryDto, sortProperties: string[]) {
     super(query, sortProperties);
-    this.name = query?.name ? query.name.toString() : null;
+    this.userId = query?.userId ? query.userId.toString() : null;
 
   }
 }

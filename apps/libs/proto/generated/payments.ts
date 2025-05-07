@@ -41,6 +41,14 @@ export interface WebhookRequest {
   signature: string;
 }
 
+export interface GetSubscribesGqlQuery {
+  sortBy: string;
+  sortDirection: string;
+  offset: number;
+  limit: number;
+  userId: string;
+}
+
 export interface CreateSubscribeResponse {
   url: string;
   status: string;
@@ -57,6 +65,13 @@ export interface Payment {
   subType: string;
   status: string;
   amount: number;
+}
+
+export interface PaymentsGqlResponse {
+  items: Payment[];
+  pageNumber: number;
+  pageSize: number;
+  totalCount: number;
 }
 
 export interface PaymentsResponse {
@@ -81,6 +96,8 @@ export interface PaymentsServiceClient {
 
   getSubscribes(request: GetSubscribesQuery, metadata?: Metadata): Observable<PaymentsResponse>;
 
+  getSubscribesGql(request: GetSubscribesGqlQuery, metadata?: Metadata): Observable<PaymentsGqlResponse>;
+
   unSubscribe(request: UnSubscribeRequest, metadata?: Metadata): Observable<UnSubscribeResponse>;
 
   webhook(request: WebhookRequest, metadata?: Metadata): Observable<WebhookResponse>;
@@ -97,6 +114,11 @@ export interface PaymentsServiceController {
     metadata?: Metadata,
   ): Promise<PaymentsResponse> | Observable<PaymentsResponse> | PaymentsResponse;
 
+  getSubscribesGql(
+    request: GetSubscribesGqlQuery,
+    metadata?: Metadata,
+  ): Promise<PaymentsGqlResponse> | Observable<PaymentsGqlResponse> | PaymentsGqlResponse;
+
   unSubscribe(
     request: UnSubscribeRequest,
     metadata?: Metadata,
@@ -110,7 +132,7 @@ export interface PaymentsServiceController {
 
 export function PaymentsServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createSubscribe", "getSubscribes", "unSubscribe", "webhook"];
+    const grpcMethods: string[] = ["createSubscribe", "getSubscribes", "getSubscribesGql", "unSubscribe", "webhook"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("PaymentsService", method)(constructor.prototype[method], method, descriptor);
