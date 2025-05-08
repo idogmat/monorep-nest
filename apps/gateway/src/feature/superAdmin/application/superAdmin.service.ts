@@ -6,7 +6,7 @@ import { PaginationSearchFollowersGqlTerm, PaginationSearchPaymentGqlTerm, Pagin
 import { PostMicroserviceService } from '../../posts/application/services/post.microservice.service';
 import { DeviceService } from "../../user-accounts/devices/application/device.service";
 import { ClientProxy } from "@nestjs/microservices";
-import { PaymentsClientService } from "apps/gateway/src/support.modules/grpc/grpc.payments.service";
+import { PaymentsClientService } from "../../../support.modules/grpc/grpc.payments.service";
 
 @Injectable()
 export class SuperAdminService {

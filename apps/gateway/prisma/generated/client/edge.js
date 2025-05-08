@@ -207,7 +207,8 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null
+    "rootEnvPath": null,
+    "schemaEnvPath": "../../../../../.env"
   },
   "relativePath": "../..",
   "clientVersion": "6.6.0",
@@ -216,12 +217,11 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": null
+        "value": "postgresql://neondb_owner:npg_hL3ma7nKUlZT@ep-hidden-term-a2qfabip-pooler.eu-central-1.aws.neon.tech/test?sslmode=require"
       }
     }
   },
