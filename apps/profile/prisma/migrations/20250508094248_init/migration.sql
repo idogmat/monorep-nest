@@ -6,6 +6,7 @@ CREATE TABLE "profiles" (
     "photoUrl" TEXT,
     "email" TEXT NOT NULL,
     "paymentAccount" BOOLEAN NOT NULL DEFAULT false,
+    "banned" BOOLEAN NOT NULL DEFAULT false,
     "userName" TEXT NOT NULL,
     "aboutMe" VARCHAR(200),
     "firstName" TEXT,
