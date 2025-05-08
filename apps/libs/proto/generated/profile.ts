@@ -69,6 +69,14 @@ export interface BanProfileGQLRequest {
   userId: string;
 }
 
+export interface GetFollowersGqlQuery {
+  sortBy: string;
+  sortDirection: string;
+  offset: number;
+  limit: number;
+  userId: string;
+}
+
 export interface UserProfilesResponse {
   items: UserProfileResponse[];
   pageNumber: number;
@@ -141,6 +149,20 @@ export interface BanProfileGQLResponse {
   status: string;
 }
 
+export interface FollowerResponse {
+  subscriberId: string;
+  profileId: string;
+  createdAt: string;
+  subscriberUserName: string;
+  subscriberUserId: string;
+  profileUserId: string;
+}
+
+export interface FolowersGqlResponse {
+  items: FollowerResponse[];
+  totalCount: number;
+}
+
 export const PROFILE_PACKAGE_NAME = "profile";
 
 export interface ProfileServiceClient {
@@ -164,6 +186,10 @@ export interface ProfileServiceClient {
   deleteProfilesGql(request: DeleteProfileGQLRequest, metadata?: Metadata): Observable<DeleteProfileGQLResponse>;
 
   banProfileGql(request: BanProfileGQLRequest, metadata?: Metadata): Observable<BanProfileGQLResponse>;
+
+  getFollowersGql(request: GetFollowersGqlQuery, metadata?: Metadata): Observable<FolowersGqlResponse>;
+
+  getFollowingGql(request: GetFollowersGqlQuery, metadata?: Metadata): Observable<FolowersGqlResponse>;
 }
 
 export interface ProfileServiceController {
@@ -214,6 +240,16 @@ export interface ProfileServiceController {
     request: BanProfileGQLRequest,
     metadata?: Metadata,
   ): Promise<BanProfileGQLResponse> | Observable<BanProfileGQLResponse> | BanProfileGQLResponse;
+
+  getFollowersGql(
+    request: GetFollowersGqlQuery,
+    metadata?: Metadata,
+  ): Promise<FolowersGqlResponse> | Observable<FolowersGqlResponse> | FolowersGqlResponse;
+
+  getFollowingGql(
+    request: GetFollowersGqlQuery,
+    metadata?: Metadata,
+  ): Promise<FolowersGqlResponse> | Observable<FolowersGqlResponse> | FolowersGqlResponse;
 }
 
 export function ProfileServiceControllerMethods() {
@@ -228,6 +264,8 @@ export function ProfileServiceControllerMethods() {
       "getUserProfilesGql",
       "deleteProfilesGql",
       "banProfileGql",
+      "getFollowersGql",
+      "getFollowingGql",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { ProfileClientService } from "../../../support.modules/grpc/grpc.profile.service";
 import { UsersService } from "../../user-accounts/users/application/users.service";
 import { ProfileMappingService } from "../../profile/application/profile.mapper";
-import { PaginationSearchPaymentGqlTerm, PaginationSearchUserGqlTerm } from '../api/utils/pagination';
+import { PaginationSearchFollowersGqlTerm, PaginationSearchPaymentGqlTerm, PaginationSearchUserGqlTerm } from '../api/utils/pagination';
 import { PostMicroserviceService } from '../../posts/application/services/post.microservice.service';
 import { DeviceService } from "../../user-accounts/devices/application/device.service";
 import { ClientProxy } from "@nestjs/microservices";
@@ -45,6 +45,37 @@ export class SuperAdminService {
     try {
       console.log(query)
       const { items, totalCount } = await this.paymentsClientService.getSubscribesGql(query)
+      return { items, totalCount }
+
+    } catch (e) {
+
+      console.log(e, 'fail')
+      return { items: [], totalCount: 0 };
+    }
+  }
+
+
+  async getFollowers(query: PaginationSearchFollowersGqlTerm
+  ): Promise<{ items: any[], totalCount: number }> {
+    try {
+      console.log(query)
+      const { items, totalCount } = await this.profileClientService.getFollowersGql(query)
+      console.log({ items, totalCount }, 'gate')
+      return { items, totalCount }
+
+    } catch (e) {
+
+      console.log(e, 'fail')
+      return { items: [], totalCount: 0 };
+    }
+  }
+
+  async getFollowing(query: PaginationSearchFollowersGqlTerm
+  ): Promise<{ items: any[], totalCount: number }> {
+    try {
+      console.log(query)
+      const { items, totalCount } = await this.profileClientService.getFollowingGql(query)
+      console.log({ items, totalCount }, 'gate')
       return { items, totalCount }
 
     } catch (e) {

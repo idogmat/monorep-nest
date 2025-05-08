@@ -69,8 +69,6 @@ export interface Payment {
 
 export interface PaymentsGqlResponse {
   items: Payment[];
-  pageNumber: number;
-  pageSize: number;
   totalCount: number;
 }
 

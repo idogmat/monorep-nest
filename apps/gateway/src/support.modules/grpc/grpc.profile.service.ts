@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { BanProfileGQLRequest, DeleteProfileGQLRequest, UpdateUserProfileRequest, UserProfileQueryRequest, UserProfileResponse, UserProfilesGQLRequest } from '../../../../libs/proto/generated/profile';
+import { BanProfileGQLRequest, DeleteProfileGQLRequest, GetFollowersGqlQuery, UpdateUserProfileRequest, UserProfileQueryRequest, UserProfileResponse, UserProfilesGQLRequest } from '../../../../libs/proto/generated/profile';
 import { firstValueFrom, lastValueFrom, Observable } from 'rxjs';
 
 interface ProfileService {
@@ -13,6 +13,8 @@ interface ProfileService {
   GetUserProfilesGQL(data: UserProfilesGQLRequest): Observable<any>;
   DeleteProfilesGQL(data: DeleteProfileGQLRequest): Observable<any>;
   BanProfileGQL(data: BanProfileGQLRequest): Observable<any>;
+  GetFollowersGql(data: GetFollowersGqlQuery): Observable<any>;
+  GetFollowingGql(data: GetFollowersGqlQuery): Observable<any>;
 }
 
 @Injectable()
@@ -63,5 +65,12 @@ export class ProfileClientService implements OnModuleInit {
 
   async banProfileGQL(data: DeleteProfileGQLRequest) {
     return lastValueFrom(await this.profileService.BanProfileGQL(data));
+  }
+
+  async getFollowersGql(data: GetFollowersGqlQuery) {
+    return lastValueFrom(await this.profileService.GetFollowersGql(data));
+  }
+  async getFollowingGql(data: GetFollowersGqlQuery) {
+    return lastValueFrom(await this.profileService.GetFollowingGql(data));
   }
 }

@@ -84,6 +84,11 @@ export class PaginationPaymentsQueryDto extends PaginationGqlDto {
   userId?: string;
 }
 
+export class PaginationFollowersQueryDto extends PaginationGqlDto {
+
+  userId?: string;
+}
+
 
 export class PaginationPostQueryDto extends PaginationGqlDto {
 
@@ -106,6 +111,16 @@ export class PaginationSearchPaymentGqlTerm extends Pagination {
   public readonly userId: string | null;
 
   constructor(query: PaginationPaymentsQueryDto, sortProperties: string[]) {
+    super(query, sortProperties);
+    this.userId = query?.userId ? query.userId.toString() : null;
+
+  }
+}
+
+export class PaginationSearchFollowersGqlTerm extends Pagination {
+  public readonly userId: string | null;
+
+  constructor(query: PaginationFollowersQueryDto, sortProperties: string[]) {
     super(query, sortProperties);
     this.userId = query?.userId ? query.userId.toString() : null;
 

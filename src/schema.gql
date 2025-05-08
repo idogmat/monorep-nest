@@ -7,9 +7,37 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Follower {
+  createdAt: String!
+  profileId: String
+  profileUserId: String
+  subscriberId: String
+  subscriberUserId: String
+  subscriberUserName: String
+}
+
+type Following {
+  createdAt: String!
+  profileId: String
+  profileUserId: String
+  profileUserName: String
+  subscriberId: String
+  subscriberUserId: String
+}
+
 type Mutation {
   bunUser(banReason: String!, id: String!): Boolean!
   deleteUser(id: String!): Boolean!
+}
+
+type PaginatedFollowers {
+  followers: [Follower!]!
+  totalCount: Float!
+}
+
+type PaginatedFollowing {
+  following: [Following!]!
+  totalCount: Float!
 }
 
 type PaginatedPayments {
@@ -79,6 +107,8 @@ type Profile {
 }
 
 type Query {
+  followers(limit: Int, offset: Int, sortBy: String, sortDirection: String, userId: String): PaginatedFollowers!
+  following(limit: Int, offset: Int, sortBy: String, sortDirection: String, userId: String): PaginatedFollowing!
   payments(limit: Int, offset: Int, sortBy: String, sortDirection: String, userId: String): PaginatedPayments!
   posts(description: String, limit: Int, offset: Int, sortBy: String, sortDirection: String, userId: String): PaginatedPost!
   users(limit: Int, name: String, offset: Int, sortBy: String, sortDirection: String): PaginatedUsers!

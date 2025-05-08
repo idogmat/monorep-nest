@@ -3,9 +3,11 @@ import { SuperAdminService } from '../../application/superAdmin.service';
 import { UseGuards } from '@nestjs/common';
 import { GqlBasicAuthGuard } from '../../../../common/guard/gqlBasicAuthGuard';
 import { PaginatedUsers, User } from '../models/user.schema';
-import { PaginationSearchPaymentGqlTerm, PaginationSearchUserGqlTerm } from '../utils/pagination';
+import { PaginationSearchFollowersGqlTerm, PaginationSearchPaymentGqlTerm, PaginationSearchUserGqlTerm } from '../utils/pagination';
 import { PaginatedPayments } from '../models/payment.schema';
 import e from 'express';
+import { PaginatedFollowers } from '../models/follower.schema';
+import { PaginatedFollowing } from '../models/following.schema';
 
 @Resolver(() => User)
 export class SuperAdminResolver {
@@ -83,4 +85,61 @@ export class SuperAdminResolver {
     return { payments, totalCount: res.totalCount };
   }
 
+  @UseGuards(GqlBasicAuthGuard)
+  @Query(() => PaginatedFollowers)
+  async followers(
+    @Args('offset', { type: () => Int, nullable: true }) offset?: number,
+    @Args('limit', { type: () => Int, nullable: true }) limit?: number,
+    @Args('sortBy', { type: () => String, nullable: true }) sortBy?: string,
+    @Args('sortDirection', { type: () => String, nullable: true }) sortDirection?: 'asc' | 'desc',
+    @Args('userId', { type: () => String, nullable: true }) userId?: string,
+  ) {
+    const sanitizedQuery = new PaginationSearchFollowersGqlTerm(
+      {
+        offset: offset,
+        limit: limit,
+        sortBy, sortDirection, userId
+      }
+      , ['createdAt']);
+    console.log(sanitizedQuery)
+    const res = await this.superAdminService.getFollowers(sanitizedQuery);
+    console.log(res, 'res')
+    let followers = []
+    if (res.items?.length) {
+      followers = res.items.map(i => ({
+        ...i,
+        createdAt: i.createdAt ? new Date(i.createdAt).toISOString() : null,
+      }))
+    }
+    return { followers, totalCount: res.totalCount };
+  }
+
+  @UseGuards(GqlBasicAuthGuard)
+  @Query(() => PaginatedFollowing)
+  async following(
+    @Args('offset', { type: () => Int, nullable: true }) offset?: number,
+    @Args('limit', { type: () => Int, nullable: true }) limit?: number,
+    @Args('sortBy', { type: () => String, nullable: true }) sortBy?: string,
+    @Args('sortDirection', { type: () => String, nullable: true }) sortDirection?: 'asc' | 'desc',
+    @Args('userId', { type: () => String, nullable: true }) userId?: string,
+  ) {
+    const sanitizedQuery = new PaginationSearchFollowersGqlTerm(
+      {
+        offset: offset,
+        limit: limit,
+        sortBy, sortDirection, userId
+      }
+      , ['createdAt']);
+    console.log(sanitizedQuery)
+    const res = await this.superAdminService.getFollowing(sanitizedQuery);
+    console.log(res, 'res')
+    let following = []
+    if (res.items?.length) {
+      following = res.items.map(i => ({
+        ...i,
+        createdAt: i.createdAt ? new Date(i.createdAt).toISOString() : null,
+      }))
+    }
+    return { following, totalCount: res.totalCount };
+  }
 }
