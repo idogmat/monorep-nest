@@ -10,6 +10,7 @@ import { PostViewModel } from '../../api/model/output/post.view.model';
 import { PagedResponse } from '../../../../common/pagination/paged.response';
 import { PaginationSearchPostTerm } from '../../../../../../libs/common/pagination/query.posts.model';
 import { PostUpdateModel } from '../../api/model/input/post.update.model';
+import { PaginationSearchPostGqlTerm } from '../../../superAdmin/api/utils/pagination';
 
 @Injectable()
 export class PostMicroserviceService {
@@ -83,6 +84,11 @@ export class PostMicroserviceService {
 
   }
 
+  async getPostsGQL(queryDto: PaginationSearchPostGqlTerm) {
+
+    return this.gateService.postServiceGet<InterlayerNotice<PagedResponse<PostViewModel>>>('get-posts-gql', {}, queryDto.toQueryParams());
+
+  }
 
   async updatePost(param: { updateDto: PostUpdateModel; postId: string; userId: string }) {
     const headers = {

@@ -3,7 +3,7 @@ import { ClientProxy, Ctx, EventPattern, GrpcMethod, Payload, RmqContext } from 
 import { PaymentsService } from '../applications/payments.service';
 import { PaymentsRepository } from '../infrastructure/payments.repository';
 import { CommandBus } from '@nestjs/cqrs';
-import { GetSubscribesQuery, UnSubscribeRequest, UserForSubscribe, WebhookRequest } from '../../../../../libs/proto/generated/payments';
+import { GetSubscribesGqlQuery, GetSubscribesQuery, UnSubscribeRequest, UserForSubscribe, WebhookRequest } from '../../../../../libs/proto/generated/payments';
 import { PaymentsQueryRepository } from '../infrastructure/payments.query-repository';
 import { WebHookPaymentCommand } from '../use-cases/webhook.use-case';
 import { SubscribeCommand } from '../use-cases/subscribe.use-case';
@@ -68,6 +68,21 @@ export class PaymentsController {
     } catch (error) {
       console.log(error)
       return { url: '', status: 'fail' }
+    }
+
+  }
+
+  @GrpcMethod('PaymentsService', 'GetSubscribesGql')
+  async getSubscribesGql(data: GetSubscribesGqlQuery) {
+    try {
+      console.log(data)
+
+      const { items, totalCount } = await this.paymentsQueryRepository.getAllPaymentsGql(data)
+      console.log({ items, totalCount })
+      return { items, totalCount }
+    } catch (error) {
+      console.log(error)
+      return { items: [], totalCount: 0 }
     }
 
   }

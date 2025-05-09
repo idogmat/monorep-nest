@@ -3,7 +3,8 @@ import { Ctx, EventPattern, GrpcMethod, Payload, RmqContext } from '@nestjs/micr
 import { ProfileService } from '../features/profile.service';
 import { ProfilePhotoInputModel } from '../features/model/profilePhoto.input.model';
 import { OutputProfileModelMapper } from '../features/model/profile.output.model';
-import { CreateUserProfileRequest, SubscribeProfileRequest, UpdateUserProfileRequest, UserProfileQueryRequest, UserProfileUpdateSubscribeRequest } from '../../../libs/proto/generated/profile';
+import { CreateUserProfileRequest, DeleteProfileGQLRequest, GetFollowersGqlQuery, SubscribeProfileRequest, UpdateUserProfileRequest, UserProfileQueryRequest, UserProfilesGQLRequest, UserProfileUpdateSubscribeRequest } from '../../../libs/proto/generated/profile';
+import { status } from '@grpc/grpc-js';
 
 @Controller()
 export class AppController {
@@ -36,6 +37,42 @@ export class AppController {
     console.log({ items: mapped, pageNumber, pageSize, totalCount })
 
     return { items: mapped, pageNumber, pageSize, totalCount }
+  }
+
+  @GrpcMethod('ProfileService', 'GetFollowersGql')
+  async getFollowersGql(data: GetFollowersGqlQuery) {
+    console.log(data, 'GetFollowersGql')
+    const { items, totalCount } = await this.profileService.getFollowers(data)
+    const mappedFolowers = items?.map(f => {
+      const { subscriber, profile, ...rest } = f
+      return {
+        ...rest,
+        subscriberUserName: subscriber?.userName,
+        subscriberUserId: subscriber?.userId,
+        profileUserId: profile?.userId,
+      }
+    }) || []
+    console.log(mappedFolowers)
+
+    return { items: mappedFolowers, totalCount }
+  }
+
+  @GrpcMethod('ProfileService', 'GetFollowingGql')
+  async getFollowingGql(data: GetFollowersGqlQuery) {
+    console.log(data, 'GetFollowingGql')
+    const { items, totalCount } = await this.profileService.getFollowing(data)
+    const mappedFolowers = items?.map(f => {
+      const { subscriber, profile, ...rest } = f
+      return {
+        ...rest,
+        profileUserName: profile?.userName,
+        subscriberUserId: subscriber?.userId,
+        profileUserId: profile?.userId,
+      }
+    }) || []
+    console.log(mappedFolowers)
+
+    return { items: mappedFolowers, totalCount }
   }
 
   @GrpcMethod('ProfileService', 'UpdateUserProfile')
@@ -92,6 +129,53 @@ export class AppController {
     console.log(data)
     try {
       await this.profileService.updateProfilePayment(data.userId, data.paymentAccount)
+      return { status: 'ok' };
+    } catch (error) {
+      // save as error
+      console.warn(error)
+      return { status: 'fail' };
+    }
+  }
+
+  @GrpcMethod('ProfileService', 'GetUserProfilesGQL')
+  async GetUserProfilesGQL(
+    data: UserProfilesGQLRequest
+  ) {
+    try {
+      const { users } = data
+      const result = await this.profileService.findForGql(users)
+      const profiles = result.map(p => OutputProfileModelMapper(p))
+
+      return { profiles };
+    } catch (error) {
+      // save as error
+      console.warn(error)
+      return { status: 'fail' };
+    }
+  }
+
+  @GrpcMethod('ProfileService', 'DeleteProfilesGQL')
+  async deleteProfilesGQL(
+    data: DeleteProfileGQLRequest
+  ) {
+    try {
+      const result = await this.profileService.deleteProfile(data.userId)
+      console.log(result)
+      return { status: 'ok' };
+    } catch (error) {
+      // save as error
+      console.warn(error)
+      return { status: 'fail' };
+    }
+  }
+
+  @GrpcMethod('ProfileService', 'BanProfileGQL')
+  async banProfileGQL(
+    data: DeleteProfileGQLRequest
+  ) {
+    try {
+      const result = await this.profileService.banProfile(data.userId)
+      console.log(result)
       return { status: 'ok' };
     } catch (error) {
       // save as error

@@ -70,4 +70,12 @@ export class DeviceService {
       },
     })
   }
+
+  async deleteAllSessionBeforDeleteUser(userId: string): Promise<void> {
+    await this.prisma.device.deleteMany({
+      where: {
+        userId
+      }
+    })
+  }
 }

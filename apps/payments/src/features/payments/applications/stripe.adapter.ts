@@ -11,7 +11,7 @@ export class StripeAdapter {
 
   constructor(private configService: ConfigService) {
     this.stripe = new Stripe(this.configService.get('STRIPE_API_KEY'), {
-      apiVersion: '2025-03-31.basil',
+      apiVersion: '2025-04-30.basil' as any,
     });
     this.successUrl = `${this.configService.get('BASE_URL')}/payments/success`;
     this.cancelUrl = `${this.configService.get('BASE_URL')}/payments/error`;

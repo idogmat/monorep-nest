@@ -27,29 +27,6 @@ export class GateService {
       : this.configService.get('POST_PROD_SERVICE')
   }
 
-  async profileServicePost(path, payload, headers) {
-    console.log([this.profileService, path].join('/'))
-    const response = await lastValueFrom(this.httpService.post(
-      [this.profileService, path].join('/'),
-      payload,
-      {
-        headers
-      }
-    ));
-    return response
-  }
-
-  async profileServicePut(path, payload, headers) {
-    const response = await lastValueFrom(this.httpService.put(
-      this.profileService,
-      payload,
-      {
-        headers
-      }
-    ));
-    return response
-  }
-
   async filesServicePost(path, payload, headers) {
     const response = await lastValueFrom(this.httpService.post(
       [this.fileService, path].join('/'),
@@ -108,9 +85,7 @@ export class GateService {
     return response;
   }
   async postServiceGet<T = any>(path: string, headers, params): Promise<T> {
-
     const url = [this.postService, path].join('/');
-    console.log(url, 'url')
     const { data } = await lastValueFrom(this.httpService.get<T>(
       url,
       { headers, params }
@@ -119,24 +94,4 @@ export class GateService {
     return data;
 
   }
-  async profileServiceGet(path, headers) {
-    // console.log(query, 'query-gate')
-    // console.log(Object.entries(query))
-    // for (const el of query) {
-    //   console.log(el)
-    // }
-    const url = [this.profileService, path].join('/')
-    // if (!query) {
-    //   url = `${url}&${query}`
-    // }
-    console.log(url)
-
-    const response = await lastValueFrom(this.httpService.get(
-      url,
-      { headers }
-    ));
-    return response
-  }
-
-
 }

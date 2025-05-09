@@ -9,7 +9,7 @@ export class PagedResponseOfPayments extends PagedResponse<PaymentsViewModel> {
 
 export function mapToViewModel({ items, totalCount, pageNumber, pageSize }): PagedResponseOfPayments {
 
-  const mapped = items.map(payment => {
+  const mapped = items?.map(payment => {
     return {
       id: payment.id,
       userId: payment.authorId,
@@ -22,6 +22,6 @@ export function mapToViewModel({ items, totalCount, pageNumber, pageSize }): Pag
       status: payment.status,
       amount: payment.amount,
     }
-  })
+  }) || []
   return new PagedResponse<PaymentsViewModel>(mapped, totalCount, pageNumber, pageSize)
 }

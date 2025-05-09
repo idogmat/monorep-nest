@@ -1,0 +1,132 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Follower {
+  createdAt: String!
+  profileId: String
+  profileUserId: String
+  subscriberId: String
+  subscriberUserId: String
+  subscriberUserName: String
+}
+
+type Following {
+  createdAt: String!
+  profileId: String
+  profileUserId: String
+  profileUserName: String
+  subscriberId: String
+  subscriberUserId: String
+}
+
+type Mutation {
+  bunUser(banReason: String!, id: String!): Boolean!
+  deleteUser(id: String!): Boolean!
+}
+
+type PaginatedFollowers {
+  followers: [Follower!]!
+  totalCount: Float!
+}
+
+type PaginatedFollowing {
+  following: [Following!]!
+  totalCount: Float!
+}
+
+type PaginatedPayments {
+  payments: [Payment!]!
+  totalCount: Float!
+}
+
+type PaginatedPost {
+  posts: [Post!]!
+  totalCount: Int!
+}
+
+type PaginatedUsers {
+  totalCount: Float!
+  users: [User!]!
+}
+
+type Payment {
+  amount: Int
+  createdAt: String
+  customerId: String!
+  deletedAt: String
+  expiresAt: String
+  id: ID!
+  payType: String
+  profile: Profile
+  status: PaymentStatus!
+  subType: String
+  subscriptionId: String
+  userId: String!
+}
+
+enum PaymentStatus {
+  ACTIVE
+  CANCEL
+  PENDING
+}
+
+type Post {
+  banned: String
+  createdAt: DateTime!
+  description: String!
+  id: String!
+  paymentAccount: Boolean
+  photoUploadStatus: String
+  photoUrlProfile: String
+  photoUrls: [String!]!
+  updatedAt: DateTime!
+  userId: String!
+  userName: String
+}
+
+type Profile {
+  aboutMe: String
+  city: String
+  country: String
+  createdAt: DateTime!
+  dateOfBirth: DateTime
+  email: String!
+  firstName: String
+  id: String!
+  lastName: String
+  paymentAccount: Boolean!
+  photoUrl: String
+  userId: String!
+  userName: String!
+}
+
+type Query {
+  followers(limit: Int, offset: Int, sortBy: String, sortDirection: String, userId: String): PaginatedFollowers!
+  following(limit: Int, offset: Int, sortBy: String, sortDirection: String, userId: String): PaginatedFollowing!
+  payments(limit: Int, offset: Int, sortBy: String, sortDirection: String, userId: String): PaginatedPayments!
+  posts(description: String, limit: Int, offset: Int, sortBy: String, sortDirection: String, userId: String): PaginatedPost!
+  users(limit: Int, name: String, offset: Int, sortBy: String, sortDirection: String): PaginatedUsers!
+}
+
+type User {
+  banned: Boolean!
+  codeExpiration: DateTime
+  confirmationCode: String
+  createdAt: DateTime!
+  deletedAt: DateTime
+  email: String!
+  expirationDate: DateTime
+  id: String!
+  isConfirmed: Boolean!
+  name: String
+  passwordHash: String
+  profile: Profile
+  recoveryCode: String
+  updatedAt: DateTime!
+}

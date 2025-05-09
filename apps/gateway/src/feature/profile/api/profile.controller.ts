@@ -74,15 +74,13 @@ export class ProfileController {
   ) {
     try {
       const query = new PaginationSearchProfileTerm(queryDTO, ['createdAt']);
-      console.log(query)
       const userId = req.user?.userId || ''
       const { items, pageNumber, pageSize, totalCount } = await this.profileClientService.getProfiles({ userId, query })
-      // console.log(result)
       const mapped = items.map(this.profileMappingService.profileMapping)
       return new PagedResponse<UserProfileResponseDto>(mapped, totalCount, pageNumber, pageSize);
 
-    } catch {
-      // throw error
+    } catch (e) {
+      console.warn(e)
     }
 
   }

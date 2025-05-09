@@ -73,7 +73,8 @@ export class PaymentsController {
   ) {
     const userId = req.user?.userId;
     const query = new PaginationSearchPaymentsTerm(queryDTO, ['createdAt', 'expiresAt']);
-    const { items, totalCount, pageNumber, pageSize } = await this.paymentsClientService.getProfiles({ ...query, userId })
+    const result = await this.paymentsClientService.getSubscribes({ ...query, userId })
+    const { items, totalCount, pageNumber, pageSize } = result
     return mapToViewModel({ items, totalCount, pageNumber, pageSize })
   }
 

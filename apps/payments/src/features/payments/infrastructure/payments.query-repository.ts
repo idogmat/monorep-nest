@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { GetSubscribesQuery } from '../../../../../libs/proto/generated/payments';
-import { Prisma } from '../../../../prisma/generated/payments-client';
+import { GetSubscribesGqlQuery, GetSubscribesQuery } from '../../../../../libs/proto/generated/payments';
+import { Payment, Prisma } from '../../../../prisma/generated/payments-client';
+import { PaginationSearchPaymentGqlTerm } from 'apps/gateway/src/feature/superAdmin/api/utils/pagination';
 
 
 @Injectable()
@@ -36,5 +37,27 @@ export class PaymentsQueryRepository {
 
   }
 
+  async getAllPaymentsGql(query: GetSubscribesGqlQuery): Promise<{ items: Payment[] } & { totalCount: number }> {
+    const settings = {
+      skip: query.offset ?? 0,
+      take: query.limit ?? undefined,
+      orderBy: {
+        [query.sortBy]: query.sortDirection.toLocaleLowerCase()
+      },
+    }
+    if (query.userId) Object.assign(settings, {
+      where: {
+        userId: query.userId
+      }
+    })
+    const querySettings = this.prisma.payment.findMany(settings);
+
+    const [items, totalCount] = await Promise.all([
+      querySettings,
+      this.prisma.payment.count(settings)
+    ]);
+
+    return { items, totalCount };
+  }
 
 }

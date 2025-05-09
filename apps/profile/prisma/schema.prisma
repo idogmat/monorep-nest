@@ -15,6 +15,7 @@ model Profile {
   photoUrl        String?
   email           String
   paymentAccount  Boolean   @default(false)
+  banned          Boolean   @default(false)
   userName        String
   aboutMe         String?   @db.VarChar(200)
   firstName       String?   

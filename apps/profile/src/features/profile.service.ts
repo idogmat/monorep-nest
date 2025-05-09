@@ -1,11 +1,11 @@
-import { ConflictException, ForbiddenException, Injectable } from "@nestjs/common"
+import { BadRequestException, ConflictException, ForbiddenException, Injectable } from "@nestjs/common"
 import { PrismaService } from "./prisma/prisma.service"
 import { Profile, Prisma } from '../../prisma/generated/profile-client';
 import { ProfilePhotoInputModel } from "./model/profilePhoto.input.model";
 import { InputProfileModel } from "./model/input.profile.model";
-import { PaginationProfileWithSubscribers, ProfileWithSubscribers } from "./model/profile.output.model";
+import { PaginationProfileWithSubscribers, PaginationProfileWithSubscribersGql, ProfileWithSubscribers } from "./model/profile.output.model";
 import ts from "typescript";
-import { UserProfilesQuery } from "../../../libs/proto/generated/profile";
+import { GetFollowersGqlQuery, UserProfilesQuery } from "../../../libs/proto/generated/profile";
 
 
 
@@ -19,6 +19,45 @@ export class ProfileService {
         userId: profile.userId,
         userName: profile.userName,
         email: profile.email
+      }
+    })
+  }
+
+  async deleteProfile(userId: string): Promise<any> {
+    const profile = await this.prisma.profile.findUnique({ where: { userId } })
+    if (!profile) throw new BadRequestException()
+    return this.prisma.profile.delete({
+      where: { userId }
+    })
+  }
+
+  async banProfile(userId: string): Promise<any> {
+    const profile = await this.prisma.profile.findUnique({ where: { userId } })
+    if (!profile) throw new BadRequestException()
+    return this.prisma.profile.update({
+      where: { userId },
+      data: { banned: true }
+    })
+  }
+
+  async findForGql(users: string[]): Promise<ProfileWithSubscribers[]> {
+    return await this.prisma.profile.findMany({
+      where: {
+        userId: {
+          in: users
+        }
+      },
+      include: {
+        subscribers: {
+          include: {
+            profile: true // Получаем связанные профили
+          }
+        },
+        subscriptions: {
+          include: {
+            subscriber: true // Получаем связанные профили
+          }
+        }
       }
     })
   }
@@ -91,6 +130,94 @@ export class ProfileService {
     ]);
 
     return { items, totalCount, pageNumber, pageSize };
+  }
+
+  async getFollowers(query: GetFollowersGqlQuery): Promise<PaginationProfileWithSubscribersGql> {
+    const { offset, limit, sortBy, sortDirection } = query;
+    const userId = query?.userId || ''
+
+    const where: Prisma.SubscriptionWhereInput = {};
+
+    if (userId) {
+      let profile
+      try {
+        profile = await this.prisma.profile.findFirstOrThrow({
+          where: { userId }
+        })
+        if (!profile.id) return { items: [], totalCount: 0 };
+      } catch (error) {
+        console.warn(error, 'error')
+        return { items: [], totalCount: 0 };
+      }
+      where.profileId = profile.id;
+    }
+
+    const allowedSortFields: (keyof ProfileWithSubscribers)[] = [
+      'createdAt',
+    ];
+
+    const orderBy: Prisma.ProfileOrderByWithRelationInput = allowedSortFields.includes(sortBy as any)
+      ? { [sortBy]: sortDirection.toLowerCase() as 'asc' | 'desc' }
+      : { createdAt: 'desc' };
+
+    const [items, totalCount] = await this.prisma.$transaction([
+      this.prisma.subscription.findMany({
+        where,
+        orderBy,
+        skip: offset,
+        take: limit,
+        include: {
+          subscriber: true,
+          profile: true
+        }
+      }),
+      this.prisma.subscription.count({ where }),
+    ]);
+    return { items, totalCount };
+  }
+
+  async getFollowing(query: GetFollowersGqlQuery): Promise<PaginationProfileWithSubscribersGql> {
+    const { offset, limit, sortBy, sortDirection } = query;
+    const userId = query?.userId || ''
+
+    const where: Prisma.SubscriptionWhereInput = {};
+
+    if (userId) {
+      let profile
+      try {
+        profile = await this.prisma.profile.findFirstOrThrow({
+          where: { userId }
+        })
+        if (!profile.id) return { items: [], totalCount: 0 };
+      } catch (error) {
+        console.warn(error, 'error')
+        return { items: [], totalCount: 0 };
+      }
+      where.subscriberId = profile.id;
+    }
+
+    const allowedSortFields: (keyof ProfileWithSubscribers)[] = [
+      'createdAt',
+    ];
+
+    const orderBy: Prisma.ProfileOrderByWithRelationInput = allowedSortFields.includes(sortBy as any)
+      ? { [sortBy]: sortDirection.toLowerCase() as 'asc' | 'desc' }
+      : { createdAt: 'desc' };
+
+    const [items, totalCount] = await this.prisma.$transaction([
+      this.prisma.subscription.findMany({
+        where,
+        orderBy,
+        skip: offset,
+        take: limit,
+        include: {
+          subscriber: true,
+          profile: true
+        }
+      }),
+      this.prisma.subscription.count({ where }),
+    ]);
+    return { items, totalCount };
   }
 
   async updateProfilePhoto(data: ProfilePhotoInputModel): Promise<Profile> {

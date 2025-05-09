@@ -10,6 +10,7 @@ import { GateService } from '../../common/gate.service';
 import { ProfileMappingService } from './application/profile.mapper';
 import { GrpcServiceModule } from '../../support.modules/grpc/grpc.module';
 import { FileService } from '../../../../libs/file.service';
+import { ProfileLoader } from './application/profile.loader';
 
 @Module({
   imports: [
@@ -24,23 +25,6 @@ import { FileService } from '../../../../libs/file.service';
       inject: [ConfigService]
     }),
     GrpcServiceModule
-    // ClientsModule.registerAsync([
-    //   {
-    //     imports: [ConfigModule],
-    //     name: 'RABBITMQ_SERVICE',
-    //     useFactory: (configService: ConfigService) => {
-    //       return {
-    //         transport: Transport.RMQ,
-    //         options: {
-    //           urls: configService.get<string[]>('RABBIT_URLS'),
-    //           queue: 'file_queue',
-    //           queueOptions: { durable: false },
-    //         },
-    //       }
-    //     },
-    //     inject: [ConfigService],
-    //   },
-    // ])
   ],
   providers: [
     ProfileService,
@@ -49,8 +33,9 @@ import { FileService } from '../../../../libs/file.service';
     PrismaService,
     GateService,
     FileService,
+    ProfileLoader,
   ],
   controllers: [ProfileController],
-  exports: []
+  exports: [ProfileMappingService, ProfileLoader ]
 })
 export class ProfileModule { }

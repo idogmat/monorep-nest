@@ -3,63 +3,52 @@ import { HttpModule } from '@nestjs/axios';
 import { CqrsModule } from '@nestjs/cqrs';
 import { PostsController } from './api/posts.controller';
 import { MulterModule } from '@nestjs/platform-express';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { PostsPrismaRepository } from './infrastructure/prisma/posts.prisma.repository';
 import { CreatePostUseCases } from './application/use-cases/create.post.use.cases';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { DeviceService } from '../user-accounts/devices/application/device.service';
 import { GateService } from '../../common/gate.service';
-import { PostsQueryRepository } from './infrastructure/prisma/posts-query-repository.service';
 import { PostMicroserviceService } from './application/services/post.microservice.service';
+import { ProfileModule } from '../profile/profile.module';
+import { PostGraphqlService } from '../superAdmin/application/post.graphql.service';
+import { UsersAccountsModule } from '../user-accounts/users.accounts.module';
+import { PostResolver } from '../superAdmin/api/resolvers/post.resolver';
+import { PostFieldResolver } from '../superAdmin/api/resolvers/post-field.resolver';
 
 const useCasesForPost = [
   CreatePostUseCases]
 @Module({
   imports: [
-    HttpModule,
     CqrsModule,
+    UsersAccountsModule,
+    HttpModule,
+    ProfileModule,
     MulterModule.register({
       dest: './uploads',
     }),
     JwtModule.registerAsync({
-      useFactory: (configService: ConfigService) => {
-        return {
-          secret: configService.get('ACCESS_TOKEN'),
-          signOptions: { expiresIn: configService.get('ACCESS_TOKEN_EXPIRATION') },
-        };
-      },
-      inject: [ConfigService]
-    }),
-    ClientsModule.registerAsync([
-      {
-        imports: [ConfigModule],
-        name: 'RABBITMQ_POST_SERVICE',
-        useFactory: (configService: ConfigService) => {
-          return {
-            transport: Transport.RMQ,
-            options: {
-              urls: configService.get<string[]>('RABBIT_URLS'),
-              queue: 'file_queue',
-              queueOptions: { durable: true },
-            },
-          }
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('ACCESS_TOKEN_SECRET'),
+        signOptions: {
+          expiresIn: configService.get<string | number>('ACCESS_TOKEN_EXPIRATION'),
         },
-        inject: [ConfigService],
-      },
-    ])
+      }),
+    }),
   ],
   providers: [
-    PostsPrismaRepository,
-    PostsQueryRepository,
     PrismaService,
     DeviceService,
     GateService,
     PostMicroserviceService,
+    PostGraphqlService,
+    PostResolver,
+    PostFieldResolver,
     ...useCasesForPost
   ],
   controllers: [PostsController],
-  exports: [HttpModule]
+  exports: [HttpModule, GateService, PostMicroserviceService, PostGraphqlService ]
 })
 export class PostsModule { }

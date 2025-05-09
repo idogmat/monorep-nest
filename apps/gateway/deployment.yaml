@@ -137,3 +137,13 @@ spec:
                  secretKeyRef:
                    name: gate-production-config-secret
                    key: POST_PROD_SERVICE
+             - name: ADMIN_LOGIN
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: ADMIN_LOGIN
+             - name: ADMIN_PASSWORD
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: ADMIN_PASSWORD

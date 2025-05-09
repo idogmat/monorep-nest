@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { UpdateUserProfileRequest, UserProfileQueryRequest, UserProfileResponse } from '../../../../libs/proto/generated/profile';
+import { BanProfileGQLRequest, DeleteProfileGQLRequest, GetFollowersGqlQuery, UpdateUserProfileRequest, UserProfileQueryRequest, UserProfileResponse, UserProfilesGQLRequest } from '../../../../libs/proto/generated/profile';
 import { firstValueFrom, lastValueFrom, Observable } from 'rxjs';
 
 interface ProfileService {
@@ -10,7 +10,11 @@ interface ProfileService {
   SubscribeUserProfile(data: { userId: string, profileUserId: string }): Observable<any>;
   CreateUserProfile(data: { userId: string, userName: string, email: string }): Observable<any>;
   UpdateUserProfileSubscribe(data: { userId: string, paymentAccount: boolean }): Observable<any>;
-
+  GetUserProfilesGQL(data: UserProfilesGQLRequest): Observable<any>;
+  DeleteProfilesGQL(data: DeleteProfileGQLRequest): Observable<any>;
+  BanProfileGQL(data: BanProfileGQLRequest): Observable<any>;
+  GetFollowersGql(data: GetFollowersGqlQuery): Observable<any>;
+  GetFollowingGql(data: GetFollowersGqlQuery): Observable<any>;
 }
 
 @Injectable()
@@ -35,6 +39,10 @@ export class ProfileClientService implements OnModuleInit {
     return lastValueFrom(await this.profileService.GetUserProfiles(data));
   }
 
+  async getUserProfilesGQL(data: UserProfilesGQLRequest) {
+    return lastValueFrom(await this.profileService.GetUserProfilesGQL(data));
+  }
+
   async updateProfile(data: UpdateUserProfileRequest) {
     return lastValueFrom(await this.profileService.UpdateUserProfile(data));
   }
@@ -49,5 +57,20 @@ export class ProfileClientService implements OnModuleInit {
 
   async updateUserProfileSubscribe(userId: string, paymentAccount: boolean) {
     return lastValueFrom(await this.profileService.UpdateUserProfileSubscribe({ userId, paymentAccount }));
+  }
+
+  async deleteProfilesGQL(data: DeleteProfileGQLRequest) {
+    return lastValueFrom(await this.profileService.DeleteProfilesGQL(data));
+  }
+
+  async banProfileGQL(data: DeleteProfileGQLRequest) {
+    return lastValueFrom(await this.profileService.BanProfileGQL(data));
+  }
+
+  async getFollowersGql(data: GetFollowersGqlQuery) {
+    return lastValueFrom(await this.profileService.GetFollowersGql(data));
+  }
+  async getFollowingGql(data: GetFollowersGqlQuery) {
+    return lastValueFrom(await this.profileService.GetFollowingGql(data));
   }
 }

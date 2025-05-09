@@ -1,5 +1,6 @@
 
-import { Profile, Prisma } from '../../../prisma/generated/profile-client';
+import { Subscribable } from 'rxjs';
+import { Profile, Subscription, Prisma } from '../../../prisma/generated/profile-client';
 
 const profileWithSubscribers = {
   include: {
@@ -16,19 +17,26 @@ const profileWithSubscribers = {
   }
 } as const;
 
-// friends: {
-//   include: {
-//     subscriber: true,
-//     profile: true
-//   }
-// }
+const profileWithSubscribersGql = {
+  include: {
+    profile: true, // Получаем связанные профили
+    subscriber: true // Получаем связанные профили
+  }
+} as const;
 
 export type ProfileWithSubscribers = Profile & Prisma.ProfileGetPayload<& typeof profileWithSubscribers>;
+export type ProfileWithSubscribersGql = Subscription & Prisma.SubscriptionGetPayload<& typeof profileWithSubscribersGql>;
+
 export type PaginationProfileWithSubscribers = {
   totalCount: number;
   pageNumber: number;
   pageSize: number;
   items: ProfileWithSubscribers[] | [];
+}
+
+export type PaginationProfileWithSubscribersGql = {
+  totalCount: number;
+  items: ProfileWithSubscribersGql[] | [];
 }
 export class OutputProfileModel {
   id: string;

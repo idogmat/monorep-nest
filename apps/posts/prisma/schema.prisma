@@ -21,7 +21,8 @@ model Post {
   deletedAt DateTime?
   published Boolean  @default(false)
   title     String   @db.VarChar(255)
-  userId  String
+  userId    String
+  banned    Boolean  @default(false)
   urls File[] @relation("PostFile")
   photoUploadStatus PhotoUploadStatus   @default(PENDING)  // Статус загрузки фотографий
   @@map("posts")

@@ -7,7 +7,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { EnvironmentsTypes } from './getConfiguration';
 import { HttpExceptionFilter } from './exception-filter';
 import { ConfigService } from '@nestjs/config';
-import { interval } from 'date-fns';
 
 const APP_PREFIX = '/api/v1';
 
