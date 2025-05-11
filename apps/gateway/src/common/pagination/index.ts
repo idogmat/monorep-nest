@@ -1,4 +1,3 @@
-import { PaginationPostQueryDto } from '../../feature/posts/api/model/input/pagination.post.query.dto';
 import { PaginationBaseDto } from './pagination.base.dto';
 import { PaginationProfileQueryDto } from '../../../../profile/src/features/model/pagination.profile.query.dto';
 

@@ -26,7 +26,7 @@ export const applyAppSettings = (app: INestApplication): {
 const getEnv = (app: INestApplication) => {
   const configService = app.get(ConfigService);
   const env = configService.get<EnvironmentsTypes>('NODE_ENV')
-  const port = configService.get<number>(checkEnv(env)) || 3000;
+  const port = configService.get<number>('PORT') || configService.get<number>('FILE_LOCAL_PORT');
   const host = env !== 'DEVELOPMENT' ? '0.0.0.0' : 'localhost';
   const rabbit = configService.get<string>('RABBIT_URLS')?.toString() || '';
   return { port, env, host, rabbit }

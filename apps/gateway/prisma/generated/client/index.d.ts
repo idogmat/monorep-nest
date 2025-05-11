@@ -19,6 +19,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
+ * Model SuperAdmin
+ * 
+ */
+export type SuperAdmin = $Result.DefaultSelection<Prisma.$SuperAdminPayload>
+/**
  * Model Provider
  * 
  */
@@ -28,11 +33,6 @@ export type Provider = $Result.DefaultSelection<Prisma.$ProviderPayload>
  * 
  */
 export type Device = $Result.DefaultSelection<Prisma.$DevicePayload>
-/**
- * Model Post
- * 
- */
-export type Post = $Result.DefaultSelection<Prisma.$PostPayload>
 /**
  * Model Notification
  * 
@@ -220,6 +220,16 @@ export class PrismaClient<
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.superAdmin`: Exposes CRUD operations for the **SuperAdmin** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SuperAdmins
+    * const superAdmins = await prisma.superAdmin.findMany()
+    * ```
+    */
+  get superAdmin(): Prisma.SuperAdminDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.provider`: Exposes CRUD operations for the **Provider** model.
     * Example usage:
     * ```ts
@@ -238,16 +248,6 @@ export class PrismaClient<
     * ```
     */
   get device(): Prisma.DeviceDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.post`: Exposes CRUD operations for the **Post** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Posts
-    * const posts = await prisma.post.findMany()
-    * ```
-    */
-  get post(): Prisma.PostDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.notification`: Exposes CRUD operations for the **Notification** model.
@@ -316,8 +316,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.5.0
-   * Query Engine version: 173f8d54f8d52e692c7e27e72a88314ec7aeff60
+   * Prisma Client JS version: 6.6.0
+   * Query Engine version: f676762280b54cd07c770017ed3711ddde35f37a
    */
   export type PrismaVersion = {
     client: string
@@ -699,9 +699,9 @@ export namespace Prisma {
 
   export const ModelName: {
     User: 'User',
+    SuperAdmin: 'SuperAdmin',
     Provider: 'Provider',
     Device: 'Device',
-    Post: 'Post',
     Notification: 'Notification'
   };
 
@@ -721,7 +721,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "provider" | "device" | "post" | "notification"
+      modelProps: "user" | "superAdmin" | "provider" | "device" | "notification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -796,6 +796,80 @@ export namespace Prisma {
           count: {
             args: Prisma.UserCountArgs<ExtArgs>
             result: $Utils.Optional<UserCountAggregateOutputType> | number
+          }
+        }
+      }
+      SuperAdmin: {
+        payload: Prisma.$SuperAdminPayload<ExtArgs>
+        fields: Prisma.SuperAdminFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SuperAdminFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuperAdminPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SuperAdminFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuperAdminPayload>
+          }
+          findFirst: {
+            args: Prisma.SuperAdminFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuperAdminPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SuperAdminFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuperAdminPayload>
+          }
+          findMany: {
+            args: Prisma.SuperAdminFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuperAdminPayload>[]
+          }
+          create: {
+            args: Prisma.SuperAdminCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuperAdminPayload>
+          }
+          createMany: {
+            args: Prisma.SuperAdminCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SuperAdminCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuperAdminPayload>[]
+          }
+          delete: {
+            args: Prisma.SuperAdminDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuperAdminPayload>
+          }
+          update: {
+            args: Prisma.SuperAdminUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuperAdminPayload>
+          }
+          deleteMany: {
+            args: Prisma.SuperAdminDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SuperAdminUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SuperAdminUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuperAdminPayload>[]
+          }
+          upsert: {
+            args: Prisma.SuperAdminUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SuperAdminPayload>
+          }
+          aggregate: {
+            args: Prisma.SuperAdminAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSuperAdmin>
+          }
+          groupBy: {
+            args: Prisma.SuperAdminGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SuperAdminGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SuperAdminCountArgs<ExtArgs>
+            result: $Utils.Optional<SuperAdminCountAggregateOutputType> | number
           }
         }
       }
@@ -944,80 +1018,6 @@ export namespace Prisma {
           count: {
             args: Prisma.DeviceCountArgs<ExtArgs>
             result: $Utils.Optional<DeviceCountAggregateOutputType> | number
-          }
-        }
-      }
-      Post: {
-        payload: Prisma.$PostPayload<ExtArgs>
-        fields: Prisma.PostFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.PostFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PostPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.PostFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PostPayload>
-          }
-          findFirst: {
-            args: Prisma.PostFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PostPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.PostFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PostPayload>
-          }
-          findMany: {
-            args: Prisma.PostFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PostPayload>[]
-          }
-          create: {
-            args: Prisma.PostCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PostPayload>
-          }
-          createMany: {
-            args: Prisma.PostCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.PostCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PostPayload>[]
-          }
-          delete: {
-            args: Prisma.PostDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PostPayload>
-          }
-          update: {
-            args: Prisma.PostUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PostPayload>
-          }
-          deleteMany: {
-            args: Prisma.PostDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.PostUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.PostUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PostPayload>[]
-          }
-          upsert: {
-            args: Prisma.PostUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PostPayload>
-          }
-          aggregate: {
-            args: Prisma.PostAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregatePost>
-          }
-          groupBy: {
-            args: Prisma.PostGroupByArgs<ExtArgs>
-            result: $Utils.Optional<PostGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.PostCountArgs<ExtArgs>
-            result: $Utils.Optional<PostCountAggregateOutputType> | number
           }
         }
       }
@@ -1180,9 +1180,9 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     user?: UserOmit
+    superAdmin?: SuperAdminOmit
     provider?: ProviderOmit
     device?: DeviceOmit
-    post?: PostOmit
     notification?: NotificationOmit
   }
 
@@ -1278,13 +1278,11 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
-    posts: number
     devices: number
     notifications: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    posts?: boolean | UserCountOutputTypeCountPostsArgs
     devices?: boolean | UserCountOutputTypeCountDevicesArgs
     notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   }
@@ -1298,13 +1296,6 @@ export namespace Prisma {
      * Select specific fields to fetch from the UserCountOutputType
      */
     select?: UserCountOutputTypeSelect<ExtArgs> | null
-  }
-
-  /**
-   * UserCountOutputType without action
-   */
-  export type UserCountOutputTypeCountPostsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: PostWhereInput
   }
 
   /**
@@ -1349,6 +1340,8 @@ export namespace Prisma {
     recoveryCode: string | null
     passwordHash: string | null
     expirationDate: Date | null
+    banned: boolean | null
+    bannedReason: string | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -1364,6 +1357,8 @@ export namespace Prisma {
     recoveryCode: string | null
     passwordHash: string | null
     expirationDate: Date | null
+    banned: boolean | null
+    bannedReason: string | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -1379,6 +1374,8 @@ export namespace Prisma {
     recoveryCode: number
     passwordHash: number
     expirationDate: number
+    banned: number
+    bannedReason: number
     _all: number
   }
 
@@ -1396,6 +1393,8 @@ export namespace Prisma {
     recoveryCode?: true
     passwordHash?: true
     expirationDate?: true
+    banned?: true
+    bannedReason?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -1411,6 +1410,8 @@ export namespace Prisma {
     recoveryCode?: true
     passwordHash?: true
     expirationDate?: true
+    banned?: true
+    bannedReason?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -1426,6 +1427,8 @@ export namespace Prisma {
     recoveryCode?: true
     passwordHash?: true
     expirationDate?: true
+    banned?: true
+    bannedReason?: true
     _all?: true
   }
 
@@ -1514,6 +1517,8 @@ export namespace Prisma {
     recoveryCode: string | null
     passwordHash: string | null
     expirationDate: Date | null
+    banned: boolean
+    bannedReason: string | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -1546,7 +1551,8 @@ export namespace Prisma {
     recoveryCode?: boolean
     passwordHash?: boolean
     expirationDate?: boolean
-    posts?: boolean | User$postsArgs<ExtArgs>
+    banned?: boolean
+    bannedReason?: boolean
     providers?: boolean | User$providersArgs<ExtArgs>
     devices?: boolean | User$devicesArgs<ExtArgs>
     notifications?: boolean | User$notificationsArgs<ExtArgs>
@@ -1566,6 +1572,8 @@ export namespace Prisma {
     recoveryCode?: boolean
     passwordHash?: boolean
     expirationDate?: boolean
+    banned?: boolean
+    bannedReason?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1581,6 +1589,8 @@ export namespace Prisma {
     recoveryCode?: boolean
     passwordHash?: boolean
     expirationDate?: boolean
+    banned?: boolean
+    bannedReason?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -1596,11 +1606,12 @@ export namespace Prisma {
     recoveryCode?: boolean
     passwordHash?: boolean
     expirationDate?: boolean
+    banned?: boolean
+    bannedReason?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "deletedAt" | "email" | "name" | "confirmationCode" | "codeExpiration" | "isConfirmed" | "recoveryCode" | "passwordHash" | "expirationDate", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "deletedAt" | "email" | "name" | "confirmationCode" | "codeExpiration" | "isConfirmed" | "recoveryCode" | "passwordHash" | "expirationDate" | "banned" | "bannedReason", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    posts?: boolean | User$postsArgs<ExtArgs>
     providers?: boolean | User$providersArgs<ExtArgs>
     devices?: boolean | User$devicesArgs<ExtArgs>
     notifications?: boolean | User$notificationsArgs<ExtArgs>
@@ -1612,7 +1623,6 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
-      posts: Prisma.$PostPayload<ExtArgs>[]
       providers: Prisma.$ProviderPayload<ExtArgs> | null
       devices: Prisma.$DevicePayload<ExtArgs>[]
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
@@ -1630,6 +1640,8 @@ export namespace Prisma {
       recoveryCode: string | null
       passwordHash: string | null
       expirationDate: Date | null
+      banned: boolean
+      bannedReason: string | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -2024,7 +2036,6 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    posts<T extends User$postsArgs<ExtArgs> = {}>(args?: Subset<T, User$postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     providers<T extends User$providersArgs<ExtArgs> = {}>(args?: Subset<T, User$providersArgs<ExtArgs>>): Prisma__ProviderClient<$Result.GetResult<Prisma.$ProviderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     devices<T extends User$devicesArgs<ExtArgs> = {}>(args?: Subset<T, User$devicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DevicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notifications<T extends User$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2055,7 +2066,7 @@ export namespace Prisma {
 
   /**
    * Fields of the User model
-   */ 
+   */
   interface UserFieldRefs {
     readonly id: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
@@ -2069,6 +2080,8 @@ export namespace Prisma {
     readonly recoveryCode: FieldRef<"User", 'String'>
     readonly passwordHash: FieldRef<"User", 'String'>
     readonly expirationDate: FieldRef<"User", 'DateTime'>
+    readonly banned: FieldRef<"User", 'Boolean'>
+    readonly bannedReason: FieldRef<"User", 'String'>
   }
     
 
@@ -2457,30 +2470,6 @@ export namespace Prisma {
   }
 
   /**
-   * User.posts
-   */
-  export type User$postsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Post
-     */
-    select?: PostSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Post
-     */
-    omit?: PostOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PostInclude<ExtArgs> | null
-    where?: PostWhereInput
-    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
-    cursor?: PostWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
-  }
-
-  /**
    * User.providers
    */
   export type User$providersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2563,6 +2552,1014 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SuperAdmin
+   */
+
+  export type AggregateSuperAdmin = {
+    _count: SuperAdminCountAggregateOutputType | null
+    _min: SuperAdminMinAggregateOutputType | null
+    _max: SuperAdminMaxAggregateOutputType | null
+  }
+
+  export type SuperAdminMinAggregateOutputType = {
+    id: string | null
+    createdAt: Date | null
+    email: string | null
+    name: string | null
+    passwordHash: string | null
+    admin: boolean | null
+  }
+
+  export type SuperAdminMaxAggregateOutputType = {
+    id: string | null
+    createdAt: Date | null
+    email: string | null
+    name: string | null
+    passwordHash: string | null
+    admin: boolean | null
+  }
+
+  export type SuperAdminCountAggregateOutputType = {
+    id: number
+    createdAt: number
+    email: number
+    name: number
+    passwordHash: number
+    admin: number
+    _all: number
+  }
+
+
+  export type SuperAdminMinAggregateInputType = {
+    id?: true
+    createdAt?: true
+    email?: true
+    name?: true
+    passwordHash?: true
+    admin?: true
+  }
+
+  export type SuperAdminMaxAggregateInputType = {
+    id?: true
+    createdAt?: true
+    email?: true
+    name?: true
+    passwordHash?: true
+    admin?: true
+  }
+
+  export type SuperAdminCountAggregateInputType = {
+    id?: true
+    createdAt?: true
+    email?: true
+    name?: true
+    passwordHash?: true
+    admin?: true
+    _all?: true
+  }
+
+  export type SuperAdminAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SuperAdmin to aggregate.
+     */
+    where?: SuperAdminWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SuperAdmins to fetch.
+     */
+    orderBy?: SuperAdminOrderByWithRelationInput | SuperAdminOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SuperAdminWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SuperAdmins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SuperAdmins.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SuperAdmins
+    **/
+    _count?: true | SuperAdminCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SuperAdminMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SuperAdminMaxAggregateInputType
+  }
+
+  export type GetSuperAdminAggregateType<T extends SuperAdminAggregateArgs> = {
+        [P in keyof T & keyof AggregateSuperAdmin]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSuperAdmin[P]>
+      : GetScalarType<T[P], AggregateSuperAdmin[P]>
+  }
+
+
+
+
+  export type SuperAdminGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SuperAdminWhereInput
+    orderBy?: SuperAdminOrderByWithAggregationInput | SuperAdminOrderByWithAggregationInput[]
+    by: SuperAdminScalarFieldEnum[] | SuperAdminScalarFieldEnum
+    having?: SuperAdminScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SuperAdminCountAggregateInputType | true
+    _min?: SuperAdminMinAggregateInputType
+    _max?: SuperAdminMaxAggregateInputType
+  }
+
+  export type SuperAdminGroupByOutputType = {
+    id: string
+    createdAt: Date
+    email: string
+    name: string
+    passwordHash: string
+    admin: boolean
+    _count: SuperAdminCountAggregateOutputType | null
+    _min: SuperAdminMinAggregateOutputType | null
+    _max: SuperAdminMaxAggregateOutputType | null
+  }
+
+  type GetSuperAdminGroupByPayload<T extends SuperAdminGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SuperAdminGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SuperAdminGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SuperAdminGroupByOutputType[P]>
+            : GetScalarType<T[P], SuperAdminGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SuperAdminSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    createdAt?: boolean
+    email?: boolean
+    name?: boolean
+    passwordHash?: boolean
+    admin?: boolean
+  }, ExtArgs["result"]["superAdmin"]>
+
+  export type SuperAdminSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    createdAt?: boolean
+    email?: boolean
+    name?: boolean
+    passwordHash?: boolean
+    admin?: boolean
+  }, ExtArgs["result"]["superAdmin"]>
+
+  export type SuperAdminSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    createdAt?: boolean
+    email?: boolean
+    name?: boolean
+    passwordHash?: boolean
+    admin?: boolean
+  }, ExtArgs["result"]["superAdmin"]>
+
+  export type SuperAdminSelectScalar = {
+    id?: boolean
+    createdAt?: boolean
+    email?: boolean
+    name?: boolean
+    passwordHash?: boolean
+    admin?: boolean
+  }
+
+  export type SuperAdminOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "email" | "name" | "passwordHash" | "admin", ExtArgs["result"]["superAdmin"]>
+
+  export type $SuperAdminPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SuperAdmin"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      createdAt: Date
+      email: string
+      name: string
+      passwordHash: string
+      admin: boolean
+    }, ExtArgs["result"]["superAdmin"]>
+    composites: {}
+  }
+
+  type SuperAdminGetPayload<S extends boolean | null | undefined | SuperAdminDefaultArgs> = $Result.GetResult<Prisma.$SuperAdminPayload, S>
+
+  type SuperAdminCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SuperAdminFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SuperAdminCountAggregateInputType | true
+    }
+
+  export interface SuperAdminDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SuperAdmin'], meta: { name: 'SuperAdmin' } }
+    /**
+     * Find zero or one SuperAdmin that matches the filter.
+     * @param {SuperAdminFindUniqueArgs} args - Arguments to find a SuperAdmin
+     * @example
+     * // Get one SuperAdmin
+     * const superAdmin = await prisma.superAdmin.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SuperAdminFindUniqueArgs>(args: SelectSubset<T, SuperAdminFindUniqueArgs<ExtArgs>>): Prisma__SuperAdminClient<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SuperAdmin that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SuperAdminFindUniqueOrThrowArgs} args - Arguments to find a SuperAdmin
+     * @example
+     * // Get one SuperAdmin
+     * const superAdmin = await prisma.superAdmin.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SuperAdminFindUniqueOrThrowArgs>(args: SelectSubset<T, SuperAdminFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SuperAdminClient<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SuperAdmin that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuperAdminFindFirstArgs} args - Arguments to find a SuperAdmin
+     * @example
+     * // Get one SuperAdmin
+     * const superAdmin = await prisma.superAdmin.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SuperAdminFindFirstArgs>(args?: SelectSubset<T, SuperAdminFindFirstArgs<ExtArgs>>): Prisma__SuperAdminClient<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SuperAdmin that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuperAdminFindFirstOrThrowArgs} args - Arguments to find a SuperAdmin
+     * @example
+     * // Get one SuperAdmin
+     * const superAdmin = await prisma.superAdmin.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SuperAdminFindFirstOrThrowArgs>(args?: SelectSubset<T, SuperAdminFindFirstOrThrowArgs<ExtArgs>>): Prisma__SuperAdminClient<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SuperAdmins that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuperAdminFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SuperAdmins
+     * const superAdmins = await prisma.superAdmin.findMany()
+     * 
+     * // Get first 10 SuperAdmins
+     * const superAdmins = await prisma.superAdmin.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const superAdminWithIdOnly = await prisma.superAdmin.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SuperAdminFindManyArgs>(args?: SelectSubset<T, SuperAdminFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SuperAdmin.
+     * @param {SuperAdminCreateArgs} args - Arguments to create a SuperAdmin.
+     * @example
+     * // Create one SuperAdmin
+     * const SuperAdmin = await prisma.superAdmin.create({
+     *   data: {
+     *     // ... data to create a SuperAdmin
+     *   }
+     * })
+     * 
+     */
+    create<T extends SuperAdminCreateArgs>(args: SelectSubset<T, SuperAdminCreateArgs<ExtArgs>>): Prisma__SuperAdminClient<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SuperAdmins.
+     * @param {SuperAdminCreateManyArgs} args - Arguments to create many SuperAdmins.
+     * @example
+     * // Create many SuperAdmins
+     * const superAdmin = await prisma.superAdmin.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SuperAdminCreateManyArgs>(args?: SelectSubset<T, SuperAdminCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SuperAdmins and returns the data saved in the database.
+     * @param {SuperAdminCreateManyAndReturnArgs} args - Arguments to create many SuperAdmins.
+     * @example
+     * // Create many SuperAdmins
+     * const superAdmin = await prisma.superAdmin.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SuperAdmins and only return the `id`
+     * const superAdminWithIdOnly = await prisma.superAdmin.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SuperAdminCreateManyAndReturnArgs>(args?: SelectSubset<T, SuperAdminCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SuperAdmin.
+     * @param {SuperAdminDeleteArgs} args - Arguments to delete one SuperAdmin.
+     * @example
+     * // Delete one SuperAdmin
+     * const SuperAdmin = await prisma.superAdmin.delete({
+     *   where: {
+     *     // ... filter to delete one SuperAdmin
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SuperAdminDeleteArgs>(args: SelectSubset<T, SuperAdminDeleteArgs<ExtArgs>>): Prisma__SuperAdminClient<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SuperAdmin.
+     * @param {SuperAdminUpdateArgs} args - Arguments to update one SuperAdmin.
+     * @example
+     * // Update one SuperAdmin
+     * const superAdmin = await prisma.superAdmin.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SuperAdminUpdateArgs>(args: SelectSubset<T, SuperAdminUpdateArgs<ExtArgs>>): Prisma__SuperAdminClient<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SuperAdmins.
+     * @param {SuperAdminDeleteManyArgs} args - Arguments to filter SuperAdmins to delete.
+     * @example
+     * // Delete a few SuperAdmins
+     * const { count } = await prisma.superAdmin.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SuperAdminDeleteManyArgs>(args?: SelectSubset<T, SuperAdminDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SuperAdmins.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuperAdminUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SuperAdmins
+     * const superAdmin = await prisma.superAdmin.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SuperAdminUpdateManyArgs>(args: SelectSubset<T, SuperAdminUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SuperAdmins and returns the data updated in the database.
+     * @param {SuperAdminUpdateManyAndReturnArgs} args - Arguments to update many SuperAdmins.
+     * @example
+     * // Update many SuperAdmins
+     * const superAdmin = await prisma.superAdmin.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SuperAdmins and only return the `id`
+     * const superAdminWithIdOnly = await prisma.superAdmin.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SuperAdminUpdateManyAndReturnArgs>(args: SelectSubset<T, SuperAdminUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SuperAdmin.
+     * @param {SuperAdminUpsertArgs} args - Arguments to update or create a SuperAdmin.
+     * @example
+     * // Update or create a SuperAdmin
+     * const superAdmin = await prisma.superAdmin.upsert({
+     *   create: {
+     *     // ... data to create a SuperAdmin
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SuperAdmin we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SuperAdminUpsertArgs>(args: SelectSubset<T, SuperAdminUpsertArgs<ExtArgs>>): Prisma__SuperAdminClient<$Result.GetResult<Prisma.$SuperAdminPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SuperAdmins.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuperAdminCountArgs} args - Arguments to filter SuperAdmins to count.
+     * @example
+     * // Count the number of SuperAdmins
+     * const count = await prisma.superAdmin.count({
+     *   where: {
+     *     // ... the filter for the SuperAdmins we want to count
+     *   }
+     * })
+    **/
+    count<T extends SuperAdminCountArgs>(
+      args?: Subset<T, SuperAdminCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SuperAdminCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SuperAdmin.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuperAdminAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SuperAdminAggregateArgs>(args: Subset<T, SuperAdminAggregateArgs>): Prisma.PrismaPromise<GetSuperAdminAggregateType<T>>
+
+    /**
+     * Group by SuperAdmin.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SuperAdminGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SuperAdminGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SuperAdminGroupByArgs['orderBy'] }
+        : { orderBy?: SuperAdminGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SuperAdminGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSuperAdminGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SuperAdmin model
+   */
+  readonly fields: SuperAdminFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SuperAdmin.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SuperAdminClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SuperAdmin model
+   */
+  interface SuperAdminFieldRefs {
+    readonly id: FieldRef<"SuperAdmin", 'String'>
+    readonly createdAt: FieldRef<"SuperAdmin", 'DateTime'>
+    readonly email: FieldRef<"SuperAdmin", 'String'>
+    readonly name: FieldRef<"SuperAdmin", 'String'>
+    readonly passwordHash: FieldRef<"SuperAdmin", 'String'>
+    readonly admin: FieldRef<"SuperAdmin", 'Boolean'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SuperAdmin findUnique
+   */
+  export type SuperAdminFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * Filter, which SuperAdmin to fetch.
+     */
+    where: SuperAdminWhereUniqueInput
+  }
+
+  /**
+   * SuperAdmin findUniqueOrThrow
+   */
+  export type SuperAdminFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * Filter, which SuperAdmin to fetch.
+     */
+    where: SuperAdminWhereUniqueInput
+  }
+
+  /**
+   * SuperAdmin findFirst
+   */
+  export type SuperAdminFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * Filter, which SuperAdmin to fetch.
+     */
+    where?: SuperAdminWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SuperAdmins to fetch.
+     */
+    orderBy?: SuperAdminOrderByWithRelationInput | SuperAdminOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SuperAdmins.
+     */
+    cursor?: SuperAdminWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SuperAdmins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SuperAdmins.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SuperAdmins.
+     */
+    distinct?: SuperAdminScalarFieldEnum | SuperAdminScalarFieldEnum[]
+  }
+
+  /**
+   * SuperAdmin findFirstOrThrow
+   */
+  export type SuperAdminFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * Filter, which SuperAdmin to fetch.
+     */
+    where?: SuperAdminWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SuperAdmins to fetch.
+     */
+    orderBy?: SuperAdminOrderByWithRelationInput | SuperAdminOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SuperAdmins.
+     */
+    cursor?: SuperAdminWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SuperAdmins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SuperAdmins.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SuperAdmins.
+     */
+    distinct?: SuperAdminScalarFieldEnum | SuperAdminScalarFieldEnum[]
+  }
+
+  /**
+   * SuperAdmin findMany
+   */
+  export type SuperAdminFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * Filter, which SuperAdmins to fetch.
+     */
+    where?: SuperAdminWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SuperAdmins to fetch.
+     */
+    orderBy?: SuperAdminOrderByWithRelationInput | SuperAdminOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SuperAdmins.
+     */
+    cursor?: SuperAdminWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SuperAdmins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SuperAdmins.
+     */
+    skip?: number
+    distinct?: SuperAdminScalarFieldEnum | SuperAdminScalarFieldEnum[]
+  }
+
+  /**
+   * SuperAdmin create
+   */
+  export type SuperAdminCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * The data needed to create a SuperAdmin.
+     */
+    data: XOR<SuperAdminCreateInput, SuperAdminUncheckedCreateInput>
+  }
+
+  /**
+   * SuperAdmin createMany
+   */
+  export type SuperAdminCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SuperAdmins.
+     */
+    data: SuperAdminCreateManyInput | SuperAdminCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SuperAdmin createManyAndReturn
+   */
+  export type SuperAdminCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * The data used to create many SuperAdmins.
+     */
+    data: SuperAdminCreateManyInput | SuperAdminCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SuperAdmin update
+   */
+  export type SuperAdminUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * The data needed to update a SuperAdmin.
+     */
+    data: XOR<SuperAdminUpdateInput, SuperAdminUncheckedUpdateInput>
+    /**
+     * Choose, which SuperAdmin to update.
+     */
+    where: SuperAdminWhereUniqueInput
+  }
+
+  /**
+   * SuperAdmin updateMany
+   */
+  export type SuperAdminUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SuperAdmins.
+     */
+    data: XOR<SuperAdminUpdateManyMutationInput, SuperAdminUncheckedUpdateManyInput>
+    /**
+     * Filter which SuperAdmins to update
+     */
+    where?: SuperAdminWhereInput
+    /**
+     * Limit how many SuperAdmins to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SuperAdmin updateManyAndReturn
+   */
+  export type SuperAdminUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * The data used to update SuperAdmins.
+     */
+    data: XOR<SuperAdminUpdateManyMutationInput, SuperAdminUncheckedUpdateManyInput>
+    /**
+     * Filter which SuperAdmins to update
+     */
+    where?: SuperAdminWhereInput
+    /**
+     * Limit how many SuperAdmins to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SuperAdmin upsert
+   */
+  export type SuperAdminUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * The filter to search for the SuperAdmin to update in case it exists.
+     */
+    where: SuperAdminWhereUniqueInput
+    /**
+     * In case the SuperAdmin found by the `where` argument doesn't exist, create a new SuperAdmin with this data.
+     */
+    create: XOR<SuperAdminCreateInput, SuperAdminUncheckedCreateInput>
+    /**
+     * In case the SuperAdmin was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SuperAdminUpdateInput, SuperAdminUncheckedUpdateInput>
+  }
+
+  /**
+   * SuperAdmin delete
+   */
+  export type SuperAdminDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
+    /**
+     * Filter which SuperAdmin to delete.
+     */
+    where: SuperAdminWhereUniqueInput
+  }
+
+  /**
+   * SuperAdmin deleteMany
+   */
+  export type SuperAdminDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SuperAdmins to delete
+     */
+    where?: SuperAdminWhereInput
+    /**
+     * Limit how many SuperAdmins to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SuperAdmin without action
+   */
+  export type SuperAdminDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SuperAdmin
+     */
+    select?: SuperAdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SuperAdmin
+     */
+    omit?: SuperAdminOmit<ExtArgs> | null
   }
 
 
@@ -3191,7 +4188,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Provider model
-   */ 
+   */
   interface ProviderFieldRefs {
     readonly id: FieldRef<"Provider", 'String'>
     readonly userId: FieldRef<"Provider", 'String'>
@@ -4248,7 +5245,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Device model
-   */ 
+   */
   interface DeviceFieldRefs {
     readonly id: FieldRef<"Device", 'String'>
     readonly userId: FieldRef<"Device", 'String'>
@@ -4666,1122 +5663,6 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: DeviceInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model Post
-   */
-
-  export type AggregatePost = {
-    _count: PostCountAggregateOutputType | null
-    _min: PostMinAggregateOutputType | null
-    _max: PostMaxAggregateOutputType | null
-  }
-
-  export type PostMinAggregateOutputType = {
-    id: string | null
-    createdAt: Date | null
-    updatedAt: Date | null
-    deletedAt: Date | null
-    published: boolean | null
-    title: string | null
-    authorId: string | null
-    photoUploadStatus: $Enums.PhotoUploadStatus | null
-  }
-
-  export type PostMaxAggregateOutputType = {
-    id: string | null
-    createdAt: Date | null
-    updatedAt: Date | null
-    deletedAt: Date | null
-    published: boolean | null
-    title: string | null
-    authorId: string | null
-    photoUploadStatus: $Enums.PhotoUploadStatus | null
-  }
-
-  export type PostCountAggregateOutputType = {
-    id: number
-    createdAt: number
-    updatedAt: number
-    deletedAt: number
-    published: number
-    title: number
-    authorId: number
-    photoUploadStatus: number
-    _all: number
-  }
-
-
-  export type PostMinAggregateInputType = {
-    id?: true
-    createdAt?: true
-    updatedAt?: true
-    deletedAt?: true
-    published?: true
-    title?: true
-    authorId?: true
-    photoUploadStatus?: true
-  }
-
-  export type PostMaxAggregateInputType = {
-    id?: true
-    createdAt?: true
-    updatedAt?: true
-    deletedAt?: true
-    published?: true
-    title?: true
-    authorId?: true
-    photoUploadStatus?: true
-  }
-
-  export type PostCountAggregateInputType = {
-    id?: true
-    createdAt?: true
-    updatedAt?: true
-    deletedAt?: true
-    published?: true
-    title?: true
-    authorId?: true
-    photoUploadStatus?: true
-    _all?: true
-  }
-
-  export type PostAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Post to aggregate.
-     */
-    where?: PostWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Posts to fetch.
-     */
-    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: PostWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Posts from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Posts.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Posts
-    **/
-    _count?: true | PostCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: PostMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: PostMaxAggregateInputType
-  }
-
-  export type GetPostAggregateType<T extends PostAggregateArgs> = {
-        [P in keyof T & keyof AggregatePost]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregatePost[P]>
-      : GetScalarType<T[P], AggregatePost[P]>
-  }
-
-
-
-
-  export type PostGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: PostWhereInput
-    orderBy?: PostOrderByWithAggregationInput | PostOrderByWithAggregationInput[]
-    by: PostScalarFieldEnum[] | PostScalarFieldEnum
-    having?: PostScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: PostCountAggregateInputType | true
-    _min?: PostMinAggregateInputType
-    _max?: PostMaxAggregateInputType
-  }
-
-  export type PostGroupByOutputType = {
-    id: string
-    createdAt: Date
-    updatedAt: Date
-    deletedAt: Date | null
-    published: boolean
-    title: string
-    authorId: string | null
-    photoUploadStatus: $Enums.PhotoUploadStatus
-    _count: PostCountAggregateOutputType | null
-    _min: PostMinAggregateOutputType | null
-    _max: PostMaxAggregateOutputType | null
-  }
-
-  type GetPostGroupByPayload<T extends PostGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<PostGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof PostGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], PostGroupByOutputType[P]>
-            : GetScalarType<T[P], PostGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type PostSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    deletedAt?: boolean
-    published?: boolean
-    title?: boolean
-    authorId?: boolean
-    photoUploadStatus?: boolean
-    author?: boolean | Post$authorArgs<ExtArgs>
-  }, ExtArgs["result"]["post"]>
-
-  export type PostSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    deletedAt?: boolean
-    published?: boolean
-    title?: boolean
-    authorId?: boolean
-    photoUploadStatus?: boolean
-    author?: boolean | Post$authorArgs<ExtArgs>
-  }, ExtArgs["result"]["post"]>
-
-  export type PostSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    deletedAt?: boolean
-    published?: boolean
-    title?: boolean
-    authorId?: boolean
-    photoUploadStatus?: boolean
-    author?: boolean | Post$authorArgs<ExtArgs>
-  }, ExtArgs["result"]["post"]>
-
-  export type PostSelectScalar = {
-    id?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    deletedAt?: boolean
-    published?: boolean
-    title?: boolean
-    authorId?: boolean
-    photoUploadStatus?: boolean
-  }
-
-  export type PostOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "deletedAt" | "published" | "title" | "authorId" | "photoUploadStatus", ExtArgs["result"]["post"]>
-  export type PostInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    author?: boolean | Post$authorArgs<ExtArgs>
-  }
-  export type PostIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    author?: boolean | Post$authorArgs<ExtArgs>
-  }
-  export type PostIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    author?: boolean | Post$authorArgs<ExtArgs>
-  }
-
-  export type $PostPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Post"
-    objects: {
-      author: Prisma.$UserPayload<ExtArgs> | null
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      createdAt: Date
-      updatedAt: Date
-      deletedAt: Date | null
-      published: boolean
-      title: string
-      authorId: string | null
-      photoUploadStatus: $Enums.PhotoUploadStatus
-    }, ExtArgs["result"]["post"]>
-    composites: {}
-  }
-
-  type PostGetPayload<S extends boolean | null | undefined | PostDefaultArgs> = $Result.GetResult<Prisma.$PostPayload, S>
-
-  type PostCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<PostFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: PostCountAggregateInputType | true
-    }
-
-  export interface PostDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Post'], meta: { name: 'Post' } }
-    /**
-     * Find zero or one Post that matches the filter.
-     * @param {PostFindUniqueArgs} args - Arguments to find a Post
-     * @example
-     * // Get one Post
-     * const post = await prisma.post.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends PostFindUniqueArgs>(args: SelectSubset<T, PostFindUniqueArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Post that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {PostFindUniqueOrThrowArgs} args - Arguments to find a Post
-     * @example
-     * // Get one Post
-     * const post = await prisma.post.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends PostFindUniqueOrThrowArgs>(args: SelectSubset<T, PostFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Post that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {PostFindFirstArgs} args - Arguments to find a Post
-     * @example
-     * // Get one Post
-     * const post = await prisma.post.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends PostFindFirstArgs>(args?: SelectSubset<T, PostFindFirstArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Post that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {PostFindFirstOrThrowArgs} args - Arguments to find a Post
-     * @example
-     * // Get one Post
-     * const post = await prisma.post.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends PostFindFirstOrThrowArgs>(args?: SelectSubset<T, PostFindFirstOrThrowArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Posts that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {PostFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Posts
-     * const posts = await prisma.post.findMany()
-     * 
-     * // Get first 10 Posts
-     * const posts = await prisma.post.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const postWithIdOnly = await prisma.post.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends PostFindManyArgs>(args?: SelectSubset<T, PostFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Post.
-     * @param {PostCreateArgs} args - Arguments to create a Post.
-     * @example
-     * // Create one Post
-     * const Post = await prisma.post.create({
-     *   data: {
-     *     // ... data to create a Post
-     *   }
-     * })
-     * 
-     */
-    create<T extends PostCreateArgs>(args: SelectSubset<T, PostCreateArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Posts.
-     * @param {PostCreateManyArgs} args - Arguments to create many Posts.
-     * @example
-     * // Create many Posts
-     * const post = await prisma.post.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends PostCreateManyArgs>(args?: SelectSubset<T, PostCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Posts and returns the data saved in the database.
-     * @param {PostCreateManyAndReturnArgs} args - Arguments to create many Posts.
-     * @example
-     * // Create many Posts
-     * const post = await prisma.post.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Posts and only return the `id`
-     * const postWithIdOnly = await prisma.post.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends PostCreateManyAndReturnArgs>(args?: SelectSubset<T, PostCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a Post.
-     * @param {PostDeleteArgs} args - Arguments to delete one Post.
-     * @example
-     * // Delete one Post
-     * const Post = await prisma.post.delete({
-     *   where: {
-     *     // ... filter to delete one Post
-     *   }
-     * })
-     * 
-     */
-    delete<T extends PostDeleteArgs>(args: SelectSubset<T, PostDeleteArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Post.
-     * @param {PostUpdateArgs} args - Arguments to update one Post.
-     * @example
-     * // Update one Post
-     * const post = await prisma.post.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends PostUpdateArgs>(args: SelectSubset<T, PostUpdateArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Posts.
-     * @param {PostDeleteManyArgs} args - Arguments to filter Posts to delete.
-     * @example
-     * // Delete a few Posts
-     * const { count } = await prisma.post.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends PostDeleteManyArgs>(args?: SelectSubset<T, PostDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Posts.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {PostUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Posts
-     * const post = await prisma.post.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends PostUpdateManyArgs>(args: SelectSubset<T, PostUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Posts and returns the data updated in the database.
-     * @param {PostUpdateManyAndReturnArgs} args - Arguments to update many Posts.
-     * @example
-     * // Update many Posts
-     * const post = await prisma.post.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more Posts and only return the `id`
-     * const postWithIdOnly = await prisma.post.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends PostUpdateManyAndReturnArgs>(args: SelectSubset<T, PostUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one Post.
-     * @param {PostUpsertArgs} args - Arguments to update or create a Post.
-     * @example
-     * // Update or create a Post
-     * const post = await prisma.post.upsert({
-     *   create: {
-     *     // ... data to create a Post
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Post we want to update
-     *   }
-     * })
-     */
-    upsert<T extends PostUpsertArgs>(args: SelectSubset<T, PostUpsertArgs<ExtArgs>>): Prisma__PostClient<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Posts.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {PostCountArgs} args - Arguments to filter Posts to count.
-     * @example
-     * // Count the number of Posts
-     * const count = await prisma.post.count({
-     *   where: {
-     *     // ... the filter for the Posts we want to count
-     *   }
-     * })
-    **/
-    count<T extends PostCountArgs>(
-      args?: Subset<T, PostCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], PostCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Post.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {PostAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends PostAggregateArgs>(args: Subset<T, PostAggregateArgs>): Prisma.PrismaPromise<GetPostAggregateType<T>>
-
-    /**
-     * Group by Post.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {PostGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends PostGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: PostGroupByArgs['orderBy'] }
-        : { orderBy?: PostGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, PostGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPostGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Post model
-   */
-  readonly fields: PostFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Post.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__PostClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    author<T extends Post$authorArgs<ExtArgs> = {}>(args?: Subset<T, Post$authorArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Post model
-   */ 
-  interface PostFieldRefs {
-    readonly id: FieldRef<"Post", 'String'>
-    readonly createdAt: FieldRef<"Post", 'DateTime'>
-    readonly updatedAt: FieldRef<"Post", 'DateTime'>
-    readonly deletedAt: FieldRef<"Post", 'DateTime'>
-    readonly published: FieldRef<"Post", 'Boolean'>
-    readonly title: FieldRef<"Post", 'String'>
-    readonly authorId: FieldRef<"Post", 'String'>
-    readonly photoUploadStatus: FieldRef<"Post", 'PhotoUploadStatus'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Post findUnique
-   */
-  export type PostFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Post
-     */
-    select?: PostSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Post
-     */
-    omit?: PostOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PostInclude<ExtArgs> | null
-    /**
-     * Filter, which Post to fetch.
-     */
-    where: PostWhereUniqueInput
-  }
-
-  /**
-   * Post findUniqueOrThrow
-   */
-  export type PostFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Post
-     */
-    select?: PostSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Post
-     */
-    omit?: PostOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PostInclude<ExtArgs> | null
-    /**
-     * Filter, which Post to fetch.
-     */
-    where: PostWhereUniqueInput
-  }
-
-  /**
-   * Post findFirst
-   */
-  export type PostFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Post
-     */
-    select?: PostSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Post
-     */
-    omit?: PostOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PostInclude<ExtArgs> | null
-    /**
-     * Filter, which Post to fetch.
-     */
-    where?: PostWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Posts to fetch.
-     */
-    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Posts.
-     */
-    cursor?: PostWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Posts from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Posts.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Posts.
-     */
-    distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
-  }
-
-  /**
-   * Post findFirstOrThrow
-   */
-  export type PostFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Post
-     */
-    select?: PostSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Post
-     */
-    omit?: PostOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PostInclude<ExtArgs> | null
-    /**
-     * Filter, which Post to fetch.
-     */
-    where?: PostWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Posts to fetch.
-     */
-    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Posts.
-     */
-    cursor?: PostWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Posts from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Posts.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Posts.
-     */
-    distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
-  }
-
-  /**
-   * Post findMany
-   */
-  export type PostFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Post
-     */
-    select?: PostSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Post
-     */
-    omit?: PostOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PostInclude<ExtArgs> | null
-    /**
-     * Filter, which Posts to fetch.
-     */
-    where?: PostWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Posts to fetch.
-     */
-    orderBy?: PostOrderByWithRelationInput | PostOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Posts.
-     */
-    cursor?: PostWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Posts from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Posts.
-     */
-    skip?: number
-    distinct?: PostScalarFieldEnum | PostScalarFieldEnum[]
-  }
-
-  /**
-   * Post create
-   */
-  export type PostCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Post
-     */
-    select?: PostSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Post
-     */
-    omit?: PostOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PostInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Post.
-     */
-    data: XOR<PostCreateInput, PostUncheckedCreateInput>
-  }
-
-  /**
-   * Post createMany
-   */
-  export type PostCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Posts.
-     */
-    data: PostCreateManyInput | PostCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Post createManyAndReturn
-   */
-  export type PostCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Post
-     */
-    select?: PostSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Post
-     */
-    omit?: PostOmit<ExtArgs> | null
-    /**
-     * The data used to create many Posts.
-     */
-    data: PostCreateManyInput | PostCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PostIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Post update
-   */
-  export type PostUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Post
-     */
-    select?: PostSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Post
-     */
-    omit?: PostOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PostInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Post.
-     */
-    data: XOR<PostUpdateInput, PostUncheckedUpdateInput>
-    /**
-     * Choose, which Post to update.
-     */
-    where: PostWhereUniqueInput
-  }
-
-  /**
-   * Post updateMany
-   */
-  export type PostUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Posts.
-     */
-    data: XOR<PostUpdateManyMutationInput, PostUncheckedUpdateManyInput>
-    /**
-     * Filter which Posts to update
-     */
-    where?: PostWhereInput
-    /**
-     * Limit how many Posts to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Post updateManyAndReturn
-   */
-  export type PostUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Post
-     */
-    select?: PostSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Post
-     */
-    omit?: PostOmit<ExtArgs> | null
-    /**
-     * The data used to update Posts.
-     */
-    data: XOR<PostUpdateManyMutationInput, PostUncheckedUpdateManyInput>
-    /**
-     * Filter which Posts to update
-     */
-    where?: PostWhereInput
-    /**
-     * Limit how many Posts to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PostIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Post upsert
-   */
-  export type PostUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Post
-     */
-    select?: PostSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Post
-     */
-    omit?: PostOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PostInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Post to update in case it exists.
-     */
-    where: PostWhereUniqueInput
-    /**
-     * In case the Post found by the `where` argument doesn't exist, create a new Post with this data.
-     */
-    create: XOR<PostCreateInput, PostUncheckedCreateInput>
-    /**
-     * In case the Post was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<PostUpdateInput, PostUncheckedUpdateInput>
-  }
-
-  /**
-   * Post delete
-   */
-  export type PostDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Post
-     */
-    select?: PostSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Post
-     */
-    omit?: PostOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PostInclude<ExtArgs> | null
-    /**
-     * Filter which Post to delete.
-     */
-    where: PostWhereUniqueInput
-  }
-
-  /**
-   * Post deleteMany
-   */
-  export type PostDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Posts to delete
-     */
-    where?: PostWhereInput
-    /**
-     * Limit how many Posts to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Post.author
-   */
-  export type Post$authorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the User
-     */
-    select?: UserSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the User
-     */
-    omit?: UserOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    where?: UserWhereInput
-  }
-
-  /**
-   * Post without action
-   */
-  export type PostDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Post
-     */
-    select?: PostSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Post
-     */
-    omit?: PostOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PostInclude<ExtArgs> | null
   }
 
 
@@ -6422,7 +6303,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Notification model
-   */ 
+   */
   interface NotificationFieldRefs {
     readonly id: FieldRef<"Notification", 'String'>
     readonly userId: FieldRef<"Notification", 'String'>
@@ -6869,10 +6750,24 @@ export namespace Prisma {
     isConfirmed: 'isConfirmed',
     recoveryCode: 'recoveryCode',
     passwordHash: 'passwordHash',
-    expirationDate: 'expirationDate'
+    expirationDate: 'expirationDate',
+    banned: 'banned',
+    bannedReason: 'bannedReason'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+  export const SuperAdminScalarFieldEnum: {
+    id: 'id',
+    createdAt: 'createdAt',
+    email: 'email',
+    name: 'name',
+    passwordHash: 'passwordHash',
+    admin: 'admin'
+  };
+
+  export type SuperAdminScalarFieldEnum = (typeof SuperAdminScalarFieldEnum)[keyof typeof SuperAdminScalarFieldEnum]
 
 
   export const ProviderScalarFieldEnum: {
@@ -6894,20 +6789,6 @@ export namespace Prisma {
   };
 
   export type DeviceScalarFieldEnum = (typeof DeviceScalarFieldEnum)[keyof typeof DeviceScalarFieldEnum]
-
-
-  export const PostScalarFieldEnum: {
-    id: 'id',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt',
-    deletedAt: 'deletedAt',
-    published: 'published',
-    title: 'title',
-    authorId: 'authorId',
-    photoUploadStatus: 'photoUploadStatus'
-  };
-
-  export type PostScalarFieldEnum = (typeof PostScalarFieldEnum)[keyof typeof PostScalarFieldEnum]
 
 
   export const NotificationScalarFieldEnum: {
@@ -6946,7 +6827,7 @@ export namespace Prisma {
 
 
   /**
-   * Field references 
+   * Field references
    */
 
 
@@ -6982,20 +6863,6 @@ export namespace Prisma {
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-  /**
-   * Reference to a field of type 'PhotoUploadStatus'
-   */
-  export type EnumPhotoUploadStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PhotoUploadStatus'>
-    
-
-
-  /**
-   * Reference to a field of type 'PhotoUploadStatus[]'
-   */
-  export type ListEnumPhotoUploadStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PhotoUploadStatus[]'>
     
 
 
@@ -7046,7 +6913,8 @@ export namespace Prisma {
     recoveryCode?: StringNullableFilter<"User"> | string | null
     passwordHash?: StringNullableFilter<"User"> | string | null
     expirationDate?: DateTimeNullableFilter<"User"> | Date | string | null
-    posts?: PostListRelationFilter
+    banned?: BoolFilter<"User"> | boolean
+    bannedReason?: StringNullableFilter<"User"> | string | null
     providers?: XOR<ProviderNullableScalarRelationFilter, ProviderWhereInput> | null
     devices?: DeviceListRelationFilter
     notifications?: NotificationListRelationFilter
@@ -7065,7 +6933,8 @@ export namespace Prisma {
     recoveryCode?: SortOrderInput | SortOrder
     passwordHash?: SortOrderInput | SortOrder
     expirationDate?: SortOrderInput | SortOrder
-    posts?: PostOrderByRelationAggregateInput
+    banned?: SortOrder
+    bannedReason?: SortOrderInput | SortOrder
     providers?: ProviderOrderByWithRelationInput
     devices?: DeviceOrderByRelationAggregateInput
     notifications?: NotificationOrderByRelationAggregateInput
@@ -7087,7 +6956,8 @@ export namespace Prisma {
     recoveryCode?: StringNullableFilter<"User"> | string | null
     passwordHash?: StringNullableFilter<"User"> | string | null
     expirationDate?: DateTimeNullableFilter<"User"> | Date | string | null
-    posts?: PostListRelationFilter
+    banned?: BoolFilter<"User"> | boolean
+    bannedReason?: StringNullableFilter<"User"> | string | null
     providers?: XOR<ProviderNullableScalarRelationFilter, ProviderWhereInput> | null
     devices?: DeviceListRelationFilter
     notifications?: NotificationListRelationFilter
@@ -7106,6 +6976,8 @@ export namespace Prisma {
     recoveryCode?: SortOrderInput | SortOrder
     passwordHash?: SortOrderInput | SortOrder
     expirationDate?: SortOrderInput | SortOrder
+    banned?: SortOrder
+    bannedReason?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -7127,6 +6999,65 @@ export namespace Prisma {
     recoveryCode?: StringNullableWithAggregatesFilter<"User"> | string | null
     passwordHash?: StringNullableWithAggregatesFilter<"User"> | string | null
     expirationDate?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    banned?: BoolWithAggregatesFilter<"User"> | boolean
+    bannedReason?: StringNullableWithAggregatesFilter<"User"> | string | null
+  }
+
+  export type SuperAdminWhereInput = {
+    AND?: SuperAdminWhereInput | SuperAdminWhereInput[]
+    OR?: SuperAdminWhereInput[]
+    NOT?: SuperAdminWhereInput | SuperAdminWhereInput[]
+    id?: StringFilter<"SuperAdmin"> | string
+    createdAt?: DateTimeFilter<"SuperAdmin"> | Date | string
+    email?: StringFilter<"SuperAdmin"> | string
+    name?: StringFilter<"SuperAdmin"> | string
+    passwordHash?: StringFilter<"SuperAdmin"> | string
+    admin?: BoolFilter<"SuperAdmin"> | boolean
+  }
+
+  export type SuperAdminOrderByWithRelationInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    email?: SortOrder
+    name?: SortOrder
+    passwordHash?: SortOrder
+    admin?: SortOrder
+  }
+
+  export type SuperAdminWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    email?: string
+    AND?: SuperAdminWhereInput | SuperAdminWhereInput[]
+    OR?: SuperAdminWhereInput[]
+    NOT?: SuperAdminWhereInput | SuperAdminWhereInput[]
+    createdAt?: DateTimeFilter<"SuperAdmin"> | Date | string
+    name?: StringFilter<"SuperAdmin"> | string
+    passwordHash?: StringFilter<"SuperAdmin"> | string
+    admin?: BoolFilter<"SuperAdmin"> | boolean
+  }, "id" | "email">
+
+  export type SuperAdminOrderByWithAggregationInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    email?: SortOrder
+    name?: SortOrder
+    passwordHash?: SortOrder
+    admin?: SortOrder
+    _count?: SuperAdminCountOrderByAggregateInput
+    _max?: SuperAdminMaxOrderByAggregateInput
+    _min?: SuperAdminMinOrderByAggregateInput
+  }
+
+  export type SuperAdminScalarWhereWithAggregatesInput = {
+    AND?: SuperAdminScalarWhereWithAggregatesInput | SuperAdminScalarWhereWithAggregatesInput[]
+    OR?: SuperAdminScalarWhereWithAggregatesInput[]
+    NOT?: SuperAdminScalarWhereWithAggregatesInput | SuperAdminScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SuperAdmin"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"SuperAdmin"> | Date | string
+    email?: StringWithAggregatesFilter<"SuperAdmin"> | string
+    name?: StringWithAggregatesFilter<"SuperAdmin"> | string
+    passwordHash?: StringWithAggregatesFilter<"SuperAdmin"> | string
+    admin?: BoolWithAggregatesFilter<"SuperAdmin"> | boolean
   }
 
   export type ProviderWhereInput = {
@@ -7234,76 +7165,6 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Device"> | Date | string
   }
 
-  export type PostWhereInput = {
-    AND?: PostWhereInput | PostWhereInput[]
-    OR?: PostWhereInput[]
-    NOT?: PostWhereInput | PostWhereInput[]
-    id?: StringFilter<"Post"> | string
-    createdAt?: DateTimeFilter<"Post"> | Date | string
-    updatedAt?: DateTimeFilter<"Post"> | Date | string
-    deletedAt?: DateTimeNullableFilter<"Post"> | Date | string | null
-    published?: BoolFilter<"Post"> | boolean
-    title?: StringFilter<"Post"> | string
-    authorId?: StringNullableFilter<"Post"> | string | null
-    photoUploadStatus?: EnumPhotoUploadStatusFilter<"Post"> | $Enums.PhotoUploadStatus
-    author?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
-  }
-
-  export type PostOrderByWithRelationInput = {
-    id?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    deletedAt?: SortOrderInput | SortOrder
-    published?: SortOrder
-    title?: SortOrder
-    authorId?: SortOrderInput | SortOrder
-    photoUploadStatus?: SortOrder
-    author?: UserOrderByWithRelationInput
-  }
-
-  export type PostWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    AND?: PostWhereInput | PostWhereInput[]
-    OR?: PostWhereInput[]
-    NOT?: PostWhereInput | PostWhereInput[]
-    createdAt?: DateTimeFilter<"Post"> | Date | string
-    updatedAt?: DateTimeFilter<"Post"> | Date | string
-    deletedAt?: DateTimeNullableFilter<"Post"> | Date | string | null
-    published?: BoolFilter<"Post"> | boolean
-    title?: StringFilter<"Post"> | string
-    authorId?: StringNullableFilter<"Post"> | string | null
-    photoUploadStatus?: EnumPhotoUploadStatusFilter<"Post"> | $Enums.PhotoUploadStatus
-    author?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
-  }, "id">
-
-  export type PostOrderByWithAggregationInput = {
-    id?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    deletedAt?: SortOrderInput | SortOrder
-    published?: SortOrder
-    title?: SortOrder
-    authorId?: SortOrderInput | SortOrder
-    photoUploadStatus?: SortOrder
-    _count?: PostCountOrderByAggregateInput
-    _max?: PostMaxOrderByAggregateInput
-    _min?: PostMinOrderByAggregateInput
-  }
-
-  export type PostScalarWhereWithAggregatesInput = {
-    AND?: PostScalarWhereWithAggregatesInput | PostScalarWhereWithAggregatesInput[]
-    OR?: PostScalarWhereWithAggregatesInput[]
-    NOT?: PostScalarWhereWithAggregatesInput | PostScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Post"> | string
-    createdAt?: DateTimeWithAggregatesFilter<"Post"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"Post"> | Date | string
-    deletedAt?: DateTimeNullableWithAggregatesFilter<"Post"> | Date | string | null
-    published?: BoolWithAggregatesFilter<"Post"> | boolean
-    title?: StringWithAggregatesFilter<"Post"> | string
-    authorId?: StringNullableWithAggregatesFilter<"Post"> | string | null
-    photoUploadStatus?: EnumPhotoUploadStatusWithAggregatesFilter<"Post"> | $Enums.PhotoUploadStatus
-  }
-
   export type NotificationWhereInput = {
     AND?: NotificationWhereInput | NotificationWhereInput[]
     OR?: NotificationWhereInput[]
@@ -7372,7 +7233,8 @@ export namespace Prisma {
     recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
-    posts?: PostCreateNestedManyWithoutAuthorInput
+    banned?: boolean
+    bannedReason?: string | null
     providers?: ProviderCreateNestedOneWithoutUserInput
     devices?: DeviceCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -7391,7 +7253,8 @@ export namespace Prisma {
     recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
-    posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    banned?: boolean
+    bannedReason?: string | null
     providers?: ProviderUncheckedCreateNestedOneWithoutUserInput
     devices?: DeviceUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -7410,7 +7273,8 @@ export namespace Prisma {
     recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    posts?: PostUpdateManyWithoutAuthorNestedInput
+    banned?: BoolFieldUpdateOperationsInput | boolean
+    bannedReason?: NullableStringFieldUpdateOperationsInput | string | null
     providers?: ProviderUpdateOneWithoutUserNestedInput
     devices?: DeviceUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -7429,7 +7293,8 @@ export namespace Prisma {
     recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    banned?: BoolFieldUpdateOperationsInput | boolean
+    bannedReason?: NullableStringFieldUpdateOperationsInput | string | null
     providers?: ProviderUncheckedUpdateOneWithoutUserNestedInput
     devices?: DeviceUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -7448,6 +7313,8 @@ export namespace Prisma {
     recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
+    banned?: boolean
+    bannedReason?: string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -7463,6 +7330,8 @@ export namespace Prisma {
     recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    banned?: BoolFieldUpdateOperationsInput | boolean
+    bannedReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -7478,6 +7347,71 @@ export namespace Prisma {
     recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    banned?: BoolFieldUpdateOperationsInput | boolean
+    bannedReason?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SuperAdminCreateInput = {
+    id?: string
+    createdAt?: Date | string
+    email: string
+    name: string
+    passwordHash: string
+    admin?: boolean
+  }
+
+  export type SuperAdminUncheckedCreateInput = {
+    id?: string
+    createdAt?: Date | string
+    email: string
+    name: string
+    passwordHash: string
+    admin?: boolean
+  }
+
+  export type SuperAdminUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    admin?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type SuperAdminUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    admin?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type SuperAdminCreateManyInput = {
+    id?: string
+    createdAt?: Date | string
+    email: string
+    name: string
+    passwordHash: string
+    admin?: boolean
+  }
+
+  export type SuperAdminUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    admin?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type SuperAdminUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    email?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    admin?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ProviderCreateInput = {
@@ -7581,82 +7515,6 @@ export namespace Prisma {
     title?: NullableStringFieldUpdateOperationsInput | string | null
     ip?: NullableStringFieldUpdateOperationsInput | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type PostCreateInput = {
-    id?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    deletedAt?: Date | string | null
-    published?: boolean
-    title: string
-    photoUploadStatus?: $Enums.PhotoUploadStatus
-    author?: UserCreateNestedOneWithoutPostsInput
-  }
-
-  export type PostUncheckedCreateInput = {
-    id?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    deletedAt?: Date | string | null
-    published?: boolean
-    title: string
-    authorId?: string | null
-    photoUploadStatus?: $Enums.PhotoUploadStatus
-  }
-
-  export type PostUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    published?: BoolFieldUpdateOperationsInput | boolean
-    title?: StringFieldUpdateOperationsInput | string
-    photoUploadStatus?: EnumPhotoUploadStatusFieldUpdateOperationsInput | $Enums.PhotoUploadStatus
-    author?: UserUpdateOneWithoutPostsNestedInput
-  }
-
-  export type PostUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    published?: BoolFieldUpdateOperationsInput | boolean
-    title?: StringFieldUpdateOperationsInput | string
-    authorId?: NullableStringFieldUpdateOperationsInput | string | null
-    photoUploadStatus?: EnumPhotoUploadStatusFieldUpdateOperationsInput | $Enums.PhotoUploadStatus
-  }
-
-  export type PostCreateManyInput = {
-    id?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    deletedAt?: Date | string | null
-    published?: boolean
-    title: string
-    authorId?: string | null
-    photoUploadStatus?: $Enums.PhotoUploadStatus
-  }
-
-  export type PostUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    published?: BoolFieldUpdateOperationsInput | boolean
-    title?: StringFieldUpdateOperationsInput | string
-    photoUploadStatus?: EnumPhotoUploadStatusFieldUpdateOperationsInput | $Enums.PhotoUploadStatus
-  }
-
-  export type PostUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    published?: BoolFieldUpdateOperationsInput | boolean
-    title?: StringFieldUpdateOperationsInput | string
-    authorId?: NullableStringFieldUpdateOperationsInput | string | null
-    photoUploadStatus?: EnumPhotoUploadStatusFieldUpdateOperationsInput | $Enums.PhotoUploadStatus
   }
 
   export type NotificationCreateInput = {
@@ -7771,12 +7629,6 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
-  export type PostListRelationFilter = {
-    every?: PostWhereInput
-    some?: PostWhereInput
-    none?: PostWhereInput
-  }
-
   export type ProviderNullableScalarRelationFilter = {
     is?: ProviderWhereInput | null
     isNot?: ProviderWhereInput | null
@@ -7797,10 +7649,6 @@ export namespace Prisma {
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
-  }
-
-  export type PostOrderByRelationAggregateInput = {
-    _count?: SortOrder
   }
 
   export type DeviceOrderByRelationAggregateInput = {
@@ -7824,6 +7672,8 @@ export namespace Prisma {
     recoveryCode?: SortOrder
     passwordHash?: SortOrder
     expirationDate?: SortOrder
+    banned?: SortOrder
+    bannedReason?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -7839,6 +7689,8 @@ export namespace Prisma {
     recoveryCode?: SortOrder
     passwordHash?: SortOrder
     expirationDate?: SortOrder
+    banned?: SortOrder
+    bannedReason?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -7854,6 +7706,8 @@ export namespace Prisma {
     recoveryCode?: SortOrder
     passwordHash?: SortOrder
     expirationDate?: SortOrder
+    banned?: SortOrder
+    bannedReason?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -7928,6 +7782,33 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type SuperAdminCountOrderByAggregateInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    email?: SortOrder
+    name?: SortOrder
+    passwordHash?: SortOrder
+    admin?: SortOrder
+  }
+
+  export type SuperAdminMaxOrderByAggregateInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    email?: SortOrder
+    name?: SortOrder
+    passwordHash?: SortOrder
+    admin?: SortOrder
+  }
+
+  export type SuperAdminMinOrderByAggregateInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    email?: SortOrder
+    name?: SortOrder
+    passwordHash?: SortOrder
+    admin?: SortOrder
+  }
+
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
@@ -7978,61 +7859,6 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type EnumPhotoUploadStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.PhotoUploadStatus | EnumPhotoUploadStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.PhotoUploadStatus[] | ListEnumPhotoUploadStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.PhotoUploadStatus[] | ListEnumPhotoUploadStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumPhotoUploadStatusFilter<$PrismaModel> | $Enums.PhotoUploadStatus
-  }
-
-  export type UserNullableScalarRelationFilter = {
-    is?: UserWhereInput | null
-    isNot?: UserWhereInput | null
-  }
-
-  export type PostCountOrderByAggregateInput = {
-    id?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    deletedAt?: SortOrder
-    published?: SortOrder
-    title?: SortOrder
-    authorId?: SortOrder
-    photoUploadStatus?: SortOrder
-  }
-
-  export type PostMaxOrderByAggregateInput = {
-    id?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    deletedAt?: SortOrder
-    published?: SortOrder
-    title?: SortOrder
-    authorId?: SortOrder
-    photoUploadStatus?: SortOrder
-  }
-
-  export type PostMinOrderByAggregateInput = {
-    id?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    deletedAt?: SortOrder
-    published?: SortOrder
-    title?: SortOrder
-    authorId?: SortOrder
-    photoUploadStatus?: SortOrder
-  }
-
-  export type EnumPhotoUploadStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.PhotoUploadStatus | EnumPhotoUploadStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.PhotoUploadStatus[] | ListEnumPhotoUploadStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.PhotoUploadStatus[] | ListEnumPhotoUploadStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumPhotoUploadStatusWithAggregatesFilter<$PrismaModel> | $Enums.PhotoUploadStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumPhotoUploadStatusFilter<$PrismaModel>
-    _max?: NestedEnumPhotoUploadStatusFilter<$PrismaModel>
-  }
-
   export type EnumNotifyStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.NotifyStatus | EnumNotifyStatusFieldRefInput<$PrismaModel>
     in?: $Enums.NotifyStatus[] | ListEnumNotifyStatusFieldRefInput<$PrismaModel>
@@ -8074,13 +7900,6 @@ export namespace Prisma {
     _max?: NestedEnumNotifyStatusFilter<$PrismaModel>
   }
 
-  export type PostCreateNestedManyWithoutAuthorInput = {
-    create?: XOR<PostCreateWithoutAuthorInput, PostUncheckedCreateWithoutAuthorInput> | PostCreateWithoutAuthorInput[] | PostUncheckedCreateWithoutAuthorInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutAuthorInput | PostCreateOrConnectWithoutAuthorInput[]
-    createMany?: PostCreateManyAuthorInputEnvelope
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-  }
-
   export type ProviderCreateNestedOneWithoutUserInput = {
     create?: XOR<ProviderCreateWithoutUserInput, ProviderUncheckedCreateWithoutUserInput>
     connectOrCreate?: ProviderCreateOrConnectWithoutUserInput
@@ -8099,13 +7918,6 @@ export namespace Prisma {
     connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
     createMany?: NotificationCreateManyUserInputEnvelope
     connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
-  }
-
-  export type PostUncheckedCreateNestedManyWithoutAuthorInput = {
-    create?: XOR<PostCreateWithoutAuthorInput, PostUncheckedCreateWithoutAuthorInput> | PostCreateWithoutAuthorInput[] | PostUncheckedCreateWithoutAuthorInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutAuthorInput | PostCreateOrConnectWithoutAuthorInput[]
-    createMany?: PostCreateManyAuthorInputEnvelope
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
   }
 
   export type ProviderUncheckedCreateNestedOneWithoutUserInput = {
@@ -8148,20 +7960,6 @@ export namespace Prisma {
     set?: boolean
   }
 
-  export type PostUpdateManyWithoutAuthorNestedInput = {
-    create?: XOR<PostCreateWithoutAuthorInput, PostUncheckedCreateWithoutAuthorInput> | PostCreateWithoutAuthorInput[] | PostUncheckedCreateWithoutAuthorInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutAuthorInput | PostCreateOrConnectWithoutAuthorInput[]
-    upsert?: PostUpsertWithWhereUniqueWithoutAuthorInput | PostUpsertWithWhereUniqueWithoutAuthorInput[]
-    createMany?: PostCreateManyAuthorInputEnvelope
-    set?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    disconnect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    delete?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    update?: PostUpdateWithWhereUniqueWithoutAuthorInput | PostUpdateWithWhereUniqueWithoutAuthorInput[]
-    updateMany?: PostUpdateManyWithWhereWithoutAuthorInput | PostUpdateManyWithWhereWithoutAuthorInput[]
-    deleteMany?: PostScalarWhereInput | PostScalarWhereInput[]
-  }
-
   export type ProviderUpdateOneWithoutUserNestedInput = {
     create?: XOR<ProviderCreateWithoutUserInput, ProviderUncheckedCreateWithoutUserInput>
     connectOrCreate?: ProviderCreateOrConnectWithoutUserInput
@@ -8198,20 +7996,6 @@ export namespace Prisma {
     update?: NotificationUpdateWithWhereUniqueWithoutUserInput | NotificationUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: NotificationUpdateManyWithWhereWithoutUserInput | NotificationUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
-  }
-
-  export type PostUncheckedUpdateManyWithoutAuthorNestedInput = {
-    create?: XOR<PostCreateWithoutAuthorInput, PostUncheckedCreateWithoutAuthorInput> | PostCreateWithoutAuthorInput[] | PostUncheckedCreateWithoutAuthorInput[]
-    connectOrCreate?: PostCreateOrConnectWithoutAuthorInput | PostCreateOrConnectWithoutAuthorInput[]
-    upsert?: PostUpsertWithWhereUniqueWithoutAuthorInput | PostUpsertWithWhereUniqueWithoutAuthorInput[]
-    createMany?: PostCreateManyAuthorInputEnvelope
-    set?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    disconnect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    delete?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
-    update?: PostUpdateWithWhereUniqueWithoutAuthorInput | PostUpdateWithWhereUniqueWithoutAuthorInput[]
-    updateMany?: PostUpdateManyWithWhereWithoutAuthorInput | PostUpdateManyWithWhereWithoutAuthorInput[]
-    deleteMany?: PostScalarWhereInput | PostScalarWhereInput[]
   }
 
   export type ProviderUncheckedUpdateOneWithoutUserNestedInput = {
@@ -8278,26 +8062,6 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutDevicesInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutDevicesInput, UserUpdateWithoutDevicesInput>, UserUncheckedUpdateWithoutDevicesInput>
-  }
-
-  export type UserCreateNestedOneWithoutPostsInput = {
-    create?: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutPostsInput
-    connect?: UserWhereUniqueInput
-  }
-
-  export type EnumPhotoUploadStatusFieldUpdateOperationsInput = {
-    set?: $Enums.PhotoUploadStatus
-  }
-
-  export type UserUpdateOneWithoutPostsNestedInput = {
-    create?: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutPostsInput
-    upsert?: UserUpsertWithoutPostsInput
-    disconnect?: UserWhereInput | boolean
-    delete?: UserWhereInput | boolean
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPostsInput, UserUpdateWithoutPostsInput>, UserUncheckedUpdateWithoutPostsInput>
   }
 
   export type UserCreateNestedOneWithoutNotificationsInput = {
@@ -8465,23 +8229,6 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
-  export type NestedEnumPhotoUploadStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.PhotoUploadStatus | EnumPhotoUploadStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.PhotoUploadStatus[] | ListEnumPhotoUploadStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.PhotoUploadStatus[] | ListEnumPhotoUploadStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumPhotoUploadStatusFilter<$PrismaModel> | $Enums.PhotoUploadStatus
-  }
-
-  export type NestedEnumPhotoUploadStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.PhotoUploadStatus | EnumPhotoUploadStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.PhotoUploadStatus[] | ListEnumPhotoUploadStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.PhotoUploadStatus[] | ListEnumPhotoUploadStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumPhotoUploadStatusWithAggregatesFilter<$PrismaModel> | $Enums.PhotoUploadStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumPhotoUploadStatusFilter<$PrismaModel>
-    _max?: NestedEnumPhotoUploadStatusFilter<$PrismaModel>
-  }
-
   export type NestedEnumNotifyStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.NotifyStatus | EnumNotifyStatusFieldRefInput<$PrismaModel>
     in?: $Enums.NotifyStatus[] | ListEnumNotifyStatusFieldRefInput<$PrismaModel>
@@ -8497,36 +8244,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumNotifyStatusFilter<$PrismaModel>
     _max?: NestedEnumNotifyStatusFilter<$PrismaModel>
-  }
-
-  export type PostCreateWithoutAuthorInput = {
-    id?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    deletedAt?: Date | string | null
-    published?: boolean
-    title: string
-    photoUploadStatus?: $Enums.PhotoUploadStatus
-  }
-
-  export type PostUncheckedCreateWithoutAuthorInput = {
-    id?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    deletedAt?: Date | string | null
-    published?: boolean
-    title: string
-    photoUploadStatus?: $Enums.PhotoUploadStatus
-  }
-
-  export type PostCreateOrConnectWithoutAuthorInput = {
-    where: PostWhereUniqueInput
-    create: XOR<PostCreateWithoutAuthorInput, PostUncheckedCreateWithoutAuthorInput>
-  }
-
-  export type PostCreateManyAuthorInputEnvelope = {
-    data: PostCreateManyAuthorInput | PostCreateManyAuthorInput[]
-    skipDuplicates?: boolean
   }
 
   export type ProviderCreateWithoutUserInput = {
@@ -8592,36 +8309,6 @@ export namespace Prisma {
   export type NotificationCreateManyUserInputEnvelope = {
     data: NotificationCreateManyUserInput | NotificationCreateManyUserInput[]
     skipDuplicates?: boolean
-  }
-
-  export type PostUpsertWithWhereUniqueWithoutAuthorInput = {
-    where: PostWhereUniqueInput
-    update: XOR<PostUpdateWithoutAuthorInput, PostUncheckedUpdateWithoutAuthorInput>
-    create: XOR<PostCreateWithoutAuthorInput, PostUncheckedCreateWithoutAuthorInput>
-  }
-
-  export type PostUpdateWithWhereUniqueWithoutAuthorInput = {
-    where: PostWhereUniqueInput
-    data: XOR<PostUpdateWithoutAuthorInput, PostUncheckedUpdateWithoutAuthorInput>
-  }
-
-  export type PostUpdateManyWithWhereWithoutAuthorInput = {
-    where: PostScalarWhereInput
-    data: XOR<PostUpdateManyMutationInput, PostUncheckedUpdateManyWithoutAuthorInput>
-  }
-
-  export type PostScalarWhereInput = {
-    AND?: PostScalarWhereInput | PostScalarWhereInput[]
-    OR?: PostScalarWhereInput[]
-    NOT?: PostScalarWhereInput | PostScalarWhereInput[]
-    id?: StringFilter<"Post"> | string
-    createdAt?: DateTimeFilter<"Post"> | Date | string
-    updatedAt?: DateTimeFilter<"Post"> | Date | string
-    deletedAt?: DateTimeNullableFilter<"Post"> | Date | string | null
-    published?: BoolFilter<"Post"> | boolean
-    title?: StringFilter<"Post"> | string
-    authorId?: StringNullableFilter<"Post"> | string | null
-    photoUploadStatus?: EnumPhotoUploadStatusFilter<"Post"> | $Enums.PhotoUploadStatus
   }
 
   export type ProviderUpsertWithoutUserInput = {
@@ -8714,7 +8401,8 @@ export namespace Prisma {
     recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
-    posts?: PostCreateNestedManyWithoutAuthorInput
+    banned?: boolean
+    bannedReason?: string | null
     devices?: DeviceCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
   }
@@ -8732,7 +8420,8 @@ export namespace Prisma {
     recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
-    posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    banned?: boolean
+    bannedReason?: string | null
     devices?: DeviceUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
   }
@@ -8766,7 +8455,8 @@ export namespace Prisma {
     recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    posts?: PostUpdateManyWithoutAuthorNestedInput
+    banned?: BoolFieldUpdateOperationsInput | boolean
+    bannedReason?: NullableStringFieldUpdateOperationsInput | string | null
     devices?: DeviceUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
   }
@@ -8784,7 +8474,8 @@ export namespace Prisma {
     recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    banned?: BoolFieldUpdateOperationsInput | boolean
+    bannedReason?: NullableStringFieldUpdateOperationsInput | string | null
     devices?: DeviceUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -8802,7 +8493,8 @@ export namespace Prisma {
     recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
-    posts?: PostCreateNestedManyWithoutAuthorInput
+    banned?: boolean
+    bannedReason?: string | null
     providers?: ProviderCreateNestedOneWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
   }
@@ -8820,7 +8512,8 @@ export namespace Prisma {
     recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
-    posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    banned?: boolean
+    bannedReason?: string | null
     providers?: ProviderUncheckedCreateNestedOneWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
   }
@@ -8854,7 +8547,8 @@ export namespace Prisma {
     recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    posts?: PostUpdateManyWithoutAuthorNestedInput
+    banned?: BoolFieldUpdateOperationsInput | boolean
+    bannedReason?: NullableStringFieldUpdateOperationsInput | string | null
     providers?: ProviderUpdateOneWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
   }
@@ -8872,96 +8566,9 @@ export namespace Prisma {
     recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    banned?: BoolFieldUpdateOperationsInput | boolean
+    bannedReason?: NullableStringFieldUpdateOperationsInput | string | null
     providers?: ProviderUncheckedUpdateOneWithoutUserNestedInput
-    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserCreateWithoutPostsInput = {
-    id?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    deletedAt?: Date | string | null
-    email: string
-    name?: string | null
-    confirmationCode?: string | null
-    codeExpiration?: Date | string | null
-    isConfirmed?: boolean
-    recoveryCode?: string | null
-    passwordHash?: string | null
-    expirationDate?: Date | string | null
-    providers?: ProviderCreateNestedOneWithoutUserInput
-    devices?: DeviceCreateNestedManyWithoutUserInput
-    notifications?: NotificationCreateNestedManyWithoutUserInput
-  }
-
-  export type UserUncheckedCreateWithoutPostsInput = {
-    id?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    deletedAt?: Date | string | null
-    email: string
-    name?: string | null
-    confirmationCode?: string | null
-    codeExpiration?: Date | string | null
-    isConfirmed?: boolean
-    recoveryCode?: string | null
-    passwordHash?: string | null
-    expirationDate?: Date | string | null
-    providers?: ProviderUncheckedCreateNestedOneWithoutUserInput
-    devices?: DeviceUncheckedCreateNestedManyWithoutUserInput
-    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
-  }
-
-  export type UserCreateOrConnectWithoutPostsInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
-  }
-
-  export type UserUpsertWithoutPostsInput = {
-    update: XOR<UserUpdateWithoutPostsInput, UserUncheckedUpdateWithoutPostsInput>
-    create: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutPostsInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutPostsInput, UserUncheckedUpdateWithoutPostsInput>
-  }
-
-  export type UserUpdateWithoutPostsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    email?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    confirmationCode?: NullableStringFieldUpdateOperationsInput | string | null
-    codeExpiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isConfirmed?: BoolFieldUpdateOperationsInput | boolean
-    recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
-    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
-    expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    providers?: ProviderUpdateOneWithoutUserNestedInput
-    devices?: DeviceUpdateManyWithoutUserNestedInput
-    notifications?: NotificationUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutPostsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    email?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    confirmationCode?: NullableStringFieldUpdateOperationsInput | string | null
-    codeExpiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isConfirmed?: BoolFieldUpdateOperationsInput | boolean
-    recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
-    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
-    expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    providers?: ProviderUncheckedUpdateOneWithoutUserNestedInput
-    devices?: DeviceUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -8978,7 +8585,8 @@ export namespace Prisma {
     recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
-    posts?: PostCreateNestedManyWithoutAuthorInput
+    banned?: boolean
+    bannedReason?: string | null
     providers?: ProviderCreateNestedOneWithoutUserInput
     devices?: DeviceCreateNestedManyWithoutUserInput
   }
@@ -8996,7 +8604,8 @@ export namespace Prisma {
     recoveryCode?: string | null
     passwordHash?: string | null
     expirationDate?: Date | string | null
-    posts?: PostUncheckedCreateNestedManyWithoutAuthorInput
+    banned?: boolean
+    bannedReason?: string | null
     providers?: ProviderUncheckedCreateNestedOneWithoutUserInput
     devices?: DeviceUncheckedCreateNestedManyWithoutUserInput
   }
@@ -9030,7 +8639,8 @@ export namespace Prisma {
     recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    posts?: PostUpdateManyWithoutAuthorNestedInput
+    banned?: BoolFieldUpdateOperationsInput | boolean
+    bannedReason?: NullableStringFieldUpdateOperationsInput | string | null
     providers?: ProviderUpdateOneWithoutUserNestedInput
     devices?: DeviceUpdateManyWithoutUserNestedInput
   }
@@ -9048,19 +8658,10 @@ export namespace Prisma {
     recoveryCode?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     expirationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    posts?: PostUncheckedUpdateManyWithoutAuthorNestedInput
+    banned?: BoolFieldUpdateOperationsInput | boolean
+    bannedReason?: NullableStringFieldUpdateOperationsInput | string | null
     providers?: ProviderUncheckedUpdateOneWithoutUserNestedInput
     devices?: DeviceUncheckedUpdateManyWithoutUserNestedInput
-  }
-
-  export type PostCreateManyAuthorInput = {
-    id?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    deletedAt?: Date | string | null
-    published?: boolean
-    title: string
-    photoUploadStatus?: $Enums.PhotoUploadStatus
   }
 
   export type DeviceCreateManyUserInput = {
@@ -9075,36 +8676,6 @@ export namespace Prisma {
     createdAt?: Date | string
     expiresAt?: Date | string | null
     type: $Enums.NotifyStatus
-  }
-
-  export type PostUpdateWithoutAuthorInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    published?: BoolFieldUpdateOperationsInput | boolean
-    title?: StringFieldUpdateOperationsInput | string
-    photoUploadStatus?: EnumPhotoUploadStatusFieldUpdateOperationsInput | $Enums.PhotoUploadStatus
-  }
-
-  export type PostUncheckedUpdateWithoutAuthorInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    published?: BoolFieldUpdateOperationsInput | boolean
-    title?: StringFieldUpdateOperationsInput | string
-    photoUploadStatus?: EnumPhotoUploadStatusFieldUpdateOperationsInput | $Enums.PhotoUploadStatus
-  }
-
-  export type PostUncheckedUpdateManyWithoutAuthorInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    published?: BoolFieldUpdateOperationsInput | boolean
-    title?: StringFieldUpdateOperationsInput | string
-    photoUploadStatus?: EnumPhotoUploadStatusFieldUpdateOperationsInput | $Enums.PhotoUploadStatus
   }
 
   export type DeviceUpdateWithoutUserInput = {

@@ -1016,6 +1016,7 @@ export namespace Prisma {
     photoUrl: string | null
     email: string | null
     paymentAccount: boolean | null
+    banned: boolean | null
     userName: string | null
     aboutMe: string | null
     firstName: string | null
@@ -1032,6 +1033,7 @@ export namespace Prisma {
     photoUrl: string | null
     email: string | null
     paymentAccount: boolean | null
+    banned: boolean | null
     userName: string | null
     aboutMe: string | null
     firstName: string | null
@@ -1048,6 +1050,7 @@ export namespace Prisma {
     photoUrl: number
     email: number
     paymentAccount: number
+    banned: number
     userName: number
     aboutMe: number
     firstName: number
@@ -1066,6 +1069,7 @@ export namespace Prisma {
     photoUrl?: true
     email?: true
     paymentAccount?: true
+    banned?: true
     userName?: true
     aboutMe?: true
     firstName?: true
@@ -1082,6 +1086,7 @@ export namespace Prisma {
     photoUrl?: true
     email?: true
     paymentAccount?: true
+    banned?: true
     userName?: true
     aboutMe?: true
     firstName?: true
@@ -1098,6 +1103,7 @@ export namespace Prisma {
     photoUrl?: true
     email?: true
     paymentAccount?: true
+    banned?: true
     userName?: true
     aboutMe?: true
     firstName?: true
@@ -1187,6 +1193,7 @@ export namespace Prisma {
     photoUrl: string | null
     email: string
     paymentAccount: boolean
+    banned: boolean
     userName: string
     aboutMe: string | null
     firstName: string | null
@@ -1220,6 +1227,7 @@ export namespace Prisma {
     photoUrl?: boolean
     email?: boolean
     paymentAccount?: boolean
+    banned?: boolean
     userName?: boolean
     aboutMe?: boolean
     firstName?: boolean
@@ -1239,6 +1247,7 @@ export namespace Prisma {
     photoUrl?: boolean
     email?: boolean
     paymentAccount?: boolean
+    banned?: boolean
     userName?: boolean
     aboutMe?: boolean
     firstName?: boolean
@@ -1255,6 +1264,7 @@ export namespace Prisma {
     photoUrl?: boolean
     email?: boolean
     paymentAccount?: boolean
+    banned?: boolean
     userName?: boolean
     aboutMe?: boolean
     firstName?: boolean
@@ -1271,6 +1281,7 @@ export namespace Prisma {
     photoUrl?: boolean
     email?: boolean
     paymentAccount?: boolean
+    banned?: boolean
     userName?: boolean
     aboutMe?: boolean
     firstName?: boolean
@@ -1280,7 +1291,7 @@ export namespace Prisma {
     city?: boolean
   }
 
-  export type ProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "createdAt" | "photoUrl" | "email" | "paymentAccount" | "userName" | "aboutMe" | "firstName" | "lastName" | "dateOfBirth" | "country" | "city", ExtArgs["result"]["profile"]>
+  export type ProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "createdAt" | "photoUrl" | "email" | "paymentAccount" | "banned" | "userName" | "aboutMe" | "firstName" | "lastName" | "dateOfBirth" | "country" | "city", ExtArgs["result"]["profile"]>
   export type ProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     subscriptions?: boolean | Profile$subscriptionsArgs<ExtArgs>
     subscribers?: boolean | Profile$subscribersArgs<ExtArgs>
@@ -1302,6 +1313,7 @@ export namespace Prisma {
       photoUrl: string | null
       email: string
       paymentAccount: boolean
+      banned: boolean
       userName: string
       aboutMe: string | null
       firstName: string | null
@@ -1740,6 +1752,7 @@ export namespace Prisma {
     readonly photoUrl: FieldRef<"Profile", 'String'>
     readonly email: FieldRef<"Profile", 'String'>
     readonly paymentAccount: FieldRef<"Profile", 'Boolean'>
+    readonly banned: FieldRef<"Profile", 'Boolean'>
     readonly userName: FieldRef<"Profile", 'String'>
     readonly aboutMe: FieldRef<"Profile", 'String'>
     readonly firstName: FieldRef<"Profile", 'String'>
@@ -3262,6 +3275,7 @@ export namespace Prisma {
     photoUrl: 'photoUrl',
     email: 'email',
     paymentAccount: 'paymentAccount',
+    banned: 'banned',
     userName: 'userName',
     aboutMe: 'aboutMe',
     firstName: 'firstName',
@@ -3374,6 +3388,7 @@ export namespace Prisma {
     photoUrl?: StringNullableFilter<"Profile"> | string | null
     email?: StringFilter<"Profile"> | string
     paymentAccount?: BoolFilter<"Profile"> | boolean
+    banned?: BoolFilter<"Profile"> | boolean
     userName?: StringFilter<"Profile"> | string
     aboutMe?: StringNullableFilter<"Profile"> | string | null
     firstName?: StringNullableFilter<"Profile"> | string | null
@@ -3392,6 +3407,7 @@ export namespace Prisma {
     photoUrl?: SortOrderInput | SortOrder
     email?: SortOrder
     paymentAccount?: SortOrder
+    banned?: SortOrder
     userName?: SortOrder
     aboutMe?: SortOrderInput | SortOrder
     firstName?: SortOrderInput | SortOrder
@@ -3413,6 +3429,7 @@ export namespace Prisma {
     photoUrl?: StringNullableFilter<"Profile"> | string | null
     email?: StringFilter<"Profile"> | string
     paymentAccount?: BoolFilter<"Profile"> | boolean
+    banned?: BoolFilter<"Profile"> | boolean
     userName?: StringFilter<"Profile"> | string
     aboutMe?: StringNullableFilter<"Profile"> | string | null
     firstName?: StringNullableFilter<"Profile"> | string | null
@@ -3431,6 +3448,7 @@ export namespace Prisma {
     photoUrl?: SortOrderInput | SortOrder
     email?: SortOrder
     paymentAccount?: SortOrder
+    banned?: SortOrder
     userName?: SortOrder
     aboutMe?: SortOrderInput | SortOrder
     firstName?: SortOrderInput | SortOrder
@@ -3453,6 +3471,7 @@ export namespace Prisma {
     photoUrl?: StringNullableWithAggregatesFilter<"Profile"> | string | null
     email?: StringWithAggregatesFilter<"Profile"> | string
     paymentAccount?: BoolWithAggregatesFilter<"Profile"> | boolean
+    banned?: BoolWithAggregatesFilter<"Profile"> | boolean
     userName?: StringWithAggregatesFilter<"Profile"> | string
     aboutMe?: StringNullableWithAggregatesFilter<"Profile"> | string | null
     firstName?: StringNullableWithAggregatesFilter<"Profile"> | string | null
@@ -3518,6 +3537,7 @@ export namespace Prisma {
     photoUrl?: string | null
     email: string
     paymentAccount?: boolean
+    banned?: boolean
     userName: string
     aboutMe?: string | null
     firstName?: string | null
@@ -3536,6 +3556,7 @@ export namespace Prisma {
     photoUrl?: string | null
     email: string
     paymentAccount?: boolean
+    banned?: boolean
     userName: string
     aboutMe?: string | null
     firstName?: string | null
@@ -3554,6 +3575,7 @@ export namespace Prisma {
     photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     paymentAccount?: BoolFieldUpdateOperationsInput | boolean
+    banned?: BoolFieldUpdateOperationsInput | boolean
     userName?: StringFieldUpdateOperationsInput | string
     aboutMe?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -3572,6 +3594,7 @@ export namespace Prisma {
     photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     paymentAccount?: BoolFieldUpdateOperationsInput | boolean
+    banned?: BoolFieldUpdateOperationsInput | boolean
     userName?: StringFieldUpdateOperationsInput | string
     aboutMe?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -3590,6 +3613,7 @@ export namespace Prisma {
     photoUrl?: string | null
     email: string
     paymentAccount?: boolean
+    banned?: boolean
     userName: string
     aboutMe?: string | null
     firstName?: string | null
@@ -3606,6 +3630,7 @@ export namespace Prisma {
     photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     paymentAccount?: BoolFieldUpdateOperationsInput | boolean
+    banned?: BoolFieldUpdateOperationsInput | boolean
     userName?: StringFieldUpdateOperationsInput | string
     aboutMe?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -3622,6 +3647,7 @@ export namespace Prisma {
     photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     paymentAccount?: BoolFieldUpdateOperationsInput | boolean
+    banned?: BoolFieldUpdateOperationsInput | boolean
     userName?: StringFieldUpdateOperationsInput | string
     aboutMe?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -3750,6 +3776,7 @@ export namespace Prisma {
     photoUrl?: SortOrder
     email?: SortOrder
     paymentAccount?: SortOrder
+    banned?: SortOrder
     userName?: SortOrder
     aboutMe?: SortOrder
     firstName?: SortOrder
@@ -3766,6 +3793,7 @@ export namespace Prisma {
     photoUrl?: SortOrder
     email?: SortOrder
     paymentAccount?: SortOrder
+    banned?: SortOrder
     userName?: SortOrder
     aboutMe?: SortOrder
     firstName?: SortOrder
@@ -3782,6 +3810,7 @@ export namespace Prisma {
     photoUrl?: SortOrder
     email?: SortOrder
     paymentAccount?: SortOrder
+    banned?: SortOrder
     userName?: SortOrder
     aboutMe?: SortOrder
     firstName?: SortOrder
@@ -4258,6 +4287,7 @@ export namespace Prisma {
     photoUrl?: string | null
     email: string
     paymentAccount?: boolean
+    banned?: boolean
     userName: string
     aboutMe?: string | null
     firstName?: string | null
@@ -4275,6 +4305,7 @@ export namespace Prisma {
     photoUrl?: string | null
     email: string
     paymentAccount?: boolean
+    banned?: boolean
     userName: string
     aboutMe?: string | null
     firstName?: string | null
@@ -4297,6 +4328,7 @@ export namespace Prisma {
     photoUrl?: string | null
     email: string
     paymentAccount?: boolean
+    banned?: boolean
     userName: string
     aboutMe?: string | null
     firstName?: string | null
@@ -4314,6 +4346,7 @@ export namespace Prisma {
     photoUrl?: string | null
     email: string
     paymentAccount?: boolean
+    banned?: boolean
     userName: string
     aboutMe?: string | null
     firstName?: string | null
@@ -4347,6 +4380,7 @@ export namespace Prisma {
     photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     paymentAccount?: BoolFieldUpdateOperationsInput | boolean
+    banned?: BoolFieldUpdateOperationsInput | boolean
     userName?: StringFieldUpdateOperationsInput | string
     aboutMe?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -4364,6 +4398,7 @@ export namespace Prisma {
     photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     paymentAccount?: BoolFieldUpdateOperationsInput | boolean
+    banned?: BoolFieldUpdateOperationsInput | boolean
     userName?: StringFieldUpdateOperationsInput | string
     aboutMe?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -4392,6 +4427,7 @@ export namespace Prisma {
     photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     paymentAccount?: BoolFieldUpdateOperationsInput | boolean
+    banned?: BoolFieldUpdateOperationsInput | boolean
     userName?: StringFieldUpdateOperationsInput | string
     aboutMe?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -4409,6 +4445,7 @@ export namespace Prisma {
     photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     email?: StringFieldUpdateOperationsInput | string
     paymentAccount?: BoolFieldUpdateOperationsInput | boolean
+    banned?: BoolFieldUpdateOperationsInput | boolean
     userName?: StringFieldUpdateOperationsInput | string
     aboutMe?: NullableStringFieldUpdateOperationsInput | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null

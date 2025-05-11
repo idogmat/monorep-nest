@@ -46,6 +46,17 @@ export class PostsPrismaRepository {
     });
   }
 
+  async markAsBanned(userId: string) {
+    try {
+      await this.prisma.post.updateMany({
+        where: { userId },
+        data: { banned: true }
+      });
+    } catch (error) {
+
+    }
+  }
+
   async deletePostWithFiles(param: { id: string }) {
     await this.prisma.$transaction([
       this.prisma.file.deleteMany({

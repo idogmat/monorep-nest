@@ -245,8 +245,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.5.0
-   * Query Engine version: 173f8d54f8d52e692c7e27e72a88314ec7aeff60
+   * Prisma Client JS version: 6.6.0
+   * Query Engine version: f676762280b54cd07c770017ed3711ddde35f37a
    */
   export type PrismaVersion = {
     client: string
@@ -1027,6 +1027,7 @@ export namespace Prisma {
     published: boolean | null
     title: string | null
     userId: string | null
+    banned: boolean | null
     photoUploadStatus: $Enums.PhotoUploadStatus | null
   }
 
@@ -1038,6 +1039,7 @@ export namespace Prisma {
     published: boolean | null
     title: string | null
     userId: string | null
+    banned: boolean | null
     photoUploadStatus: $Enums.PhotoUploadStatus | null
   }
 
@@ -1049,6 +1051,7 @@ export namespace Prisma {
     published: number
     title: number
     userId: number
+    banned: number
     photoUploadStatus: number
     _all: number
   }
@@ -1062,6 +1065,7 @@ export namespace Prisma {
     published?: true
     title?: true
     userId?: true
+    banned?: true
     photoUploadStatus?: true
   }
 
@@ -1073,6 +1077,7 @@ export namespace Prisma {
     published?: true
     title?: true
     userId?: true
+    banned?: true
     photoUploadStatus?: true
   }
 
@@ -1084,6 +1089,7 @@ export namespace Prisma {
     published?: true
     title?: true
     userId?: true
+    banned?: true
     photoUploadStatus?: true
     _all?: true
   }
@@ -1168,6 +1174,7 @@ export namespace Prisma {
     published: boolean
     title: string
     userId: string
+    banned: boolean
     photoUploadStatus: $Enums.PhotoUploadStatus
     _count: PostCountAggregateOutputType | null
     _min: PostMinAggregateOutputType | null
@@ -1196,6 +1203,7 @@ export namespace Prisma {
     published?: boolean
     title?: boolean
     userId?: boolean
+    banned?: boolean
     photoUploadStatus?: boolean
     urls?: boolean | Post$urlsArgs<ExtArgs>
     _count?: boolean | PostCountOutputTypeDefaultArgs<ExtArgs>
@@ -1209,6 +1217,7 @@ export namespace Prisma {
     published?: boolean
     title?: boolean
     userId?: boolean
+    banned?: boolean
     photoUploadStatus?: boolean
   }, ExtArgs["result"]["post"]>
 
@@ -1220,6 +1229,7 @@ export namespace Prisma {
     published?: boolean
     title?: boolean
     userId?: boolean
+    banned?: boolean
     photoUploadStatus?: boolean
   }, ExtArgs["result"]["post"]>
 
@@ -1231,10 +1241,11 @@ export namespace Prisma {
     published?: boolean
     title?: boolean
     userId?: boolean
+    banned?: boolean
     photoUploadStatus?: boolean
   }
 
-  export type PostOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "deletedAt" | "published" | "title" | "userId" | "photoUploadStatus", ExtArgs["result"]["post"]>
+  export type PostOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "deletedAt" | "published" | "title" | "userId" | "banned" | "photoUploadStatus", ExtArgs["result"]["post"]>
   export type PostInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     urls?: boolean | Post$urlsArgs<ExtArgs>
     _count?: boolean | PostCountOutputTypeDefaultArgs<ExtArgs>
@@ -1255,6 +1266,7 @@ export namespace Prisma {
       published: boolean
       title: string
       userId: string
+      banned: boolean
       photoUploadStatus: $Enums.PhotoUploadStatus
     }, ExtArgs["result"]["post"]>
     composites: {}
@@ -1678,7 +1690,7 @@ export namespace Prisma {
 
   /**
    * Fields of the Post model
-   */ 
+   */
   interface PostFieldRefs {
     readonly id: FieldRef<"Post", 'String'>
     readonly createdAt: FieldRef<"Post", 'DateTime'>
@@ -1687,6 +1699,7 @@ export namespace Prisma {
     readonly published: FieldRef<"Post", 'Boolean'>
     readonly title: FieldRef<"Post", 'String'>
     readonly userId: FieldRef<"Post", 'String'>
+    readonly banned: FieldRef<"Post", 'Boolean'>
     readonly photoUploadStatus: FieldRef<"Post", 'PhotoUploadStatus'>
   }
     
@@ -2779,7 +2792,7 @@ export namespace Prisma {
 
   /**
    * Fields of the File model
-   */ 
+   */
   interface FileFieldRefs {
     readonly id: FieldRef<"File", 'String'>
     readonly createdAt: FieldRef<"File", 'DateTime'>
@@ -3224,6 +3237,7 @@ export namespace Prisma {
     published: 'published',
     title: 'title',
     userId: 'userId',
+    banned: 'banned',
     photoUploadStatus: 'photoUploadStatus'
   };
 
@@ -3268,7 +3282,7 @@ export namespace Prisma {
 
 
   /**
-   * Field references 
+   * Field references
    */
 
 
@@ -3349,6 +3363,7 @@ export namespace Prisma {
     published?: BoolFilter<"Post"> | boolean
     title?: StringFilter<"Post"> | string
     userId?: StringFilter<"Post"> | string
+    banned?: BoolFilter<"Post"> | boolean
     photoUploadStatus?: EnumPhotoUploadStatusFilter<"Post"> | $Enums.PhotoUploadStatus
     urls?: FileListRelationFilter
   }
@@ -3361,6 +3376,7 @@ export namespace Prisma {
     published?: SortOrder
     title?: SortOrder
     userId?: SortOrder
+    banned?: SortOrder
     photoUploadStatus?: SortOrder
     urls?: FileOrderByRelationAggregateInput
   }
@@ -3376,6 +3392,7 @@ export namespace Prisma {
     published?: BoolFilter<"Post"> | boolean
     title?: StringFilter<"Post"> | string
     userId?: StringFilter<"Post"> | string
+    banned?: BoolFilter<"Post"> | boolean
     photoUploadStatus?: EnumPhotoUploadStatusFilter<"Post"> | $Enums.PhotoUploadStatus
     urls?: FileListRelationFilter
   }, "id">
@@ -3388,6 +3405,7 @@ export namespace Prisma {
     published?: SortOrder
     title?: SortOrder
     userId?: SortOrder
+    banned?: SortOrder
     photoUploadStatus?: SortOrder
     _count?: PostCountOrderByAggregateInput
     _max?: PostMaxOrderByAggregateInput
@@ -3405,6 +3423,7 @@ export namespace Prisma {
     published?: BoolWithAggregatesFilter<"Post"> | boolean
     title?: StringWithAggregatesFilter<"Post"> | string
     userId?: StringWithAggregatesFilter<"Post"> | string
+    banned?: BoolWithAggregatesFilter<"Post"> | boolean
     photoUploadStatus?: EnumPhotoUploadStatusWithAggregatesFilter<"Post"> | $Enums.PhotoUploadStatus
   }
 
@@ -3481,6 +3500,7 @@ export namespace Prisma {
     published?: boolean
     title: string
     userId: string
+    banned?: boolean
     photoUploadStatus?: $Enums.PhotoUploadStatus
     urls?: FileCreateNestedManyWithoutPostInput
   }
@@ -3493,6 +3513,7 @@ export namespace Prisma {
     published?: boolean
     title: string
     userId: string
+    banned?: boolean
     photoUploadStatus?: $Enums.PhotoUploadStatus
     urls?: FileUncheckedCreateNestedManyWithoutPostInput
   }
@@ -3505,6 +3526,7 @@ export namespace Prisma {
     published?: BoolFieldUpdateOperationsInput | boolean
     title?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    banned?: BoolFieldUpdateOperationsInput | boolean
     photoUploadStatus?: EnumPhotoUploadStatusFieldUpdateOperationsInput | $Enums.PhotoUploadStatus
     urls?: FileUpdateManyWithoutPostNestedInput
   }
@@ -3517,6 +3539,7 @@ export namespace Prisma {
     published?: BoolFieldUpdateOperationsInput | boolean
     title?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    banned?: BoolFieldUpdateOperationsInput | boolean
     photoUploadStatus?: EnumPhotoUploadStatusFieldUpdateOperationsInput | $Enums.PhotoUploadStatus
     urls?: FileUncheckedUpdateManyWithoutPostNestedInput
   }
@@ -3529,6 +3552,7 @@ export namespace Prisma {
     published?: boolean
     title: string
     userId: string
+    banned?: boolean
     photoUploadStatus?: $Enums.PhotoUploadStatus
   }
 
@@ -3540,6 +3564,7 @@ export namespace Prisma {
     published?: BoolFieldUpdateOperationsInput | boolean
     title?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    banned?: BoolFieldUpdateOperationsInput | boolean
     photoUploadStatus?: EnumPhotoUploadStatusFieldUpdateOperationsInput | $Enums.PhotoUploadStatus
   }
 
@@ -3551,6 +3576,7 @@ export namespace Prisma {
     published?: BoolFieldUpdateOperationsInput | boolean
     title?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    banned?: BoolFieldUpdateOperationsInput | boolean
     photoUploadStatus?: EnumPhotoUploadStatusFieldUpdateOperationsInput | $Enums.PhotoUploadStatus
   }
 
@@ -3695,6 +3721,7 @@ export namespace Prisma {
     published?: SortOrder
     title?: SortOrder
     userId?: SortOrder
+    banned?: SortOrder
     photoUploadStatus?: SortOrder
   }
 
@@ -3706,6 +3733,7 @@ export namespace Prisma {
     published?: SortOrder
     title?: SortOrder
     userId?: SortOrder
+    banned?: SortOrder
     photoUploadStatus?: SortOrder
   }
 
@@ -3717,6 +3745,7 @@ export namespace Prisma {
     published?: SortOrder
     title?: SortOrder
     userId?: SortOrder
+    banned?: SortOrder
     photoUploadStatus?: SortOrder
   }
 
@@ -4093,6 +4122,7 @@ export namespace Prisma {
     published?: boolean
     title: string
     userId: string
+    banned?: boolean
     photoUploadStatus?: $Enums.PhotoUploadStatus
   }
 
@@ -4104,6 +4134,7 @@ export namespace Prisma {
     published?: boolean
     title: string
     userId: string
+    banned?: boolean
     photoUploadStatus?: $Enums.PhotoUploadStatus
   }
 
@@ -4131,6 +4162,7 @@ export namespace Prisma {
     published?: BoolFieldUpdateOperationsInput | boolean
     title?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    banned?: BoolFieldUpdateOperationsInput | boolean
     photoUploadStatus?: EnumPhotoUploadStatusFieldUpdateOperationsInput | $Enums.PhotoUploadStatus
   }
 
@@ -4142,6 +4174,7 @@ export namespace Prisma {
     published?: BoolFieldUpdateOperationsInput | boolean
     title?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    banned?: BoolFieldUpdateOperationsInput | boolean
     photoUploadStatus?: EnumPhotoUploadStatusFieldUpdateOperationsInput | $Enums.PhotoUploadStatus
   }
 

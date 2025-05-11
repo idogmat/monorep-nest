@@ -17,12 +17,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.5.0
- * Query Engine version: 173f8d54f8d52e692c7e27e72a88314ec7aeff60
+ * Prisma Client JS version: 6.6.0
+ * Query Engine version: f676762280b54cd07c770017ed3711ddde35f37a
  */
 Prisma.prismaVersion = {
-  client: "6.5.0",
-  engine: "173f8d54f8d52e692c7e27e72a88314ec7aeff60"
+  client: "6.6.0",
+  engine: "f676762280b54cd07c770017ed3711ddde35f37a"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -129,7 +129,18 @@ exports.Prisma.UserScalarFieldEnum = {
   isConfirmed: 'isConfirmed',
   recoveryCode: 'recoveryCode',
   passwordHash: 'passwordHash',
-  expirationDate: 'expirationDate'
+  expirationDate: 'expirationDate',
+  banned: 'banned',
+  bannedReason: 'bannedReason'
+};
+
+exports.Prisma.SuperAdminScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  email: 'email',
+  name: 'name',
+  passwordHash: 'passwordHash',
+  admin: 'admin'
 };
 
 exports.Prisma.ProviderScalarFieldEnum = {
@@ -145,17 +156,6 @@ exports.Prisma.DeviceScalarFieldEnum = {
   title: 'title',
   ip: 'ip',
   updatedAt: 'updatedAt'
-};
-
-exports.Prisma.PostScalarFieldEnum = {
-  id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  deletedAt: 'deletedAt',
-  published: 'published',
-  title: 'title',
-  authorId: 'authorId',
-  photoUploadStatus: 'photoUploadStatus'
 };
 
 exports.Prisma.NotificationScalarFieldEnum = {
@@ -180,13 +180,6 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.PhotoUploadStatus = exports.$Enums.PhotoUploadStatus = {
-  PENDING: 'PENDING',
-  IN_PROGRESS: 'IN_PROGRESS',
-  COMPLETED: 'COMPLETED',
-  FAILED: 'FAILED'
-};
-
 exports.NotifyStatus = exports.$Enums.NotifyStatus = {
   subscribe: 'subscribe',
   PENDING: 'PENDING',
@@ -195,9 +188,9 @@ exports.NotifyStatus = exports.$Enums.NotifyStatus = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  SuperAdmin: 'SuperAdmin',
   Provider: 'Provider',
   Device: 'Device',
-  Post: 'Post',
   Notification: 'Notification'
 };
 
@@ -218,7 +211,7 @@ class PrismaClient {
         } else {
           message = 'PrismaClient is unable to run in this browser environment, or has been bundled for the browser (running in `' + runtime.prettyName + '`).'
         }
-        
+
         message += `
 If this is unexpected, please open an issue: https://pris.ly/prisma-prisma-bug-report`
 

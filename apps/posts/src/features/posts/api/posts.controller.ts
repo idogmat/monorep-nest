@@ -12,7 +12,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { CreatePostCommand } from '../application/use-cases/create.post.use.cases';
 import { UploadPostPhotosCommand } from '../application/use-cases/upload.post.photos.use-case';
-import { Ctx, EventPattern, Payload } from '@nestjs/microservices';
+import { Ctx, EventPattern, MessagePattern, Payload, RmqContext, RpcException } from '@nestjs/microservices';
 import {
   UpdatePostStatusOnFileUploadCommand
 } from '../application/use-cases/update.post.status.on.file.upload.use-case';
@@ -25,14 +25,15 @@ import { PostUpdateModel } from '../../../../../gateway/src/feature/posts/api/mo
 import { ErrorProcessor } from '../../../../../libs/common/error-handling/error.processor';
 import { UpdatePostCommand } from '../application/use-cases/update.post.use-case';
 import { DeletePostCommand } from '../application/use-cases/delete.post.use-case';
-
+import { PostsPrismaRepository } from '../infrastructure/prisma/posts.prisma.repository';
+import { PaginationSearchPostGqlTerm } from '../../../../../gateway/src/feature/superAdmin/api/utils/pagination';
 
 @Controller()
 export class PostsController {
   constructor(
     private commandBus: CommandBus,
-    private postsQueryRepository: PostsQueryRepository
-
+    private postsQueryRepository: PostsQueryRepository,
+    private readonly postsPrismaRepository: PostsPrismaRepository,
   ) {
   }
 
@@ -79,7 +80,7 @@ export class PostsController {
   @Get('get-post-by-id')
   async getPostById(
     @Headers('X-PostId') postId: string,
-  ){
+  ) {
     const result = await this.commandBus.execute(
       new GetPostAndPhotoCommand(postId),
     );
@@ -95,17 +96,24 @@ export class PostsController {
   @Get('get-posts')
   async getPosts(
     @Query()
-      queryDTO: PaginationSearchPostTerm,
-  ){
+    queryDTO: PaginationSearchPostTerm,
+  ) {
 
-    const result = await this.commandBus.execute(
+    return this.commandBus.execute(
       new GetAllPostsCommand(queryDTO),
     );
 
-    return result;
-
   }
 
+  @Get('get-posts-gql')
+  async getPostsGQL(
+    @Query()
+      queryDTO: PaginationSearchPostGqlTerm,
+  ) {
+
+    return this.postsQueryRepository.getAllPostsGQL(queryDTO);
+
+  }
   @Put('update-post')
   async updatePost(
     @Headers('X-PostId') postId: string,
@@ -137,8 +145,8 @@ export class PostsController {
   }
   @EventPattern('files_uploaded')
   async handleFileUploaded(@Payload() data: FilesUploadedEvent,
-                           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                           @Ctx() context: any) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    @Ctx() context: any) {
     console.log('Received file uploaded message:', data);
     const { postId, files } = data;
     try {
@@ -149,5 +157,16 @@ export class PostsController {
       console.error('Ошибка в команде:', error);
     }
 
+  }
+
+  @EventPattern('ban_posts')
+  async handleBanPost(
+    @Payload() userId: string,
+  ) {
+    try {
+      await this.postsPrismaRepository.markAsBanned(userId)
+    } catch (error) {
+      console.error('fail', error);
+    }
   }
 }

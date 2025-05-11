@@ -10,31 +10,42 @@ generator client {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt
-  deletedAt DateTime?
-  email     String   @unique
-  name      String?
-  confirmationCode String?
-  codeExpiration DateTime?
-  isConfirmed Boolean @default(false)
-  recoveryCode String?
-  passwordHash String?
-  expirationDate DateTime?
-  posts     Post[] @relation("UserPost")
-  providers  Provider? @relation("UserProvider")
-  devices  Device[] @relation("UserDevice")
-  notifications  Notification[] @relation("UserNotification")
+  id                  String   @id @default(uuid())
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt
+  deletedAt           DateTime?
+  email               String   @unique
+  name                String?
+  confirmationCode    String?
+  codeExpiration      DateTime?
+  isConfirmed         Boolean @default(false)
+  recoveryCode        String?
+  passwordHash        String?
+  expirationDate      DateTime?
+  banned              Boolean @default(false)
+  bannedReason        String?
+  providers           Provider? @relation("UserProvider")
+  devices             Device[] @relation("UserDevice")
+  notifications       Notification[] @relation("UserNotification")
   @@map("users")
+}
+
+model SuperAdmin {
+  id                  String   @id @default(uuid())
+  createdAt           DateTime @default(now()) @map("created_at")
+  email               String   @unique
+  name                String
+  passwordHash        String
+  admin               Boolean  @default(true)
+  @@map("super-admins")
 }
 
 model Provider {
   id        String   @id @default(uuid())
   user      User     @relation("UserProvider", fields: [userId], references: [id])
   userId    String   @unique
-  googleId String?
-  githubId String?
+  googleId  String?
+  githubId  String?
   @@map("providers")
 }
 
@@ -42,24 +53,12 @@ model Device {
   id        String   @id @default(uuid())
   user      User     @relation("UserDevice", fields: [userId], references: [id])
   userId    String   
-  title String?
-  ip String?
+  title     String?
+  ip        String?
   updatedAt DateTime @updatedAt
   @@map("devices")
 }
 
-model Post {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  deletedAt DateTime?
-  published Boolean  @default(false)
-  title     String   @db.VarChar(255)
-  author    User?    @relation("UserPost", fields: [authorId], references: [id])
-  authorId  String?
-  photoUploadStatus PhotoUploadStatus   @default(PENDING)  // Статус загрузки фотографий
-  @@map("posts")
-}
 
 model Notification {
   id              String        @id @default(uuid())

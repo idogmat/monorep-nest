@@ -22,6 +22,10 @@ export interface UserProfileUpdateSubscribeRequest {
   paymentAccount: boolean;
 }
 
+export interface UserProfilesGQLRequest {
+  users: string[];
+}
+
 export interface UserProfilesQuery {
   sortBy: string;
   sortDirection: string;
@@ -55,6 +59,22 @@ export interface CreateUserProfileRequest {
 export interface SubscribeProfileRequest {
   userId: string;
   profileUserId: string;
+}
+
+export interface DeleteProfileGQLRequest {
+  userId: string;
+}
+
+export interface BanProfileGQLRequest {
+  userId: string;
+}
+
+export interface GetFollowersGqlQuery {
+  sortBy: string;
+  sortDirection: string;
+  offset: number;
+  limit: number;
+  userId: string;
 }
 
 export interface UserProfilesResponse {
@@ -101,6 +121,10 @@ export interface UserProfileResponse {
   paymentAccount: boolean;
 }
 
+export interface UserProfilesGQLResponse {
+  profiles: UserProfileResponse[];
+}
+
 export interface UpdateUserProfileResponse {
   status: string;
 }
@@ -115,6 +139,28 @@ export interface CreateUserProfileResponse {
 
 export interface UserProfileUpdateSubscribeResponse {
   status: string;
+}
+
+export interface DeleteProfileGQLResponse {
+  status: string;
+}
+
+export interface BanProfileGQLResponse {
+  status: string;
+}
+
+export interface FollowerResponse {
+  subscriberId: string;
+  profileId: string;
+  createdAt: string;
+  subscriberUserName: string;
+  subscriberUserId: string;
+  profileUserId: string;
+}
+
+export interface FolowersGqlResponse {
+  items: FollowerResponse[];
+  totalCount: number;
 }
 
 export const PROFILE_PACKAGE_NAME = "profile";
@@ -134,6 +180,16 @@ export interface ProfileServiceClient {
     request: UserProfileUpdateSubscribeRequest,
     metadata?: Metadata,
   ): Observable<UserProfileUpdateSubscribeResponse>;
+
+  getUserProfilesGql(request: UserProfilesGQLRequest, metadata?: Metadata): Observable<UserProfilesGQLResponse>;
+
+  deleteProfilesGql(request: DeleteProfileGQLRequest, metadata?: Metadata): Observable<DeleteProfileGQLResponse>;
+
+  banProfileGql(request: BanProfileGQLRequest, metadata?: Metadata): Observable<BanProfileGQLResponse>;
+
+  getFollowersGql(request: GetFollowersGqlQuery, metadata?: Metadata): Observable<FolowersGqlResponse>;
+
+  getFollowingGql(request: GetFollowersGqlQuery, metadata?: Metadata): Observable<FolowersGqlResponse>;
 }
 
 export interface ProfileServiceController {
@@ -169,6 +225,31 @@ export interface ProfileServiceController {
     | Promise<UserProfileUpdateSubscribeResponse>
     | Observable<UserProfileUpdateSubscribeResponse>
     | UserProfileUpdateSubscribeResponse;
+
+  getUserProfilesGql(
+    request: UserProfilesGQLRequest,
+    metadata?: Metadata,
+  ): Promise<UserProfilesGQLResponse> | Observable<UserProfilesGQLResponse> | UserProfilesGQLResponse;
+
+  deleteProfilesGql(
+    request: DeleteProfileGQLRequest,
+    metadata?: Metadata,
+  ): Promise<DeleteProfileGQLResponse> | Observable<DeleteProfileGQLResponse> | DeleteProfileGQLResponse;
+
+  banProfileGql(
+    request: BanProfileGQLRequest,
+    metadata?: Metadata,
+  ): Promise<BanProfileGQLResponse> | Observable<BanProfileGQLResponse> | BanProfileGQLResponse;
+
+  getFollowersGql(
+    request: GetFollowersGqlQuery,
+    metadata?: Metadata,
+  ): Promise<FolowersGqlResponse> | Observable<FolowersGqlResponse> | FolowersGqlResponse;
+
+  getFollowingGql(
+    request: GetFollowersGqlQuery,
+    metadata?: Metadata,
+  ): Promise<FolowersGqlResponse> | Observable<FolowersGqlResponse> | FolowersGqlResponse;
 }
 
 export function ProfileServiceControllerMethods() {
@@ -180,6 +261,11 @@ export function ProfileServiceControllerMethods() {
       "subscribeUserProfile",
       "createUserProfile",
       "updateUserProfileSubscribe",
+      "getUserProfilesGql",
+      "deleteProfilesGql",
+      "banProfileGql",
+      "getFollowersGql",
+      "getFollowingGql",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

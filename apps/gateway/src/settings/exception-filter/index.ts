@@ -10,6 +10,20 @@ export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
 
+    if (host.getType<string>() === 'graphql') {
+      const status = exception.getStatus();
+      const responseBody: any = exception.getResponse();
+      throw new HttpException(
+        {
+          statusCode: status,
+          message:
+            Array.isArray(responseBody.message)
+              ? responseBody.message
+              : [responseBody.message],
+        },
+        status,
+      );
+    }
     if (status === HttpStatus.BAD_REQUEST) {
       const errorsResponse = {
         errorsMessages: [],

@@ -27,6 +27,16 @@ spec:
                  secretKeyRef:
                    name: posts-production-config-secret
                    key: RABBIT_URLS
+             - name: FILE_PROD_SERVICE
+               valueFrom:
+                 secretKeyRef:
+                   name: posts-production-config-secret
+                   key: FILE_PROD_SERVICE
+             - name: NODE_ENV
+               valueFrom:
+                 secretKeyRef:
+                   name: posts-production-config-secret
+                   key: NODE_ENV
              - name: POSTS_DB_URL
                valueFrom:
                  secretKeyRef:

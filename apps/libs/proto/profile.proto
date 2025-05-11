@@ -14,6 +14,10 @@ message UserProfileUpdateSubscribeRequest {
   bool paymentAccount = 2;
 }
 
+message UserProfilesGQLRequest {
+  repeated string users = 1;
+}
+
 message UserProfilesQuery {
   string sortBy = 1;
   string sortDirection = 2;
@@ -47,6 +51,22 @@ message SubscribeProfileRequest {
   string profileUserId = 2;
 }
 
+message DeleteProfileGQLRequest {
+  string userId = 1;
+}
+
+message BanProfileGQLRequest {
+  string userId = 1;
+}
+
+message GetFollowersGqlQuery {
+  string sortBy = 1;
+  string sortDirection = 2;
+  int32 offset = 3;
+  int32 limit = 4;
+  string userId = 5;
+}
+
 //  Response messages
 
 message UserProfilesResponse {
@@ -74,6 +94,10 @@ message UserProfileResponse {
   bool paymentAccount = 15;
 }
 
+message UserProfilesGQLResponse {
+  repeated UserProfileResponse profiles = 1;
+}
+
 message UpdateUserProfileResponse {
   string status = 1;        
 }
@@ -90,6 +114,28 @@ message UserProfileUpdateSubscribeResponse {
   string status = 1; 
 }
 
+message DeleteProfileGQLResponse {
+  string status = 1; 
+}
+
+message BanProfileGQLResponse {
+  string status = 1; 
+}
+
+message FollowerResponse {
+    string subscriberId = 1;
+    string profileId = 2;
+    string createdAt = 3;
+    string subscriberUserName = 4;
+    string subscriberUserId = 5;
+    string profileUserId = 6;
+}
+
+message FolowersGqlResponse {
+  repeated FollowerResponse items = 1;
+  int32 totalCount = 2;
+}
+
 service ProfileService {
   rpc GetUserProfile(UserProfileRequest) returns (UserProfileResponse);
   rpc GetUserProfiles(UserProfileQueryRequest) returns (UserProfilesResponse);
@@ -97,5 +143,9 @@ service ProfileService {
   rpc SubscribeUserProfile(SubscribeProfileRequest) returns (SubscribeUserProfileResponse);
   rpc CreateUserProfile(CreateUserProfileRequest) returns (CreateUserProfileResponse);
   rpc UpdateUserProfileSubscribe(UserProfileUpdateSubscribeRequest) returns (UserProfileUpdateSubscribeResponse);
-
+  rpc GetUserProfilesGQL(UserProfilesGQLRequest) returns (UserProfilesGQLResponse);
+  rpc DeleteProfilesGQL(DeleteProfileGQLRequest) returns (DeleteProfileGQLResponse);
+  rpc BanProfileGQL(BanProfileGQLRequest) returns (BanProfileGQLResponse);
+  rpc GetFollowersGql(GetFollowersGqlQuery) returns (FolowersGqlResponse);
+  rpc GetFollowingGql(GetFollowersGqlQuery) returns (FolowersGqlResponse);
 }

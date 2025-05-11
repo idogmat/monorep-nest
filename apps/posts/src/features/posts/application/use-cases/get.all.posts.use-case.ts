@@ -22,33 +22,19 @@ export class GetAllPostsUseCase implements ICommandHandler<GetAllPostsCommand> {
 
   async execute(command: GetAllPostsCommand): Promise<PagedResponse<PostViewModel>> {
 
-    // try {
       const {
         mappedItems,
         totalCount,
         pageNumber,
         pageSize,
       } = await this.postsQueryRepository.getAllPosts(command.queryDto);
-    //
-    //   const postIds = items.map(post => post.id);
-    //
-    //   const { data } = await this.gateService.filesServicePost('postsPhoto', {
-    //     postIds, // Массив ID постов
-    //   }, {
-    //     'X-UserId': command.userId, // Заголовок с ID пользователя
-    //   });
-    //
-    //   const viewDto = this.mapToViewModel(items, data);
-    //
-       const pageResponse = new PagedResponse<PostViewModel>(mappedItems, totalCount, pageNumber, pageSize);
-    //
+
+       const pageResponse = new PagedResponse<PostViewModel>(mappedItems, totalCount, +pageNumber, +pageSize);
+
        console.log('pageResponse', pageResponse);
-    //
+
        return pageResponse;
-    //
-    // } catch (error) {
-    //   throw error;
-    // }
+
   }
 
   mapToViewModel(posts: Post[], dataOfPhoto: any): PostViewModel[] {
