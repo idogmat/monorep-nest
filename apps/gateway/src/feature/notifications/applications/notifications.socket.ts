@@ -10,7 +10,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { NotificationsRepository } from '../infrastrucrure/notifications.repository';
 import { findDiffDate } from './date.helper';
-import { RedisService } from '../../../support.modules/redis/redis.service';
+import { RemoteRedisService } from '../../../support.modules/redis/remote.redis.service';
 import { IAuthUser } from '../../../common/guard/authGuard';
 
 const users = new Map()
@@ -24,7 +24,7 @@ const users = new Map()
 export class NotificationsSocket implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private readonly notificationsRepository: NotificationsRepository,
-    private readonly redisService: RedisService,
+    private readonly redisService: RemoteRedisService,
   ) { }
   @WebSocketServer()
   server: Server;
@@ -33,7 +33,7 @@ export class NotificationsSocket implements OnGatewayConnection, OnGatewayDiscon
   async handleConnection(client: Socket) {
     const token = client.handshake.auth.token;
     try {
-      const payload: IAuthUser | null = await this.redisService.get(token);
+      const payload = await this.redisService.get<IAuthUser>(token);
       client.data.user = payload.userId;
       users.set(payload.userId, client.id);
       console.log(`🔌 Client connected: ${payload.userId}`);

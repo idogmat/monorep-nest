@@ -9,7 +9,7 @@ import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/user
 import { DeviceService } from '../../../devices/application/device.service';
 import { GateService } from '../../../../../common/gate.service';
 import { parseTimeToSeconds } from '../../../../../common/utils/parseTime';
-import { RedisService } from '../../../../../support.modules/redis/redis.service';
+import { RemoteRedisService } from '../../../../../support.modules/redis/remote.redis.service';
 import { ProfileClientService } from '../../../../../support.modules/grpc/grpc.profile.service';
 
 export class OauthGoogleCommand {
@@ -26,7 +26,7 @@ export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
     private authService: AuthService,
     private deviceService: DeviceService,
     readonly gateService: GateService,
-    private readonly redisService: RedisService,
+    private readonly redisService: RemoteRedisService,
     private readonly profileClientService: ProfileClientService,
 
   ) {

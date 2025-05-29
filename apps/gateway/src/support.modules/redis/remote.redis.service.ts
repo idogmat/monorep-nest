@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { createClient, RedisClientType, RedisDefaultModules} from 'redis';
 
 @Injectable()
-export class RedisService implements OnModuleInit, OnModuleDestroy {
+export class RemoteRedisService implements OnModuleInit, OnModuleDestroy {
   private client: RedisClientType<RedisDefaultModules>;
 
   constructor(private configService: ConfigService) {}
