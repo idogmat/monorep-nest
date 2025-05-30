@@ -147,3 +147,18 @@ spec:
                  secretKeyRef:
                    name: gate-production-config-secret
                    key: ADMIN_PASSWORD
+             - name: REDIS_HOST
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: REDIS_HOST
+             - name: REDIS_PASSWORD
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: REDIS_PASSWORD
+             - name: REDIS_PORT
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: REDIS_PORT

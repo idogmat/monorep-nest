@@ -12,7 +12,7 @@ import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/user
 import { GateService } from '../../../../../common/gate.service';
 import { DeviceInfoDto } from '../../api/models/shared/device.info.dto';
 import { DeviceService } from '../../../devices/application/device.service';
-import { RedisService } from '../../../../../support.modules/redis/redis.service';
+import { RemoteRedisService } from '../../../../../support.modules/redis/remote.redis.service';
 import { parseTimeToSeconds } from '../../../../../common/utils/parseTime';
 import { ProfileClientService } from '../../../../../support.modules/grpc/grpc.profile.service';
 
@@ -33,7 +33,7 @@ export class GithubAuthCallbackUseCase implements ICommandHandler<GithubAuthCall
     private configService: ConfigService,
     readonly gateService: GateService,
     private deviceService: DeviceService,
-    private readonly redisService: RedisService,
+    private readonly redisService: RemoteRedisService,
     private readonly profileClientService: ProfileClientService,
 
   ) {
