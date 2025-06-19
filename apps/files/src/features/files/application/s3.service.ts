@@ -23,7 +23,8 @@ export class S3StorageAdapterJ {
   async uploadFile(file: any, folder: string): Promise<AWS.S3.ManagedUpload.SendData> {
 
     const params: AWS.S3.PutObjectRequest = {
-      Bucket: this.bucketName,
+      // Bucket: this.bucketName, //TODO
+      Bucket: 'profile-bucket',
       Key: `${folder}/${file.originalname}`,
       Body: file.buffer,
       ContentType: file.mimetype,
