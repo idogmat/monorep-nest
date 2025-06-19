@@ -39,6 +39,7 @@ import { join } from 'path';
             options: {
               package: 'profile',
               protoPath: join(__dirname, 'profile.proto'),
+              url: configService.get<string>('PROFILE_GRPC_URL'), //TODO
             }
           }
         },

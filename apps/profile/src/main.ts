@@ -29,6 +29,14 @@ async function bootstrap() {
     },
   });
 
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: [rabbit],
+      queue: 'profile_photo_queue',
+      queueOptions: { durable: true },
+    },
+  });
   await app.startAllMicroservices();
 
   console.log(`Service is listening on port ${port} , on ${env} mode`);

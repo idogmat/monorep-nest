@@ -60,13 +60,13 @@ const useCases = [
       },
       {
         imports: [ConfigModule],
-        name: 'RABBITMQ_PROFILE_SERVICE',
+        name: 'RABBITMQ_PROFILE_PHOTO_SERVICE',
         useFactory: (configService: ConfigService) => {
           return {
             transport: Transport.RMQ,
             options: {
               urls: configService.get<string[]>('RABBIT_URLS'),
-              queue: 'profile_queue',
+              queue: 'profile_photo_queue',
               queueOptions: { durable: true },
             },
           }
@@ -87,7 +87,7 @@ const useCases = [
       useFactory: (configService: ConfigService) => {
         return new S3StorageAdapterJ(
           configService,
-          'profile', // Укажите имя бакета из конфига
+          configService.get<string>('PROFILE_BUCKET'), // Укажите имя бакета из конфига TODO только для моей разработки
         );
       },
       inject: [ConfigService],

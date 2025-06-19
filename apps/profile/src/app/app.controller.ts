@@ -1,10 +1,10 @@
 import { Controller, NotFoundException, } from '@nestjs/common';
-import { Ctx, EventPattern, GrpcMethod, Payload, RmqContext } from '@nestjs/microservices';
+import { EventPattern, GrpcMethod } from '@nestjs/microservices';
 import { ProfileService } from '../features/profile.service';
 import { ProfilePhotoInputModel } from '../features/model/profilePhoto.input.model';
 import { OutputProfileModelMapper } from '../features/model/profile.output.model';
 import { CreateUserProfileRequest, DeleteProfileGQLRequest, GetFollowersGqlQuery, SubscribeProfileRequest, UpdateUserProfileRequest, UserProfileQueryRequest, UserProfilesGQLRequest, UserProfileUpdateSubscribeRequest } from '../../../libs/proto/generated/profile';
-import { status } from '@grpc/grpc-js';
+
 
 @Controller()
 export class AppController {
