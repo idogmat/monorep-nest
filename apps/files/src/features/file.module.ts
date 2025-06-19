@@ -87,7 +87,7 @@ const useCases = [
       useFactory: (configService: ConfigService) => {
         return new S3StorageAdapterJ(
           configService,
-          configService.get<string>('PROFILE_BUCKET'), // Укажите имя бакета из конфига TODO только для моей разработки
+          'profile',
         );
       },
       inject: [ConfigService],
