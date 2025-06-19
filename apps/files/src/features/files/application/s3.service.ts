@@ -23,8 +23,7 @@ export class S3StorageAdapterJ {
   async uploadFile(file: any, folder: string): Promise<AWS.S3.ManagedUpload.SendData> {
 
     const params: AWS.S3.PutObjectRequest = {
-      // Bucket: this.bucketName, //TODO
-      Bucket: 'profile-bucket',
+      Bucket: this.bucketName,
       Key: `${folder}/${file.originalname}`,
       Body: file.buffer,
       ContentType: file.mimetype,
@@ -45,6 +44,7 @@ export class S3StorageAdapterJ {
   }
 
   async getFilesByPath(path: string): Promise<AWS.S3.Object[]> {
+    console.log("this.bucketName---------", this.bucketName);
 
     try {
       const data = await this.s3.listObjectsV2({
