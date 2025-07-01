@@ -59,6 +59,21 @@ export class OutputProfileModel {
   yourFriend: true
 }
 
+export class OutputProfileUpdateModel {
+  id: string;
+  userId: string;
+  userName: string;
+  photoUrl: string ;
+  firstName:  string ;
+  lastName:  string ;
+  dateOfBirth: string ;
+  country: string;
+  city: string;
+  aboutMe: string ;
+  paymentAccount: boolean;
+  createdAt: string
+}
+
 export const OutputProfileModelMapper = (profile: ProfileWithSubscribers, _userId?: string): OutputProfileModel => {
   // console.log(profile)
   const outputModel = new OutputProfileModel();
@@ -84,6 +99,24 @@ export const OutputProfileModelMapper = (profile: ProfileWithSubscribers, _userI
   return outputModel;
 };
 
+export const OutputProfileUpdateModelMapper = (profile: Profile): OutputProfileUpdateModel => {
+
+  const outputModel = new OutputProfileUpdateModel();
+  outputModel.id = profile.id;
+  outputModel.userId = profile.userId;
+  outputModel.userName = profile.userName;
+  outputModel.photoUrl = profile.photoUrl;
+  outputModel.firstName = profile.firstName;
+  outputModel.lastName =  profile.lastName ;
+  outputModel.dateOfBirth = profile.dateOfBirth?.toISOString();
+  outputModel.country = profile.country;
+  outputModel.city = profile.city ;
+  outputModel.aboutMe = profile.aboutMe;
+  outputModel.createdAt = profile.createdAt.toISOString();
+  outputModel.paymentAccount = profile.paymentAccount;
+
+  return outputModel;
+};
 const getCount = (array: ProfileWithSubscribers['subscribers']
   | ProfileWithSubscribers['subscriptions']) => array.length
 

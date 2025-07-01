@@ -102,6 +102,23 @@ message UpdateUserProfileResponse {
   string status = 1;        
 }
 
+message UpdateUserProfileDataResponse {
+
+  string id = 1;
+  string userId = 2;
+  string userName = 3;
+  string photoUrl = 4;
+  string firstName = 5;
+  string lastName = 6;
+  string dateOfBirth = 7;
+  string country = 8;
+  string city = 9;
+  string aboutMe = 10;
+  string paymentAccount = 11;
+  string createdAt = 12;
+
+}
+
 message SubscribeUserProfileResponse {
   string status = 1;        
 }
@@ -140,6 +157,7 @@ service ProfileService {
   rpc GetUserProfile(UserProfileRequest) returns (UserProfileResponse);
   rpc GetUserProfiles(UserProfileQueryRequest) returns (UserProfilesResponse);
   rpc UpdateUserProfile(UpdateUserProfileRequest) returns (UpdateUserProfileResponse);
+  rpc UpdateUserProfileData(UpdateUserProfileRequest) returns (UpdateUserProfileDataResponse);
   rpc SubscribeUserProfile(SubscribeProfileRequest) returns (SubscribeUserProfileResponse);
   rpc CreateUserProfile(CreateUserProfileRequest) returns (CreateUserProfileResponse);
   rpc UpdateUserProfileSubscribe(UserProfileUpdateSubscribeRequest) returns (UserProfileUpdateSubscribeResponse);

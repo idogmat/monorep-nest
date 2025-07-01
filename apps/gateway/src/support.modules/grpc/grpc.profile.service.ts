@@ -7,6 +7,7 @@ interface ProfileService {
   GetUserProfile(data: { userId: string, profileUserId: string }): Observable<UserProfileResponse>;
   GetUserProfiles(data: UserProfileQueryRequest): Observable<any>;
   UpdateUserProfile(data: UpdateUserProfileRequest): Observable<any>;
+  UpdateUserProfileData(data: Partial<UpdateUserProfileRequest>): Observable<any>;
   SubscribeUserProfile(data: { userId: string, profileUserId: string }): Observable<any>;
   CreateUserProfile(data: { userId: string, userName: string, email: string }): Observable<any>;
   UpdateUserProfileSubscribe(data: { userId: string, paymentAccount: boolean }): Observable<any>;
@@ -47,6 +48,9 @@ export class ProfileClientService implements OnModuleInit {
     return lastValueFrom(await this.profileService.UpdateUserProfile(data));
   }
 
+  async updateProfileData(data: Partial<UpdateUserProfileRequest>) {
+    return lastValueFrom(await this.profileService.UpdateUserProfileData(data));
+  }
   async subscribeProfile(userId: string, profileUserId: string) {
     return lastValueFrom(await this.profileService.SubscribeUserProfile({ userId, profileUserId }));
   }

@@ -129,6 +129,20 @@ export interface UpdateUserProfileResponse {
   status: string;
 }
 
+export interface UpdateUserProfileDataResponse {
+  id: string;
+  userId: string;
+  userName: string;
+  photoUrl: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  country: string;
+  city: string;
+  aboutMe: string;
+  paymentAccount: boolean;
+  createdAt: string;
+}
 export interface SubscribeUserProfileResponse {
   status: string;
 }

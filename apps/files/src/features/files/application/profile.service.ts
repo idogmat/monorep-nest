@@ -18,4 +18,5 @@ export class ProfileService {
   async getFileUrl(key: string): Promise<string> {
     return await this.s3Adapter.getFileUrl(key);
   }
+
 }

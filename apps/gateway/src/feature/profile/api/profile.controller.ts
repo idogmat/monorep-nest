@@ -1,5 +1,20 @@
-import { ApiBearerAuth, ApiBody, ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { BadRequestException, Body, Controller, ForbiddenException, Get, Param, Patch, Put, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  ForbiddenException,
+  Get,
+  Param,
+  Patch,
+  Put,
+  Query,
+  Req,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+  UsePipes, ValidationPipe,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { ProfileService } from '../application/profile.service';
@@ -13,11 +28,13 @@ import { Request } from 'express';
 import { AuthGuardOptional } from '../../../common/guard/authGuardOptional';
 import { ProfileClientService } from '../../../support.modules/grpc/grpc.profile.service';
 import { ProfileMappingService } from '../application/profile.mapper';
-import { ApiFileWithDto, UserProfileResponseDto } from './swagger.discription.ts';
+import { ApiFileWithDto, UpdateProfileApiDecorator, UserProfileResponseDto } from './swagger.discription.ts';
 import { PaginationProfileQueryDto } from './model/input/pagination.profile.query.dto';
 import { PaginationSearchProfileTerm } from './model/input/query.profile.model';
 import { PagedResponseOfProfiles } from './model/output/paged.response.of.profiles.model';
 import { PagedResponse } from '../../../common/pagination/paged.response';
+import { UpdateUserProfileRequest } from 'aws-sdk/clients/opsworks';
+import { UpdateProfileModel } from './model/input/update.profile.model';
 
 @ApiTags('Profile')
 @Controller('profile')
@@ -107,6 +124,27 @@ export class ProfileController {
     console.log(profile, 'profile')
     const response = await this.profileService.updateProfile(file, profile, req.user.userId)
     console.log(response)
+  }
+
+  @Patch()
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @UsePipes(new ValidationPipe({
+    whitelist: true,       // удаляет лишние поля
+    forbidNonWhitelisted: true, // бросает ошибку при лишних полях
+    transform: true        // автоматическая трансформация типов
+  }))
+  @UpdateProfileApiDecorator()
+  async updateProfile(
+    @Req() req,
+    @Body() profile: UpdateProfileModel,  // Все поля теперь необязательные
+  ) {
+
+    const response = await this.profileService.updateProfileData(
+      profile as Partial<UpdateUserProfileRequest>, req.user.userId);
+    console.log("updateProfile patch--------", response);
+    return response;
+
   }
 
   @Patch('subscribe/:id')

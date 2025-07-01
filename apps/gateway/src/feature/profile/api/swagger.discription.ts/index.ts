@@ -1,6 +1,8 @@
 import { applyDecorators, Type } from "@nestjs/common";
-import { ApiBody, ApiExtraModels, ApiProperty } from "@nestjs/swagger";
+import { ApiBody, ApiExtraModels, ApiOperation, ApiProperty, ApiResponse } from '@nestjs/swagger';
 import { UserProfileResponse } from "../../../../../../libs/proto/generated/profile";
+import { UpdateProfileModel } from '../model/input/update.profile.model';
+import { PostUpdateModel } from '../../../posts/api/model/input/post.update.model';
 
 export const ApiFileWithDto = <TModel extends Type<any>>(model: TModel, fileFieldName = 'file') => {
   const values = new model().swagger()
@@ -74,4 +76,16 @@ export class UserProfileResponseDto implements UserProfileResponse {
   createdAt: string;
 
 }
-
+export function UpdateProfileApiDecorator() {
+  return applyDecorators(
+    ApiOperation({
+      summary: 'Обновление профиля пользователя',
+      description: 'Обновляет указанные поля профиля. Все поля необязательные.',
+    }),
+    ApiBody({ type: UpdateProfileModel }),
+    ApiResponse({ status: 200, description: 'Профиль успешно обновлен' }),
+    ApiResponse({ status: 400, description: 'Некорректные данные' }),
+    ApiResponse({ status: 401, description: 'Не авторизован' }),
+    ApiResponse({ status: 500, description: 'Внутренняя ошибка сервера' })
+  );
+}
