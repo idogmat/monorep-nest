@@ -7,7 +7,7 @@ import { BcryptService } from '../../infrastructure/bcrypt.service';
 import { LoginModel } from '../../api/models/input/login.model';
 import { AuthService } from '../auth.service';
 import { DeviceService } from '../../../devices/application/device.service';
-import { RedisService } from '../../../../../support.modules/redis/redis.service';
+import { RemoteRedisService } from '../../../../../support.modules/redis/remote.redis.service';
 import { parseTimeToSeconds } from '../../../../../common/utils/parseTime';
 
 const throwError = InterlayerNotice.createErrorNotice(
@@ -31,7 +31,7 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
     private bcryptService: BcryptService,
     private authService: AuthService,
     private deviceService: DeviceService,
-    private readonly redisService: RedisService,
+    private readonly redisService: RemoteRedisService,
 
   ) {
   }

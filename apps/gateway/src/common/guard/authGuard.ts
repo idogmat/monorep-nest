@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { Request } from "express";
-import { RedisService } from "../../support.modules/redis/redis.service";
+import { RemoteRedisService } from "../../support.modules/redis/remote.redis.service";
 
 export interface IAuthUser {
   userId: string;
@@ -13,7 +13,7 @@ export interface IAuthUser {
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
-    private readonly redisService: RedisService,
+    private readonly redisService: RemoteRedisService,
 
   ) { }
   async canActivate(
@@ -24,6 +24,7 @@ export class AuthGuard implements CanActivate {
     try {
       const token = request.headers?.authorization?.split(" ");
       const userInfo: IAuthUser | null = await this.redisService.get(token[1])
+      console.log(`🔵 Redis GET ключ: "${token[1]}", результат:`, userInfo);
       if (userInfo) {
         Object.assign(request, { user: userInfo })
         return true;

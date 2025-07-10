@@ -3,7 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { Request } from "express";
 import { DeviceService } from "../../feature/user-accounts/devices/application/device.service";
-import { RedisService } from "../../support.modules/redis/redis.service";
+import { RemoteRedisService } from "../../support.modules/redis/remote.redis.service";
 
 export interface IAuthUser {
   userId: string;
@@ -19,7 +19,7 @@ export class AuthGuardOptional implements CanActivate {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly deviceService: DeviceService,
-    private readonly redisService: RedisService,
+    private readonly redisService: RemoteRedisService,
 
   ) { }
   async canActivate(
