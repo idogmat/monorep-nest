@@ -4,6 +4,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join, resolve } from 'path';
 import { ProfileClientService } from './grpc.profile.service';
 import { PaymentsClientService } from './grpc.payments.service';
+import { ContentClientService } from './grpc.content.service';
 @Global()
 @Module({
   imports: [
@@ -44,10 +45,28 @@ import { PaymentsClientService } from './grpc.payments.service';
         },
         inject: [ConfigService],
       },
+      {
+        imports: [ConfigModule],
+        name: 'CONTENT_SERVICE',
+        useFactory: (configService: ConfigService) => {
+          return {
+            transport: Transport.GRPC,
+            options: {
+              package: 'content',
+              protoPath: join(__dirname, 'content.proto'),
+              url: configService.get('GATE_CONTENT_GRPC_URL'),
+              loader: {
+                includeDirs: ['node_modules/google-proto-files'],
+              },
+            },
+          }
+        },
+        inject: [ConfigService],
+      },
     ]),
   ],
   controllers: [],
-  providers: [ProfileClientService, PaymentsClientService],
-  exports: [ProfileClientService, PaymentsClientService],
+  providers: [ProfileClientService, PaymentsClientService, ContentClientService],
+  exports: [ProfileClientService, PaymentsClientService, ContentClientService],
 })
 export class GrpcServiceModule { }

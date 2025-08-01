@@ -63,6 +63,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/posts/tsconfig.app.json"
       }
+    },
+    "content": {
+      "type": "application",
+      "root": "apps/content",
+      "entryFile": "main",
+      "sourceRoot": "apps/content/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/content/tsconfig.app.json"
+      }
     }
   }
 }

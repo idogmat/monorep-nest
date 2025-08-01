@@ -14,7 +14,7 @@ import { ProfileClientService } from '../support.modules/grpc/grpc.profile.servi
         options: {
           package: 'profile',
           protoPath: join(__dirname, '../../../libs/proto/profile.proto'),
-          url: '0.0.0.0',
+          url: '0.0.0.0', //
         },
       },
     ]),

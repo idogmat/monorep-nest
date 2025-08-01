@@ -1,0 +1,40 @@
+syntax = "proto3";
+import "google/protobuf/wrappers.proto";
+package content;
+
+service PostService {
+  rpc CreatePost (CreatePostRequest) returns (PostResponse);
+}
+
+service CommentService {
+  rpc CreateComment (CreateCommentRequest) returns (CommentResponse);
+}
+
+message CreatePostRequest {
+  string userId = 1;
+  string description = 2;
+  PhotoUploadStatus photoUploadStatus = 3;
+}
+
+message PostResponse {
+  google.protobuf.StringValue id = 1;
+}
+
+message CreateCommentRequest {
+  string postId = 1;
+  string userId = 2;
+  string message = 3;
+}
+
+message CommentResponse {
+  string id = 1;
+  string postId = 2;
+  string message = 3;
+}
+
+enum PhotoUploadStatus {
+  PENDING = 0;
+  IN_PROGRESS = 1;
+  COMPLETED = 2;
+  FAILED = 3;
+}

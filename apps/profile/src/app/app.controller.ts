@@ -9,6 +9,7 @@ import {
 } from '../features/model/profile.output.model';
 import { CreateUserProfileRequest, DeleteProfileGQLRequest, GetFollowersGqlQuery, SubscribeProfileRequest, UpdateUserProfileRequest, UserProfileQueryRequest, UserProfilesGQLRequest, UserProfileUpdateSubscribeRequest } from '../../../libs/proto/generated/profile';
 import { Status } from '@grpc/grpc-js/build/src/constants';
+import { CreatePostRequest } from '../../../gateway/src/support.modules/grpc/interfaces/content.interface';
 
 
 @Controller()

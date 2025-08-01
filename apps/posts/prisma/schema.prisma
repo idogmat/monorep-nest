@@ -40,6 +40,7 @@ model File {
 
   @@map("files")
 }
+
 enum PhotoUploadStatus {
   PENDING
   IN_PROGRESS

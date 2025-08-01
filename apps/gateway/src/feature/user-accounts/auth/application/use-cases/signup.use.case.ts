@@ -46,8 +46,11 @@ export class SignupUseCase implements ICommandHandler<SignupCommand> {
     const userDto = this.createUserDTO(login, email, passwordHash);
 
     const user = await this.userPrismaRepository.createUser(userDto);
-    console.log(user)
+
+    console.log("trying create profile");
     const profile = await this.profileClientService.createUserProfile(user.id, user.name, user.email)
+
+    console.log("profile", profile);
 
     //TODO move send email to event handler
     try {

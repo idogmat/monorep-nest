@@ -15,6 +15,7 @@ import { GrpcServiceModule } from '../support.modules/grpc/grpc.module';
 import { PaymentsModule } from '../feature/payments/payments.module';
 import { NotificationsModule } from '../feature/notifications/notifications.module';
 import { SuperAdminModule } from '../feature/superAdmin/superAdmin.module';
+import { ContentModule } from '../feature/content/content.module';
 
 @Module({
   imports: [
@@ -50,7 +51,8 @@ import { SuperAdminModule } from '../feature/superAdmin/superAdmin.module';
     ProfileModule,
     PaymentsModule,
     NotificationsModule,
-    SuperAdminModule
+    SuperAdminModule,
+    ContentModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
