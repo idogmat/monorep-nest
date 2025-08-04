@@ -40,7 +40,8 @@ import { PostMicroserviceService } from '../application/services/post.microservi
 export class PostsController {
   constructor(
     private commandBus: CommandBus,
-    private postMicroserviceService: PostMicroserviceService
+    private postMicroserviceService: PostMicroserviceService,
+    // private readonly contentClientService: ContentClientService
   ) {
   }
 
@@ -194,4 +195,20 @@ export class PostsController {
 
   }
 
+  // @ApiBody({ type: InputCommentModel })
+  // @Post(':postId/comments')
+  // @ApiBearerAuth()
+  // @UseGuards(AuthGuard)
+  // async createComment(
+  //   @Req() req,
+  //   @Param('id', new ParseUUIDPipe()) postId: string,
+  //   @Body() commentCreateModel: InputCommentModel
+  // ){
+  //   const comment: CreateCommentRequest = {
+  //     postId,
+  //     userId: req.user.userId,
+  //     message: commentCreateModel.content,
+  //   }
+  //   await this.contentClientService.createComment(comment);
+  // }
 }

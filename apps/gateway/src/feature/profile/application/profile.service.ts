@@ -3,6 +3,7 @@ import { createReadStream, unlinkSync } from "fs";
 import { GateService } from "../../../common/gate.service";
 import { InputProfileModel } from "../api/model/input/input.profile.model";
 import { ProfileClientService } from "../../../support.modules/grpc/grpc.profile.service";
+import { UpdateUserProfileRequest } from 'aws-sdk/clients/opsworks';
 
 @Injectable()
 export class ProfileService {
@@ -44,6 +45,26 @@ export class ProfileService {
     }
   }
 
+
+  async updateProfileData(
+    profile: Omit<Partial<UpdateUserProfileRequest>, 'userId'>,
+    userId: string
+  ) {
+
+    type ProfileUpdateData = Partial<UpdateUserProfileRequest> & {
+      userId: string; // Делаем userId обязательным
+    };
+
+    const requestData: ProfileUpdateData = {
+      ...profile,
+      userId
+    };
+
+    const result = await this.profileClientService.updateProfileData(requestData);
+
+    return result;
+
+  }
   async subscribe(
     userId,
     subscribeUserId

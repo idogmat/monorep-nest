@@ -4,7 +4,7 @@ import { PhotoUploadStatus } from '../../../../../prisma/generated/post-client';
 
 export class CreatePostCommand {
   constructor(
-    public title: string,
+    public description: string,
     public userId: string,
     public photoUploadStatus: PhotoUploadStatus) {
   }
@@ -17,7 +17,7 @@ export class CreatePostUseCases implements ICommandHandler<CreatePostCommand> {
   async execute(command: CreatePostCommand): Promise<string> {
 
     const newPost = await this.postsPrismaRepository.createPost(command.userId,
-      command.title, command.photoUploadStatus);
+      command.description, command.photoUploadStatus);
 
     return newPost.id;
   }

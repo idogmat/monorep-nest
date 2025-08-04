@@ -5,7 +5,11 @@ import { ProfilePhotoInputModel } from "./model/profilePhoto.input.model";
 import { InputProfileModel } from "./model/input.profile.model";
 import { PaginationProfileWithSubscribers, PaginationProfileWithSubscribersGql, ProfileWithSubscribers } from "./model/profile.output.model";
 import ts from "typescript";
-import { GetFollowersGqlQuery, UserProfilesQuery } from "../../../libs/proto/generated/profile";
+import {
+  GetFollowersGqlQuery,
+  UpdateUserProfileRequest,
+  UserProfilesQuery,
+} from '../../../libs/proto/generated/profile';
 
 
 
@@ -61,6 +65,7 @@ export class ProfileService {
       }
     })
   }
+
 
   async findById(id: string): Promise<any> {
     return this.prisma.profile.findFirst({
@@ -244,6 +249,24 @@ export class ProfileService {
         data: { ...data }
       })
     })
+  }
+
+  async updateProfileFields(
+    userId: string,
+    data: Partial<UpdateUserProfileRequest>
+  ): Promise<Profile> {
+    return this.prisma.$transaction(async (tx) => {
+      const profile = await tx.profile.findFirst({
+        where: { userId: userId }
+      });
+
+      if (!profile) throw new ForbiddenException();
+
+      return tx.profile.update({
+        where: { userId },
+        data: { ...data }
+      });
+    });
   }
 
   async updateProfilePayment(userId: string, paymentAccount: boolean): Promise<Profile> {

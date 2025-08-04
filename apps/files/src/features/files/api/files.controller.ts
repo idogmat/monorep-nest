@@ -28,7 +28,6 @@ export class FilesController {
   private chunkDir = './uploads/chunks';
   private readonly localFileName = 'test.png';
   constructor(
-    @Inject('RABBITMQ_PROFILE_SERVICE') private readonly rabbitClient: ClientProxy,
     private readonly profileService: ProfileService,
     private readonly filesQueryRepository: FilesQueryRepository,
     private readonly commandBus: CommandBus,
@@ -181,7 +180,6 @@ export function mergeChunks(fileId: string, outputFilePath: string) {
     const readStream = createReadStream(chunkPath);
 
     readStream.pipe(writeStream, { end: false });
-
     readStream.on('end', () => appendChunk(index + 1));
   }
 

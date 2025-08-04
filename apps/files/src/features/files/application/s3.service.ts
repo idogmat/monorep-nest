@@ -21,25 +21,31 @@ export class S3StorageAdapterJ {
   }
 
   async uploadFile(file: any, folder: string): Promise<AWS.S3.ManagedUpload.SendData> {
+
     const params: AWS.S3.PutObjectRequest = {
       Bucket: this.bucketName,
       Key: `${folder}/${file.originalname}`,
       Body: file.buffer,
       ContentType: file.mimetype,
+      ACL: 'public-read',  // Важно — публичный доступ
+      ContentDisposition: 'inline',
     };
 
     return this.s3.upload(params).promise();
   }
 
   async getFileUrl(key: string): Promise<string> {
+    const sevenDaysInSeconds = 7 * 24 * 60 * 60; // 7 дней в секундах
     return await this.s3.getSignedUrlPromise('getObject', {
       Bucket: this.bucketName,
       Key: key,
-      Expires: false
+      Expires: sevenDaysInSeconds, //когда здесь пишем false приравнивается к 0
     });
   }
 
   async getFilesByPath(path: string): Promise<AWS.S3.Object[]> {
+    console.log("this.bucketName---------", this.bucketName);
+
     try {
       const data = await this.s3.listObjectsV2({
         Bucket: this.bucketName,

@@ -23,22 +23,16 @@ async function bootstrap() {
     credentials: true
   });
   const { port, env, rabbit } = applyAppSettings(app)
+
   // app.connectMicroservice<MicroserviceOptions>({
   //   transport: Transport.RMQ,
   //   options: {
   //     urls: [rabbit],
-  //     queue: 'post_queue',
-  //     queueOptions: { durable: false },
+  //     queue: 'profile_queue',
+  //     queueOptions: { durable: true },
   //   },
   // });
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.RMQ,
-    options: {
-      urls: [rabbit],
-      queue: 'profile_queue',
-      queueOptions: { durable: true },
-    },
-  });
+
 
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,

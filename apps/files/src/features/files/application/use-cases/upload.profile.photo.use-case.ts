@@ -21,12 +21,13 @@ export class UploadProfilePhotoUseCase implements ICommandHandler<UploadProfileP
 
   constructor(
     private readonly profileService: ProfileService,
-    @Inject('RABBITMQ_PROFILE_SERVICE') private readonly rabbitClient: ClientProxy,
+    @Inject('RABBITMQ_PROFILE_PHOTO_SERVICE') private readonly rabbitClient: ClientProxy,
 
   ) { }
 
   async execute(command: UploadProfilePhotoCommand) {
     const { req, userId, filename } = command
+
 
     const filePath = `./uploads/${filename}`;
     const writeStream = createWriteStream(filePath, { highWaterMark: 64 * 1024 });
@@ -52,10 +53,11 @@ export class UploadProfilePhotoUseCase implements ICommandHandler<UploadProfileP
       // Загружаем в S3
       const folder = `profile/${userId}`;
       const uploadResult = await this.profileService.uploadImage(fileInfo, folder);
-      const photoUrl = await this.profileService.getFileUrl(uploadResult.Key);
-      console.log(photoUrl, 'photoUrl')
+      console.log('uploadResult', uploadResult)
+      // const photoUrl = await this.profileService.getFileUrl(uploadResult.Key); - здесь создается ссылка которая протухает, можно выставить макс 7 дней
+      console.log(uploadResult.Location, 'photoUrl------')
       // Отправляем сообщение в RabbitMQ
-      const message = { photoUrl, userId, timestamp: new Date() };
+      const message = { photoUrl: uploadResult.Location, userId, timestamp: new Date() };
       this.rabbitClient.emit('load_profile_photo', message);
 
       return HttpStatus.OK;

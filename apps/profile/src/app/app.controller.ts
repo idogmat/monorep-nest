@@ -1,10 +1,16 @@
 import { Controller, NotFoundException, } from '@nestjs/common';
-import { Ctx, EventPattern, GrpcMethod, Payload, RmqContext } from '@nestjs/microservices';
+import { EventPattern, GrpcMethod, RpcException } from '@nestjs/microservices';
 import { ProfileService } from '../features/profile.service';
 import { ProfilePhotoInputModel } from '../features/model/profilePhoto.input.model';
-import { OutputProfileModelMapper } from '../features/model/profile.output.model';
+import {
+  OutputProfileModelMapper,
+  OutputProfileUpdateModel,
+  OutputProfileUpdateModelMapper,
+} from '../features/model/profile.output.model';
 import { CreateUserProfileRequest, DeleteProfileGQLRequest, GetFollowersGqlQuery, SubscribeProfileRequest, UpdateUserProfileRequest, UserProfileQueryRequest, UserProfilesGQLRequest, UserProfileUpdateSubscribeRequest } from '../../../libs/proto/generated/profile';
-import { status } from '@grpc/grpc-js';
+import { Status } from '@grpc/grpc-js/build/src/constants';
+import { CreatePostRequest } from '../../../gateway/src/support.modules/grpc/interfaces/content.interface';
+
 
 @Controller()
 export class AppController {
@@ -88,6 +94,35 @@ export class AppController {
       console.log(error)
       return { status: 'fail' };
       console.warn(error)
+    }
+  }
+
+  @GrpcMethod('ProfileService', 'UpdateUserProfileData')
+  async updateProfileDataGrpc(
+    data: Partial<UpdateUserProfileRequest>
+  ): Promise<OutputProfileUpdateModel> {
+
+    try {
+      const updatedProfile = await this.profileService.updateProfileFields(data.userId, data);
+
+      const mapData =  OutputProfileUpdateModelMapper(updatedProfile);
+
+      console.log("mapData ------", mapData);
+      return mapData;
+    } catch (error) {
+      const grpcErrorMap = {
+        NotFoundError: Status.NOT_FOUND,
+        ValidationError: Status.INVALID_ARGUMENT,
+        PrismaClientKnownRequestError: Status.ABORTED,
+        default: Status.INTERNAL
+      };
+
+      const code = grpcErrorMap[error.constructor.name] || grpcErrorMap.default;
+
+      throw new RpcException({
+        code,
+        message: error.message || 'Profile update failed'
+      });
     }
   }
 

@@ -1,0 +1,73 @@
+syntax = "proto3";
+import "google/protobuf/wrappers.proto";
+package content;
+
+service PostService {
+  rpc CreatePost (CreatePostRequest) returns (PostResponse);
+  rpc GetPosts (GetPostsQueryRequest) returns (GetPostsResponse);
+}
+
+service CommentService {
+  rpc CreateComment (CreateCommentRequest) returns (CommentResponse);
+}
+
+message GetPostsQueryRequest {
+  string sortBy = 1;
+  string sortDirection = 2;
+  int32 pageNumber = 3;
+  int32 pageSize = 4;
+  string userId = 5;
+}
+
+message GetPostResponse {
+  string id = 1;
+  string userId = 2;
+  string createdAt = 3;
+  string updatedAt = 4;
+  string deletedAt = 5;
+  string title = 6;
+  bool published = 7;
+  bool banned = 8;
+  string photoUploadStatus = 9;
+  // urls File[] @relation("PostFile")
+  // photoUploadStatus PhotoUploadStatus   @default(PENDING)  // Статус загрузки фотографий
+  // comments Comment[] @relation("PostComment")
+  // likes Like[] @relation("PostLike")
+}
+
+message GetPostsResponse {
+  repeated GetPostResponse items = 1;
+  int32 pageNumber = 2;
+  int32 pageSize = 3;
+  int32 totalCount = 4;
+}
+
+
+message CreatePostRequest {
+  string userId = 1;
+  string description = 2;
+  PhotoUploadStatus photoUploadStatus = 3;
+}
+
+message PostResponse {
+  google.protobuf.StringValue id = 1;
+}
+
+message CreateCommentRequest {
+  string postId = 1;
+  string userId = 2;
+  string message = 3;
+}
+
+message CommentResponse {
+  string id = 1;
+  string postId = 2;
+  string message = 3;
+}
+
+enum PhotoUploadStatus {
+  PENDING = 0;
+  IN_PROGRESS = 1;
+  COMPLETED = 2;
+  FAILED = 3;
+}
