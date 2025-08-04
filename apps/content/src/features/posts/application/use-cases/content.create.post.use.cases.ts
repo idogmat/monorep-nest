@@ -1,4 +1,4 @@
-import { PhotoUploadStatus } from '../../../../../prisma/generated/post-client';
+import { PhotoUploadStatus } from '../../../../../prisma/generated/content-client';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { PostsPrismaRepository } from '../../infrastructure/prisma/posts.prisma.repository';
 import { CreatePostCommand } from './create.post.use.cases';
@@ -6,14 +6,14 @@ import { CreatePostCommand } from './create.post.use.cases';
 export class ContentCreatePostCommand {
   constructor(
     public title: string,
-    public  userId: string,
+    public userId: string,
     public photoUploadStatus: PhotoUploadStatus
   ) {
   }
 }
 
 @CommandHandler(ContentCreatePostCommand)
-export class ContentCreatePostUseCase implements  ICommandHandler<ContentCreatePostCommand> {
+export class ContentCreatePostUseCase implements ICommandHandler<ContentCreatePostCommand> {
   constructor(private postsPrismaRepository: PostsPrismaRepository) {
   }
 

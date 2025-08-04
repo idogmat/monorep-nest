@@ -8,6 +8,7 @@ import {
   PostService,
 } from './interfaces/content.interface';
 import { lastValueFrom } from 'rxjs';
+import { GetPostsQueryRequest } from '../../../../libs/proto/generated/content';
 
 @Injectable()
 export class ContentClientService implements OnModuleInit {
@@ -17,7 +18,7 @@ export class ContentClientService implements OnModuleInit {
 
   constructor(
     @Inject('CONTENT_SERVICE') private readonly client: ClientGrpc
-  ) {  }
+  ) { }
   onModuleInit() {
     this.commentService = this.client.getService<CommentService>('CommentService');
     this.postService = this.client.getService<PostService>('PostService');
@@ -30,5 +31,9 @@ export class ContentClientService implements OnModuleInit {
 
   async createPost(data: CreatePostRequest) {
     return lastValueFrom(this.postService.CreatePost(data));
+  }
+
+  async getPosts(data: GetPostsQueryRequest) {
+    return lastValueFrom(this.postService.GetPosts(data));
   }
 }

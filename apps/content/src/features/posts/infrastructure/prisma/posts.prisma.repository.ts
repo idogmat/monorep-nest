@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
-import { $Enums, Post } from '../../../../../prisma/generated/post-client';
+import { $Enums, Post } from '../../../../../prisma/generated/content-client';
 import PhotoUploadStatus = $Enums.PhotoUploadStatus;
 
 
@@ -14,7 +14,7 @@ export class PostsPrismaRepository {
       data: {
         userId,
         title,
-        photoUploadStatus: status,
+        photoUploadStatus: PhotoUploadStatus[status],
       },
     });
   }
@@ -23,6 +23,12 @@ export class PostsPrismaRepository {
     return this.prisma.post.update({
       where: { id: postId },
       data: { photoUploadStatus: status },
+    });
+  }
+
+  async findByUserId(userId: string): Promise<Post[]> {
+    return this.prisma.post.findMany({
+      where: { userId: userId },
     });
   }
 

@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
-import { PhotoUploadStatus } from '../../../../../posts/prisma/generated/post-client';
+import { PhotoUploadStatus } from '../../../../../content/prisma/generated/content-client';
+import { GetPostsQueryRequest, GetPostResponse } from '../../../../../libs/proto/generated/content';
 
 export interface CommentService {
   CreateComment(data: CreateCommentRequest): Observable<CommentResponse>;
@@ -7,8 +8,10 @@ export interface CommentService {
 
 export interface PostService {
   CreatePost(data: CreatePostRequest): Observable<PostResponse>;
+  GetPosts(data: GetPostsQueryRequest): Observable<GetPostResponse>;
 }
 
+// FIXME LENA можно импортировать из генерации прото
 // export interface LikeService {
 //   createPost(data: CreateLikeRequest): Observable<LikeResponse>;
 // }

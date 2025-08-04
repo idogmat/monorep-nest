@@ -11,9 +11,12 @@ import {
 
   ContentCreatePostUseCase,
 } from '../features/posts/application/use-cases/content.create.post.use.cases';
+import { ContentGetPostUseCase } from '../features/posts/application/use-cases/content.get.post.use.case';
+import { PostsQueryPrismaRepository } from '../features/posts/infrastructure/prisma/posts.prisma.query-repository';
 
 const useCasesForPost = [
-   ContentCreatePostUseCase
+  ContentCreatePostUseCase,
+  ContentGetPostUseCase
 ]
 @Module({
   imports: [
@@ -55,9 +58,14 @@ const useCasesForPost = [
       },
     ]),
   ],
-  controllers: [ContentController],
-  providers: [...useCasesForPost,
+  controllers: [
+    ContentController
+  ],
+  providers: [
+    ...useCasesForPost,
     PostsPrismaRepository,
-    PrismaService],
+    PostsQueryPrismaRepository,
+    PrismaService
+  ],
 })
-export class AppModule {}
+export class AppModule { }

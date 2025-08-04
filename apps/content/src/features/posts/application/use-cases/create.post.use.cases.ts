@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { PostsPrismaRepository } from '../../infrastructure/prisma/posts.prisma.repository';
-import { PhotoUploadStatus } from '../../../../../prisma/generated/post-client';
+import { PhotoUploadStatus } from '../../../../../prisma/generated/content-client';
 
 export class CreatePostCommand {
   constructor(

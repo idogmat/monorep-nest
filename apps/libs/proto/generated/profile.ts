@@ -140,9 +140,10 @@ export interface UpdateUserProfileDataResponse {
   country: string;
   city: string;
   aboutMe: string;
-  paymentAccount: boolean;
+  paymentAccount: string;
   createdAt: string;
 }
+
 export interface SubscribeUserProfileResponse {
   status: string;
 }
@@ -186,6 +187,11 @@ export interface ProfileServiceClient {
 
   updateUserProfile(request: UpdateUserProfileRequest, metadata?: Metadata): Observable<UpdateUserProfileResponse>;
 
+  updateUserProfileData(
+    request: UpdateUserProfileRequest,
+    metadata?: Metadata,
+  ): Observable<UpdateUserProfileDataResponse>;
+
   subscribeUserProfile(request: SubscribeProfileRequest, metadata?: Metadata): Observable<SubscribeUserProfileResponse>;
 
   createUserProfile(request: CreateUserProfileRequest, metadata?: Metadata): Observable<CreateUserProfileResponse>;
@@ -221,6 +227,11 @@ export interface ProfileServiceController {
     request: UpdateUserProfileRequest,
     metadata?: Metadata,
   ): Promise<UpdateUserProfileResponse> | Observable<UpdateUserProfileResponse> | UpdateUserProfileResponse;
+
+  updateUserProfileData(
+    request: UpdateUserProfileRequest,
+    metadata?: Metadata,
+  ): Promise<UpdateUserProfileDataResponse> | Observable<UpdateUserProfileDataResponse> | UpdateUserProfileDataResponse;
 
   subscribeUserProfile(
     request: SubscribeProfileRequest,
@@ -272,6 +283,7 @@ export function ProfileServiceControllerMethods() {
       "getUserProfile",
       "getUserProfiles",
       "updateUserProfile",
+      "updateUserProfileData",
       "subscribeUserProfile",
       "createUserProfile",
       "updateUserProfileSubscribe",
