@@ -2,9 +2,9 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { FilesRepository } from '../../infrastructure/files.repository';
 import { FilesQueryRepository } from '../../infrastructure/files.query-repository';
 import { Inject } from '@nestjs/common';
-import { S3StorageAdapterJ } from '../s3.service';
+import { S3StorageAdapter } from '../s3.service';
 
-export class DeletePhotoMediaCommand{
+export class DeletePhotoMediaCommand {
   constructor(
     public postId: string,
   ) {
@@ -12,23 +12,23 @@ export class DeletePhotoMediaCommand{
 }
 
 @CommandHandler(DeletePhotoMediaCommand)
-export class DeletePhotoMediaUseCase implements ICommandHandler<DeletePhotoMediaCommand>{
+export class DeletePhotoMediaUseCase implements ICommandHandler<DeletePhotoMediaCommand> {
 
   constructor(
     private readonly filesRepository: FilesRepository,
     private readonly filesQueryRepository: FilesQueryRepository,
-    @Inject('POST_PHOTO_BUCKET_ADAPTER') private s3Adapter: S3StorageAdapterJ,
-    ) {
+    @Inject('POST_PHOTO_BUCKET_ADAPTER') private s3Adapter: S3StorageAdapter,
+  ) {
   }
 
-  async execute(command: DeletePhotoMediaCommand){
+  async execute(command: DeletePhotoMediaCommand) {
 
     try {
       const photoMedia = await this.filesQueryRepository.getPhotoMediaByPostId(command.postId);
       for (const photo of photoMedia) {
         try {
           await this.s3Adapter.deleteFile(photo.key);
-        }catch (err) {
+        } catch (err) {
           console.warn(`Не удалось удалить файл с ключом ${photo.key}:`, err.message);
         }
       }
@@ -39,7 +39,7 @@ export class DeletePhotoMediaUseCase implements ICommandHandler<DeletePhotoMedia
     }
 
 
-    
-    
+
+
   }
 }

@@ -50,7 +50,7 @@ message CreatePostRequest {
 }
 
 message PostResponse {
-  google.protobuf.StringValue id = 1;
+  string id = 1;
 }
 
 message CreateCommentRequest {

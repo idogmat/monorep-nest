@@ -13,14 +13,15 @@ export const applyAppSettings = (app: INestApplication): {
   port: number;
   env: string;
   host: string;
-  rabbit: string
+  rabbit: string;
+  grpc_url: string;
 } => {
-  const { port, env, host, rabbit } = getEnv(app)
+  const { port, env, host, rabbit, grpc_url } = getEnv(app)
   setAppPrefix(app, APP_PREFIX);
 
   setAppPipes(app);
 
-  return { port, env, host, rabbit }
+  return { port, env, host, rabbit, grpc_url }
 };
 
 const getEnv = (app: INestApplication) => {
@@ -28,13 +29,11 @@ const getEnv = (app: INestApplication) => {
   const env = configService.get<EnvironmentsTypes>('NODE_ENV')
   const port = configService.get<number>('PORT') || configService.get<number>('FILE_LOCAL_PORT');
   const host = env !== 'DEVELOPMENT' ? '0.0.0.0' : 'localhost';
+  const grpc_url = configService.get<string>('FILES_GRPC_URL')?.toString() || '';
   const rabbit = configService.get<string>('RABBIT_URLS')?.toString() || '';
-  return { port, env, host, rabbit }
+  return { port, env, host, rabbit, grpc_url }
 }
 
-const checkEnv = (envMode: string) => {
-  return envMode !== 'DEVELOPMENT' ? 'PORT' : 'FILE_LOCAL_PORT'
-}
 const setAppPrefix = (app: INestApplication, prefix: string) => {
   app.setGlobalPrefix(prefix);
 };

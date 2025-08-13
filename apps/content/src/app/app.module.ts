@@ -13,10 +13,13 @@ import {
 } from '../features/posts/application/use-cases/content.create.post.use.cases';
 import { ContentGetPostUseCase } from '../features/posts/application/use-cases/content.get.post.use.case';
 import { PostsQueryPrismaRepository } from '../features/posts/infrastructure/prisma/posts.prisma.query-repository';
+import { RabbitConsumerService } from '../features/posts/application/rabbit.consumer.service';
+import { UploadPhotoUseCase } from '../features/posts/application/use-cases/content.upload.photo';
 
 const useCasesForPost = [
   ContentCreatePostUseCase,
-  ContentGetPostUseCase
+  ContentGetPostUseCase,
+  UploadPhotoUseCase
 ]
 @Module({
   imports: [
@@ -65,7 +68,8 @@ const useCasesForPost = [
     ...useCasesForPost,
     PostsPrismaRepository,
     PostsQueryPrismaRepository,
-    PrismaService
+    PrismaService,
+    RabbitConsumerService
   ],
 })
 export class AppModule { }

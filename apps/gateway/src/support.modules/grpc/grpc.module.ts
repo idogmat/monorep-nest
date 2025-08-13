@@ -5,6 +5,7 @@ import { join, resolve } from 'path';
 import { ProfileClientService } from './grpc.profile.service';
 import { PaymentsClientService } from './grpc.payments.service';
 import { ContentClientService } from './grpc.content.service';
+import { FilesClientService } from './grpc.files.service';
 @Global()
 @Module({
   imports: [
@@ -63,10 +64,28 @@ import { ContentClientService } from './grpc.content.service';
         },
         inject: [ConfigService],
       },
+      {
+        imports: [ConfigModule],
+        name: 'FILES_SERVICE',
+        useFactory: (configService: ConfigService) => {
+          return {
+            transport: Transport.GRPC,
+            options: {
+              package: 'files',
+              protoPath: join(__dirname, 'files.proto'),
+              url: configService.get('GATE_FILES_GRPC_URL'),
+              loader: {
+                includeDirs: ['node_modules/google-proto-files'],
+              },
+            },
+          }
+        },
+        inject: [ConfigService],
+      },
     ]),
   ],
   controllers: [],
-  providers: [ProfileClientService, PaymentsClientService, ContentClientService],
-  exports: [ProfileClientService, PaymentsClientService, ContentClientService],
+  providers: [ProfileClientService, PaymentsClientService, ContentClientService, FilesClientService],
+  exports: [ProfileClientService, PaymentsClientService, ContentClientService, FilesClientService],
 })
 export class GrpcServiceModule { }

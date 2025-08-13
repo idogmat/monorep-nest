@@ -1,5 +1,5 @@
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
-import { Body, Controller, Get, Post, Query, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post, Query, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ContentClientService } from '../../../../support.modules/grpc/grpc.content.service';
 import { AuthGuard } from '../../../../common/guard/authGuard';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -9,12 +9,17 @@ import { PaginationSearchContentTerm } from './model/input/payments.query.model'
 import { PaginationContentQueryDto } from './model/input/pagination.query';
 import { existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import { FilesClientService } from '../../../../support.modules/grpc/grpc.files.service';
+import { SendFileService } from '../../../../support.modules/file/file.service';
+import { FileValidationPipe } from '../../../../../../libs/input.validate/check.file';
 
 @ApiTags('Content.Posts')
 @Controller('content/posts')
 export class ContentPostsController {
   constructor(
-    private readonly contentGrpcClient: ContentClientService
+    private readonly contentGrpcClient: ContentClientService,
+    private readonly filesClientService: FilesClientService,
+    @Inject('SEND_FILE_SERVICE') private readonly sendFileService: SendFileService,
   ) {
 
   }
@@ -41,17 +46,23 @@ export class ContentPostsController {
     @UploadedFiles() files: Express.Multer.File[]
   ) {
     const userId = req.user.userId;
-    console.log(files)
-    //сначала создаем пост в мс контент
-    // const { id: postId } = await this.contentGrpcClient.createPost({
-    //   userId,
-    //   description: body.description,
-    //   photoUploadStatus: 'PENDING'
-    // });
+    // console.log(files)
+    try {
+      // сначала создаем пост в мс контент
+      const post = await this.contentGrpcClient.createPost({
+        userId,
+        description: body.description,
+        photoUploadStatus: 'PENDING'
+      });
+      console.log(post)
+      const res = await this.sendFileService.uploadFilesGrpc(files, req.user.userId, post.id);
 
-    // console.log("answer contentGrpcClient.createPost", postId);
+      console.log(res, 'resupload')
+      await this.filesClientService.loadOnS3(userId, post.id);
 
-
+    } catch (error) {
+      console.log(error, 'error')
+    }
   }
 
   @Get()

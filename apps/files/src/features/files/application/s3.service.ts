@@ -1,10 +1,22 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import * as AWS from 'aws-sdk';
+import { ManagedUpload } from "aws-sdk/clients/s3";
 
-
+export interface UploadedFileResponse {
+  originalName: string;
+  mimetype: string;
+  size: number;
+  encoding: string;
+  bucket: string;
+  key: string;
+  location: string;
+  etag: string;
+  versionId?: string;
+  folder: string;
+}
 @Injectable()
-export class S3StorageAdapterJ {
+export class S3StorageAdapter {
   private s3: AWS.S3;
   constructor(
     private configService: ConfigService,
@@ -20,7 +32,8 @@ export class S3StorageAdapterJ {
     this.s3 = new AWS.S3(s3Config);
   }
 
-  async uploadFile(file: any, folder: string): Promise<AWS.S3.ManagedUpload.SendData> {
+  async uploadFile(file: any, folder: string): Promise<
+    UploadedFileResponse> {
 
     const params: AWS.S3.PutObjectRequest = {
       Bucket: this.bucketName,
@@ -30,8 +43,20 @@ export class S3StorageAdapterJ {
       ACL: 'public-read',  // Важно — публичный доступ
       ContentDisposition: 'inline',
     };
-
-    return this.s3.upload(params).promise();
+    const uploadResult: ManagedUpload.SendData = await this.s3
+      .upload(params)
+      .promise();
+    return {
+      originalName: file.originalname,
+      mimetype: file.mimetype,
+      size: file.size,
+      encoding: file.encoding,
+      folder: folder,
+      bucket: uploadResult.Bucket,
+      key: uploadResult.Key,
+      location: uploadResult.Location,
+      etag: uploadResult.ETag,
+    };
   }
 
   async getFileUrl(key: string): Promise<string> {

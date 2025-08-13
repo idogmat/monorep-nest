@@ -7,6 +7,8 @@ import { getConfiguration } from '../settings/getConfiguration';
 import { PrismaService } from '../features/prisma/prisma.service';
 import { ProfileService } from '../features/profile.service';
 import { join } from 'path';
+import { RabbitConsumerService } from '../features/application/rabbit.consumer.service';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
   imports: [
@@ -14,6 +16,7 @@ import { join } from 'path';
       isGlobal: true,
       load: [getConfiguration]
     }),
+    CqrsModule,
     ClientsModule.registerAsync([
       {
         imports: [ConfigModule],
@@ -47,8 +50,14 @@ import { join } from 'path';
       },
     ]),
   ],
-  controllers: [AppController],
-  providers: [PrismaService, ProfileService],
+  controllers: [
+    AppController
+  ],
+  providers: [
+    PrismaService,
+    ProfileService,
+    RabbitConsumerService
+  ],
   exports: [],
 })
 export class AppModule { }

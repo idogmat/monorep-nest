@@ -30,6 +30,8 @@
       "entryFile": "main",
       "sourceRoot": "apps/files/src",
       "compilerOptions": {
+        "assets": ["../../libs/proto/*.proto"],
+        "watchAssets": true,
         "tsConfigPath": "apps/files/tsconfig.app.json"
       }
     },
