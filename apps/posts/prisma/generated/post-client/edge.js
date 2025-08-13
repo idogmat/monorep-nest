@@ -35,12 +35,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.9.0
- * Query Engine version: 81e4af48011447c3cc503a190e86995b66d2a28e
+ * Prisma Client JS version: 6.13.0
+ * Query Engine version: 361e86d0ea4987e9f53a565309b3eed797a6bcbd
  */
 Prisma.prismaVersion = {
-  client: "6.9.0",
-  engine: "81e4af48011447c3cc503a190e86995b66d2a28e"
+  client: "6.13.0",
+  engine: "361e86d0ea4987e9f53a565309b3eed797a6bcbd"
 }
 
 Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
@@ -150,7 +150,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\JS\\it-incubator\\monorep-nest\\apps\\posts\\prisma\\generated\\post-client",
+      "value": "C:\\PROJECTS\\instagram\\myin-gram-monorep\\apps\\posts\\prisma\\generated\\post-client",
       "fromEnvVar": null
     },
     "config": {
@@ -164,19 +164,20 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\JS\\it-incubator\\monorep-nest\\apps\\posts\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\PROJECTS\\instagram\\myin-gram-monorep\\apps\\posts\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
     "rootEnvPath": null
   },
   "relativePath": "../..",
-  "clientVersion": "6.9.0",
-  "engineVersion": "81e4af48011447c3cc503a190e86995b66d2a28e",
+  "clientVersion": "6.13.0",
+  "engineVersion": "361e86d0ea4987e9f53a565309b3eed797a6bcbd",
   "datasourceNames": [
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {

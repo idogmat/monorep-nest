@@ -6,9 +6,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { GrpcServiceModule } from '../../support.modules/grpc/grpc.module';
 import { HttpModule } from '@nestjs/axios';
+import { FileServiceModule } from '../../support.modules/file/file.module';
 
 @Module({
   imports: [
+    GrpcServiceModule,
     HttpModule,
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => {

@@ -33,10 +33,6 @@ const getEnv = (app: INestApplication) => {
 const setAppPrefix = (app: INestApplication, prefix: string) => {
   app.setGlobalPrefix(prefix);
 };
-const checkEnv = (envMode: string) => {
-  return envMode !== 'DEVELOPMENT' ? 'PORT' : 'PROFILE_LOCAL_PORT'
-}
-
 
 const setAppPipes = (app: INestApplication) => {
   app.useGlobalPipes(

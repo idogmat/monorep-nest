@@ -20,9 +20,10 @@ export class ContentController {
   ) {
     console.log(data, 'data')
     try {
-      return await this.commandBus.execute(
+      const post = await this.commandBus.execute(
         new ContentCreatePostCommand(data.description, data.userId, data.photoUploadStatus),
       );
+      return post
     } catch (error) {
       console.log(error)
       return null;

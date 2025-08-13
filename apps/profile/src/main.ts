@@ -7,7 +7,7 @@ import { join } from 'path';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const { port, env, host, rabbit, grpc_url } = applyAppSettings(app)
-
+  await app.init()
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.GRPC,
     options: {
@@ -20,14 +20,14 @@ async function bootstrap() {
     },
   });
 
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.RMQ,
-    options: {
-      urls: [rabbit],
-      queue: 'profile_queue',
-      queueOptions: { durable: true },
-    },
-  });
+  // app.connectMicroservice<MicroserviceOptions>({
+  //   transport: Transport.RMQ,
+  //   options: {
+  //     urls: [rabbit],
+  //     queue: 'profile_queue',
+  //     queueOptions: { durable: true },
+  //   },
+  // });
 
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,

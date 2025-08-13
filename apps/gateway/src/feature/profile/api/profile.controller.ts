@@ -35,6 +35,8 @@ import { PagedResponseOfProfiles } from './model/output/paged.response.of.profil
 import { PagedResponse } from '../../../common/pagination/paged.response';
 import { UpdateUserProfileRequest } from 'aws-sdk/clients/opsworks';
 import { UpdateProfileModel } from './model/input/update.profile.model';
+import { join } from 'path';
+import { existsSync, mkdirSync } from 'fs';
 
 @ApiTags('Profile')
 @Controller('profile')
@@ -102,27 +104,58 @@ export class ProfileController {
 
   }
 
+  // @Put('edit')
+  // @ApiBearerAuth()
+  // @ApiFileWithDto(InputProfileModel, 'file')
+  // @UseGuards(AuthGuard)
+  // @UseInterceptors(FileInterceptor('file', {
+  //   storage: diskStorage({
+  //     destination: './tmp',
+  //     filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
+  //   }),
+  // }))
+  // async uploadProfile(
+  //   @Req() req,
+  //   @Body() profile: InputProfileModel,
+  //   @UploadedFile(new FileValidationPipe()) file: Express.Multer.File,
+  // ) {
+  // console.log(file, 'file')
+  // if (!file) throw new BadRequestException({
+  //   message: 'Not a valid file'
+  // })
+  // console.log(profile, 'profile')
+  // const response = await this.profileService.updateProfile(file, profile, req.user.userId)
+  // console.log(response)
+  // }
+
   @Put('edit')
+  @UseGuards(AuthGuard)
   @ApiBearerAuth()
   @ApiFileWithDto(InputProfileModel, 'file')
-  @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
-      destination: './tmp',
-      filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
+      destination: (req, file, cb) => {
+        const uploadDir = join(__dirname, 'tmp', `${req.user.userId}`, 'profile');
+
+        if (!existsSync(uploadDir)) {
+          mkdirSync(uploadDir, { recursive: true });
+        }
+
+        cb(null, uploadDir);
+      },
+      filename: (req, file, cb) => cb(null, `${file.originalname}`),
     }),
   }))
-  async uploadProfile(
+  async editProfile(
     @Req() req,
     @Body() profile: InputProfileModel,
-    @UploadedFile(new FileValidationPipe()) file: Express.Multer.File,
+    @UploadedFile() file: Express.Multer.File,
   ) {
-    console.log(file, 'file')
+    const userId = req.user.userId;
     if (!file) throw new BadRequestException({
       message: 'Not a valid file'
     })
-    console.log(profile, 'profile')
-    const response = await this.profileService.updateProfile(file, profile, req.user.userId)
+    const response = await this.profileService.updateProfile(file, profile, userId)
     console.log(response)
   }
 

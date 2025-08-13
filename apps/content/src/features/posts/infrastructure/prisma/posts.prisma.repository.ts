@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
-import { $Enums, Post } from '../../../../../prisma/generated/content-client';
+import { $Enums, File, Post } from '../../../../../prisma/generated/content-client';
 import PhotoUploadStatus = $Enums.PhotoUploadStatus;
+import { UploadPhotoCommand } from '../../application/use-cases/content.upload.photo';
+import { UploadedFileResponse } from 'apps/files/src/features/files/application/s3.service';
 
 
 @Injectable()
@@ -24,6 +26,29 @@ export class PostsPrismaRepository {
       where: { id: postId },
       data: { photoUploadStatus: status },
     });
+  }
+
+  async uploadPhotos(userId: string, postId: string, data: UploadedFileResponse[]): Promise<any> {
+    const postExists = await this.prisma.post.findUnique({
+      where: { id: postId }
+    });
+
+    if (!postExists) {
+      throw new Error(`Post with ID ${postId} does not exist`);
+    }
+
+    // Используем Promise.all для параллельного выполнения
+    const result = await Promise.all(
+      data.map(e => this.prisma.file.create({
+        data: {
+          fileName: e.originalName,
+          fileUrl: e.location,
+          postId: postId // убедитесь, что используется правильное значение
+        }
+      }))
+    );
+
+    return result;
   }
 
   async findByUserId(userId: string): Promise<Post[]> {

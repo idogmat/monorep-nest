@@ -59,7 +59,7 @@ export interface CreatePostRequest {
 }
 
 export interface PostResponse {
-  id: string | undefined;
+  id: string;
 }
 
 export interface CreateCommentRequest {
