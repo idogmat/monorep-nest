@@ -23,6 +23,7 @@ import { SendFileService } from '../src/support.modules/file/file.service';
 import { FileServiceModule } from '../src/support.modules/file/file.module';
 import { ConfigService } from 'aws-sdk';
 import { ConfigModule } from '@nestjs/config';
+import { RemoteRedisService } from '../src/support.modules/redis/remote.redis.service';
 @Module({
   imports: [
     ClientsModule.register([
@@ -81,6 +82,9 @@ import { ConfigModule } from '@nestjs/config';
 export class GrpcServiceModuleMock { }
 
 export class SendFileServiceMock { }
+
+export class RemoteRedisServiceMock { }
+
 @Global()
 @Module({
   imports: [],
@@ -117,6 +121,8 @@ describe('AppController (e2e)', () => {
       .useModule(GrpcServiceModuleMock)
       .overrideModule(FileServiceModule)
       .useModule(FileServiceModuleMock)
+      .overrideProvider(RemoteRedisService)
+      .useClass(RemoteRedisServiceMock)
       .compile();
 
     app = moduleFixture.createNestApplication();
