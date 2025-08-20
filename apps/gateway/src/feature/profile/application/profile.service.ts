@@ -3,8 +3,8 @@ import { GateService } from "../../../common/gate.service";
 import { InputProfileModel } from "../api/model/input/input.profile.model";
 import { ProfileClientService } from "../../../support.modules/grpc/grpc.profile.service";
 import { UpdateUserProfileRequest } from 'aws-sdk/clients/opsworks';
-import { SendFileService } from "apps/gateway/src/support.modules/file/file.service";
-import { fileExist } from "apps/libs/common/helpers/exist.file";
+import { SendFileService } from "../../../../../gateway/src/support.modules/file/file.service";
+import { fileExist } from "../../../../../libs/common/helpers/exist.file";
 import { unlink } from "fs/promises";
 
 @Injectable()

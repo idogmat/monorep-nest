@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { Post } from "apps/content/prisma/generated/content-client";
+import { Post } from "../../../../../../content/prisma/generated/content-client";
 import { PostsPrismaRepository } from "../../infrastructure/prisma/posts.prisma.repository";
-import { UploadedFileResponse } from "apps/files/src/features/files/application/s3.service";
+import { UploadedFileResponse } from "../../../../../../files/src/features/files/application/s3.service";
 
 
 export class UploadPhotoCommand {
