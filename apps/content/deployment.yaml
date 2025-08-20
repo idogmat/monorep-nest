@@ -37,8 +37,3 @@ spec:
                  secretKeyRef:
                    name: content-production-config-secret
                    key: CONTENT_DB_URL
-             - name: DATABASE_URL
-               valueFrom:
-                 secretKeyRef:
-                   name: content-production-config-secret
-                   key: DATABASE_URL

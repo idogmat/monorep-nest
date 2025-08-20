@@ -182,6 +182,14 @@ const config = {
         "fromEnvVar": null,
         "value": "windows",
         "native": true
+      },
+      {
+        "fromEnvVar": null,
+        "value": "windows"
+      },
+      {
+        "fromEnvVar": null,
+        "value": "linux-musl-openssl-3.0.x"
       }
     ],
     "previewFeatures": [],
@@ -198,6 +206,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -206,8 +215,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"CONTENT_DB_URL\")\n}\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated/content-client\"\n}\n\nmodel Post {\n  id                String            @id @default(uuid())\n  createdAt         DateTime          @default(now())\n  updatedAt         DateTime          @updatedAt\n  deletedAt         DateTime?\n  published         Boolean           @default(false)\n  title             String            @db.VarChar(255)\n  userId            String\n  banned            Boolean           @default(false)\n  urls              File[]            @relation(\"PostFile\")\n  photoUploadStatus PhotoUploadStatus @default(PENDING) // Статус загрузки фотографий\n  comments          Comment[]         @relation(\"PostComment\")\n  likes             Like[]            @relation(\"PostLike\")\n\n  @@map(\"posts\")\n}\n\nmodel File {\n  id        String    @id @default(uuid())\n  createdAt DateTime  @default(now())\n  updatedAt DateTime? @updatedAt\n  deletedAt DateTime?\n  fileName  String    @db.VarChar(255)\n  fileUrl   String    @db.VarChar(900)\n  post      Post      @relation(\"PostFile\", fields: [postId], references: [id])\n  postId    String\n\n  @@map(\"files\")\n}\n\nmodel Comment {\n  id        String    @id @default(uuid())\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  deletedAt DateTime?\n  message   String\n  post      Post      @relation(\"PostComment\", fields: [postId], references: [id])\n  postId    String\n  userId    String\n\n  @@map(\"comments\")\n}\n\nmodel Like {\n  id        String    @id @default(uuid())\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  deletedAt DateTime?\n  post      Post      @relation(\"PostLike\", fields: [postId], references: [id])\n  postId    String\n  userId    String\n\n  @@map(\"likes\")\n}\n\nenum PhotoUploadStatus {\n  PENDING\n  IN_PROGRESS\n  COMPLETED\n  FAILED\n}\n",
-  "inlineSchemaHash": "529efdd5bc5a0e6b0247d1767fe31073588f74e5e2f0efd952865f7f189a152d",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"CONTENT_DB_URL\")\n}\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  output        = \"./generated/content-client\"\n  binaryTargets = [\"native\", \"windows\", \"linux-musl-openssl-3.0.x\"]\n}\n\nmodel Post {\n  id                String            @id @default(uuid())\n  createdAt         DateTime          @default(now())\n  updatedAt         DateTime          @updatedAt\n  deletedAt         DateTime?\n  published         Boolean           @default(false)\n  title             String            @db.VarChar(255)\n  userId            String\n  banned            Boolean           @default(false)\n  urls              File[]            @relation(\"PostFile\")\n  photoUploadStatus PhotoUploadStatus @default(PENDING) // Статус загрузки фотографий\n  comments          Comment[]         @relation(\"PostComment\")\n  likes             Like[]            @relation(\"PostLike\")\n\n  @@map(\"posts\")\n}\n\nmodel File {\n  id        String    @id @default(uuid())\n  createdAt DateTime  @default(now())\n  updatedAt DateTime? @updatedAt\n  deletedAt DateTime?\n  fileName  String    @db.VarChar(255)\n  fileUrl   String    @db.VarChar(900)\n  post      Post      @relation(\"PostFile\", fields: [postId], references: [id])\n  postId    String\n\n  @@map(\"files\")\n}\n\nmodel Comment {\n  id        String    @id @default(uuid())\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  deletedAt DateTime?\n  message   String\n  post      Post      @relation(\"PostComment\", fields: [postId], references: [id])\n  postId    String\n  userId    String\n\n  @@map(\"comments\")\n}\n\nmodel Like {\n  id        String    @id @default(uuid())\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  deletedAt DateTime?\n  post      Post      @relation(\"PostLike\", fields: [postId], references: [id])\n  postId    String\n  userId    String\n\n  @@map(\"likes\")\n}\n\nenum PhotoUploadStatus {\n  PENDING\n  IN_PROGRESS\n  COMPLETED\n  FAILED\n}\n",
+  "inlineSchemaHash": "479ebd417a378f9c2f54170efcf0ed74444ea6fcf672bda442262952f0c983fc",
   "copyEngine": true
 }
 config.dirname = '/'
