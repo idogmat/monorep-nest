@@ -36,13 +36,9 @@ export interface LoadOnS3Response {
 
 export interface ProfileFileChunk {
   chunkData: Uint8Array;
-  /** Только в первом сообщении */
   filename: string;
-  /** Только в первом сообщении */
   userId: string;
-  /** Только в первом сообщении */
   mimetype: string;
-  /** Только в первом сообщении */
   size: number;
 }
 

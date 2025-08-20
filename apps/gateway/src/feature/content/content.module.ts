@@ -26,7 +26,10 @@ import { FileServiceModule } from '../../support.modules/file/file.module';
   providers: [
 
   ],
-  controllers: [ContentPostsController, ContentCommentsController],
+  controllers: [
+    ContentPostsController,
+    ContentCommentsController
+  ],
   exports: []
 })
 export class ContentModule { }

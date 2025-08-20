@@ -147,6 +147,7 @@ exports.Prisma.CommentScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt',
+  message: 'message',
   postId: 'postId',
   userId: 'userId'
 };

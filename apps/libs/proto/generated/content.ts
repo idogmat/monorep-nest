@@ -19,6 +19,26 @@ export enum PhotoUploadStatus {
   UNRECOGNIZED = -1,
 }
 
+export interface Url {
+  id: string;
+  createdAt: string;
+  deletedAt: string;
+  updatedAt: string;
+  fileName: string;
+  fileUrl: string;
+  postId: string;
+}
+
+export interface Comment {
+  id: string;
+  createdAt: string;
+  deletedAt: string;
+  updatedAt: string;
+  message: string;
+  postId: string;
+  userId: string;
+}
+
 export interface GetPostsQueryRequest {
   sortBy: string;
   sortDirection: string;
@@ -27,6 +47,11 @@ export interface GetPostsQueryRequest {
   userId: string;
 }
 
+export interface GetPostRequest {
+  postId: string;
+}
+
+/** ----------- */
 export interface GetPostResponse {
   id: string;
   userId: string;
@@ -36,13 +61,25 @@ export interface GetPostResponse {
   title: string;
   published: boolean;
   banned: boolean;
+  photoUploadStatus: string;
+  urls: Url[];
   /**
-   * urls File[] @relation("PostFile")
    * photoUploadStatus PhotoUploadStatus   @default(PENDING)  // Статус загрузки фотографий
    * comments Comment[] @relation("PostComment")
    * likes Like[] @relation("PostLike")
    */
-  photoUploadStatus: string;
+  comments: Comment[];
+}
+
+export interface CreateCommentRequest {
+  userId: string;
+  postId: string;
+  message: string;
+}
+
+export interface CreateCommentResponse {
+  success: string;
+  message: string;
 }
 
 export interface GetPostsResponse {
@@ -62,22 +99,12 @@ export interface PostResponse {
   id: string;
 }
 
-export interface CreateCommentRequest {
-  postId: string;
-  userId: string;
-  message: string;
-}
-
-export interface CommentResponse {
-  id: string;
-  postId: string;
-  message: string;
-}
-
 export const CONTENT_PACKAGE_NAME = "content";
 
 export interface PostServiceClient {
   createPost(request: CreatePostRequest, metadata?: Metadata): Observable<PostResponse>;
+
+  getPost(request: GetPostRequest, metadata?: Metadata): Observable<GetPostResponse>;
 
   getPosts(request: GetPostsQueryRequest, metadata?: Metadata): Observable<GetPostsResponse>;
 }
@@ -88,6 +115,11 @@ export interface PostServiceController {
     metadata?: Metadata,
   ): Promise<PostResponse> | Observable<PostResponse> | PostResponse;
 
+  getPost(
+    request: GetPostRequest,
+    metadata?: Metadata,
+  ): Promise<GetPostResponse> | Observable<GetPostResponse> | GetPostResponse;
+
   getPosts(
     request: GetPostsQueryRequest,
     metadata?: Metadata,
@@ -96,7 +128,7 @@ export interface PostServiceController {
 
 export function PostServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createPost", "getPosts"];
+    const grpcMethods: string[] = ["createPost", "getPost", "getPosts"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("PostService", method)(constructor.prototype[method], method, descriptor);
@@ -112,14 +144,14 @@ export function PostServiceControllerMethods() {
 export const POST_SERVICE_NAME = "PostService";
 
 export interface CommentServiceClient {
-  createComment(request: CreateCommentRequest, metadata?: Metadata): Observable<CommentResponse>;
+  createComment(request: CreateCommentRequest, metadata?: Metadata): Observable<CreateCommentResponse>;
 }
 
 export interface CommentServiceController {
   createComment(
     request: CreateCommentRequest,
     metadata?: Metadata,
-  ): Promise<CommentResponse> | Observable<CommentResponse> | CommentResponse;
+  ): Promise<CreateCommentResponse> | Observable<CreateCommentResponse> | CreateCommentResponse;
 }
 
 export function CommentServiceControllerMethods() {

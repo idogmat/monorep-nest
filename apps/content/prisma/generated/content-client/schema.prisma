@@ -49,6 +49,7 @@ model Comment {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+  message   String
   post      Post      @relation("PostComment", fields: [postId], references: [id])
   postId    String
   userId    String

@@ -3499,6 +3499,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
+    message: string | null
     postId: string | null
     userId: string | null
   }
@@ -3508,6 +3509,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     deletedAt: Date | null
+    message: string | null
     postId: string | null
     userId: string | null
   }
@@ -3517,6 +3519,7 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     deletedAt: number
+    message: number
     postId: number
     userId: number
     _all: number
@@ -3528,6 +3531,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
+    message?: true
     postId?: true
     userId?: true
   }
@@ -3537,6 +3541,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
+    message?: true
     postId?: true
     userId?: true
   }
@@ -3546,6 +3551,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     deletedAt?: true
+    message?: true
     postId?: true
     userId?: true
     _all?: true
@@ -3628,6 +3634,7 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
+    message: string
     postId: string
     userId: string
     _count: CommentCountAggregateOutputType | null
@@ -3654,6 +3661,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
+    message?: boolean
     postId?: boolean
     userId?: boolean
     post?: boolean | PostDefaultArgs<ExtArgs>
@@ -3664,6 +3672,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
+    message?: boolean
     postId?: boolean
     userId?: boolean
     post?: boolean | PostDefaultArgs<ExtArgs>
@@ -3674,6 +3683,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
+    message?: boolean
     postId?: boolean
     userId?: boolean
     post?: boolean | PostDefaultArgs<ExtArgs>
@@ -3684,11 +3694,12 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     deletedAt?: boolean
+    message?: boolean
     postId?: boolean
     userId?: boolean
   }
 
-  export type CommentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "deletedAt" | "postId" | "userId", ExtArgs["result"]["comment"]>
+  export type CommentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "deletedAt" | "message" | "postId" | "userId", ExtArgs["result"]["comment"]>
   export type CommentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     post?: boolean | PostDefaultArgs<ExtArgs>
   }
@@ -3709,6 +3720,7 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       deletedAt: Date | null
+      message: string
       postId: string
       userId: string
     }, ExtArgs["result"]["comment"]>
@@ -4139,6 +4151,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"Comment", 'DateTime'>
     readonly updatedAt: FieldRef<"Comment", 'DateTime'>
     readonly deletedAt: FieldRef<"Comment", 'DateTime'>
+    readonly message: FieldRef<"Comment", 'String'>
     readonly postId: FieldRef<"Comment", 'String'>
     readonly userId: FieldRef<"Comment", 'String'>
   }
@@ -5673,6 +5686,7 @@ export namespace Prisma {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     deletedAt: 'deletedAt',
+    message: 'message',
     postId: 'postId',
     userId: 'userId'
   };
@@ -5941,6 +5955,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Comment"> | Date | string
     updatedAt?: DateTimeFilter<"Comment"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Comment"> | Date | string | null
+    message?: StringFilter<"Comment"> | string
     postId?: StringFilter<"Comment"> | string
     userId?: StringFilter<"Comment"> | string
     post?: XOR<PostScalarRelationFilter, PostWhereInput>
@@ -5951,6 +5966,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
+    message?: SortOrder
     postId?: SortOrder
     userId?: SortOrder
     post?: PostOrderByWithRelationInput
@@ -5964,6 +5980,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Comment"> | Date | string
     updatedAt?: DateTimeFilter<"Comment"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Comment"> | Date | string | null
+    message?: StringFilter<"Comment"> | string
     postId?: StringFilter<"Comment"> | string
     userId?: StringFilter<"Comment"> | string
     post?: XOR<PostScalarRelationFilter, PostWhereInput>
@@ -5974,6 +5991,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
+    message?: SortOrder
     postId?: SortOrder
     userId?: SortOrder
     _count?: CommentCountOrderByAggregateInput
@@ -5989,6 +6007,7 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Comment"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Comment"> | Date | string
     deletedAt?: DateTimeNullableWithAggregatesFilter<"Comment"> | Date | string | null
+    message?: StringWithAggregatesFilter<"Comment"> | string
     postId?: StringWithAggregatesFilter<"Comment"> | string
     userId?: StringWithAggregatesFilter<"Comment"> | string
   }
@@ -6223,6 +6242,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    message: string
     userId: string
     post: PostCreateNestedOneWithoutCommentsInput
   }
@@ -6232,6 +6252,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    message: string
     postId: string
     userId: string
   }
@@ -6241,6 +6262,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    message?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     post?: PostUpdateOneRequiredWithoutCommentsNestedInput
   }
@@ -6250,6 +6272,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    message?: StringFieldUpdateOperationsInput | string
     postId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
   }
@@ -6259,6 +6282,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    message: string
     postId: string
     userId: string
   }
@@ -6268,6 +6292,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    message?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
   }
 
@@ -6276,6 +6301,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    message?: StringFieldUpdateOperationsInput | string
     postId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
   }
@@ -6566,6 +6592,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
+    message?: SortOrder
     postId?: SortOrder
     userId?: SortOrder
   }
@@ -6575,6 +6602,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
+    message?: SortOrder
     postId?: SortOrder
     userId?: SortOrder
   }
@@ -6584,6 +6612,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deletedAt?: SortOrder
+    message?: SortOrder
     postId?: SortOrder
     userId?: SortOrder
   }
@@ -6969,6 +6998,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    message: string
     userId: string
   }
 
@@ -6977,6 +7007,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    message: string
     userId: string
   }
 
@@ -7069,6 +7100,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Comment"> | Date | string
     updatedAt?: DateTimeFilter<"Comment"> | Date | string
     deletedAt?: DateTimeNullableFilter<"Comment"> | Date | string | null
+    message?: StringFilter<"Comment"> | string
     postId?: StringFilter<"Comment"> | string
     userId?: StringFilter<"Comment"> | string
   }
@@ -7331,6 +7363,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    message: string
     userId: string
   }
 
@@ -7374,6 +7407,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    message?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
   }
 
@@ -7382,6 +7416,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    message?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
   }
 
@@ -7390,6 +7425,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    message?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
   }
 

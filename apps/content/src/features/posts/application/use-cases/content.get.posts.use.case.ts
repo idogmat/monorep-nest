@@ -2,9 +2,13 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { PostsQueryPrismaRepository } from '../../infrastructure/prisma/posts.prisma.query-repository';
 import { Prisma } from '../../../../../prisma/generated/content-client';
 
-export class ContentGetPostCommand {
+export class ContentGetPostsCommand {
   constructor(
-    public postId: string,
+    public sortBy?: string,
+    public sortDirection?: string,
+    public pageNumber?: number,
+    public pageSize?: number,
+    public userId?: string,
   ) {
   }
 }
@@ -38,17 +42,17 @@ const outputMapper = (post: PostWithUrls) => {
   };
 };
 
-@CommandHandler(ContentGetPostCommand)
-export class ContentGetPostUseCase implements ICommandHandler<ContentGetPostCommand> {
+@CommandHandler(ContentGetPostsCommand)
+export class ContentGetPostsUseCase implements ICommandHandler<ContentGetPostsCommand> {
   constructor(
     private postsQueryPrismaRepository: PostsQueryPrismaRepository
   ) {
   }
 
-  async execute(command: ContentGetPostCommand): Promise<any> {
+  async execute(command: ContentGetPostsCommand): Promise<any> {
     console.log(command, 'command')
-    const post = await this.postsQueryPrismaRepository.getPost(command.postId);
-    console.log(post);
-    return { ...post, urls: post?.urls?.map(urlsMapping) || [] };
+    const newPosts = await this.postsQueryPrismaRepository.getAllPosts(command);
+    console.log(newPosts);
+    return { ...newPosts, items: newPosts.items.map(outputMapper) };
   }
 }

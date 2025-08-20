@@ -22,23 +22,18 @@ spec:
              - containerPort: PORT_CONTAINER
 
            env:
+             - name: CONTENT_GRPC_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: content-production-config-secret
+                   key: CONTENT_GRPC_URL
              - name: RABBIT_URLS
                valueFrom:
                  secretKeyRef:
-                   name: profile-production-config-secret
+                   name: content-production-config-secret
                    key: RABBIT_URLS
-             - name: NODE_ENV
+             - name: CONTENT_DB_URL
                valueFrom:
                  secretKeyRef:
-                   name: profile-production-config-secret
-                   key: NODE_ENV
-             - name: PROFILE_GRPC_URL
-               valueFrom:
-                 secretKeyRef:
-                   name: profile-production-config-secret
-                   key: PROFILE_GRPC_URL
-             - name: PROFILE_DB_URL
-               valueFrom:
-                 secretKeyRef:
-                   name: profile-production-config-secret
-                   key: PROFILE_DB_URL
+                   name: content-production-config-secret
+                   key: CONTENT_DB_URL

@@ -1,5 +1,5 @@
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
-import { Body, Controller, Get, Inject, Post, Query, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Inject, Param, Post, Query, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ContentClientService } from '../../../../support.modules/grpc/grpc.content.service';
 import { AuthGuard } from '../../../../common/guard/authGuard';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -11,7 +11,7 @@ import { existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { FilesClientService } from '../../../../support.modules/grpc/grpc.files.service';
 import { SendFileService } from '../../../../support.modules/file/file.service';
-import { FileValidationPipe } from '../../../../../../libs/input.validate/check.file';
+import { CommentCreateModel } from '../../comments/api/model/input/comment.create.model';
 
 @ApiTags('Content.Posts')
 @Controller('content/posts')
@@ -23,6 +23,7 @@ export class ContentPostsController {
   ) {
 
   }
+
 
   @Post()
   @UseGuards(AuthGuard)
@@ -48,7 +49,6 @@ export class ContentPostsController {
     const userId = req.user.userId;
     // console.log(files)
     try {
-      // сначала создаем пост в мс контент
       const post = await this.contentGrpcClient.createPost({
         userId,
         description: body.description,
@@ -65,13 +65,51 @@ export class ContentPostsController {
     }
   }
 
+  @ApiBody({ type: CommentCreateModel })
+  @ApiBearerAuth()
+  @Post(":id/comments")
+  @UseGuards(AuthGuard)
+  async createComment(
+    @Param('id') postId: string,
+    @Req() req,
+    @Body() body: CommentCreateModel,
+  ) {
+    const userId = req.user.userId;
+
+    // console.log(userId);
+    // console.log(body);
+    try {
+      const comment = await this.contentGrpcClient.createComment({
+        userId,
+        postId,
+        message: body.message,
+      });
+      return comment
+    } catch (error) {
+      console.log(error, 'error')
+    }
+  }
+
+  @Get(":id")
+  @UseGuards(AuthGuard)
+  async getPost(
+    @Req() req,
+    @Param('id') postId: string,
+  ) {
+    const userId = req.user.userId;
+    // console.log('ok')
+    const res = await this.contentGrpcClient.getPost({ postId });
+    console.log(res);
+    return res;
+  }
+
   @Get()
   @UseGuards(AuthGuard)
   @ApiQuery({ name: 'pageNumber', required: false })
   @ApiQuery({ name: 'pageSize', required: false })
   @ApiQuery({ name: 'sortBy', required: false })
   @ApiQuery({ name: 'sortDirection', required: false })
-  async getPost(
+  async getPosts(
     @Req() req,
     @Query() queryDTO: PaginationContentQueryDto
   ) {
@@ -81,16 +119,5 @@ export class ContentPostsController {
     const res = await this.contentGrpcClient.getPosts({ ...query, userId });
     console.log(res);
     return res;
-
-    //сначала создаем пост в мс контент
-    // const { id: postId } = await this.contentGrpcClient.createPost({
-    //   userId,
-    //   description: body.description,
-    //   photoUploadStatus: 'PENDING'
-    // });
-
-    // console.log("answer contentGrpcClient.createPost", postId);
-
-
   }
 }

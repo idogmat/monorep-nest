@@ -156,7 +156,7 @@ export class ProfileController {
       message: 'Not a valid file'
     })
     const response = await this.profileService.updateProfile(file, profile, userId)
-    console.log(response)
+    return response
   }
 
   @Patch()

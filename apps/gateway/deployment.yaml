@@ -92,11 +92,6 @@ spec:
                  secretKeyRef:
                    name: gate-production-config-secret
                    key: NODE_ENV
-             - name: DATABASE_URL
-               valueFrom:
-                 secretKeyRef:
-                   name: gate-production-config-secret
-                   key: DATABASE_URL
              - name: FILE_PROD_SERVICE
                valueFrom:
                  secretKeyRef:
@@ -117,16 +112,16 @@ spec:
                  secretKeyRef:
                    name: gate-production-config-secret
                    key: GATE_PROFILE_GRPC_URL
-             - name: STRIPE_API_KEY
-               valueFrom:
-                 secretKeyRef:
-                   name: gate-production-config-secret
-                   key: STRIPE_API_KEY
              - name: STRIPE_WEBHOOK_SECRET
                valueFrom:
                  secretKeyRef:
                    name: gate-production-config-secret
                    key: STRIPE_WEBHOOK_SECRET
+             - name: STRIPE_API_KEY
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: STRIPE_API_KEY
              - name: GATE_PAYMENTS_GRPC_URL
                valueFrom:
                  secretKeyRef:
@@ -152,13 +147,28 @@ spec:
                  secretKeyRef:
                    name: gate-production-config-secret
                    key: REDIS_HOST
-             - name: REDIS_PASSWORD
-               valueFrom:
-                 secretKeyRef:
-                   name: gate-production-config-secret
-                   key: REDIS_PASSWORD
              - name: REDIS_PORT
                valueFrom:
                  secretKeyRef:
                    name: gate-production-config-secret
                    key: REDIS_PORT
+             - name: REDIS_PASSWORD
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: REDIS_PASSWORD
+             - name: GATE_CONTENT_GRPC_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: GATE_CONTENT_GRPC_URL
+             - name: GATE_FILES_GRPC_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: GATE_FILES_GRPC_URL
+             - name: DATABASE_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: gate-production-config-secret
+                   key: DATABASE_URL
