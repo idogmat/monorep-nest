@@ -33,23 +33,10 @@ async function bootstrap() {
       },
     },
   });
-  // app.use(json({ limit: '10gb' }));
-  // app.use(urlencoded({ extended: true, limit: '10gb' }));
-
-  // await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
-  //   transport: Transport.TCP,
-  //   options: {
-  //     host: host,
-  //     port: port,
-  //   },
-  // });
-
-
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   await app.startAllMicroservices();
-  // await app.listen(port);
   console.log(`Service  is listening on port ${port} , on ${env} mode`);
 }
 bootstrap();
