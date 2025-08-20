@@ -85,7 +85,17 @@ import { FilesClientService } from './grpc.files.service';
     ]),
   ],
   controllers: [],
-  providers: [ProfileClientService, PaymentsClientService, ContentClientService, FilesClientService],
-  exports: [ProfileClientService, PaymentsClientService, ContentClientService, FilesClientService],
+  providers: [
+    ProfileClientService,
+    PaymentsClientService,
+    ContentClientService,
+    FilesClientService
+  ],
+  exports: [
+    ProfileClientService,
+    PaymentsClientService,
+    ContentClientService,
+    FilesClientService
+  ],
 })
 export class GrpcServiceModule { }

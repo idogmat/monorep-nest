@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, Module } from '@nestjs/common';
+import { Global, INestApplication, Module } from '@nestjs/common';
 import { AppModule } from '../src/app/app.module';
 import { applyAppSettings } from '../src/settings/main.settings';
 import { AuthTestManager } from './utils/auth/auth.test.manager';
@@ -17,6 +17,12 @@ import { join } from 'path';
 import { ProfileClientService } from '../src/support.modules/grpc/grpc.profile.service';
 import { StripeAdapterMock } from './mock/stripe.adapter.mok';
 import { PaymentsClientService } from '../src/support.modules/grpc/grpc.payments.service';
+import { ContentClientService } from '../src/support.modules/grpc/grpc.content.service';
+import { FilesClientService } from '../src/support.modules/grpc/grpc.files.service';
+import { SendFileService } from '../src/support.modules/file/file.service';
+import { FileServiceModule } from '../src/support.modules/file/file.module';
+import { ConfigService } from 'aws-sdk';
+import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     ClientsModule.register([
@@ -38,13 +44,57 @@ import { PaymentsClientService } from '../src/support.modules/grpc/grpc.payments
           url: '0.0.0.0',
         },
       },
+      {
+        name: 'CONTENT_SERVICE',
+        transport: Transport.GRPC,
+        options: {
+          package: 'content',
+          protoPath: join(__dirname, '../../libs/proto/content.proto'),
+          url: '0.0.0.0',
+        },
+      },
+      {
+        name: 'FILES_SERVICE',
+        transport: Transport.GRPC,
+        options: {
+          package: 'files',
+          protoPath: join(__dirname, '../../libs/proto/files.proto'),
+          url: '0.0.0.0',
+        },
+      },
     ]),
   ],
   controllers: [],
-  providers: [ProfileClientService, PaymentsClientService],
-  exports: [ProfileClientService, PaymentsClientService],
+  providers: [
+    ProfileClientService,
+    PaymentsClientService,
+    ContentClientService,
+    FilesClientService
+  ],
+  exports: [
+    ProfileClientService,
+    PaymentsClientService,
+    ContentClientService,
+    FilesClientService
+  ],
 })
 export class GrpcServiceModuleMock { }
+
+export class SendFileServiceMock { }
+@Global()
+@Module({
+  imports: [],
+  controllers: [],
+  providers: [{
+    provide: 'SEND_FILE_SERVICE',
+    useFactory: () => {
+      return new SendFileServiceMock();
+    },
+    inject: [],
+  }],
+  exports: ['SEND_FILE_SERVICE'],
+})
+export class FileServiceModuleMock { }
 describe('AppController (e2e)', () => {
   let app: INestApplication;
   let authTestManager: AuthTestManager;
@@ -65,6 +115,8 @@ describe('AppController (e2e)', () => {
       .useClass(StripeAdapterMock)
       .overrideModule(GrpcServiceModule)
       .useModule(GrpcServiceModuleMock)
+      .overrideModule(FileServiceModule)
+      .useModule(FileServiceModuleMock)
       .compile();
 
     app = moduleFixture.createNestApplication();
@@ -94,5 +146,10 @@ describe('AppController (e2e)', () => {
   //   await authTestManager.registration(globalPrefix, createModel);
 
   // });
+  afterAll(async () => {
+    if (app) {
+      await app.close();
+    }
+  });
 
 });

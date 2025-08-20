@@ -8,6 +8,7 @@ export class SendFileService {
 
   constructor(private configService: ConfigService) {
     const protoPath = join(__dirname, 'files.proto');
+    console.log(protoPath)
     const packageDef = protoLoader.loadSync(protoPath, {
       keepCase: true,
       longs: String,
