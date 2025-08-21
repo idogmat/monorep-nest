@@ -16,6 +16,7 @@ import { PaymentsModule } from '../feature/payments/payments.module';
 import { NotificationsModule } from '../feature/notifications/notifications.module';
 import { SuperAdminModule } from '../feature/superAdmin/superAdmin.module';
 import { ContentModule } from '../feature/content/content.module';
+import { FileServiceModule } from '../support.modules/file/file.module';
 
 @Module({
   imports: [
@@ -52,7 +53,9 @@ import { ContentModule } from '../feature/content/content.module';
     PaymentsModule,
     NotificationsModule,
     SuperAdminModule,
-    ContentModule
+    ContentModule,
+    FileServiceModule,
+
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

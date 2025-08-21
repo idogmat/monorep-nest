@@ -12,16 +12,16 @@ export class ContentCommentsController {
 
   }
 
-  @ApiBody({ type: InputCommentModel })
-  @Post()
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  async createComment(
-    @Req() req,
-    @Body() commentCreateModel: InputCommentModel
-  ){
-    // const userId = req.user.userId;
-    // await this.contentClientService.createComment();
-  }
+  // @ApiBody({ type: InputCommentModel })
+  // @Post()
+  // @ApiBearerAuth()
+  // @UseGuards(AuthGuard)
+  // async createComment(
+  //   @Req() req,
+  //   @Body() commentCreateModel: InputCommentModel
+  // ){
+  //   // const userId = req.user.userId;
+  //   // await this.contentClientService.createComment();
+  // }
 
 }

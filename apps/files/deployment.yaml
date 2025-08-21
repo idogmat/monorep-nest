@@ -42,18 +42,28 @@ spec:
                  secretKeyRef:
                    name: files-myingram-production-config-secret
                    key: NODE_ENV
-             - name: RABBIT_URLS
-               valueFrom:
-                 secretKeyRef:
-                   name: files-myingram-production-config-secret
-                   key: RABBIT_URLS
-             - name: MONGO_DB_URL
-               valueFrom:
-                 secretKeyRef:
-                   name: files-myingram-production-config-secret
-                   key: MONGO_DB_URL
              - name: POST_BUCKET
                valueFrom:
                  secretKeyRef:
                    name: files-myingram-production-config-secret
                    key: POST_BUCKET
+             - name: GATE_FILES_GRPC_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: files-myingram-production-config-secret
+                   key: GATE_FILES_GRPC_URL
+             - name: FILES_GRPC_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: files-myingram-production-config-secret
+                   key: FILES_GRPC_URL
+             - name: MONGO_DB_URL
+               valueFrom:
+                 secretKeyRef:
+                   name: files-myingram-production-config-secret
+                   key: MONGO_DB_URL
+             - name: RABBIT_URLS
+               valueFrom:
+                 secretKeyRef:
+                   name: files-myingram-production-config-secret
+                   key: RABBIT_URLS

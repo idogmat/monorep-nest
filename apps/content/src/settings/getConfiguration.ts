@@ -19,6 +19,8 @@ export const getConfiguration = () => {
       : 'DEVELOPMENT') as EnvironmentsTypes,
     PORT: process.env.PORT,
     PROFILE_LOCAL_PORT: process.env.PROFILE_LOCAL_PORT,
+    CONTENT_DB_URL: process.env.CONTENT_DB_URL,
+    FILES_GRPC_URL: process.env.FILES_GRPC_URL,
     RABBIT_URLS: process.env.RABBIT_URLS?.split(','),
     DATABASE_URL: process.env.DATABASE_URL,
     CONNECT_PORT: process.env.CONNECT_PORT,

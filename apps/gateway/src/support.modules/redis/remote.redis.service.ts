@@ -1,26 +1,26 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { createClient, RedisClientType, RedisDefaultModules} from 'redis';
+import { createClient, RedisClientType, RedisDefaultModules } from 'redis';
 
 @Injectable()
 export class RemoteRedisService implements OnModuleInit, OnModuleDestroy {
   private client: RedisClientType<RedisDefaultModules>;
 
-  constructor(private configService: ConfigService) {}
+  constructor(private configService: ConfigService) { }
 
   async onModuleInit() {
     this.client = createClient({
       socket: {
         host: this.configService.get<string>('REDIS_HOST') || '',
-        port:  parseInt(this.configService.get<string>('REDIS_PORT') || '0', 10),
+        port: parseInt(this.configService.get<string>('REDIS_PORT') || '0', 10),
       },
       password: this.configService.get<string>('REDIS_PASSWORD') || '',
-    })  as RedisClientType<RedisDefaultModules>;
+    }) as RedisClientType<RedisDefaultModules>;
 
     this.client.on('error', (err) => console.error('Redis Client Error', err));
 
     await this.client.connect();
-
+    console.log(this.client, 'redis client')
   }
 
   async onModuleDestroy() {
@@ -30,7 +30,7 @@ export class RemoteRedisService implements OnModuleInit, OnModuleDestroy {
   async set<T>(key: string, value: T, ttl?: number): Promise<void> {
     const stringValue: string = JSON.stringify(value);
     if (ttl) {
-      await this.client.set(key, stringValue,  { EX: ttl } );
+      await this.client.set(key, stringValue, { EX: ttl });
     } else {
       await this.client.set(key, stringValue);
     }

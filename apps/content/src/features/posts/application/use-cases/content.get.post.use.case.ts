@@ -1,18 +1,29 @@
-import { Post } from '../../../../../prisma/generated/content-client';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { PostsQueryPrismaRepository } from '../../infrastructure/prisma/posts.prisma.query-repository';
+import { Prisma } from '../../../../../prisma/generated/content-client';
 
 export class ContentGetPostCommand {
   constructor(
-    public sortBy?: string,
-    public sortDirection?: string,
-    public pageNumber?: number,
-    public pageSize?: number,
-    public userId?: string,
+    public postId: string,
   ) {
   }
 }
-const outputMapper = (post: Post) => {
+const urlsMapping = (urls) => {
+  return {
+    id: urls?.id,
+    createdAt: urls?.createdAt,
+    updatedAt: urls?.updatedAt,
+    deletedAt: urls?.deletedAt,
+    fileName: urls?.fileName,
+    fileUrl: urls?.fileUrl,
+    postId: urls?.postId
+  }
+}
+type PostWithUrls = Prisma.PostGetPayload<{
+  include: { urls: true }
+}>;
+
+const outputMapper = (post: PostWithUrls) => {
   return {
     id: post.id,
     userId: post.userId,
@@ -23,6 +34,7 @@ const outputMapper = (post: Post) => {
     published: post.published,
     banned: post.banned,
     photoUploadStatus: post.photoUploadStatus,
+    urls: post?.urls?.map(urlsMapping) || []
   };
 };
 
@@ -35,8 +47,8 @@ export class ContentGetPostUseCase implements ICommandHandler<ContentGetPostComm
 
   async execute(command: ContentGetPostCommand): Promise<any> {
     console.log(command, 'command')
-    const newPosts = await this.postsQueryPrismaRepository.getAllPosts(command);
-    console.log(newPosts);
-    return { ...newPosts, items: newPosts.items.map(outputMapper) };
+    const post = await this.postsQueryPrismaRepository.getPost(command.postId);
+    console.log(post);
+    return { ...post, urls: post?.urls?.map(urlsMapping) || [] };
   }
 }
