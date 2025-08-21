@@ -1,5 +1,5 @@
 import { applyDecorators, Type } from "@nestjs/common";
-import { ApiBody, ApiExtraModels, ApiOperation, ApiProperty, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiExtraModels, ApiOperation, ApiProperty, ApiResponse } from '@nestjs/swagger';
 import { UserProfileResponse } from "../../../../../../libs/proto/generated/profile";
 import { UpdateProfileModel } from '../model/input/update.profile.model';
 import { PostUpdateModel } from '../../../posts/api/model/input/post.update.model';
@@ -8,6 +8,7 @@ export const ApiFileWithDto = <TModel extends Type<any>>(model: TModel, fileFiel
   const values = new model().swagger()
 
   return applyDecorators(
+    ApiConsumes('multipart/form-data'),
     ApiExtraModels(model),
     ApiBody({
       schema: {

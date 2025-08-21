@@ -1,4 +1,4 @@
-import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Get, Inject, Param, Post, Query, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ContentClientService } from '../../../../support.modules/grpc/grpc.content.service';
 import { AuthGuard } from '../../../../common/guard/authGuard';
@@ -12,6 +12,8 @@ import { join } from 'path';
 import { FilesClientService } from '../../../../support.modules/grpc/grpc.files.service';
 import { SendFileService } from '../../../../support.modules/file/file.service';
 import { CommentCreateModel } from '../../comments/api/model/input/comment.create.model';
+import { ApiFileWithDto, GetPostsApiQuery } from './model/input/swagger.discription.ts';
+import { PostOutputModel } from './model/output/post.output.model';
 
 @ApiTags('Content.Posts')
 @Controller('content/posts')
@@ -27,6 +29,8 @@ export class ContentPostsController {
 
   @Post()
   @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @ApiFileWithDto(PostCreateModel, 'files')
   @UseInterceptors(FilesInterceptor('files', 10, {
     storage: diskStorage({
       destination: (req, file, cb) => {
@@ -92,6 +96,11 @@ export class ContentPostsController {
 
   @Get(":id")
   @UseGuards(AuthGuard)
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully fetched post',
+    type: PostOutputModel
+  })
   async getPost(
     @Req() req,
     @Param('id') postId: string,
@@ -105,10 +114,7 @@ export class ContentPostsController {
 
   @Get()
   @UseGuards(AuthGuard)
-  @ApiQuery({ name: 'pageNumber', required: false })
-  @ApiQuery({ name: 'pageSize', required: false })
-  @ApiQuery({ name: 'sortBy', required: false })
-  @ApiQuery({ name: 'sortDirection', required: false })
+  @GetPostsApiQuery()
   async getPosts(
     @Req() req,
     @Query() queryDTO: PaginationContentQueryDto
