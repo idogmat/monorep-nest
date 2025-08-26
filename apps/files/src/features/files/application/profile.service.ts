@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { S3StorageAdapter, UploadedFileResponse } from './s3.service';
-import * as AWS from 'aws-sdk';
 
 @Injectable()
 export class ProfileService {

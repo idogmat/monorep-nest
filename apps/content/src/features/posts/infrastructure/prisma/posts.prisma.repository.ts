@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { $Enums, Comment, File, Post } from '../../../../../prisma/generated/content-client';
 import PhotoUploadStatus = $Enums.PhotoUploadStatus;
-import { UploadPhotoCommand } from '../../application/use-cases/content.upload.photo';
 import { UploadedFileResponse } from '../../../../../../files/src/features/files/application/s3.service';
 
 
@@ -95,10 +94,17 @@ export class PostsPrismaRepository {
     });
   }
 
-  async delete(param: { id: string }) {
-    await this.prisma.post.delete({
-      where: { id: param.id },
-    });
+  async delete(userId: string, postId: string) {
+    const post = await this.prisma.post.findFirst({
+      where: { id: postId, userId },
+    })
+    if (!post) {
+      return { success: false, message: "delete failed" }
+    }
+    await this.prisma.comment.deleteMany({ where: { postId } })
+    await this.prisma.file.deleteMany({ where: { postId } })
+    await this.prisma.post.delete({ where: { id: post.id } })
+    return { success: true, message: "delete success" }
   }
 
   async markAsBanned(userId: string) {

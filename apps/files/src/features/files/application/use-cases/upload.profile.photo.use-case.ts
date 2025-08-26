@@ -1,10 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { join, basename } from 'path';
 import { unlink } from 'fs/promises';
-import { S3UploadPhotoService } from '../post.photo.service';
 import { RabbitService } from '../rabbit.service';
-import { ProfileService } from '../profile.service';
 import { Inject, Logger } from '@nestjs/common';
+import { S3StorageAdapter } from '../s3.service';
 
 export class UploadProfilePhotoCommand {
   constructor(
@@ -18,8 +17,7 @@ export class UploadProfilePhotoUseCase implements ICommandHandler<UploadProfileP
   private readonly logger = new Logger(UploadProfilePhotoUseCase.name);
 
   constructor(
-    private readonly profileService: ProfileService,
-    private readonly uploadPhotoService: S3UploadPhotoService,
+    @Inject('PROFILE_BUCKET_ADAPTER') private s3Adapter: S3StorageAdapter,
     @Inject('RABBIT_SERVICE') private readonly rabbitClient: RabbitService
   ) { }
 
@@ -40,7 +38,7 @@ export class UploadProfilePhotoUseCase implements ICommandHandler<UploadProfileP
 
       // 3. Загрузка в S3
       const s3Path = `profile/user_${userId}`;
-      const uploadResult = await this.uploadPhotoService.uploadImage(
+      const uploadResult = await this.s3Adapter.uploadFile(
         {
           originalname: basename(filePath),
           buffer,

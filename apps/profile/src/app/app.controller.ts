@@ -1,4 +1,4 @@
-import { Controller, NotFoundException, } from '@nestjs/common';
+import { Controller, Inject, NotFoundException, } from '@nestjs/common';
 import { EventPattern, GrpcMethod, RpcException } from '@nestjs/microservices';
 import { ProfileService } from '../features/profile.service';
 import { ProfilePhotoInputModel } from '../features/model/profilePhoto.input.model';
@@ -7,14 +7,17 @@ import {
   OutputProfileUpdateModel,
   OutputProfileUpdateModelMapper,
 } from '../features/model/profile.output.model';
-import { CreateUserProfileRequest, DeleteProfileGQLRequest, GetFollowersGqlQuery, SubscribeProfileRequest, UpdateUserProfileRequest, UserProfileQueryRequest, UserProfilesGQLRequest, UserProfileUpdateSubscribeRequest } from '../../../libs/proto/generated/profile';
+import { CreateUserProfileRequest, DeleteProfileGQLRequest, DeleteProfilePhotoRequest, GetFollowersGqlQuery, SubscribeProfileRequest, UpdateUserProfileRequest, UserProfileQueryRequest, UserProfilesGQLRequest, UserProfileUpdateSubscribeRequest } from '../../../libs/proto/generated/profile';
 import { Status } from '@grpc/grpc-js/build/src/constants';
-import { CreatePostRequest } from '../../../gateway/src/support.modules/grpc/interfaces/content.interface';
-
+import { RabbitService } from '../features/rabbit.service';
 
 @Controller()
 export class AppController {
-  constructor(readonly profileService: ProfileService) { }
+  constructor(
+    readonly profileService: ProfileService,
+    @Inject('RABBIT_SERVICE') private readonly rabbitClient: RabbitService
+
+  ) { }
 
   @GrpcMethod('ProfileService', 'GetUserProfile')
   async GetUserProfile(data: { userId: string, profileUserId: string }) {
@@ -97,6 +100,27 @@ export class AppController {
     }
   }
 
+  @GrpcMethod('ProfileService', 'DeleteProfilePhoto')
+  async deleteProfilePhoto(
+    data: DeleteProfilePhotoRequest
+  ) {
+    console.log(data, 'DeleteProfilePhoto')
+    try {
+      const res = await this.profileService.deleteProfilePhoto(data.userId);
+      console.log(res, 'res')
+      const rabbit = await this.rabbitClient.publishToQueue('file_queue', {
+        type: 'DELETE_PROFILE_PHOTO',
+        userId: data.userId,
+        createdAt: new Date(),
+      });
+      console.log(rabbit)
+      return { success: true, message: '' };
+    } catch (error) {
+      console.log(error)
+      return { success: false, message: '' };
+    }
+  }
+
   @GrpcMethod('ProfileService', 'UpdateUserProfileData')
   async updateProfileDataGrpc(
     data: Partial<UpdateUserProfileRequest>
@@ -105,7 +129,7 @@ export class AppController {
     try {
       const updatedProfile = await this.profileService.updateProfileFields(data.userId, data);
 
-      const mapData =  OutputProfileUpdateModelMapper(updatedProfile);
+      const mapData = OutputProfileUpdateModelMapper(updatedProfile);
 
       console.log("mapData ------", mapData);
       return mapData;

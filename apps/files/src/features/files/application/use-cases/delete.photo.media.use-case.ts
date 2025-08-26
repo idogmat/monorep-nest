@@ -6,6 +6,7 @@ import { S3StorageAdapter } from '../s3.service';
 
 export class DeletePhotoMediaCommand {
   constructor(
+    public userId: string,
     public postId: string,
   ) {
   }
@@ -15,31 +16,23 @@ export class DeletePhotoMediaCommand {
 export class DeletePhotoMediaUseCase implements ICommandHandler<DeletePhotoMediaCommand> {
 
   constructor(
-    private readonly filesRepository: FilesRepository,
-    private readonly filesQueryRepository: FilesQueryRepository,
     @Inject('POST_PHOTO_BUCKET_ADAPTER') private s3Adapter: S3StorageAdapter,
   ) {
   }
 
   async execute(command: DeletePhotoMediaCommand) {
-
+    const { userId, postId } = command
+    const s3Path = `posts/user_${userId}/post_${postId}`
     try {
-      const photoMedia = await this.filesQueryRepository.getPhotoMediaByPostId(command.postId);
-      for (const photo of photoMedia) {
-        try {
-          await this.s3Adapter.deleteFile(photo.key);
-        } catch (err) {
-          console.warn(`Не удалось удалить файл с ключом ${photo.key}:`, err.message);
-        }
+      const files = await this.s3Adapter.getFilesByPath(s3Path)
+      if (files.length) {
+        const result = await Promise.allSettled([
+          files.forEach(f => this.s3Adapter.deleteFile(f.Key))
+        ])
+        console.log(result)
       }
-      await this.filesRepository.deletePostMedia(command.postId);
-    } catch (error) {
-      console.error('Ошибка при удалении медиа поста:', error.message);
-      throw error;
+    } catch (err) {
+      console.warn(`Не удалось удалить файл по пути ${s3Path}:`, err.message);
     }
-
-
-
-
   }
 }

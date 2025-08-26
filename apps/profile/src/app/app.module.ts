@@ -9,6 +9,7 @@ import { ProfileService } from '../features/profile.service';
 import { join } from 'path';
 import { RabbitConsumerService } from '../features/application/rabbit.consumer.service';
 import { CqrsModule } from '@nestjs/cqrs';
+import { RabbitService } from '../features/rabbit.service';
 
 @Module({
   imports: [
@@ -56,7 +57,16 @@ import { CqrsModule } from '@nestjs/cqrs';
   providers: [
     PrismaService,
     ProfileService,
-    RabbitConsumerService
+    RabbitConsumerService,
+    {
+      provide: 'RABBIT_SERVICE',
+      useFactory: (configService: ConfigService) => {
+        return new RabbitService(
+          configService,
+        );
+      },
+      inject: [ConfigService],
+    },
   ],
   exports: [],
 })

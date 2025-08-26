@@ -17,9 +17,12 @@ import { UploadPhotoUseCase } from '../features/posts/application/use-cases/cont
 import { ContentCreateCommentUseCase } from '../features/posts/application/use-cases/content.create.comment.use.case';
 import { ContentGetPostsUseCase } from '../features/posts/application/use-cases/content.get.posts.use.case';
 import { ContentGetPostUseCase } from '../features/posts/application/use-cases/content.get.post.use.case';
+import { ContentDeletePostUseCase } from '../features/posts/application/use-cases/content.delete.post.use.case';
+import { RabbitService } from '../features/posts/application/rabbit.service';
 
 const useCasesForPost = [
   ContentCreatePostUseCase,
+  ContentDeletePostUseCase,
   ContentCreateCommentUseCase,
   ContentGetPostsUseCase,
   ContentGetPostUseCase,
@@ -64,6 +67,7 @@ const useCasesForPost = [
         inject: [ConfigService],
       },
     ]),
+
   ],
   controllers: [
     ContentController
@@ -73,7 +77,16 @@ const useCasesForPost = [
     PostsPrismaRepository,
     PostsQueryPrismaRepository,
     PrismaService,
-    RabbitConsumerService
+    RabbitConsumerService,
+    {
+      provide: 'RABBIT_SERVICE',
+      useFactory: (configService: ConfigService) => {
+        return new RabbitService(
+          configService,
+        );
+      },
+      inject: [ConfigService],
+    },
   ],
 })
 export class AppModule { }

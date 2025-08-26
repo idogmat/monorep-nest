@@ -2,7 +2,8 @@ import * as amqplib from 'amqplib';
 import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CommandBus } from '@nestjs/cqrs';
-import { UploadPhotoCommand } from './use-cases/content.upload.photo';
+import { DeletePhotoMediaCommand } from './use-cases/delete.photo.media.use-case';
+import { DeleteProfileMediaCommand } from './use-cases/delete.profile.media.use-case';
 
 @Injectable()
 export class RabbitConsumerService implements OnModuleInit {
@@ -35,7 +36,7 @@ export class RabbitConsumerService implements OnModuleInit {
       });
 
       // Настройка очереди
-      const queueName = 'posts_queue';
+      const queueName = 'file_queue';
       await this.channel.assertQueue(queueName, { durable: true });
       await this.channel.prefetch(10); // Ограничиваем количество одновременно обрабатываемых сообщений
 
@@ -70,12 +71,16 @@ export class RabbitConsumerService implements OnModuleInit {
   private async handleMessage(message: any) {
     // Реализуйте вашу бизнес-логику здесь
     switch (message.type) {
-      case 'UPLOAD_POSTS_PHOTO':
-        console.log(message)
-        await this.commandBus.execute(new UploadPhotoCommand(message.userId, message.postId, message.data));
+      case 'DELETE_POSTS_PHOTO':
+        if (message?.userId && message?.postId) {
+          await this.commandBus.execute(new DeletePhotoMediaCommand(message.userId, message.postId));
+        }
         break;
-      case 'POST_UPDATED':
-        await this.handlePostUpdated(message.data);
+      case 'DELETE_PROFILE_PHOTO':
+        if (message?.userId) {
+          await this.commandBus.execute(new DeleteProfileMediaCommand(message.userId));
+        }
+        // await this.handlePostUpdated(message.data);
         break;
       default:
         this.logger.warn(`Unknown message type: ${message.type}`);
@@ -102,7 +107,7 @@ export class RabbitConsumerService implements OnModuleInit {
 
       // Отправляем в очередь повтора
       this.channel.sendToQueue(
-        'posts_queue_retry',
+        'file_queue_retry',
         msg.content,
         { headers: newHeaders }
       );
@@ -110,7 +115,7 @@ export class RabbitConsumerService implements OnModuleInit {
     } else {
       // Отправка в очередь мертвых писем
       this.channel.sendToQueue(
-        'posts_queue_dead_letter',
+        'file_queue_dead_letter',
         msg.content,
         { headers: { ...headers, 'x-death-reason': error.message } }
       );

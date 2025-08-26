@@ -7,6 +7,7 @@ service PostService {
   rpc CreatePost (CreatePostRequest) returns (PostResponse);
   rpc GetPost (GetPostRequest) returns (GetPostResponse);
   rpc GetPosts (GetPostsQueryRequest) returns (GetPostsResponse);
+  rpc DeletePost (DeletePostRequest) returns (DeletePostResponse);
 }
 
 service CommentService {
@@ -43,6 +44,11 @@ message GetPostsQueryRequest {
 
 message GetPostRequest {
   string postId = 1;
+}
+
+message DeletePostRequest {
+  string userId = 1;
+  string postId = 2;
 }
 
 // -----------
@@ -90,6 +96,11 @@ message CreatePostRequest {
 
 message PostResponse {
   string id = 1;
+}
+
+message DeletePostResponse {
+  string success = 1;
+  string message = 2;
 }
 
 enum PhotoUploadStatus {

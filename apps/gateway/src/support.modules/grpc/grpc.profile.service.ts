@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { BanProfileGQLRequest, DeleteProfileGQLRequest, GetFollowersGqlQuery, UpdateUserProfileRequest, UserProfileQueryRequest, UserProfileResponse, UserProfilesGQLRequest } from '../../../../libs/proto/generated/profile';
+import { BanProfileGQLRequest, DeleteProfileGQLRequest, DeleteProfilePhotoRequest, GetFollowersGqlQuery, UpdateUserProfileRequest, UserProfileQueryRequest, UserProfileResponse, UserProfilesGQLRequest } from '../../../../libs/proto/generated/profile';
 import { firstValueFrom, lastValueFrom, Observable } from 'rxjs';
 
 interface ProfileService {
@@ -8,6 +8,7 @@ interface ProfileService {
   GetUserProfiles(data: UserProfileQueryRequest): Observable<any>;
   UpdateUserProfile(data: UpdateUserProfileRequest): Observable<any>;
   UpdateUserProfileData(data: Partial<UpdateUserProfileRequest>): Observable<any>;
+  DeleteProfilePhoto(data: DeleteProfilePhotoRequest): Observable<any>;
   SubscribeUserProfile(data: { userId: string, profileUserId: string }): Observable<any>;
   CreateUserProfile(data: { userId: string, userName: string, email: string }): Observable<any>;
   UpdateUserProfileSubscribe(data: { userId: string, paymentAccount: boolean }): Observable<any>;
@@ -46,6 +47,10 @@ export class ProfileClientService implements OnModuleInit {
 
   async updateProfile(data: UpdateUserProfileRequest) {
     return lastValueFrom(await this.profileService.UpdateUserProfile(data));
+  }
+
+  async deleteProfilePhoto(data: DeleteProfilePhotoRequest) {
+    return lastValueFrom(await this.profileService.DeleteProfilePhoto(data));
   }
 
   async updateProfileData(data: Partial<UpdateUserProfileRequest>) {

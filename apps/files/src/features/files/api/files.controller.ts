@@ -3,17 +3,15 @@ import {
   BadRequestException, Body,
   Controller, Get,
   Headers,
-  HttpStatus,
   Param,
   Post,
   Req,
   Res, UploadedFiles, UseInterceptors,
 } from '@nestjs/common';
-import { EventPattern, GrpcMethod, GrpcStreamMethod, Payload } from '@nestjs/microservices';
+import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { join } from 'path';
 import { createReadStream, createWriteStream, existsSync, mkdirSync, readdirSync, unlinkSync, writeFileSync, WriteStream } from 'fs';
 import { Request } from 'express';
-import { ProfileService } from '../application/profile.service';
 import { diskStorage } from 'multer';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CreatePhotoForPostCommand } from '../application/use-cases/create.photo.for.post.use-case';
@@ -21,10 +19,8 @@ import { CommandBus, EventBus } from '@nestjs/cqrs';
 import { UploadProfilePhotoCommand } from '../application/use-cases/upload.profile.photo.use-case';
 import { FilesQueryRepository } from '../infrastructure/files.query-repository';
 import { LocationViewModel } from './model/output/location.view.model';
-import { DeletePhotoMediaCommand } from '../application/use-cases/delete.photo.media.use-case';
 import { Observable } from 'rxjs';
 import { SavePhotoForPostCommand } from '../application/use-cases/save.photo.for.post.use-case';
-import { LocalPathRepository } from '../infrastructure/localPath.repository';
 import { LoadFilesEvent } from '../application/event-bus/load.files.post.event';
 import { SavePhotoForProfileCommand } from '../application/use-cases/save.photo.profile.use-case';
 
@@ -34,10 +30,8 @@ export class FilesController {
   private chunkDir = './uploads/chunks';
   private readonly localFileName = 'test.png';
   constructor(
-    private readonly profileService: ProfileService,
     private readonly filesQueryRepository: FilesQueryRepository,
     private readonly commandBus: CommandBus,
-    private readonly localPathRepository: LocalPathRepository,
     private readonly eventBus: EventBus,
 
   ) {
@@ -130,19 +124,6 @@ export class FilesController {
     );
   }
 
-  // @Post('receive')
-  // async uploadStream(
-  //   @Req() req,
-  //   @Res() res,
-  //   @Headers('X-Filename') filename: string,
-  //   @Headers('X-UserId') userId: string
-  // ) {
-
-  //   const code: HttpStatus = 
-  //   res.status(code).send()
-
-  // }
-
   @Post('receive-chunks')
   async receiveChunk(@Req() req: Request, @Res() res) {
     const chunkIndex = req.headers['x-chunk-index']; // Индекс чанка
@@ -183,19 +164,6 @@ export class FilesController {
     mergeChunks(fileId, outputFilePath);
 
     res.json({ message: 'File merge started' });
-  }
-
-  @EventPattern('post_deleted')
-  async handlePostDeleted(@Payload() data: { postId: string }) {
-
-    const { postId } = data;
-    console.log("Hello, I am here");
-    await this.commandBus.execute(
-      new DeletePhotoMediaCommand(postId)
-    );
-    // 1. Удалить записи о фотографиях из MongoDB
-    // 2. Удалить файлы из Яндекс S3 (если нужно)
-    // и т.п.
   }
 
 }

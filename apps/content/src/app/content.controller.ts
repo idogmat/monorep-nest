@@ -3,10 +3,11 @@ import { GrpcMethod } from '@nestjs/microservices';
 import { CreatePostRequest } from '../../../gateway/src/support.modules/grpc/interfaces/content.interface';
 import { CommandBus } from '@nestjs/cqrs';
 import { ContentCreatePostCommand } from '../features/posts/application/use-cases/content.create.post.use.case';
-import { CreateCommentRequest, GetPostRequest, GetPostsQueryRequest } from '../../../libs/proto/generated/content';
+import { CreateCommentRequest, DeletePostRequest, GetPostRequest, GetPostsQueryRequest } from '../../../libs/proto/generated/content';
 import { ContentGetPostCommand } from '../features/posts/application/use-cases/content.get.post.use.case';
 import { ContentCreateCommentCommand } from '../features/posts/application/use-cases/content.create.comment.use.case';
 import { ContentGetPostsCommand } from '../features/posts/application/use-cases/content.get.posts.use.case';
+import { ContentDeletePostCommand } from '../features/posts/application/use-cases/content.delete.post.use.case';
 
 @Controller()
 export class ContentController {
@@ -55,6 +56,17 @@ export class ContentController {
     console.log(data)
     const res = await this.commandBus.execute(
       new ContentGetPostCommand(data.postId)
+    )
+    return res
+  }
+
+  @GrpcMethod('PostService', 'DeletePost')
+  async DeletePost(
+    data: DeletePostRequest
+  ) {
+    console.log(data)
+    const res = await this.commandBus.execute(
+      new ContentDeletePostCommand(data.userId, data.postId)
     )
     return res
   }

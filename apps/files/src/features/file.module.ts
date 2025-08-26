@@ -4,11 +4,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FilesController } from './files/api/files.controller';
 import { FilesRepository } from './files/infrastructure/files.repository';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 import { getConfiguration } from '../settings/getConfiguration';
 import { MulterModule } from '@nestjs/platform-express';
 import { S3StorageAdapter } from './files/application/s3.service';
-import { ProfileService } from './files/application/profile.service';
 import { S3UploadPhotoService } from './files/application/post.photo.service';
 import { PostMedia, PostMediaSchema } from './files/domain/post.media.entity';
 import { CreatePhotoForPostUseCase } from './files/application/use-cases/create.photo.for.post.use-case';
@@ -21,11 +19,14 @@ import { LocalPath, LocalPathSchema } from './files/domain/local.path.entity';
 import { LocalPathRepository } from './files/infrastructure/localPath.repository';
 import { RabbitService } from './files/application/rabbit.service';
 import { SavePhotoForProfileUseCase } from './files/application/use-cases/save.photo.profile.use-case';
+import { RabbitConsumerService } from './files/application/rabbit.consumer.service';
+import { DeleteProfileMediaUseCase } from './files/application/use-cases/delete.profile.media.use-case';
 
 const useCases = [
   CreatePhotoForPostUseCase,
   UploadProfilePhotoUseCase,
   DeletePhotoMediaUseCase,
+  DeleteProfileMediaUseCase,
   SavePhotoForPostUseCase,
   SavePhotoForProfileUseCase
 ];
@@ -55,38 +56,6 @@ const eventCases = [
       { name: PostMedia.name, schema: PostMediaSchema },
       { name: LocalPath.name, schema: LocalPathSchema }
     ]),
-    // ClientsModule.registerAsync([
-    //   {
-    //     imports: [ConfigModule],
-    //     name: 'RABBITMQ_POST_SERVICE',
-    //     useFactory: (configService: ConfigService) => {
-    //       return {
-    //         transport: Transport.RMQ,
-    //         options: {
-    //           urls: configService.get<string[]>('RABBIT_URLS'),
-    //           queue: 'post_queue',
-    //           queueOptions: { durable: true },
-    //         },
-    //       }
-    //     },
-    //     inject: [ConfigService],
-    //   },
-    //   {
-    //     imports: [ConfigModule],
-    //     name: 'RABBITMQ_PROFILE_PHOTO_SERVICE',
-    //     useFactory: (configService: ConfigService) => {
-    //       return {
-    //         transport: Transport.RMQ,
-    //         options: {
-    //           urls: configService.get<string[]>('RABBIT_URLS'),
-    //           queue: 'profile_photo_queue',
-    //           queueOptions: { durable: true },
-    //         },
-    //       }
-    //     },
-    //     inject: [ConfigService],
-    //   },
-    // ]),
   ],
   providers: [
     ...useCases,
@@ -94,8 +63,8 @@ const eventCases = [
     FilesRepository,
     FilesQueryRepository,
     LocalPathRepository,
-    ProfileService,
     S3UploadPhotoService,
+    RabbitConsumerService,
     {
       provide: 'PROFILE_BUCKET_ADAPTER',
       useFactory: (configService: ConfigService) => {
@@ -111,7 +80,7 @@ const eventCases = [
       useFactory: (configService: ConfigService) => {
         return new S3StorageAdapter(
           configService,
-          configService.get<string>('POST_BUCKET'), // Укажите имя бакета из конфига
+          configService.get<string>('POST_BUCKET'),
         );
       },
       inject: [ConfigService],

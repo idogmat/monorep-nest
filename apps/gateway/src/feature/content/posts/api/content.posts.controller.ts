@@ -1,5 +1,5 @@
 import { ApiBearerAuth, ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Body, Controller, Get, Inject, Param, Post, Query, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Post, Query, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ContentClientService } from '../../../../support.modules/grpc/grpc.content.service';
 import { AuthGuard } from '../../../../common/guard/authGuard';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -14,6 +14,7 @@ import { SendFileService } from '../../../../support.modules/file/file.service';
 import { CommentCreateModel } from '../../comments/api/model/input/comment.create.model';
 import { ApiFileWithDto, GetPostsApiQuery } from './model/input/swagger.discription.ts';
 import { PostOutputModel } from './model/output/post.output.model';
+import { Request } from 'express';
 
 @ApiTags('Content.Posts')
 @Controller('content/posts')
@@ -108,6 +109,23 @@ export class ContentPostsController {
     const userId = req.user.userId;
     // console.log('ok')
     const res = await this.contentGrpcClient.getPost({ postId });
+    console.log(res);
+    return res;
+  }
+
+  @Delete(":id")
+  @UseGuards(AuthGuard)
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully delete post',
+  })
+  async deletePost(
+    @Req() req: Request,
+    @Param('id') postId: string,
+  ) {
+    const userId = req.user.userId;
+    // console.log('ok')
+    const res = await this.contentGrpcClient.deletePost({ userId, postId });
     console.log(res);
     return res;
   }
