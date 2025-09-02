@@ -94,28 +94,28 @@ export interface UserProfileResponse {
   userName: string;
   /** Обёртка для пустых значений */
   photoUrl:
-  | string
-  | undefined;
+    | string
+    | undefined;
   /** Обёртка для пустых значений */
   firstName:
-  | string
-  | undefined;
+    | string
+    | undefined;
   /** Обёртка для пустых значений */
   lastName:
-  | string
-  | undefined;
+    | string
+    | undefined;
   /** Обёртка для пустых значений */
   dateOfBirth:
-  | string
-  | undefined;
+    | string
+    | undefined;
   /** Обёртка для пустых значений */
   country:
-  | string
-  | undefined;
+    | string
+    | undefined;
   /** Обёртка для пустых значений */
   city:
-  | string
-  | undefined;
+    | string
+    | undefined;
   /** Обёртка для пустых значений */
   aboutMe: string | undefined;
   followed: boolean;

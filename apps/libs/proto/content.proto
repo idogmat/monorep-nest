@@ -8,6 +8,7 @@ service PostService {
   rpc GetPost (GetPostRequest) returns (GetPostResponse);
   rpc GetPosts (GetPostsQueryRequest) returns (GetPostsResponse);
   rpc DeletePost (DeletePostRequest) returns (DeletePostResponse);
+  rpc LikePost (LikePostRequest) returns (LikePostResponse);
 }
 
 service CommentService {
@@ -22,6 +23,15 @@ message Url {
   string fileName = 5;
   string fileUrl = 6;
   string postId = 7;
+}
+
+message Like {
+  string id = 1;
+  string createdAt = 2;
+  string deletedAt = 3;
+  string updatedAt = 4;
+  string postId = 5;
+  string userId = 6;
 }
 
 message Comment {
@@ -51,7 +61,17 @@ message DeletePostRequest {
   string postId = 2;
 }
 
+message LikePostRequest {
+  string userId = 1;
+  string postId = 2;
+}
 // -----------
+
+message LikePostResponse {
+  string success = 1;
+  string message = 2;
+}
+
 message GetPostResponse {
   string id = 1;
   string userId = 2;
@@ -64,9 +84,7 @@ message GetPostResponse {
   string photoUploadStatus = 9;
   repeated Url urls = 10;
   repeated Comment comments = 11;
-  // photoUploadStatus PhotoUploadStatus   @default(PENDING)  // Статус загрузки фотографий
-  // comments Comment[] @relation("PostComment")
-  // likes Like[] @relation("PostLike")
+  repeated Like likes = 12;
 }
 
 message CreateCommentRequest {

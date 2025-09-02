@@ -41,6 +41,34 @@ export class PostsPrismaRepository {
     console.log(comment, ' comment')
   }
 
+  async postLike(userId: string, postId: string): Promise<any> {
+    const [post, like] = await Promise.all([
+      this.prisma.post.findFirst({
+        where: { id: postId },
+      }),
+      this.prisma.like.findFirst({
+        where: { postId, userId },
+      }),
+    ])
+    console.log(post)
+    console.log(like)
+    if (!post?.id) throw new Error('Post not found');
+    if (!like?.id) {
+      await this.prisma.like.create({
+        data: {
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          userId,
+          postId,
+        },
+      })
+    } else {
+      await this.prisma.like.delete({
+        where: { id: like.id },
+      })
+    }
+  }
+
   async updateStatusForPost(postId: string, status: PhotoUploadStatus): Promise<Post> {
     return this.prisma.post.update({
       where: { id: postId },
@@ -101,6 +129,7 @@ export class PostsPrismaRepository {
     if (!post) {
       return { success: false, message: "delete failed" }
     }
+    await this.prisma.like.deleteMany({ where: { postId } })
     await this.prisma.comment.deleteMany({ where: { postId } })
     await this.prisma.file.deleteMany({ where: { postId } })
     await this.prisma.post.delete({ where: { id: post.id } })

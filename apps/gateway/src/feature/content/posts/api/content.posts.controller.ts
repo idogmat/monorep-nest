@@ -1,5 +1,5 @@
 import { ApiBearerAuth, ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Body, Controller, Delete, Get, Inject, Param, Post, Query, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Query, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ContentClientService } from '../../../../support.modules/grpc/grpc.content.service';
 import { AuthGuard } from '../../../../common/guard/authGuard';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -64,10 +64,27 @@ export class ContentPostsController {
 
       console.log(res, 'resupload')
       await this.filesClientService.loadOnS3(userId, post.id);
-
+      return post
     } catch (error) {
       console.log(error, 'error')
     }
+  }
+
+  @Patch(":id/like")
+  @UseGuards(AuthGuard)
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully like | unlike post',
+  })
+  async likePost(
+    @Req() req,
+    @Param('id') postId: string,
+  ) {
+    const userId = req.user.userId;
+    // console.log('ok')
+    const res = await this.contentGrpcClient.likePost({ userId, postId });
+    console.log(res);
+    return res;
   }
 
   @ApiBody({ type: CommentCreateModel })
@@ -80,9 +97,6 @@ export class ContentPostsController {
     @Body() body: CommentCreateModel,
   ) {
     const userId = req.user.userId;
-
-    // console.log(userId);
-    // console.log(body);
     try {
       const comment = await this.contentGrpcClient.createComment({
         userId,

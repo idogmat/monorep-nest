@@ -29,6 +29,15 @@ export interface Url {
   postId: string;
 }
 
+export interface Like {
+  id: string;
+  createdAt: string;
+  deletedAt: string;
+  updatedAt: string;
+  postId: string;
+  userId: string;
+}
+
 export interface Comment {
   id: string;
   createdAt: string;
@@ -56,7 +65,16 @@ export interface DeletePostRequest {
   postId: string;
 }
 
-/** ----------- */
+export interface LikePostRequest {
+  userId: string;
+  postId: string;
+}
+
+export interface LikePostResponse {
+  success: string;
+  message: string;
+}
+
 export interface GetPostResponse {
   id: string;
   userId: string;
@@ -68,12 +86,8 @@ export interface GetPostResponse {
   banned: boolean;
   photoUploadStatus: string;
   urls: Url[];
-  /**
-   * photoUploadStatus PhotoUploadStatus   @default(PENDING)  // Статус загрузки фотографий
-   * comments Comment[] @relation("PostComment")
-   * likes Like[] @relation("PostLike")
-   */
   comments: Comment[];
+  likes: Like[];
 }
 
 export interface CreateCommentRequest {
@@ -119,6 +133,8 @@ export interface PostServiceClient {
   getPosts(request: GetPostsQueryRequest, metadata?: Metadata): Observable<GetPostsResponse>;
 
   deletePost(request: DeletePostRequest, metadata?: Metadata): Observable<DeletePostResponse>;
+
+  likePost(request: LikePostRequest, metadata?: Metadata): Observable<LikePostResponse>;
 }
 
 export interface PostServiceController {
@@ -141,11 +157,16 @@ export interface PostServiceController {
     request: DeletePostRequest,
     metadata?: Metadata,
   ): Promise<DeletePostResponse> | Observable<DeletePostResponse> | DeletePostResponse;
+
+  likePost(
+    request: LikePostRequest,
+    metadata?: Metadata,
+  ): Promise<LikePostResponse> | Observable<LikePostResponse> | LikePostResponse;
 }
 
 export function PostServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createPost", "getPost", "getPosts", "deletePost"];
+    const grpcMethods: string[] = ["createPost", "getPost", "getPosts", "deletePost", "likePost"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("PostService", method)(constructor.prototype[method], method, descriptor);

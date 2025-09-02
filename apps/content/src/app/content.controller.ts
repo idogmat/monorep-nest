@@ -8,6 +8,7 @@ import { ContentGetPostCommand } from '../features/posts/application/use-cases/c
 import { ContentCreateCommentCommand } from '../features/posts/application/use-cases/content.create.comment.use.case';
 import { ContentGetPostsCommand } from '../features/posts/application/use-cases/content.get.posts.use.case';
 import { ContentDeletePostCommand } from '../features/posts/application/use-cases/content.delete.post.use.case';
+import { ContentPostLikeCommand } from '../features/posts/application/use-cases/content.post.like.use.case';
 
 @Controller()
 export class ContentController {
@@ -26,6 +27,8 @@ export class ContentController {
       const post = await this.commandBus.execute(
         new ContentCreatePostCommand(data.description, data.userId, data.photoUploadStatus),
       );
+      console.log(post, 'newPost')
+
       return post
     } catch (error) {
       console.log(error)
@@ -85,5 +88,25 @@ export class ContentController {
     );
     console.log(res)
     return { success: true, data: 'ok' };
+  }
+
+  @GrpcMethod('PostService', 'LikePost')
+  async postLike(
+    data: CreateCommentRequest
+  ) {
+    console.log(data)
+    try {
+      const res = await this.commandBus.execute(
+        new ContentPostLikeCommand(
+          data.userId,
+          data.postId,
+        )
+      );
+      console.log(res)
+      return { success: true, message: 'ok' };
+    } catch (error) {
+      return { success: false, message: error?.toString() };
+    }
+
   }
 }

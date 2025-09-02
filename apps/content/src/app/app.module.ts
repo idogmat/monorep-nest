@@ -19,6 +19,7 @@ import { ContentGetPostsUseCase } from '../features/posts/application/use-cases/
 import { ContentGetPostUseCase } from '../features/posts/application/use-cases/content.get.post.use.case';
 import { ContentDeletePostUseCase } from '../features/posts/application/use-cases/content.delete.post.use.case';
 import { RabbitService } from '../features/posts/application/rabbit.service';
+import { ContentPostLikeUseCase } from '../features/posts/application/use-cases/content.post.like.use.case';
 
 const useCasesForPost = [
   ContentCreatePostUseCase,
@@ -26,7 +27,8 @@ const useCasesForPost = [
   ContentCreateCommentUseCase,
   ContentGetPostsUseCase,
   ContentGetPostUseCase,
-  UploadPhotoUseCase
+  UploadPhotoUseCase,
+  ContentPostLikeUseCase
 ]
 @Module({
   imports: [

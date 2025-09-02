@@ -28,7 +28,9 @@ export class PostsQueryPrismaRepository {
         skip: (pageNumber - 1) * pageSize,
         take: pageSize,
         include: {
-          urls: true
+          urls: true,
+          comments: true,
+          likes: true
         }
       }),
       this.prisma.post.count({ where }),
@@ -42,7 +44,9 @@ export class PostsQueryPrismaRepository {
       this.prisma.post.findFirst({
         where: { id },
         include: {
-          urls: true
+          urls: true,
+          comments: true,
+          likes: true
         }
       })
 

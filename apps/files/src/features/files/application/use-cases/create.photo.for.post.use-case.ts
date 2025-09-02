@@ -1,10 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { FilesRepository } from '../../infrastructure/files.repository';
 import { S3UploadPhotoService } from '../post.photo.service';
-import { promises as fs, readdirSync, readFile, readFileSync, statSync } from 'fs';
+import { existsSync, promises as fs, mkdirSync, readdirSync, readFileSync, statSync } from 'fs';
 import * as AWS from 'aws-sdk';
 import { Inject } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
 import { basename, join } from 'path';
 import { RabbitService } from '../rabbit.service';
 
@@ -28,6 +27,7 @@ export class CreatePhotoForPostUseCase implements ICommandHandler<CreatePhotoFor
   async execute(command: CreatePhotoForPostCommand) {
     const { userId, postId } = command
     const folder = join(__dirname, 'uploads', userId, 'posts', postId);
+    if (!existsSync(folder)) mkdirSync(folder, { recursive: true });
     const files = readdirSync(folder)
       .filter(file => statSync(join(folder, file)).isFile()); // исключаем подпапки
     console.log(files);
