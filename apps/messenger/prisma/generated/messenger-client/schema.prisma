@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+datasource db {
+  provider = "postgresql"
+  url      = env("MESSENGER_DB_URL")
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  output        = "./generated/messenger-client"
+  binaryTargets = ["native", "windows", "linux-musl-openssl-3.0.x"]
+}
+
+model Chat {
+  id           String            @id @default(uuid())
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  deletedAt    DateTime?
+  type         ChatType          @default(PRIVATE)
+  name         String?           @db.VarChar(255)
+  participants ChatParticipant[] @relation("chat_participants")
+  messages     Message[]
+
+  @@map("chats")
+}
+
+enum ChatType {
+  PRIVATE
+  GROUP
+}
+
+model ChatParticipant {
+  id       String   @id @default(uuid())
+  chatId   String
+  userId   String
+  role     ChatRole @default(MEMBER)
+  joinedAt DateTime @default(now())
+
+  chat Chat @relation("chat_participants", fields: [chatId], references: [id])
+  // user User @relation(fields: [userId], references: [id]) — добавишь позже, когда будет модель User
+
+  @@unique([chatId, userId])
+  @@map("chat_participants")
+}
+
+enum ChatRole {
+  MEMBER
+  ADMIN
+}
+
+model Message {
+  id        String        @id @default(uuid())
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  deletedAt DateTime?
+  userId    String
+  chatId    String
+  content   String        @db.Text
+  status    MessageStatus @default(SENT)
+  editedAt  DateTime?
+  urls      File[]        @relation("MessageFile")
+
+  chat Chat @relation(fields: [chatId], references: [id])
+
+  @@index([chatId])
+  @@index([userId])
+  @@map("messages")
+}
+
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
+}
+
+model File {
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  fileName  String    @db.VarChar(255)
+  fileUrl   String    @db.VarChar(900)
+  mimeType  String?   @db.VarChar(100)
+  size      Int?
+
+  messageId String?
+  message   Message? @relation("MessageFile", fields: [messageId], references: [id])
+
+  @@index([messageId])
+  @@map("files")
+}

@@ -17,6 +17,7 @@ import { NotificationsModule } from '../feature/notifications/notifications.modu
 import { SuperAdminModule } from '../feature/superAdmin/superAdmin.module';
 import { ContentModule } from '../feature/content/content.module';
 import { FileServiceModule } from '../support.modules/file/file.module';
+import { MessengerModule } from '../feature/messenger/messenger.module';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { FileServiceModule } from '../support.modules/file/file.module';
     SuperAdminModule,
     ContentModule,
     FileServiceModule,
+    MessengerModule
 
   ],
   controllers: [AppController],

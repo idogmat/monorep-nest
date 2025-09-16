@@ -1,0 +1,24 @@
+syntax = "proto3";
+// import "google/protobuf/wrappers.proto";
+package messenger;
+
+
+service MessengerService {
+  rpc CreateMessage (SendMessageRequest) returns (SendMessageResponse);
+}
+
+
+message SendMessageRequest {
+  string senderId = 1;
+  string userId = 2;
+  string message = 3;
+}
+
+
+// -----------
+
+message SendMessageResponse {
+  string userId = 1;
+  string message = 2;
+}
+

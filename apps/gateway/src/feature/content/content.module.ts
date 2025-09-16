@@ -18,7 +18,6 @@ import { HttpModule } from '@nestjs/axios';
       },
       inject: [ConfigService]
     }),
-    GrpcServiceModule
   ],
   providers: [
 

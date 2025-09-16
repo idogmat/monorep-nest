@@ -19,11 +19,9 @@ import { StripeAdapterMock } from './mock/stripe.adapter.mok';
 import { PaymentsClientService } from '../src/support.modules/grpc/grpc.payments.service';
 import { ContentClientService } from '../src/support.modules/grpc/grpc.content.service';
 import { FilesClientService } from '../src/support.modules/grpc/grpc.files.service';
-import { SendFileService } from '../src/support.modules/file/file.service';
 import { FileServiceModule } from '../src/support.modules/file/file.module';
-import { ConfigService } from 'aws-sdk';
-import { ConfigModule } from '@nestjs/config';
 import { RemoteRedisService } from '../src/support.modules/redis/remote.redis.service';
+import { MessengerModule } from '../src/feature/messenger/messenger.module';
 @Module({
   imports: [
     ClientsModule.register([
@@ -63,6 +61,15 @@ import { RemoteRedisService } from '../src/support.modules/redis/remote.redis.se
           url: '0.0.0.0',
         },
       },
+      {
+        name: 'MESSENGER_SERVICE',
+        transport: Transport.GRPC,
+        options: {
+          package: 'messenger',
+          protoPath: join(__dirname, '../../libs/proto/messenger.proto'),
+          url: '0.0.0.0',
+        },
+      },
     ]),
   ],
   controllers: [],
@@ -82,6 +89,8 @@ import { RemoteRedisService } from '../src/support.modules/redis/remote.redis.se
 export class GrpcServiceModuleMock { }
 
 export class SendFileServiceMock { }
+
+export class MessengerModuleMock { }
 
 export class RemoteRedisServiceMock { }
 
@@ -121,6 +130,8 @@ describe('AppController (e2e)', () => {
       .useModule(GrpcServiceModuleMock)
       .overrideModule(FileServiceModule)
       .useModule(FileServiceModuleMock)
+      .overrideModule(MessengerModule)
+      .useModule(MessengerModuleMock)
       .overrideProvider(RemoteRedisService)
       .useClass(RemoteRedisServiceMock)
       .compile();

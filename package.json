@@ -37,9 +37,9 @@
     "build:payments": "nest build payments",
     "start:payments": "node dist/apps/payments/main",
     "start:dev:payments": "nest start payments --watch",
-    "build:posts": "nest build posts",
-    "start:posts": "node dist/apps/posts/main",
-    "start:dev:posts": "nest start posts --watch",
+    "build:messenger": "nest build messenger",
+    "start:messenger": "node dist/apps/messenger/main",
+    "start:dev:messenger": "nest start messenger --watch",
     "build:content": "nest build content",
     "start:content": "node dist/apps/content/main",
     "start:dev:content": "nest start content --watch"

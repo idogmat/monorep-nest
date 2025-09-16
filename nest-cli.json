@@ -57,15 +57,6 @@
         "tsConfigPath": "apps/payments/tsconfig.app.json"
       }
     },
-    "posts": {
-      "type": "application",
-      "root": "apps/posts",
-      "entryFile": "main",
-      "sourceRoot": "apps/posts/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/posts/tsconfig.app.json"
-      }
-    },
     "content": {
       "type": "application",
       "root": "apps/content",
@@ -73,6 +64,17 @@
       "sourceRoot": "apps/content/src",
       "compilerOptions": {
         "tsConfigPath": "apps/content/tsconfig.app.json"
+      }
+    },
+    "messenger": {
+      "type": "application",
+      "root": "apps/messenger",
+      "entryFile": "main",
+      "sourceRoot": "apps/messenger/src",
+      "compilerOptions": {
+        "assets": ["../../libs/proto/*.proto"],
+        "watchAssets": true,
+        "tsConfigPath": "apps/messenger/tsconfig.app.json"
       }
     }
   }

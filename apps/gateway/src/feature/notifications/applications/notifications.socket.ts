@@ -76,6 +76,7 @@ export class NotificationsSocket implements OnGatewayConnection, OnGatewayDiscon
       console.warn('socket content error')
     }
   }
+
   async sendNotifies(userId: string, payload: any, type?: string): Promise<void> {
     try {
       const clientKey = users.get(userId)

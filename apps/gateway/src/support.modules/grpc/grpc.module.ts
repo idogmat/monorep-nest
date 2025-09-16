@@ -6,6 +6,7 @@ import { ProfileClientService } from './grpc.profile.service';
 import { PaymentsClientService } from './grpc.payments.service';
 import { ContentClientService } from './grpc.content.service';
 import { FilesClientService } from './grpc.files.service';
+import { MessengerClientService } from './grpc.messenger.service';
 @Global()
 @Module({
   imports: [
@@ -82,6 +83,21 @@ import { FilesClientService } from './grpc.files.service';
         },
         inject: [ConfigService],
       },
+      {
+        imports: [ConfigModule],
+        name: 'MESSENGER_SERVICE',
+        useFactory: (configService: ConfigService) => {
+          return {
+            transport: Transport.GRPC,
+            options: {
+              package: 'messenger',
+              protoPath: join(__dirname, 'messenger.proto'),
+              url: configService.get<string>('MESSENGER_GRPC_URL'),
+            }
+          }
+        },
+        inject: [ConfigService],
+      },
     ]),
   ],
   controllers: [],
@@ -89,13 +105,15 @@ import { FilesClientService } from './grpc.files.service';
     ProfileClientService,
     PaymentsClientService,
     ContentClientService,
-    FilesClientService
+    FilesClientService,
+    MessengerClientService
   ],
   exports: [
     ProfileClientService,
     PaymentsClientService,
     ContentClientService,
-    FilesClientService
+    FilesClientService,
+    MessengerClientService
   ],
 })
 export class GrpcServiceModule { }
