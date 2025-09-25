@@ -50,14 +50,17 @@ export class MessengerSocket implements OnGatewayConnection, OnGatewayDisconnect
   }
 
   // return chats list
-  @SubscribeMessage('chat')
-  chatConnection(
+  @SubscribeMessage('chats')
+  async chatConnection(
     @MessageBody() data: any,
     @ConnectedSocket() client: Socket
-  ): void {
+  ): Promise<void> {
     console.log(client.data.user)
-    console.log('📩 Received from client:', data);
-    this.server.emit('server-response', { msg: 'client' });
+    const senderId = client.data?.user?.toString() || ''
+    const result = await this.messengerClientService.getChats({ senderId })
+
+    console.log('📩 Received from client:', result);
+    this.server.emit('server-response', { result });
   }
 
   // return chat messages
@@ -87,12 +90,12 @@ export class MessengerSocket implements OnGatewayConnection, OnGatewayDisconnect
 
       const senderId = client.data?.user?.toString() || ''
       const send = { senderId, userId, message }
-      await this.messengerClientService.createMessage(send)
-      this.server.emit('server-response', { msg: 'Message received!' });
+      const result = await this.messengerClientService.createMessage(send)
+      console.log(result, 'result')
+      this.server.emit('server-response', { result });
     } catch (error) {
       console.log(error)
     }
-
   }
 
 

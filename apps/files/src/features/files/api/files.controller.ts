@@ -23,6 +23,8 @@ import { Observable } from 'rxjs';
 import { SavePhotoForPostCommand } from '../application/use-cases/save.photo.for.post.use-case';
 import { LoadFilesEvent } from '../application/event-bus/load.files.post.event';
 import { SavePhotoForProfileCommand } from '../application/use-cases/save.photo.profile.use-case';
+import { SaveFileForChatCommand } from '../application/use-cases/save.file.chat.use-case';
+import { UploadChatFileCommand } from '../application/use-cases/upload.chat.file.use-case';
 
 
 @Controller()
@@ -77,6 +79,25 @@ export class FilesController {
       new UploadProfilePhotoCommand(loadedFilesResult.userId, loadedFilesResult?.filename)
     );
     console.log(loadedFilesResult)
+    return loadedFilesResult;
+  }
+
+  @GrpcStreamMethod('FileService', 'UploadChatFile')
+  async UploadFileForChat(
+    stream$: Observable<{ chunkData: Buffer; filename: string; senderId: string, userId: string }>
+  ): Promise<any> {
+    const loadedFilesResult = await this.commandBus.execute(
+      new SaveFileForChatCommand(stream$)
+    );
+    if (!loadedFilesResult?.filename) return { success: true, message: 'Files uploaded successfully' }
+    await this.commandBus.execute(
+      new UploadChatFileCommand(
+        loadedFilesResult.senderId,
+        loadedFilesResult.userId,
+        loadedFilesResult?.filename
+      )
+    );
+    console.log(loadedFilesResult, 'loadedFilesResult')
     return loadedFilesResult;
   }
 

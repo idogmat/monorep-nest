@@ -31,6 +31,15 @@ message ProfileFileChunk {
   int64 size = 5; 
 }
 
+message ChatFileChunk {
+  bytes chunkData = 1;
+  string filename = 2;
+  string senderId = 3;
+  string userId = 4;
+  string mimetype = 5; 
+  int64 size = 6; 
+}
+
 message ProfileUploadResponse {
   bool success = 1;
   string message = 2;
@@ -40,5 +49,6 @@ service FileService {
   rpc Upload (stream FileChunk) returns (UploadResponse);
   rpc UploadProfile (stream ProfileFileChunk) returns (ProfileUploadResponse);
   rpc LoadOnS3 (LoadOnS3Request) returns (LoadOnS3Response);
+  rpc UploadChatFile (stream ChatFileChunk) returns (UploadResponse);
 }
 

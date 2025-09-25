@@ -1,14 +1,8 @@
-import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
-import { FilesRepository } from '../../infrastructure/files.repository';
-import { S3UploadPhotoService } from '../post.photo.service';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { createWriteStream, existsSync, promises as fs, mkdirSync, WriteStream } from 'fs';
-import * as AWS from 'aws-sdk';
-import type { FailedUpload, } from '../../../../common/types/upload.result';
-import { Inject } from '@nestjs/common';
-import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { RpcException } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 import { join } from 'path';
-import { LoadFilesEvent } from '../event-bus/load.files.post.event';
 import { LocalPathRepository } from '../../infrastructure/localPath.repository';
 
 interface SuccessLoad {

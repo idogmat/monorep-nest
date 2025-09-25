@@ -53,16 +53,16 @@ enum ChatRole {
 }
 
 model Message {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String         @id @default(uuid())
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
   deletedAt DateTime?
   userId    String
   chatId    String
-  content   String   @db.Text
-  status    MessageStatus @default(SENT)
+  content   Json           // <— теперь можно хранить и текст, и файлы
+  status    MessageStatus  @default(SENT)
   editedAt  DateTime?
-  urls      File[]   @relation("MessageFile")
+  urls      File[]         @relation("MessageFile")
 
   chat Chat @relation(fields: [chatId], references: [id])
 

@@ -1,5 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { ChatsPrismaRepository } from '../../infrastructure/prisma/chats.prisma.repository';
+import { ChatWithIncludes } from '../../model/chat.output.model';
 
 export class GetChatByParticipantsCommand {
   constructor(
@@ -15,11 +16,16 @@ export class GetChatByParticipantsUseCases implements ICommandHandler<GetChatByP
   ) {
   }
 
-  async execute(command: GetChatByParticipantsCommand): Promise<any> {
+  async execute(command: GetChatByParticipantsCommand): Promise<ChatWithIncludes> {
 
-    const newChat = await this.chatsPrismaRepository.getByParticipants(command.senderId,
+    let chat = await this.chatsPrismaRepository.getByParticipants(command.senderId,
       command.userId);
 
-    return newChat;
+    if (!chat) {
+      chat = await this.chatsPrismaRepository.createChat(command.senderId,
+        command.userId);
+    }
+
+    return chat;
   }
 }

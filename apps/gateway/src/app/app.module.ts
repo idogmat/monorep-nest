@@ -31,7 +31,7 @@ import { MessengerModule } from '../feature/messenger/messenger.module';
       limit: 5,
     }]),
     RedisModule,
-    ClientsModule.registerAsync([
+    ClientsModule.registerAsync([ // TODO remove
       {
         imports: [ConfigModule],
         name: 'TCP_SERVICE',
@@ -49,7 +49,6 @@ import { MessengerModule } from '../feature/messenger/messenger.module';
     ]),
     GrpcServiceModule,
     UsersAccountsModule,
-    PostsModule,
     ProfileModule,
     PaymentsModule,
     NotificationsModule,

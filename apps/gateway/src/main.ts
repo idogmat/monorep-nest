@@ -43,6 +43,16 @@ async function bootstrap() {
       noAck: false
     },
   });
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: [rabbit],
+      queue: 'messenger_queue',
+      queueOptions: { durable: true },
+      noAck: false
+    },
+  });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   await app.init();

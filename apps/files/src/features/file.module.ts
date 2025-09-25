@@ -21,6 +21,8 @@ import { RabbitService } from './files/application/rabbit.service';
 import { SavePhotoForProfileUseCase } from './files/application/use-cases/save.photo.profile.use-case';
 import { RabbitConsumerService } from './files/application/rabbit.consumer.service';
 import { DeleteProfileMediaUseCase } from './files/application/use-cases/delete.profile.media.use-case';
+import { SaveFileForChatUseCase } from './files/application/use-cases/save.file.chat.use-case';
+import { UploadChatFileUseCase } from './files/application/use-cases/upload.chat.file.use-case';
 
 const useCases = [
   CreatePhotoForPostUseCase,
@@ -28,7 +30,9 @@ const useCases = [
   DeletePhotoMediaUseCase,
   DeleteProfileMediaUseCase,
   SavePhotoForPostUseCase,
-  SavePhotoForProfileUseCase
+  SavePhotoForProfileUseCase,
+  SaveFileForChatUseCase,
+  UploadChatFileUseCase
 ];
 const eventCases = [
   LoadFilesHandler
@@ -71,6 +75,16 @@ const eventCases = [
         return new S3StorageAdapter(
           configService,
           'profile',
+        );
+      },
+      inject: [ConfigService],
+    },
+    {
+      provide: 'CHAT_BUCKET_ADAPTER',
+      useFactory: (configService: ConfigService) => {
+        return new S3StorageAdapter(
+          configService,
+          'bucket-chat',
         );
       },
       inject: [ConfigService],

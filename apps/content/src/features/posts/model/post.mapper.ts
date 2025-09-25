@@ -1,4 +1,4 @@
-import { Prisma } from "apps/content/prisma/generated/content-client"
+import { Prisma } from "../../../../../content/prisma/generated/content-client"
 
 export const urlsMapping = (urls) => {
   return {

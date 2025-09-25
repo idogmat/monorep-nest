@@ -1,11 +1,12 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { lastValueFrom, Observable } from 'rxjs';
-import { SendMessageRequest, SendMessageResponse } from '../../../../libs/proto/generated/messenger';
+import { SendMessageRequest, Chat, GetChatsRequest, GetChatsResponse } from '../../../../libs/proto/generated/messenger';
 
 
 interface MessengerService {
-  CreateMessage(data: SendMessageRequest): Observable<SendMessageResponse>;
+  GetChats(data: GetChatsRequest): Observable<GetChatsResponse>;
+  CreateMessage(data: SendMessageRequest): Observable<Chat>;
 }
 
 @Injectable()
@@ -21,6 +22,10 @@ export class MessengerClientService implements OnModuleInit {
 
   async createMessage(data: SendMessageRequest) {
     return lastValueFrom(this.messengerService.CreateMessage(data));
+  }
+
+  async getChats(data: GetChatsRequest) {
+    return lastValueFrom(this.messengerService.GetChats(data));
   }
 
 

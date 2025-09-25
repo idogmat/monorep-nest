@@ -11,14 +11,6 @@ import { join } from 'path';
 async function bootstrap() {
   const app = await NestFactory.create<INestApplication>(AppModule);
   const { port, env, host, rabbit, grpc_url } = applyAppSettings(app)
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.RMQ,
-    options: {
-      urls: [rabbit],
-      queue: 'messenger_queue',
-      queueOptions: { durable: true },
-    },
-  });
 
   app.use(json({ limit: '10gb' }));
   app.use(urlencoded({ extended: true, limit: '10gb' }));

@@ -22,27 +22,27 @@ export class PaymentsController {
   }
 
 
-  @EventPattern()
-  handleTest(
-    @Payload() data: any,
-    @Ctx() context: RmqContext,
-  ) {
-    // const channel = context.getChannelRef();
-    console.log(data)
-    const message = context.getMessage();
-    console.log(message.fields.routingKey)
-    switch (message.fields.routingKey) {
-      case 'delay_payments_queue':
-        // console.log(message)
-        this.rabbitClient.emit('new_subscribe', message)
-        console.log(data)
-        break;
-      default:
-        break
-    }
-    // if (message.fields.routingKey === )
-    // console.log('Received test_payments message:', data);
-  }
+  // @EventPattern()
+  // handleTest(
+  //   @Payload() data: any,
+  //   @Ctx() context: RmqContext,
+  // ) {
+  //   // const channel = context.getChannelRef();
+  //   console.log(data)
+  //   const message = context.getMessage();
+  //   console.log(message.fields.routingKey)
+  //   switch (message.fields.routingKey) {
+  //     case 'delay_payments_queue':
+  //       // console.log(message)
+  //       this.rabbitClient.emit('new_subscribe', message)
+  //       console.log(data)
+  //       break;
+  //     default:
+  //       break
+  //   }
+  //   // if (message.fields.routingKey === )
+  //   // console.log('Received test_payments message:', data);
+  // }
 
   @GrpcMethod('PaymentsService', 'CreateSubscribe')
   async createSubscribe(data: { user: UserForSubscribe, productKey: number }) {

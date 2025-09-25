@@ -15,11 +15,11 @@ export class CreateChatUseCases implements ICommandHandler<CreateChatCommand> {
   ) {
   }
 
-  async execute(command: CreateChatCommand): Promise<string> {
+  async execute(command: CreateChatCommand): Promise<any> {
 
-    const newChat = await this.postsPrismaRepository.createChat(command.userId,
+    const chat = await this.postsPrismaRepository.createChat(command.userId,
       command.content);
-
-    return newChat.id;
+    console.log(chat)
+    return chat;
   }
 }
