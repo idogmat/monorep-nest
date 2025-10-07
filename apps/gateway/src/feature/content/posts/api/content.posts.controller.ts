@@ -15,6 +15,7 @@ import { CommentCreateModel } from '../../comments/api/model/input/comment.creat
 import { ApiFileWithDto, GetPostsApiQuery } from './model/input/swagger.discription.ts';
 import { PostOutputModel } from './model/output/post.output.model';
 import { Request } from 'express';
+import { AuthGuardOptional } from '../../../../common/guard/authGuardOptional';
 
 @ApiTags('Content.Posts')
 @Controller('content/posts')
@@ -145,15 +146,16 @@ export class ContentPostsController {
   }
 
   @Get()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuardOptional)
   @GetPostsApiQuery()
   async getPosts(
     @Req() req,
     @Query() queryDTO: PaginationContentQueryDto
   ) {
-    const userId = req.user.userId;
+    const userId = req?.user?.userId || '';
     console.log("yo");
     const query = new PaginationSearchContentTerm(queryDTO, ['createdAt']);
+    console.log(query)
     const res = await this.contentGrpcClient.getPosts({ ...query, userId });
     console.log(res);
     return res;

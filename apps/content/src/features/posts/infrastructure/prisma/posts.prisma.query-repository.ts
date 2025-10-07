@@ -10,8 +10,8 @@ export class PostsQueryPrismaRepository {
   }
   async getAllPosts(query: ContentGetPostsCommand) {
     const { pageNumber, pageSize, sortBy, sortDirection, userId } = query;
-
-    const where: Prisma.PostWhereInput = { userId };
+    const where: Prisma.PostWhereInput = {};
+    if (userId) where.userId = userId
 
     const allowedSortFields: (keyof Prisma.PostOrderByWithRelationInput)[] = [
       'createdAt',
