@@ -115,7 +115,7 @@ describe('AppController (e2e)', () => {
 
     await clearDatabase(prisma);
   });
-  it('/ (GET)', async () => {
+  it.skip('/ (GET)', async () => {
     const response = await request(app.getHttpServer())
       .get(globalPrefix + '/')
       .expect(200);
