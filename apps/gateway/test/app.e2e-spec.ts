@@ -22,68 +22,38 @@ import { FilesClientService } from '../src/support.modules/grpc/grpc.files.servi
 import { FileServiceModule } from '../src/support.modules/file/file.module';
 import { RemoteRedisService } from '../src/support.modules/redis/remote.redis.service';
 import { MessengerModule } from '../src/feature/messenger/messenger.module';
+
+class BaseGrpcMock {
+  getClient() {
+    return {
+      getService: () => ({}),
+    };
+  }
+}
 @Module({
-  imports: [
-    ClientsModule.register([
-      {
-        name: 'PROFILE_SERVICE',
-        transport: Transport.GRPC,
-        options: {
-          package: 'profile',
-          protoPath: join(__dirname, '../../libs/proto/profile.proto'),
-          url: '0.0.0.0',
-        },
-      },
-      {
-        name: 'PAYMENTS_SERVICE',
-        transport: Transport.GRPC,
-        options: {
-          package: 'payments',
-          protoPath: join(__dirname, '../../libs/proto/payments.proto'),
-          url: '0.0.0.0',
-        },
-      },
-      {
-        name: 'CONTENT_SERVICE',
-        transport: Transport.GRPC,
-        options: {
-          package: 'content',
-          protoPath: join(__dirname, '../../libs/proto/content.proto'),
-          url: '0.0.0.0',
-        },
-      },
-      {
-        name: 'FILES_SERVICE',
-        transport: Transport.GRPC,
-        options: {
-          package: 'files',
-          protoPath: join(__dirname, '../../libs/proto/files.proto'),
-          url: '0.0.0.0',
-        },
-      },
-      {
-        name: 'MESSENGER_SERVICE',
-        transport: Transport.GRPC,
-        options: {
-          package: 'messenger',
-          protoPath: join(__dirname, '../../libs/proto/messenger.proto'),
-          url: '0.0.0.0',
-        },
-      },
-    ]),
-  ],
-  controllers: [],
   providers: [
-    ProfileClientService,
-    PaymentsClientService,
-    ContentClientService,
-    FilesClientService
+    {
+      provide: ProfileClientService,
+      useValue: new BaseGrpcMock(),
+    },
+    {
+      provide: PaymentsClientService,
+      useValue: new BaseGrpcMock(),
+    },
+    {
+      provide: ContentClientService,
+      useValue: new BaseGrpcMock(),
+    },
+    {
+      provide: FilesClientService,
+      useValue: new BaseGrpcMock(),
+    },
   ],
   exports: [
     ProfileClientService,
     PaymentsClientService,
     ContentClientService,
-    FilesClientService
+    FilesClientService,
   ],
 })
 export class GrpcServiceModuleMock { }
@@ -114,7 +84,6 @@ describe('AppController (e2e)', () => {
   const globalPrefix = "/api/v1";
   let prisma: PrismaService;  // Служба Prisma
 
-
   beforeAll(async () => {
     dotenv.config({ path: '.env.test' });
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -122,8 +91,6 @@ describe('AppController (e2e)', () => {
     })
       .overrideProvider(EmailService)
       .useClass(EmailServiceMock)
-      .overrideProvider(GateService)
-      .useClass(GateServiceMock)
       .overrideProvider('STRIPE_ADAPTER')
       .useClass(StripeAdapterMock)
       .overrideModule(GrpcServiceModule)
@@ -167,6 +134,10 @@ describe('AppController (e2e)', () => {
     if (app) {
       await app.close();
     }
+    if (prisma) {
+      await prisma.$disconnect();
+    }
+    jest.clearAllTimers();
   });
 
 });
