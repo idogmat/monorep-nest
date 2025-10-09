@@ -111,7 +111,7 @@ export class ContentPostsController {
   }
 
   @Get(":id")
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuardOptional)
   @ApiResponse({
     status: 200,
     description: 'Successfully fetched post',
@@ -121,8 +121,6 @@ export class ContentPostsController {
     @Req() req,
     @Param('id') postId: string,
   ) {
-    const userId = req.user.userId;
-    // console.log('ok')
     const res = await this.contentGrpcClient.getPost({ postId });
     console.log(res);
     return res;
@@ -152,11 +150,10 @@ export class ContentPostsController {
     @Req() req,
     @Query() queryDTO: PaginationContentQueryDto
   ) {
-    const userId = req?.user?.userId || '';
     console.log("yo");
     const query = new PaginationSearchContentTerm(queryDTO, ['createdAt']);
     console.log(query)
-    const res = await this.contentGrpcClient.getPosts({ ...query, userId });
+    const res = await this.contentGrpcClient.getPosts({ ...query });
     console.log(res);
     return res;
   }

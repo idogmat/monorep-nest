@@ -1,6 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { PostsQueryPrismaRepository } from '../../infrastructure/prisma/posts.prisma.query-repository';
-import { Prisma } from '../../../../../prisma/generated/content-client';
 import { outputMapper } from '../../model/post.mapper';
 
 export class ContentGetPostsCommand {

@@ -46,7 +46,7 @@ export class ContentController {
         data.sortDirection,
         data.pageNumber,
         data.pageSize,
-        data.userId
+        data.userId,
       )
     );
     return res
