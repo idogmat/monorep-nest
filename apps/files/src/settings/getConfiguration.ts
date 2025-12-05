@@ -19,6 +19,7 @@ export const getConfiguration = () => {
       : 'DEVELOPMENT') as EnvironmentsTypes,
     PORT: process.env.PORT,
     DATABASE_URL: process.env.DATABASE_URL,
+    MONGO_DB_URL: process.env.MONGO_DB_URL,
     CONNECT_PORT: process.env.CONNECT_PORT,
     FILES_TCP: process.env.FILES_TCP,
     RABBIT_URLS: process.env.RABBIT_URLS?.split(','),

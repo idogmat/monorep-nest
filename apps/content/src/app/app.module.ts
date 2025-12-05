@@ -10,13 +10,25 @@ import { PrismaService } from '../features/prisma/prisma.service';
 import {
 
   ContentCreatePostUseCase,
-} from '../features/posts/application/use-cases/content.create.post.use.cases';
-import { ContentGetPostUseCase } from '../features/posts/application/use-cases/content.get.post.use.case';
+} from '../features/posts/application/use-cases/content.create.post.use.case';
 import { PostsQueryPrismaRepository } from '../features/posts/infrastructure/prisma/posts.prisma.query-repository';
+import { RabbitConsumerService } from '../features/posts/application/rabbit.consumer.service';
+import { UploadPhotoUseCase } from '../features/posts/application/use-cases/content.upload.photo';
+import { ContentCreateCommentUseCase } from '../features/posts/application/use-cases/content.create.comment.use.case';
+import { ContentGetPostsUseCase } from '../features/posts/application/use-cases/content.get.posts.use.case';
+import { ContentGetPostUseCase } from '../features/posts/application/use-cases/content.get.post.use.case';
+import { ContentDeletePostUseCase } from '../features/posts/application/use-cases/content.delete.post.use.case';
+import { RabbitService } from '../features/posts/application/rabbit.service';
+import { ContentPostLikeUseCase } from '../features/posts/application/use-cases/content.post.like.use.case';
 
 const useCasesForPost = [
   ContentCreatePostUseCase,
-  ContentGetPostUseCase
+  ContentDeletePostUseCase,
+  ContentCreateCommentUseCase,
+  ContentGetPostsUseCase,
+  ContentGetPostUseCase,
+  UploadPhotoUseCase,
+  ContentPostLikeUseCase
 ]
 @Module({
   imports: [
@@ -57,6 +69,7 @@ const useCasesForPost = [
         inject: [ConfigService],
       },
     ]),
+
   ],
   controllers: [
     ContentController
@@ -65,7 +78,17 @@ const useCasesForPost = [
     ...useCasesForPost,
     PostsPrismaRepository,
     PostsQueryPrismaRepository,
-    PrismaService
+    PrismaService,
+    RabbitConsumerService,
+    {
+      provide: 'RABBIT_SERVICE',
+      useFactory: (configService: ConfigService) => {
+        return new RabbitService(
+          configService,
+        );
+      },
+      inject: [ConfigService],
+    },
   ],
 })
 export class AppModule { }

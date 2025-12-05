@@ -9,6 +9,10 @@ message UserProfileRequest {
   string profileUserId = 2;
 }
 
+message DeleteProfilePhotoRequest {
+  string userId = 1;
+}
+
 message UserProfileUpdateSubscribeRequest {
   string userId = 1;
   bool paymentAccount = 2;
@@ -135,6 +139,11 @@ message DeleteProfileGQLResponse {
   string status = 1; 
 }
 
+message DeleteProfilePhotoResponse {
+  string success = 1;
+  string message = 2;
+}
+
 message BanProfileGQLResponse {
   string status = 1; 
 }
@@ -157,6 +166,7 @@ service ProfileService {
   rpc GetUserProfile(UserProfileRequest) returns (UserProfileResponse);
   rpc GetUserProfiles(UserProfileQueryRequest) returns (UserProfilesResponse);
   rpc UpdateUserProfile(UpdateUserProfileRequest) returns (UpdateUserProfileResponse);
+  rpc DeleteProfilePhoto(DeleteProfilePhotoRequest) returns (DeleteProfilePhotoResponse);
   rpc UpdateUserProfileData(UpdateUserProfileRequest) returns (UpdateUserProfileDataResponse);
   rpc SubscribeUserProfile(SubscribeProfileRequest) returns (SubscribeUserProfileResponse);
   rpc CreateUserProfile(CreateUserProfileRequest) returns (CreateUserProfileResponse);

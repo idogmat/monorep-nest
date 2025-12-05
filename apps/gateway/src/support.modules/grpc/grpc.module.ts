@@ -5,6 +5,8 @@ import { join, resolve } from 'path';
 import { ProfileClientService } from './grpc.profile.service';
 import { PaymentsClientService } from './grpc.payments.service';
 import { ContentClientService } from './grpc.content.service';
+import { FilesClientService } from './grpc.files.service';
+import { MessengerClientService } from './grpc.messenger.service';
 @Global()
 @Module({
   imports: [
@@ -63,10 +65,55 @@ import { ContentClientService } from './grpc.content.service';
         },
         inject: [ConfigService],
       },
+      {
+        imports: [ConfigModule],
+        name: 'FILES_SERVICE',
+        useFactory: (configService: ConfigService) => {
+          return {
+            transport: Transport.GRPC,
+            options: {
+              package: 'files',
+              protoPath: join(__dirname, 'files.proto'),
+              url: configService.get('GATE_FILES_GRPC_URL'),
+              loader: {
+                includeDirs: ['node_modules/google-proto-files'],
+              },
+            },
+          }
+        },
+        inject: [ConfigService],
+      },
+      {
+        imports: [ConfigModule],
+        name: 'MESSENGER_SERVICE',
+        useFactory: (configService: ConfigService) => {
+          return {
+            transport: Transport.GRPC,
+            options: {
+              package: 'messenger',
+              protoPath: join(__dirname, 'messenger.proto'),
+              url: configService.get<string>('MESSENGER_GRPC_URL'),
+            }
+          }
+        },
+        inject: [ConfigService],
+      },
     ]),
   ],
   controllers: [],
-  providers: [ProfileClientService, PaymentsClientService, ContentClientService],
-  exports: [ProfileClientService, PaymentsClientService, ContentClientService],
+  providers: [
+    ProfileClientService,
+    PaymentsClientService,
+    ContentClientService,
+    FilesClientService,
+    MessengerClientService
+  ],
+  exports: [
+    ProfileClientService,
+    PaymentsClientService,
+    ContentClientService,
+    FilesClientService,
+    MessengerClientService
+  ],
 })
 export class GrpcServiceModule { }

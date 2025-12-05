@@ -70,7 +70,8 @@ export class WebHookPaymentUseCase implements ICommandHandler<WebHookPaymentComm
           }
           const sub = await this.paymentsRepository.updatePaymentStatus(payment)
           console.log(sub)
-          this.delayRabbitService.publishWith30SecondsDelay('delay_payments_queue', sub)
+          // this.delayRabbitService.publish('payments_notify_queue', sub)
+          this.delayRabbitService.publishWithDelay('payments_notify_queue', sub, 15000)
 
           this.rabbitClient.emit('update_profile_account', [{ userId: sub.userId, paymentAccount: true }])
         } catch {

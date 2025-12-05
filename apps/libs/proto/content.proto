@@ -2,21 +2,74 @@ syntax = "proto3";
 import "google/protobuf/wrappers.proto";
 package content;
 
+
 service PostService {
   rpc CreatePost (CreatePostRequest) returns (PostResponse);
+  rpc GetPost (GetPostRequest) returns (GetPostResponse);
   rpc GetPosts (GetPostsQueryRequest) returns (GetPostsResponse);
+  rpc DeletePost (DeletePostRequest) returns (DeletePostResponse);
+  rpc LikePost (LikePostRequest) returns (LikePostResponse);
 }
 
 service CommentService {
-  rpc CreateComment (CreateCommentRequest) returns (CommentResponse);
+  rpc CreateComment (CreateCommentRequest) returns (CreateCommentResponse);
+}
+
+message Url {
+  string id = 1;
+  string createdAt = 2;
+  string deletedAt = 3;
+  string updatedAt = 4;
+  string fileName = 5;
+  string fileUrl = 6;
+  string postId = 7;
+}
+
+message Like {
+  string id = 1;
+  string createdAt = 2;
+  string deletedAt = 3;
+  string updatedAt = 4;
+  string postId = 5;
+  string userId = 6;
+}
+
+message Comment {
+  string id = 1;
+  string createdAt = 2;
+  string deletedAt = 3;
+  string updatedAt = 4;
+  string message = 5;
+  string postId = 6;
+  string userId = 7;
 }
 
 message GetPostsQueryRequest {
   string sortBy = 1;
   string sortDirection = 2;
-  int32 pageNumber = 3;
-  int32 pageSize = 4;
+  int32  pageNumber = 3;
+  int32  pageSize = 4;
   string userId = 5;
+}
+
+message GetPostRequest {
+  string postId = 1;
+}
+
+message DeletePostRequest {
+  string userId = 1;
+  string postId = 2;
+}
+
+message LikePostRequest {
+  string userId = 1;
+  string postId = 2;
+}
+// -----------
+
+message LikePostResponse {
+  string success = 1;
+  string message = 2;
 }
 
 message GetPostResponse {
@@ -26,13 +79,23 @@ message GetPostResponse {
   string updatedAt = 4;
   string deletedAt = 5;
   string title = 6;
-  bool published = 7;
-  bool banned = 8;
+  bool   published = 7;
+  bool   banned = 8;
   string photoUploadStatus = 9;
-  // urls File[] @relation("PostFile")
-  // photoUploadStatus PhotoUploadStatus   @default(PENDING)  // Статус загрузки фотографий
-  // comments Comment[] @relation("PostComment")
-  // likes Like[] @relation("PostLike")
+  repeated Url urls = 10;
+  repeated Comment comments = 11;
+  repeated Like likes = 12;
+}
+
+message CreateCommentRequest {
+  string userId = 1;
+  string postId = 2;
+  string message = 3;
+}
+
+message CreateCommentResponse {
+  string success = 1;
+  string message = 2;
 }
 
 message GetPostsResponse {
@@ -50,19 +113,12 @@ message CreatePostRequest {
 }
 
 message PostResponse {
-  google.protobuf.StringValue id = 1;
-}
-
-message CreateCommentRequest {
-  string postId = 1;
-  string userId = 2;
-  string message = 3;
-}
-
-message CommentResponse {
   string id = 1;
-  string postId = 2;
-  string message = 3;
+}
+
+message DeletePostResponse {
+  string success = 1;
+  string message = 2;
 }
 
 enum PhotoUploadStatus {

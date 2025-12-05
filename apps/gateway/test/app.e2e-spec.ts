@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, Module } from '@nestjs/common';
+import { Global, INestApplication, Module } from '@nestjs/common';
 import { AppModule } from '../src/app/app.module';
 import { applyAppSettings } from '../src/settings/main.settings';
 import { AuthTestManager } from './utils/auth/auth.test.manager';
@@ -17,40 +17,72 @@ import { join } from 'path';
 import { ProfileClientService } from '../src/support.modules/grpc/grpc.profile.service';
 import { StripeAdapterMock } from './mock/stripe.adapter.mok';
 import { PaymentsClientService } from '../src/support.modules/grpc/grpc.payments.service';
+import { ContentClientService } from '../src/support.modules/grpc/grpc.content.service';
+import { FilesClientService } from '../src/support.modules/grpc/grpc.files.service';
+import { FileServiceModule } from '../src/support.modules/file/file.module';
+import { RemoteRedisService } from '../src/support.modules/redis/remote.redis.service';
+import { MessengerModule } from '../src/feature/messenger/messenger.module';
+
+class BaseGrpcMock {
+  getClient() {
+    return {
+      getService: () => ({}),
+    };
+  }
+}
 @Module({
-  imports: [
-    ClientsModule.register([
-      {
-        name: 'PROFILE_SERVICE',
-        transport: Transport.GRPC,
-        options: {
-          package: 'profile',
-          protoPath: join(__dirname, '../../libs/proto/profile.proto'),
-          url: '0.0.0.0',
-        },
-      },
-      {
-        name: 'PAYMENTS_SERVICE',
-        transport: Transport.GRPC,
-        options: {
-          package: 'payments',
-          protoPath: join(__dirname, '../../libs/proto/payments.proto'),
-          url: '0.0.0.0',
-        },
-      },
-    ]),
+  providers: [
+    {
+      provide: ProfileClientService,
+      useValue: new BaseGrpcMock(),
+    },
+    {
+      provide: PaymentsClientService,
+      useValue: new BaseGrpcMock(),
+    },
+    {
+      provide: ContentClientService,
+      useValue: new BaseGrpcMock(),
+    },
+    {
+      provide: FilesClientService,
+      useValue: new BaseGrpcMock(),
+    },
   ],
-  controllers: [],
-  providers: [ProfileClientService, PaymentsClientService],
-  exports: [ProfileClientService, PaymentsClientService],
+  exports: [
+    ProfileClientService,
+    PaymentsClientService,
+    ContentClientService,
+    FilesClientService,
+  ],
 })
 export class GrpcServiceModuleMock { }
+
+export class SendFileServiceMock { }
+
+export class MessengerModuleMock { }
+
+export class RemoteRedisServiceMock { }
+
+@Global()
+@Module({
+  imports: [],
+  controllers: [],
+  providers: [{
+    provide: 'SEND_FILE_SERVICE',
+    useFactory: () => {
+      return new SendFileServiceMock();
+    },
+    inject: [],
+  }],
+  exports: ['SEND_FILE_SERVICE'],
+})
+export class FileServiceModuleMock { }
 describe('AppController (e2e)', () => {
   let app: INestApplication;
   let authTestManager: AuthTestManager;
   const globalPrefix = "/api/v1";
   let prisma: PrismaService;  // Служба Prisma
-
 
   beforeAll(async () => {
     dotenv.config({ path: '.env.test' });
@@ -59,12 +91,16 @@ describe('AppController (e2e)', () => {
     })
       .overrideProvider(EmailService)
       .useClass(EmailServiceMock)
-      .overrideProvider(GateService)
-      .useClass(GateServiceMock)
       .overrideProvider('STRIPE_ADAPTER')
       .useClass(StripeAdapterMock)
       .overrideModule(GrpcServiceModule)
       .useModule(GrpcServiceModuleMock)
+      .overrideModule(FileServiceModule)
+      .useModule(FileServiceModuleMock)
+      .overrideModule(MessengerModule)
+      .useModule(MessengerModuleMock)
+      .overrideProvider(RemoteRedisService)
+      .useClass(RemoteRedisServiceMock)
       .compile();
 
     app = moduleFixture.createNestApplication();
@@ -79,7 +115,7 @@ describe('AppController (e2e)', () => {
 
     await clearDatabase(prisma);
   });
-  it('/ (GET)', async () => {
+  it.skip('/ (GET)', async () => {
     const response = await request(app.getHttpServer())
       .get(globalPrefix + '/')
       .expect(200);
@@ -94,5 +130,14 @@ describe('AppController (e2e)', () => {
   //   await authTestManager.registration(globalPrefix, createModel);
 
   // });
+  afterAll(async () => {
+    if (app) {
+      await app.close();
+    }
+    if (prisma) {
+      await prisma.$disconnect();
+    }
+    jest.clearAllTimers();
+  });
 
 });

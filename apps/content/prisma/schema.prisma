@@ -12,6 +12,8 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
   output   = "./generated/content-client"
+  binaryTargets = ["native", "windows", "linux-musl-openssl-3.0.x"]
+
 }
 
 model Post {
@@ -33,12 +35,12 @@ model Post {
 model File {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime? @updatedAt
   deletedAt DateTime?
-  fileName     String   @db.VarChar(255)
-  fileUrl     String   @db.VarChar(900)
-  post Post @relation("PostFile", fields: [postId], references: [id])
-  postId  String
+  fileName  String   @db.VarChar(255)
+  fileUrl   String   @db.VarChar(900)
+  post      Post @relation("PostFile", fields: [postId], references: [id])
+  postId    String
 
   @@map("files")
 }
@@ -48,9 +50,10 @@ model Comment {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   deletedAt DateTime?
-  post Post @relation("PostComment", fields: [postId], references: [id])
-  postId String
-  userId String
+  message   String
+  post      Post @relation("PostComment", fields: [postId], references: [id])
+  postId    String
+  userId    String
   @@map("comments")
 }
 
@@ -59,9 +62,9 @@ model Like {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   deletedAt DateTime?
-  post Post @relation("PostLike", fields: [postId], references: [id])
-  postId String
-  userId String
+  post      Post @relation("PostLike", fields: [postId], references: [id])
+  postId    String
+  userId    String
   @@map("likes")
 }
 enum PhotoUploadStatus {

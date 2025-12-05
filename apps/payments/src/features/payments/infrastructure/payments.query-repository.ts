@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { GetSubscribesGqlQuery, GetSubscribesQuery } from '../../../../../libs/proto/generated/payments';
 import { Payment, Prisma } from '../../../../prisma/generated/payments-client';
-import { PaginationSearchPaymentGqlTerm } from 'apps/gateway/src/feature/superAdmin/api/utils/pagination';
 
 
 @Injectable()

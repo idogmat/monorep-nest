@@ -16,9 +16,6 @@ export interface IAuthUser {
 @Injectable()
 export class AuthGuardOptional implements CanActivate {
   constructor(
-    private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
-    private readonly deviceService: DeviceService,
     private readonly redisService: RemoteRedisService,
 
   ) { }

@@ -1,3 +1,4 @@
+import 'newrelic';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { useContainer } from 'class-validator';
@@ -39,6 +40,16 @@ async function bootstrap() {
     options: {
       urls: [rabbit],
       queue: 'payments_notification_queue',
+      queueOptions: { durable: true },
+      noAck: false
+    },
+  });
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: [rabbit],
+      queue: 'messenger_queue',
       queueOptions: { durable: true },
       noAck: false
     },

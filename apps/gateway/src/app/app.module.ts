@@ -16,6 +16,8 @@ import { PaymentsModule } from '../feature/payments/payments.module';
 import { NotificationsModule } from '../feature/notifications/notifications.module';
 import { SuperAdminModule } from '../feature/superAdmin/superAdmin.module';
 import { ContentModule } from '../feature/content/content.module';
+import { FileServiceModule } from '../support.modules/file/file.module';
+import { MessengerModule } from '../feature/messenger/messenger.module';
 
 @Module({
   imports: [
@@ -29,7 +31,7 @@ import { ContentModule } from '../feature/content/content.module';
       limit: 5,
     }]),
     RedisModule,
-    ClientsModule.registerAsync([
+    ClientsModule.registerAsync([ // TODO remove
       {
         imports: [ConfigModule],
         name: 'TCP_SERVICE',
@@ -47,12 +49,14 @@ import { ContentModule } from '../feature/content/content.module';
     ]),
     GrpcServiceModule,
     UsersAccountsModule,
-    PostsModule,
     ProfileModule,
     PaymentsModule,
     NotificationsModule,
     SuperAdminModule,
-    ContentModule
+    ContentModule,
+    FileServiceModule,
+    MessengerModule
+
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

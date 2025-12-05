@@ -16,6 +16,7 @@ import { IAuthUser } from '../../../common/guard/authGuard';
 const users = new Map()
 
 @WebSocketGateway({
+  namespace: 'notifications',
   cors: {
     origin: '*',
     credentials: true,
@@ -76,7 +77,8 @@ export class NotificationsSocket implements OnGatewayConnection, OnGatewayDiscon
       console.warn('socket content error')
     }
   }
-  async sendNotifies(userId: string, payload: any, type?: string): Promise<void> {
+
+  async sendPaymentNotifies(userId: string, payload: any, type?: string): Promise<void> {
     try {
       const clientKey = users.get(userId)
       if (!clientKey) return

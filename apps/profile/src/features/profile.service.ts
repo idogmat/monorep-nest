@@ -251,6 +251,19 @@ export class ProfileService {
     })
   }
 
+  async deleteProfilePhoto(userId: string): Promise<Profile> {
+    return await this.prisma.$transaction(async (tx) => {
+      const profile = await tx.profile.findFirst({
+        where: { userId: userId }
+      })
+      if (!profile) throw new ForbiddenException()
+      return tx.profile.update({
+        where: { userId },
+        data: { photoUrl: null }
+      })
+    })
+  }
+
   async updateProfileFields(
     userId: string,
     data: Partial<UpdateUserProfileRequest>

@@ -1,0 +1,79 @@
+syntax = "proto3";
+import "google/protobuf/wrappers.proto";
+package messenger;
+
+
+service MessengerService {
+  rpc GetChats (GetChatsRequest) returns (GetChatsResponse);
+  rpc CreateMessage (SendMessageRequest) returns (Chat);
+}
+
+// -----------
+
+enum ChatType {
+  PRIVATE = 0;
+  GROUP = 1;
+}
+
+enum ChatRole {
+  MEMBER = 0;
+  ADMIN = 1;
+}
+
+enum MessageStatus {
+  SENT = 0;
+  DELIVERED = 1;
+  READ = 2;
+}
+
+// ===== MODELS =====
+
+message Chat {
+  string id = 1;
+  string createdAt = 2;   // ISO строка или timestamp (можно заменить на google.protobuf.Timestamp)
+  string updatedAt = 3;
+  google.protobuf.StringValue deletedAt = 4;   // nullable → передавать пустую строку или опционально
+  ChatType type = 5;
+  google.protobuf.StringValue name = 6;
+
+  repeated ChatParticipant participants = 7;
+  repeated Message messages = 8;
+}
+
+message ChatParticipant {
+  string id = 1;
+  string chatId = 2;
+  string userId = 3;
+  ChatRole role = 4;
+  string joinedAt = 5;
+}
+
+message Message {
+  string id = 1;
+  string createdAt = 2;
+  string updatedAt = 3;
+  google.protobuf.StringValue deletedAt = 4;
+  string userId = 5;
+  string chatId = 6;
+  string content = 7;
+  MessageStatus status = 8;
+  google.protobuf.StringValue editedAt = 9;
+}
+
+// ===== REQUEST =====
+
+message SendMessageRequest {
+  string senderId = 1;
+  string userId = 2;
+  string message = 3;
+}
+
+message GetChatsRequest {
+  string senderId = 1;
+}
+
+// ===== RESPONSE =====
+
+message GetChatsResponse {
+  repeated Chat chats = 1;
+}

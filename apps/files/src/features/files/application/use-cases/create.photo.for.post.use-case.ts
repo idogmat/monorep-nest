@@ -1,16 +1,15 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { FilesRepository } from '../../infrastructure/files.repository';
-import { PostPhotoService } from '../post.photo.service';
-import { promises as fs } from 'fs';
+import { S3UploadPhotoService } from '../post.photo.service';
+import { existsSync, promises as fs, mkdirSync, readdirSync, readFileSync, statSync } from 'fs';
 import * as AWS from 'aws-sdk';
-import type { FailedUpload, SuccessfulUpload } from '../../../../common/types/upload.result';
 import { Inject } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { basename, join } from 'path';
+import { RabbitService } from '../rabbit.service';
 
 
 export class CreatePhotoForPostCommand {
   constructor(
-    public files: Express.Multer.File[],
     public userId: string,
     public postId: string,
   ) {
@@ -20,69 +19,52 @@ export class CreatePhotoForPostCommand {
 @CommandHandler(CreatePhotoForPostCommand)
 export class CreatePhotoForPostUseCase implements ICommandHandler<CreatePhotoForPostCommand> {
 
-  constructor(private readonly filesRepository: FilesRepository,
-    private readonly postPhotoService: PostPhotoService,
-    @Inject('RABBITMQ_POST_SERVICE') private readonly rabbitClient: ClientProxy) { }
-
+  constructor(
+    private readonly filesRepository: FilesRepository,
+    private readonly postPhotoService: S3UploadPhotoService,
+    @Inject('RABBIT_SERVICE') private readonly rabbitClient: RabbitService
+  ) { }
   async execute(command: CreatePhotoForPostCommand) {
-
-
-    //Unpacking the necessary variables
-    const { userId, postId, files } = command;
-    //Define the folder
-    const folder = `posts/user_${userId}/post_${postId}`;
-    //Looping through the files.
-    const uploadPromises = files.map(async (file) => {
-      try {
-        //Prepare the data for saving the file.
-        const fileBuffer = await fs.readFile(file.path); // Читаем файл как буфер
+    const { userId, postId } = command
+    const folder = join(__dirname, 'uploads', userId, 'posts', postId);
+    if (!existsSync(folder)) mkdirSync(folder, { recursive: true });
+    const files = readdirSync(folder)
+      .filter(file => statSync(join(folder, file)).isFile()); // исключаем подпапки
+    console.log(files);
+    try {
+      const result = await Promise.all(files.map(filename => {
+        const filePath = join(folder, filename);
+        const buffer = readFileSync(filePath);
         const fileInfo = {
-          originalname: file.originalname,
-          buffer: fileBuffer,
-          mimetype: file.mimetype,
+          originalname: basename(filePath),
+          buffer,
+          mimetype: 'application/octet-stream',
         };
-        const uploadResult = await this.postPhotoService.uploadImage(fileInfo, folder);
+        const s3Path = `posts/user_${userId}/post_${postId}`;
 
-        //create dto for create post media and save in mongo
-        const postMedia = await this.createPostMedia(userId, postId, uploadResult, file.mimetype, file.originalname);
+        return this.postPhotoService.uploadImage(fileInfo, s3Path);
+      }));
+      await Promise.all(files.map(filename => {
+        const filePath = join(folder, filename);
+        return fs.unlink(filePath); // Use fs.unlink() from fs.promises
+      }));
+      console.log(result)
+      // result.map(e => {
+      //   this.createPostMedia(userId, postId, e,)
 
-        return { status: 'success' as const, file: file.originalname, url: uploadResult.Location };
-      } catch (error) {
-        return { status: 'error' as const, file: file.originalname, error: error.message };
-      } finally {
-        try {
-          await fs.unlink(file.path);
-        } catch (err) {
-          console.warn(`Не удалось удалить файл ${file.path}:`, err.message);
-        }
-      }
-    });
-
-    // Выполняем все загрузки
-    const results: PromiseSettledResult<SuccessfulUpload | FailedUpload>[] = await Promise.allSettled(uploadPromises);
-
-    console.log("results", results);
-    const successfulUploads = results
-      .filter((res): res is PromiseFulfilledResult<SuccessfulUpload> => res.status === 'fulfilled' && res.value.status === 'success')
-      .map(res => res.value);
-    if (successfulUploads.length > 0) {
-      // Отправляем сообщение в RabbitMQ
-      const message = {
+      // })
+      const rabbit = await this.rabbitClient.publishToQueue('posts_queue', {
+        type: 'UPLOAD_POSTS_PHOTO',
         userId,
         postId,
-        files: successfulUploads.map(file => ({
-          fileName: file.file,
-          fileUrl: file.url,
-        })),
-        timestamp: new Date(),
-      };
-
-      try {
-        this.rabbitClient.emit('files_uploaded', message);
-      } catch (e) {
-        console.error("Send to files_uploaded files -> posts", e)
-      }
-
+        data: result,
+        createdAt: new Date(),
+      });
+      console.log(rabbit)
+    } catch (error) {
+      console.error('Error during file upload or deletion:', error);
+      // You might want to handle this error, for example, by rolling back the S3 upload.
+      throw error; // Re-throw the error to propagate it.
     }
   }
 

@@ -1,14 +1,17 @@
-import { Injectable } from "@nestjs/common";
-import { createReadStream, unlinkSync } from "fs";
+import { Inject, Injectable } from "@nestjs/common";
 import { GateService } from "../../../common/gate.service";
 import { InputProfileModel } from "../api/model/input/input.profile.model";
 import { ProfileClientService } from "../../../support.modules/grpc/grpc.profile.service";
 import { UpdateUserProfileRequest } from 'aws-sdk/clients/opsworks';
+import { SendFileService } from "../../../../../gateway/src/support.modules/file/file.service";
+import { fileExist } from "../../../../../libs/common/helpers/exist.file";
+import { unlink } from "fs/promises";
 
 @Injectable()
 export class ProfileService {
   constructor(
     private readonly profileClientService: ProfileClientService,
+    @Inject('SEND_FILE_SERVICE') private readonly sendFileService: SendFileService,
     readonly gateService: GateService,
   ) { }
 
@@ -18,30 +21,50 @@ export class ProfileService {
     profile: InputProfileModel,
     userId: string
   ) {
-    console.log(profile)
-    const readStream = createReadStream(`./tmp/${file.filename}`);
+    // 1. Сохраняем актуальный путь к файлу
+    const filePath = file.path;
+    console.log('Processing file:', filePath);
+
     try {
-      const result = await Promise.allSettled([
-        await this.gateService.filesServicePost(
-          'receive',
-          readStream,
-          {
-            'Content-Type': file.mimetype,
-            'X-Filename': file.originalname,
-            'X-UserId': userId
-          },
-        ),
-        await this.profileClientService.updateProfile({
-          ...profile, userId
-        })])
-      console.log(result)
+      // 2. Проверяем существование файла перед обработкой
+      const fileCheck = await fileExist(filePath);
+      if (!fileCheck) {
+        throw new Error(`File not found: ${filePath}`);
+      }
+
+      // 3. Выполняем операции
+      const results = await Promise.allSettled([
+        this.sendFileService.uploadFileGrpc(file, userId),
+        this.profileClientService.updateProfile({ ...profile, userId })
+      ]);
+
+      // 4. Проверяем результаты
+      const errors = results.filter(r => r.status === 'rejected');
+      if (errors.length > 0) {
+        throw new AggregateError(errors.map(e => (e as PromiseRejectedResult).reason));
+      }
+
+      return { success: true, message: 'Profile updated successfully' };
+
     } catch (error) {
-      // Обработка ошибок
-      console.error('Ошибка:', error.message);
-      throw error;
+      console.error('Profile update error:', error);
+      return {
+        success: false,
+        message: 'Profile update failed',
+        error: error.message
+      };
     } finally {
-      // 4. Удаляем временный файл
-      unlinkSync(`./tmp/${file.filename}`);
+      try {
+        // 5. Удаляем только если файл существует
+        if (await fileExist(filePath)) {
+          await unlink(filePath);
+          console.log(`Temporary file deleted: ${filePath}`);
+        } else {
+          console.warn(`File already deleted: ${filePath}`);
+        }
+      } catch (deleteError) {
+        console.error('File deletion error:', deleteError);
+      }
     }
   }
 

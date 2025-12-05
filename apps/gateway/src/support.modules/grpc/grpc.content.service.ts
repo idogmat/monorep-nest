@@ -8,7 +8,7 @@ import {
   PostService,
 } from './interfaces/content.interface';
 import { lastValueFrom } from 'rxjs';
-import { GetPostsQueryRequest } from '../../../../libs/proto/generated/content';
+import { DeletePostRequest, GetPostRequest, GetPostsQueryRequest, LikePostRequest } from '../../../../libs/proto/generated/content';
 
 @Injectable()
 export class ContentClientService implements OnModuleInit {
@@ -35,5 +35,15 @@ export class ContentClientService implements OnModuleInit {
 
   async getPosts(data: GetPostsQueryRequest) {
     return lastValueFrom(this.postService.GetPosts(data));
+  }
+
+  async getPost(data: GetPostRequest) {
+    return lastValueFrom(this.postService.GetPost(data));
+  }
+  async deletePost(data: DeletePostRequest) {
+    return lastValueFrom(this.postService.DeletePost(data));
+  }
+  async likePost(data: LikePostRequest) {
+    return lastValueFrom(this.postService.LikePost(data));
   }
 }

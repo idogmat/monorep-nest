@@ -23,6 +23,7 @@ async function bootstrap() {
     },
   });
   console.log('gRPC microservice connected');
+
   // app.connectMicroservice<MicroserviceOptions>({
   //   transport: Transport.RMQ,
   //   options: {
@@ -32,14 +33,14 @@ async function bootstrap() {
   //   },
   // });
 
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.RMQ,
-    options: {
-      urls: [rabbit],
-      queue: 'delay_payments_queue',
-      queueOptions: { durable: true },
-    },
-  });
+  // app.connectMicroservice<MicroserviceOptions>({
+  //   transport: Transport.RMQ,
+  //   options: {
+  //     urls: [rabbit],
+  //     queue: 'delay_payments_queue',
+  //     queueOptions: { durable: true },
+  //   },
+  // });
   console.log('RabbitMQ microservice connected');
 
   app.use(cookieParser());
