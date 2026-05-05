@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { User } from "../../../../../../../prisma/generated/client";
+import { ApiProperty } from '@nestjs/swagger';
+import { User } from '../../../../../../../prisma/generated/client';
 
 export class AuthMeOutputModel {
   @ApiProperty({ type: String })
@@ -12,14 +12,12 @@ export class AuthMeOutputModel {
   isConfirmed: boolean;
 }
 
-
 export const AuthMeOutputMapper = (u: User): AuthMeOutputModel => {
-
   const outputModel = new AuthMeOutputModel();
   outputModel.id = u.id;
   outputModel.name = u.name;
   outputModel.email = u.email;
-  outputModel.isConfirmed = u.isConfirmed
+  outputModel.isConfirmed = u.isConfirmed;
 
   return outputModel;
 };

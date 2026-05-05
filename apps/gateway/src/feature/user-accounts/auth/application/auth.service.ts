@@ -11,7 +11,6 @@ import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import { UsersPrismaRepository } from '../../users/infrastructure/prisma/users.prisma.repository';
 
-
 @Injectable()
 export class AuthService {
   constructor(
@@ -21,7 +20,7 @@ export class AuthService {
     private bcryptService: BcryptService,
     private configService: ConfigService,
     private readonly httpService: HttpService,
-  ) { }
+  ) {}
   async sendVerifyEmail(email) {
     try {
       const u = await this.userPrismaRepository.findUserByEmail(email);
@@ -29,88 +28,71 @@ export class AuthService {
         return InterlayerNotice.createErrorNotice(
           AuthError.CONFIRMATION_ERROR,
           ENTITY_USER,
-          400
+          400,
         );
-      u.confirmationCode = randomUUID()
-      await this.userPrismaRepository.updateUserById(u.id, u)
-      this.emailService.sendVerifyEmail(
-        u.email,
-        u.confirmationCode,
-      );
+      u.confirmationCode = randomUUID();
+      await this.userPrismaRepository.updateUserById(u.id, u);
+      this.emailService.sendVerifyEmail(u.email, u.confirmationCode);
     } catch (error) {
-      return InterlayerNotice.createErrorNotice(
-        error,
-        ENTITY_USER,
-        400
-      );
+      return InterlayerNotice.createErrorNotice(error, ENTITY_USER, 400);
     }
   }
 
   async sendRecoveryCode(email, recaptchaToken) {
-    const RECAPTCHA_SECRET_KEY = this.configService.get('RECAPTCHA_SECRET_KEY')
-    const recaptchaResponse = await firstValueFrom(this.httpService.post(`https://www.google.com/recaptcha/api/siteverify?secret=${RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`));
-    if (!recaptchaResponse.data.success) throw new BadRequestException('reCAPTCHA verification failed')
+    const RECAPTCHA_SECRET_KEY = this.configService.get('RECAPTCHA_SECRET_KEY');
+    const recaptchaResponse = await firstValueFrom(
+      this.httpService.post(
+        `https://www.google.com/recaptcha/api/siteverify?secret=${RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`,
+      ),
+    );
+    if (!recaptchaResponse.data.success)
+      throw new BadRequestException('reCAPTCHA verification failed');
     try {
       const u = await this.userPrismaRepository.findUserByEmail(email);
       if (!u)
         return InterlayerNotice.createErrorNotice(
           AuthError.CONFIRMATION_ERROR,
           ENTITY_USER,
-          400
+          400,
         );
       u.recoveryCode = randomUUID();
-      await this.userPrismaRepository.updateUserById(u.id, u)
-      this.emailService.sendRecoveryCode(
-        u.email,
-        u.recoveryCode,
-      );
+      await this.userPrismaRepository.updateUserById(u.id, u);
+      this.emailService.sendRecoveryCode(u.email, u.recoveryCode);
     } catch (error) {
-      return InterlayerNotice.createErrorNotice(
-        error,
-        ENTITY_USER,
-        400
-      );
+      return InterlayerNotice.createErrorNotice(error, ENTITY_USER, 400);
     }
   }
 
   async setNewPassword(recoveryCode: string, password: string) {
     try {
-      const u = await this.userPrismaRepository.findUserByRecoveryCode(recoveryCode);
+      const u =
+        await this.userPrismaRepository.findUserByRecoveryCode(recoveryCode);
       if (!u)
         return InterlayerNotice.createErrorNotice(
           AuthError.CONFIRMATION_ERROR,
           ENTITY_USER,
-          400
+          400,
         );
-      u.passwordHash = await this.bcryptService.generationHash(
-        password,
-      );
-      u.recoveryCode = null
-      await this.userPrismaRepository.updateUserById(u.id, u)
+      u.passwordHash = await this.bcryptService.generationHash(password);
+      u.recoveryCode = null;
+      await this.userPrismaRepository.updateUserById(u.id, u);
     } catch (error) {
-      return InterlayerNotice.createErrorNotice(
-        error,
-        ENTITY_USER,
-        400
-      );
+      return InterlayerNotice.createErrorNotice(error, ENTITY_USER, 400);
     }
   }
 
   async createToken(payload: any, type: 'ACCESS' | 'REFRESH') {
     const signOptions = {
       secret: this.configService.get(`${type}_TOKEN`) || 'TEST',
-      expiresIn: this.configService.get(`${type}_TOKEN_EXPIRATION`) || 'TEST'
-    }
-    const token = await this.jwtService.sign(
-      payload,
-      signOptions
-    );
+      expiresIn: this.configService.get(`${type}_TOKEN_EXPIRATION`) || 'TEST',
+    };
+    const token = await this.jwtService.sign(payload, signOptions);
     return token;
   }
 
   async getExpiration(type: 'ACCESS' | 'REFRESH') {
-
-    const expiresIn = this.configService.get(`${type}_TOKEN_EXPIRATION`) || 'TEST'
+    const expiresIn =
+      this.configService.get(`${type}_TOKEN_EXPIRATION`) || 'TEST';
     return expiresIn;
   }
 
@@ -118,16 +100,22 @@ export class AuthService {
     return await this.userPrismaRepository.getById(id);
   }
 
-  async createPairTokens(payload: any): Promise<[accessToken: string, refreshToken: string]> {
-    return Promise.all(
-      [
-        await this.createToken({
+  async createPairTokens(
+    payload: any,
+  ): Promise<[accessToken: string, refreshToken: string]> {
+    return Promise.all([
+      await this.createToken(
+        {
           ...payload,
-        }, 'ACCESS'),
-        await this.createToken({
+        },
+        'ACCESS',
+      ),
+      await this.createToken(
+        {
           ...payload,
-        }, 'REFRESH'),
-      ]);
-
+        },
+        'REFRESH',
+      ),
+    ]);
   }
 }

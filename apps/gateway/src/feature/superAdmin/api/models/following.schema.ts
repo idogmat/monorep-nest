@@ -1,5 +1,5 @@
-import { Field, ObjectType } from "@nestjs/graphql";
-import { } from "./profile.schema";
+import { Field, ObjectType } from '@nestjs/graphql';
+import {} from './profile.schema';
 @ObjectType()
 export class PaginatedFollowing {
   @Field(() => [Following])
@@ -11,7 +11,6 @@ export class PaginatedFollowing {
 
 @ObjectType()
 export class Following {
-
   @Field({ nullable: true })
   subscriberId?: string;
 

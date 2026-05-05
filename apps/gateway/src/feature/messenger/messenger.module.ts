@@ -11,10 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { rabbitMessageHandler } from './applications/rabbit.messages.handler';
 
 @Module({
-  imports: [
-    RedisModule,
-    GrpcServiceModule
-  ],
+  imports: [RedisModule, GrpcServiceModule],
   providers: [
     PrismaService,
     MessengerSocket,
@@ -25,15 +22,13 @@ import { rabbitMessageHandler } from './applications/rabbit.messages.handler';
         return new RabbitConsumerService(
           configService,
           'messenger_queue',
-          rabbitMessageHandler
+          rabbitMessageHandler,
         );
       },
       inject: [ConfigService],
     },
   ],
-  controllers: [
-    ChatController
-  ],
-  exports: [MessengerSocket]
+  controllers: [ChatController],
+  exports: [MessengerSocket],
 })
-export class MessengerModule { }
+export class MessengerModule {}

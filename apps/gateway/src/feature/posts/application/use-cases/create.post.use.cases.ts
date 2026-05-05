@@ -7,21 +7,16 @@ export class CreatePostCommand {
   constructor(
     public readonly userId: string,
     public readonly files: Express.Multer.File[],
-    public readonly dto: PostCreateModel) {
-  }
+    public readonly dto: PostCreateModel,
+  ) {}
 }
 @CommandHandler(CreatePostCommand)
 export class CreatePostUseCases implements ICommandHandler<CreatePostCommand> {
-  constructor(
-    private postMicroserviceService: PostMicroserviceService,
-  ) {
-  }
+  constructor(private postMicroserviceService: PostMicroserviceService) {}
 
   async execute(command: CreatePostCommand): Promise<InterlayerNotice> {
-
     const { files, userId, dto } = command;
 
     return this.postMicroserviceService.createPost(dto, files, userId);
-
   }
 }

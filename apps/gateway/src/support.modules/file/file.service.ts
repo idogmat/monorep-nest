@@ -8,7 +8,7 @@ export class SendFileService {
 
   constructor(private configService: ConfigService) {
     const protoPath = join(__dirname, 'files.proto');
-    console.log(protoPath)
+    console.log(protoPath);
     const packageDef = protoLoader.loadSync(protoPath, {
       keepCase: true,
       longs: String,
@@ -24,96 +24,118 @@ export class SendFileService {
       grpc.credentials.createInsecure(),
     );
   }
-  async uploadFilesGrpc(files: Express.Multer.File[], userId: string, postId: string): Promise<any[]> {
-    console.log(files)
+  async uploadFilesGrpc(
+    files: Express.Multer.File[],
+    userId: string,
+    postId: string,
+  ): Promise<any[]> {
+    console.log(files);
     return Promise.all(
-      files.map(file =>
-        new Promise((resolve, reject) => {
-          const call = this.client.Upload((err: any, response: any) => {
-            if (err) return reject(err);
-            resolve(response);
-          });
+      files.map(
+        (file) =>
+          new Promise((resolve, reject) => {
+            const call = this.client.Upload((err: any, response: any) => {
+              if (err) return reject(err);
+              resolve(response);
+            });
 
-          const stream = createReadStream(file.path, { highWaterMark: 64 * 1024 });
+            const stream = createReadStream(file.path, {
+              highWaterMark: 64 * 1024,
+            });
 
-          stream.on('data', (chunk) => {
-            call.write({ chunkData: chunk, filename: file.originalname, userId, postId });
-          });
+            stream.on('data', (chunk) => {
+              call.write({
+                chunkData: chunk,
+                filename: file.originalname,
+                userId,
+                postId,
+              });
+            });
 
-          stream.on('end', () => {
-            console.log('end')
-            call.end();
-          });
+            stream.on('end', () => {
+              console.log('end');
+              call.end();
+            });
 
-          stream.on('error', (err) => {
-            console.log('error')
-            call.destroy();
-            reject(err);
-          });
-        })
-      )
+            stream.on('error', (err) => {
+              console.log('error');
+              call.destroy();
+              reject(err);
+            });
+          }),
+      ),
     );
   }
 
-  async uploadFileGrpc(file: Express.Multer.File, userId: string): Promise<any> {
+  async uploadFileGrpc(
+    file: Express.Multer.File,
+    userId: string,
+  ): Promise<any> {
     const tempFilePath = file.path;
     await new Promise((resolve, reject) => {
       const call = this.client.UploadProfile((err: any, response: any) => {
         if (err) return reject(err);
         resolve(response);
       });
-      console.log(tempFilePath, 'tempFilePath')
-      const stream = createReadStream(tempFilePath, { highWaterMark: 64 * 1024 });
+      console.log(tempFilePath, 'tempFilePath');
+      const stream = createReadStream(tempFilePath, {
+        highWaterMark: 64 * 1024,
+      });
 
       stream.on('data', (chunk) => {
-        console.log('data', chunk)
+        console.log('data', chunk);
         call.write({ chunkData: chunk, filename: file.originalname, userId });
       });
 
       stream.on('end', () => {
-        console.log('end')
+        console.log('end');
         call.end();
       });
 
       stream.on('error', (err) => {
-        console.log('error')
+        console.log('error');
         call.destroy();
         reject(err);
       });
-    })
+    });
   }
 
-  async uploadFileForChatGrpc(file: Express.Multer.File, senderId: string, userId: string): Promise<any> {
+  async uploadFileForChatGrpc(
+    file: Express.Multer.File,
+    senderId: string,
+    userId: string,
+  ): Promise<any> {
     const tempFilePath = file.path;
     await new Promise((resolve, reject) => {
       const call = this.client.UploadChatFile((err: any, response: any) => {
         if (err) return reject(err);
         resolve(response);
       });
-      console.log(tempFilePath, 'tempFilePath')
-      const stream = createReadStream(tempFilePath, { highWaterMark: 64 * 1024 });
+      console.log(tempFilePath, 'tempFilePath');
+      const stream = createReadStream(tempFilePath, {
+        highWaterMark: 64 * 1024,
+      });
 
       stream.on('data', (chunk) => {
-        console.log('data', chunk)
-        call.write({ chunkData: chunk, filename: file.originalname, senderId, userId });
+        console.log('data', chunk);
+        call.write({
+          chunkData: chunk,
+          filename: file.originalname,
+          senderId,
+          userId,
+        });
       });
 
       stream.on('end', () => {
-        console.log('end')
+        console.log('end');
         call.end();
       });
 
       stream.on('error', (err) => {
-        console.log('error')
+        console.log('error');
         call.destroy();
         reject(err);
       });
-    })
+    });
   }
-
 }
-
-
-
-
-

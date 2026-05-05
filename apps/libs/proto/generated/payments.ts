@@ -5,11 +5,11 @@
 // source: payments.proto
 
 /* eslint-disable */
-import { Metadata } from "@grpc/grpc-js";
-import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
-import { Observable } from "rxjs";
+import { Metadata } from '@grpc/grpc-js';
+import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
+import { Observable } from 'rxjs';
 
-export const protobufPackage = "payments";
+export const protobufPackage = 'payments';
 
 /** Request messages */
 export interface UserForSubscribe {
@@ -87,40 +87,67 @@ export interface WebhookResponse {
   status: string;
 }
 
-export const PAYMENTS_PACKAGE_NAME = "payments";
+export const PAYMENTS_PACKAGE_NAME = 'payments';
 
 export interface PaymentsServiceClient {
-  createSubscribe(request: CreateSubscribeRequest, metadata?: Metadata): Observable<CreateSubscribeResponse>;
+  createSubscribe(
+    request: CreateSubscribeRequest,
+    metadata?: Metadata,
+  ): Observable<CreateSubscribeResponse>;
 
-  getSubscribes(request: GetSubscribesQuery, metadata?: Metadata): Observable<PaymentsResponse>;
+  getSubscribes(
+    request: GetSubscribesQuery,
+    metadata?: Metadata,
+  ): Observable<PaymentsResponse>;
 
-  getSubscribesGql(request: GetSubscribesGqlQuery, metadata?: Metadata): Observable<PaymentsGqlResponse>;
+  getSubscribesGql(
+    request: GetSubscribesGqlQuery,
+    metadata?: Metadata,
+  ): Observable<PaymentsGqlResponse>;
 
-  unSubscribe(request: UnSubscribeRequest, metadata?: Metadata): Observable<UnSubscribeResponse>;
+  unSubscribe(
+    request: UnSubscribeRequest,
+    metadata?: Metadata,
+  ): Observable<UnSubscribeResponse>;
 
-  webhook(request: WebhookRequest, metadata?: Metadata): Observable<WebhookResponse>;
+  webhook(
+    request: WebhookRequest,
+    metadata?: Metadata,
+  ): Observable<WebhookResponse>;
 }
 
 export interface PaymentsServiceController {
   createSubscribe(
     request: CreateSubscribeRequest,
     metadata?: Metadata,
-  ): Promise<CreateSubscribeResponse> | Observable<CreateSubscribeResponse> | CreateSubscribeResponse;
+  ):
+    | Promise<CreateSubscribeResponse>
+    | Observable<CreateSubscribeResponse>
+    | CreateSubscribeResponse;
 
   getSubscribes(
     request: GetSubscribesQuery,
     metadata?: Metadata,
-  ): Promise<PaymentsResponse> | Observable<PaymentsResponse> | PaymentsResponse;
+  ):
+    | Promise<PaymentsResponse>
+    | Observable<PaymentsResponse>
+    | PaymentsResponse;
 
   getSubscribesGql(
     request: GetSubscribesGqlQuery,
     metadata?: Metadata,
-  ): Promise<PaymentsGqlResponse> | Observable<PaymentsGqlResponse> | PaymentsGqlResponse;
+  ):
+    | Promise<PaymentsGqlResponse>
+    | Observable<PaymentsGqlResponse>
+    | PaymentsGqlResponse;
 
   unSubscribe(
     request: UnSubscribeRequest,
     metadata?: Metadata,
-  ): Promise<UnSubscribeResponse> | Observable<UnSubscribeResponse> | UnSubscribeResponse;
+  ):
+    | Promise<UnSubscribeResponse>
+    | Observable<UnSubscribeResponse>
+    | UnSubscribeResponse;
 
   webhook(
     request: WebhookRequest,
@@ -130,17 +157,37 @@ export interface PaymentsServiceController {
 
 export function PaymentsServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createSubscribe", "getSubscribes", "getSubscribesGql", "unSubscribe", "webhook"];
+    const grpcMethods: string[] = [
+      'createSubscribe',
+      'getSubscribes',
+      'getSubscribesGql',
+      'unSubscribe',
+      'webhook',
+    ];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod("PaymentsService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcMethod('PaymentsService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod("PaymentsService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcStreamMethod('PaymentsService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
   };
 }
 
-export const PAYMENTS_SERVICE_NAME = "PaymentsService";
+export const PAYMENTS_SERVICE_NAME = 'PaymentsService';

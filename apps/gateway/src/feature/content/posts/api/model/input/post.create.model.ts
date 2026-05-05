@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, Length } from 'class-validator';
 
-
 export class PostCreateModel {
   @ApiProperty({
     description: 'Post description text',
@@ -13,10 +12,8 @@ export class PostCreateModel {
   description: string;
 
   swagger() {
+    this.description = 'string';
 
-    this.description = 'string'
-
-    return this
+    return this;
   }
-
 }

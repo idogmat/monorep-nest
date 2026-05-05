@@ -1,19 +1,24 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { Payment, PaymentStatus } from '../../../../prisma/generated/payments-client';
-
+import {
+  Payment,
+  PaymentStatus,
+} from '../../../../prisma/generated/payments-client';
 
 @Injectable()
 export class PaymentsRepository {
-  constructor(private prisma: PrismaService) {
-  }
+  constructor(private prisma: PrismaService) {}
 
-  async createPayment(data: { createdAt: string, customerId: string, userId: string }): Promise<Payment> {
+  async createPayment(data: {
+    createdAt: string;
+    customerId: string;
+    userId: string;
+  }): Promise<Payment> {
     return this.prisma.payment.create({
       data: {
-        ...data
-      }
-    })
+        ...data,
+      },
+    });
   }
 
   async findPaymentByUserId(userId: string): Promise<Payment[] | []> {
@@ -21,31 +26,29 @@ export class PaymentsRepository {
       where: {
         userId,
         expiresAt: {
-          not: null
+          not: null,
         },
-        status: PaymentStatus.ACTIVE
-      }
-    })
+        status: PaymentStatus.ACTIVE,
+      },
+    });
   }
 
   async findPaymentById(id: string): Promise<Payment> {
     return this.prisma.payment.findFirst({
       where: {
-        id
-      }
-    })
+        id,
+      },
+    });
   }
 
-  async updatePayment(
-    data: {
-      subscriptionId: string,
-      createdAt: string,
-      expiresAt: string,
-      customerId: string,
-      subType: string,
-      amount: number,
-    }
-  ): Promise<Payment | null> {
+  async updatePayment(data: {
+    subscriptionId: string;
+    createdAt: string;
+    expiresAt: string;
+    customerId: string;
+    subType: string;
+    amount: number;
+  }): Promise<Payment | null> {
     const {
       subscriptionId,
       createdAt,
@@ -58,12 +61,12 @@ export class PaymentsRepository {
       const payment = await tx.payment.findFirst({
         where: {
           customerId,
-          deletedAt: null
+          deletedAt: null,
         },
         orderBy: { createdAt: 'desc' },
         take: 1,
-      })
-      if (!payment) throw new ForbiddenException()
+      });
+      if (!payment) throw new ForbiddenException();
       return await tx.payment.update({
         where: { id: payment.id },
         data: {
@@ -71,161 +74,135 @@ export class PaymentsRepository {
           createdAt,
           expiresAt,
           subType,
-          amount
-        }
-      })
-    })
+          amount,
+        },
+      });
+    });
   }
 
-  async updatePaymentProduct(
-    data: {
-      subscriptionId: string,
-      subType: string,
-      amount: number,
-    }
-  ): Promise<Payment | null> {
-    const {
-      subscriptionId,
-      subType,
-      amount,
-    } = data;
+  async updatePaymentProduct(data: {
+    subscriptionId: string;
+    subType: string;
+    amount: number;
+  }): Promise<Payment | null> {
+    const { subscriptionId, subType, amount } = data;
     return await this.prisma.$transaction(async (tx) => {
       const payment = await tx.payment.findFirst({
         where: {
           subscriptionId,
-          deletedAt: null
+          deletedAt: null,
         },
         orderBy: { createdAt: 'desc' },
         take: 1,
-      })
+      });
       // console.log(payment, 'payment')
-      if (!payment) throw new ForbiddenException()
+      if (!payment) throw new ForbiddenException();
       return await tx.payment.update({
         where: { id: payment.id },
         data: {
           subType,
-          amount
-        }
-      })
-    })
+          amount,
+        },
+      });
+    });
   }
 
-  async updatePaymentStatus(
-    data: {
-      subscriptionId: string,
-      status: PaymentStatus,
-      customerId: string,
-    }
-  ): Promise<Payment | null> {
-    const {
-      subscriptionId,
-      status,
-      customerId,
-    } = data;
+  async updatePaymentStatus(data: {
+    subscriptionId: string;
+    status: PaymentStatus;
+    customerId: string;
+  }): Promise<Payment | null> {
+    const { subscriptionId, status, customerId } = data;
     return await this.prisma.$transaction(async (tx) => {
       const payment = await tx.payment.findFirst({
         where: {
           subscriptionId,
           customerId,
-          deletedAt: null
+          deletedAt: null,
         },
         orderBy: { createdAt: 'desc' },
         take: 1,
-      })
-      if (!payment) throw new ForbiddenException()
+      });
+      if (!payment) throw new ForbiddenException();
       return await tx.payment.update({
         where: { id: payment.id },
         data: {
-          status: status
-        }
-      })
-    })
+          status: status,
+        },
+      });
+    });
   }
 
-  async markPaymentAsDeleted(
-    data: {
-      subscriptionId: string,
-      customerId: string,
-      expiresAt: string,
-      deletedAt: string,
-    }
-  ): Promise<Payment | null> {
-    const {
-      subscriptionId,
-      customerId,
-      deletedAt,
-      expiresAt
-    } = data;
+  async markPaymentAsDeleted(data: {
+    subscriptionId: string;
+    customerId: string;
+    expiresAt: string;
+    deletedAt: string;
+  }): Promise<Payment | null> {
+    const { subscriptionId, customerId, deletedAt, expiresAt } = data;
     return await this.prisma.$transaction(async (tx) => {
       const payment = await tx.payment.findFirst({
         where: { subscriptionId, customerId },
         orderBy: { createdAt: 'desc' },
         take: 1,
-      })
-      if (!payment) throw new ForbiddenException()
+      });
+      if (!payment) throw new ForbiddenException();
       return await tx.payment.update({
         where: { id: payment.id },
         data: {
           deletedAt,
           expiresAt,
-          status: PaymentStatus.CANCEL
-        }
-      })
-    })
+          status: PaymentStatus.CANCEL,
+        },
+      });
+    });
   }
 
-  async updatePaymentExpire(
-    data: {
-      subscriptionId: string,
-      expiresAt: string,
-    }
-  ): Promise<Payment | null> {
-    const {
-      subscriptionId,
-      expiresAt
-    } = data;
+  async updatePaymentExpire(data: {
+    subscriptionId: string;
+    expiresAt: string;
+  }): Promise<Payment | null> {
+    const { subscriptionId, expiresAt } = data;
     return await this.prisma.$transaction(async (tx) => {
       const payment = await tx.payment.findFirst({
         where: { subscriptionId },
         orderBy: { createdAt: 'desc' },
         take: 1,
-      })
-      if (!payment) throw new ForbiddenException()
+      });
+      if (!payment) throw new ForbiddenException();
       return await tx.payment.update({
         where: { id: payment.id },
         data: {
-          expiresAt
-        }
-      })
-    })
+          expiresAt,
+        },
+      });
+    });
   }
 
   async findByUserId(userId: string): Promise<Payment[] | []> {
     return this.prisma.payment.findMany({
       where: {
         userId,
-        deletedAt: null
+        deletedAt: null,
       },
-      orderBy: { createdAt: 'desc' }
-    })
+      orderBy: { createdAt: 'desc' },
+    });
   }
 
-  async checkExpiers(): Promise<
-    {
-      expired: Payment[] | [],
-      active: Payment[] | []
-    }
-  > {
+  async checkExpiers(): Promise<{
+    expired: Payment[] | [];
+    active: Payment[] | [];
+  }> {
     const expired = await this.prisma.payment.findMany({
       where: {
         expiresAt: {
           lt: new Date(),
         },
-        status: PaymentStatus.ACTIVE
+        status: PaymentStatus.ACTIVE,
       },
       // orderBy: { createdAt: 'desc' }
     });
-    const userIds = [...new Set(expired.map(p => p.userId))];
+    const userIds = [...new Set(expired.map((p) => p.userId))];
     if (userIds.length === 0) {
       // нет истёкших
       return { expired: [], active: [] };
@@ -242,19 +219,18 @@ export class PaymentsRepository {
         },
         status: PaymentStatus.ACTIVE,
       },
-    })
-    return { expired, active }
+    });
+    return { expired, active };
   }
 
   async toggleStatus(id: string): Promise<void> {
     await this.prisma.payment.update({
       where: {
-        id
+        id,
       },
       data: {
-        status: PaymentStatus.CANCEL
-      }
-    })
+        status: PaymentStatus.CANCEL,
+      },
+    });
   }
-
 }

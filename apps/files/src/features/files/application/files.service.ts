@@ -3,14 +3,9 @@ import { FilesRepository } from '../infrastructure/files.repository';
 import { createWriteStream, WriteStream } from 'fs';
 import { join } from 'path';
 
-
-
 @Injectable()
 export class FilesService {
-  constructor(
-    private readonly filesRepository: FilesRepository
-  ) {
-  }
+  constructor(private readonly filesRepository: FilesRepository) {}
   async Upload(stream: any): Promise<{ success: boolean; message: string }> {
     let filename = '';
     let writeStream: WriteStream | null = null;

@@ -6,40 +6,33 @@ import { Post } from '../../../../../prisma/generated/post-client';
 import { PaginationSearchPostTerm } from '../../../../../../libs/common/pagination/query.posts.model';
 
 export class GetAllPostsCommand {
-  constructor(
-    public queryDto: PaginationSearchPostTerm,
-  ) {
-  }
+  constructor(public queryDto: PaginationSearchPostTerm) {}
 }
 
 @CommandHandler(GetAllPostsCommand)
 export class GetAllPostsUseCase implements ICommandHandler<GetAllPostsCommand> {
+  constructor(private readonly postsQueryRepository: PostsQueryRepository) {}
 
-  constructor(
-    private readonly postsQueryRepository: PostsQueryRepository,
-  ) {
-  }
+  async execute(
+    command: GetAllPostsCommand,
+  ): Promise<PagedResponse<PostViewModel>> {
+    const { mappedItems, totalCount, pageNumber, pageSize } =
+      await this.postsQueryRepository.getAllPosts(command.queryDto);
 
-  async execute(command: GetAllPostsCommand): Promise<PagedResponse<PostViewModel>> {
+    const pageResponse = new PagedResponse<PostViewModel>(
+      mappedItems,
+      totalCount,
+      +pageNumber,
+      +pageSize,
+    );
 
-      const {
-        mappedItems,
-        totalCount,
-        pageNumber,
-        pageSize,
-      } = await this.postsQueryRepository.getAllPosts(command.queryDto);
+    console.log('pageResponse', pageResponse);
 
-       const pageResponse = new PagedResponse<PostViewModel>(mappedItems, totalCount, +pageNumber, +pageSize);
-
-       console.log('pageResponse', pageResponse);
-
-       return pageResponse;
-
+    return pageResponse;
   }
 
   mapToViewModel(posts: Post[], dataOfPhoto: any): PostViewModel[] {
-
-    return posts.map(post => {
+    return posts.map((post) => {
       const mediaData = dataOfPhoto[post.id] || {};
       return {
         id: post.id,

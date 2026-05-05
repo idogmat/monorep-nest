@@ -23,30 +23,29 @@ export class LocalPath {
     const newPost = new PostMediaModel({
       userId: data.userId,
       postId: data.postId,
-      entity: data.entity
-    })
+      entity: data.entity,
+    });
 
     return newPost;
   }
-
 }
 
 export type LocalPathModelStaticType = {
   createLocalPath: (
     localPath: LocalPathModelType,
-    data: CreateLocalPathType
+    data: CreateLocalPathType,
   ) => LocalPathDocument;
-}
+};
 
 export type CreateLocalPathType = {
-  userId: string,
-  postId: string,
-  entity: string,
-}
+  userId: string;
+  postId: string;
+  entity: string;
+};
 export const LocalPathSchema = SchemaFactory.createForClass(LocalPath);
 
 LocalPathSchema.statics = {
-  createLocalPath: LocalPath.createLocalPath
+  createLocalPath: LocalPath.createLocalPath,
 } as LocalPathModelStaticType;
 
 export type LocalPathModelType = Model<LocalPathDocument> &

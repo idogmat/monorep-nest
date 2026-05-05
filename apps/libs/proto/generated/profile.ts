@@ -5,11 +5,11 @@
 // source: profile.proto
 
 /* eslint-disable */
-import { Metadata } from "@grpc/grpc-js";
-import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
-import { Observable } from "rxjs";
+import { Metadata } from '@grpc/grpc-js';
+import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
+import { Observable } from 'rxjs';
 
-export const protobufPackage = "profile";
+export const protobufPackage = 'profile';
 
 /** Request messages */
 export interface UserProfileRequest {
@@ -93,29 +93,17 @@ export interface UserProfileResponse {
   userId: string;
   userName: string;
   /** Обёртка для пустых значений */
-  photoUrl:
-    | string
-    | undefined;
+  photoUrl: string | undefined;
   /** Обёртка для пустых значений */
-  firstName:
-    | string
-    | undefined;
+  firstName: string | undefined;
   /** Обёртка для пустых значений */
-  lastName:
-    | string
-    | undefined;
+  lastName: string | undefined;
   /** Обёртка для пустых значений */
-  dateOfBirth:
-    | string
-    | undefined;
+  dateOfBirth: string | undefined;
   /** Обёртка для пустых значений */
-  country:
-    | string
-    | undefined;
+  country: string | undefined;
   /** Обёртка для пустых значений */
-  city:
-    | string
-    | undefined;
+  city: string | undefined;
   /** Обёртка для пустых значений */
   aboutMe: string | undefined;
   followed: boolean;
@@ -187,77 +175,131 @@ export interface FolowersGqlResponse {
   totalCount: number;
 }
 
-export const PROFILE_PACKAGE_NAME = "profile";
+export const PROFILE_PACKAGE_NAME = 'profile';
 
 export interface ProfileServiceClient {
-  getUserProfile(request: UserProfileRequest, metadata?: Metadata): Observable<UserProfileResponse>;
+  getUserProfile(
+    request: UserProfileRequest,
+    metadata?: Metadata,
+  ): Observable<UserProfileResponse>;
 
-  getUserProfiles(request: UserProfileQueryRequest, metadata?: Metadata): Observable<UserProfilesResponse>;
+  getUserProfiles(
+    request: UserProfileQueryRequest,
+    metadata?: Metadata,
+  ): Observable<UserProfilesResponse>;
 
-  updateUserProfile(request: UpdateUserProfileRequest, metadata?: Metadata): Observable<UpdateUserProfileResponse>;
+  updateUserProfile(
+    request: UpdateUserProfileRequest,
+    metadata?: Metadata,
+  ): Observable<UpdateUserProfileResponse>;
 
-  deleteProfilePhoto(request: DeleteProfilePhotoRequest, metadata?: Metadata): Observable<DeleteProfilePhotoResponse>;
+  deleteProfilePhoto(
+    request: DeleteProfilePhotoRequest,
+    metadata?: Metadata,
+  ): Observable<DeleteProfilePhotoResponse>;
 
   updateUserProfileData(
     request: UpdateUserProfileRequest,
     metadata?: Metadata,
   ): Observable<UpdateUserProfileDataResponse>;
 
-  subscribeUserProfile(request: SubscribeProfileRequest, metadata?: Metadata): Observable<SubscribeUserProfileResponse>;
+  subscribeUserProfile(
+    request: SubscribeProfileRequest,
+    metadata?: Metadata,
+  ): Observable<SubscribeUserProfileResponse>;
 
-  createUserProfile(request: CreateUserProfileRequest, metadata?: Metadata): Observable<CreateUserProfileResponse>;
+  createUserProfile(
+    request: CreateUserProfileRequest,
+    metadata?: Metadata,
+  ): Observable<CreateUserProfileResponse>;
 
   updateUserProfileSubscribe(
     request: UserProfileUpdateSubscribeRequest,
     metadata?: Metadata,
   ): Observable<UserProfileUpdateSubscribeResponse>;
 
-  getUserProfilesGql(request: UserProfilesGQLRequest, metadata?: Metadata): Observable<UserProfilesGQLResponse>;
+  getUserProfilesGql(
+    request: UserProfilesGQLRequest,
+    metadata?: Metadata,
+  ): Observable<UserProfilesGQLResponse>;
 
-  deleteProfilesGql(request: DeleteProfileGQLRequest, metadata?: Metadata): Observable<DeleteProfileGQLResponse>;
+  deleteProfilesGql(
+    request: DeleteProfileGQLRequest,
+    metadata?: Metadata,
+  ): Observable<DeleteProfileGQLResponse>;
 
-  banProfileGql(request: BanProfileGQLRequest, metadata?: Metadata): Observable<BanProfileGQLResponse>;
+  banProfileGql(
+    request: BanProfileGQLRequest,
+    metadata?: Metadata,
+  ): Observable<BanProfileGQLResponse>;
 
-  getFollowersGql(request: GetFollowersGqlQuery, metadata?: Metadata): Observable<FolowersGqlResponse>;
+  getFollowersGql(
+    request: GetFollowersGqlQuery,
+    metadata?: Metadata,
+  ): Observable<FolowersGqlResponse>;
 
-  getFollowingGql(request: GetFollowersGqlQuery, metadata?: Metadata): Observable<FolowersGqlResponse>;
+  getFollowingGql(
+    request: GetFollowersGqlQuery,
+    metadata?: Metadata,
+  ): Observable<FolowersGqlResponse>;
 }
 
 export interface ProfileServiceController {
   getUserProfile(
     request: UserProfileRequest,
     metadata?: Metadata,
-  ): Promise<UserProfileResponse> | Observable<UserProfileResponse> | UserProfileResponse;
+  ):
+    | Promise<UserProfileResponse>
+    | Observable<UserProfileResponse>
+    | UserProfileResponse;
 
   getUserProfiles(
     request: UserProfileQueryRequest,
     metadata?: Metadata,
-  ): Promise<UserProfilesResponse> | Observable<UserProfilesResponse> | UserProfilesResponse;
+  ):
+    | Promise<UserProfilesResponse>
+    | Observable<UserProfilesResponse>
+    | UserProfilesResponse;
 
   updateUserProfile(
     request: UpdateUserProfileRequest,
     metadata?: Metadata,
-  ): Promise<UpdateUserProfileResponse> | Observable<UpdateUserProfileResponse> | UpdateUserProfileResponse;
+  ):
+    | Promise<UpdateUserProfileResponse>
+    | Observable<UpdateUserProfileResponse>
+    | UpdateUserProfileResponse;
 
   deleteProfilePhoto(
     request: DeleteProfilePhotoRequest,
     metadata?: Metadata,
-  ): Promise<DeleteProfilePhotoResponse> | Observable<DeleteProfilePhotoResponse> | DeleteProfilePhotoResponse;
+  ):
+    | Promise<DeleteProfilePhotoResponse>
+    | Observable<DeleteProfilePhotoResponse>
+    | DeleteProfilePhotoResponse;
 
   updateUserProfileData(
     request: UpdateUserProfileRequest,
     metadata?: Metadata,
-  ): Promise<UpdateUserProfileDataResponse> | Observable<UpdateUserProfileDataResponse> | UpdateUserProfileDataResponse;
+  ):
+    | Promise<UpdateUserProfileDataResponse>
+    | Observable<UpdateUserProfileDataResponse>
+    | UpdateUserProfileDataResponse;
 
   subscribeUserProfile(
     request: SubscribeProfileRequest,
     metadata?: Metadata,
-  ): Promise<SubscribeUserProfileResponse> | Observable<SubscribeUserProfileResponse> | SubscribeUserProfileResponse;
+  ):
+    | Promise<SubscribeUserProfileResponse>
+    | Observable<SubscribeUserProfileResponse>
+    | SubscribeUserProfileResponse;
 
   createUserProfile(
     request: CreateUserProfileRequest,
     metadata?: Metadata,
-  ): Promise<CreateUserProfileResponse> | Observable<CreateUserProfileResponse> | CreateUserProfileResponse;
+  ):
+    | Promise<CreateUserProfileResponse>
+    | Observable<CreateUserProfileResponse>
+    | CreateUserProfileResponse;
 
   updateUserProfileSubscribe(
     request: UserProfileUpdateSubscribeRequest,
@@ -270,56 +312,85 @@ export interface ProfileServiceController {
   getUserProfilesGql(
     request: UserProfilesGQLRequest,
     metadata?: Metadata,
-  ): Promise<UserProfilesGQLResponse> | Observable<UserProfilesGQLResponse> | UserProfilesGQLResponse;
+  ):
+    | Promise<UserProfilesGQLResponse>
+    | Observable<UserProfilesGQLResponse>
+    | UserProfilesGQLResponse;
 
   deleteProfilesGql(
     request: DeleteProfileGQLRequest,
     metadata?: Metadata,
-  ): Promise<DeleteProfileGQLResponse> | Observable<DeleteProfileGQLResponse> | DeleteProfileGQLResponse;
+  ):
+    | Promise<DeleteProfileGQLResponse>
+    | Observable<DeleteProfileGQLResponse>
+    | DeleteProfileGQLResponse;
 
   banProfileGql(
     request: BanProfileGQLRequest,
     metadata?: Metadata,
-  ): Promise<BanProfileGQLResponse> | Observable<BanProfileGQLResponse> | BanProfileGQLResponse;
+  ):
+    | Promise<BanProfileGQLResponse>
+    | Observable<BanProfileGQLResponse>
+    | BanProfileGQLResponse;
 
   getFollowersGql(
     request: GetFollowersGqlQuery,
     metadata?: Metadata,
-  ): Promise<FolowersGqlResponse> | Observable<FolowersGqlResponse> | FolowersGqlResponse;
+  ):
+    | Promise<FolowersGqlResponse>
+    | Observable<FolowersGqlResponse>
+    | FolowersGqlResponse;
 
   getFollowingGql(
     request: GetFollowersGqlQuery,
     metadata?: Metadata,
-  ): Promise<FolowersGqlResponse> | Observable<FolowersGqlResponse> | FolowersGqlResponse;
+  ):
+    | Promise<FolowersGqlResponse>
+    | Observable<FolowersGqlResponse>
+    | FolowersGqlResponse;
 }
 
 export function ProfileServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = [
-      "getUserProfile",
-      "getUserProfiles",
-      "updateUserProfile",
-      "deleteProfilePhoto",
-      "updateUserProfileData",
-      "subscribeUserProfile",
-      "createUserProfile",
-      "updateUserProfileSubscribe",
-      "getUserProfilesGql",
-      "deleteProfilesGql",
-      "banProfileGql",
-      "getFollowersGql",
-      "getFollowingGql",
+      'getUserProfile',
+      'getUserProfiles',
+      'updateUserProfile',
+      'deleteProfilePhoto',
+      'updateUserProfileData',
+      'subscribeUserProfile',
+      'createUserProfile',
+      'updateUserProfileSubscribe',
+      'getUserProfilesGql',
+      'deleteProfilesGql',
+      'banProfileGql',
+      'getFollowersGql',
+      'getFollowingGql',
     ];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod("ProfileService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcMethod('ProfileService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod("ProfileService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcStreamMethod('ProfileService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
   };
 }
 
-export const PROFILE_SERVICE_NAME = "ProfileService";
+export const PROFILE_SERVICE_NAME = 'ProfileService';

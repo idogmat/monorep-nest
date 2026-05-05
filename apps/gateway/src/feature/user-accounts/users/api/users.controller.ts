@@ -9,19 +9,16 @@ import { ValidationUserModel } from '../infrastructure/prisma/dto/validation.use
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
-    private readonly usersPrismaQueryRepository: UsersPrismaQueryRepository
-  ) { }
+    private readonly usersPrismaQueryRepository: UsersPrismaQueryRepository,
+  ) {}
 
   @ApiResponse({ status: 200, description: 'Match name or email' })
   @Get('validation')
-  async validateUserCred(
-    @Query() query: ValidationUserModel,
-  ) {
-    const pagination: PaginationSearchUserTerm =
-      new PaginationSearchUserTerm(
-        query as any,
-        [],
-      );
+  async validateUserCred(@Query() query: ValidationUserModel) {
+    const pagination: PaginationSearchUserTerm = new PaginationSearchUserTerm(
+      query as any,
+      [],
+    );
     const user =
       await this.usersPrismaQueryRepository.validateUserCred(pagination);
 
@@ -29,16 +26,12 @@ export class UsersController {
   }
 
   @Get()
-  async findAll(
-    @Query() query: any,
-  ) {
-    const pagination: PaginationSearchUserTerm =
-      new PaginationSearchUserTerm(
-        query,
-        [],
-      );
-    const users: any =
-      await this.usersPrismaQueryRepository.getAll(pagination);
+  async findAll(@Query() query: any) {
+    const pagination: PaginationSearchUserTerm = new PaginationSearchUserTerm(
+      query,
+      [],
+    );
+    const users: any = await this.usersPrismaQueryRepository.getAll(pagination);
 
     return users;
   }

@@ -19,12 +19,14 @@ import { ProfileLoader } from './application/profile.loader';
       useFactory: (configService: ConfigService) => {
         return {
           secret: configService.get('ACCESS_TOKEN'),
-          signOptions: { expiresIn: configService.get('ACCESS_TOKEN_EXPIRATION') },
+          signOptions: {
+            expiresIn: configService.get('ACCESS_TOKEN_EXPIRATION'),
+          },
         };
       },
-      inject: [ConfigService]
+      inject: [ConfigService],
     }),
-    GrpcServiceModule
+    GrpcServiceModule,
   ],
   providers: [
     ProfileService,
@@ -36,6 +38,6 @@ import { ProfileLoader } from './application/profile.loader';
     ProfileLoader,
   ],
   controllers: [ProfileController],
-  exports: [ProfileMappingService, ProfileLoader ]
+  exports: [ProfileMappingService, ProfileLoader],
 })
-export class ProfileModule { }
+export class ProfileModule {}

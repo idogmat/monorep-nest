@@ -8,15 +8,11 @@ import { PostGraphqlService } from '../../application/post.graphql.service';
 
 @Resolver(() => Post)
 export class PostResolver {
-  constructor(
-    private readonly postGraphqlService: PostGraphqlService,
-    ) {}
+  constructor(private readonly postGraphqlService: PostGraphqlService) {}
 
   @UseGuards(GqlBasicAuthGuard)
   @Query(() => PaginatedPost)
-  posts(
-    @Args() args: PostsQueryArgs
-  ) {
+  posts(@Args() args: PostsQueryArgs) {
     const sanitizedQuery = new PaginationSearchPostGqlTerm(
       {
         offset: args.offset,
@@ -24,10 +20,10 @@ export class PostResolver {
         sortBy: args.sortBy,
         sortDirection: args.sortDirection,
         userId: args.userId,
-        description: args.description
-      }
-      , ['createdAt', 'userId']);
+        description: args.description,
+      },
+      ['createdAt', 'userId'],
+    );
     return this.postGraphqlService.findPosts(sanitizedQuery);
   }
-
 }

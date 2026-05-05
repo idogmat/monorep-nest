@@ -10,8 +10,10 @@ import { ConfigService } from '@nestjs/config';
 
 const APP_PREFIX = '/api/v1';
 
-export const applyAppSettings = (app: INestApplication): { port: number; env: string; rabbit: string } => {
-  const { port, env, rabbit } = getEnv(app)
+export const applyAppSettings = (
+  app: INestApplication,
+): { port: number; env: string; rabbit: string } => {
+  const { port, env, rabbit } = getEnv(app);
 
   setAppPrefix(app, APP_PREFIX);
 
@@ -22,7 +24,7 @@ export const applyAppSettings = (app: INestApplication): { port: number; env: st
   // modifyHook(app);
 
   setAppExceptionsFilters(app);
-  return { port, env, rabbit }
+  return { port, env, rabbit };
 };
 
 const getEnv = (app: INestApplication) => {
@@ -30,13 +32,12 @@ const getEnv = (app: INestApplication) => {
   const port = configService.get<number>('PORT') || 3000;
   const env = configService.get<EnvironmentsTypes>('NODE_ENV');
   const rabbit = configService.get<string>('RABBIT_URLS')?.toString() || '';
-  return { port, env, rabbit }
-}
+  return { port, env, rabbit };
+};
 
 const setAppPrefix = (app: INestApplication, prefix: string) => {
   app.setGlobalPrefix(prefix);
 };
-
 
 const modifyHook = (app: INestApplication) => {
   app.use('/api/v1/payments/webhook', (req, res, next) => {
@@ -60,10 +61,10 @@ const modifyHook = (app: INestApplication) => {
         }
       });
     } else {
-      res.status(400).send()
+      res.status(400).send();
     }
   });
-}
+};
 
 const setSwagger = (app: INestApplication, prefix: string) => {
   // if (env !== EnvironmentMode.PRODUCTION) {
@@ -101,7 +102,6 @@ const setAppPipes = (app: INestApplication) => {
           });
         });
 
-
         throw new BadRequestException(customErrors);
       },
     }),
@@ -113,8 +113,8 @@ const setAppExceptionsFilters = (app: INestApplication) => {
 };
 
 class IntervalRunner {
-  intervalId: NodeJS.Timeout
-  isRunning: boolean
+  intervalId: NodeJS.Timeout;
+  isRunning: boolean;
   constructor() {
     this.intervalId = null;
     this.isRunning = false;

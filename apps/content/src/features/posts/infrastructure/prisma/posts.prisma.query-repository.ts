@@ -3,11 +3,9 @@ import { PrismaService } from '../../../prisma/prisma.service';
 import { Prisma } from '../../../../../prisma/generated/content-client';
 import { ContentGetPostsCommand } from '../../application/use-cases/content.get.posts.use.case';
 
-
 @Injectable()
 export class PostsQueryPrismaRepository {
-  constructor(private prisma: PrismaService) {
-  }
+  constructor(private prisma: PrismaService) {}
   async getAllPosts(query: ContentGetPostsCommand) {
     const { pageNumber, pageSize, sortBy, sortDirection, userId } = query;
     const where: Prisma.PostWhereInput = {};
@@ -16,9 +14,10 @@ export class PostsQueryPrismaRepository {
       'createdAt',
     ];
 
-    const orderBy: Prisma.PostOrderByWithRelationInput = allowedSortFields.includes(sortBy as any)
-      ? { [sortBy]: sortDirection.toLowerCase() as 'asc' | 'desc' }
-      : { createdAt: 'desc' };
+    const orderBy: Prisma.PostOrderByWithRelationInput =
+      allowedSortFields.includes(sortBy as any)
+        ? { [sortBy]: sortDirection.toLowerCase() as 'asc' | 'desc' }
+        : { createdAt: 'desc' };
 
     const [items, totalCount] = await this.prisma.$transaction([
       this.prisma.post.findMany({
@@ -29,8 +28,8 @@ export class PostsQueryPrismaRepository {
         include: {
           urls: true,
           comments: true,
-          likes: true
-        }
+          likes: true,
+        },
       }),
       this.prisma.post.count({ where }),
     ]);
@@ -39,15 +38,14 @@ export class PostsQueryPrismaRepository {
   }
 
   async getPost(id: string) {
-    const item = await
-      this.prisma.post.findFirst({
-        where: { id },
-        include: {
-          urls: true,
-          comments: true,
-          likes: true
-        }
-      })
+    const item = await this.prisma.post.findFirst({
+      where: { id },
+      include: {
+        urls: true,
+        comments: true,
+        likes: true,
+      },
+    });
 
     return item;
   }

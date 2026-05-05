@@ -12,8 +12,8 @@ export class RabbitConsumerService implements OnModuleInit {
 
   constructor(
     private configService: ConfigService,
-    private commandBus: CommandBus
-  ) { }
+    private commandBus: CommandBus,
+  ) {}
 
   async onModuleInit() {
     await this.connectAndConsume();
@@ -52,7 +52,10 @@ export class RabbitConsumerService implements OnModuleInit {
             // Подтверждение успешной обработки
             this.channel.ack(msg);
           } catch (err) {
-            this.logger.error(`Error processing message: ${err.message}`, err.stack);
+            this.logger.error(
+              `Error processing message: ${err.message}`,
+              err.stack,
+            );
 
             // Обработка ошибок (можно настроить политику повтора)
             this.handleError(msg, err);
@@ -71,8 +74,10 @@ export class RabbitConsumerService implements OnModuleInit {
     // Реализуйте вашу бизнес-логику здесь
     switch (message.type) {
       case 'UPLOAD_POSTS_PHOTO':
-        console.log(message)
-        await this.commandBus.execute(new UploadPhotoCommand(message.userId, message.postId, message.data));
+        console.log(message);
+        await this.commandBus.execute(
+          new UploadPhotoCommand(message.userId, message.postId, message.data),
+        );
         break;
       case 'POST_UPDATED':
         await this.handlePostUpdated(message.data);
@@ -101,19 +106,15 @@ export class RabbitConsumerService implements OnModuleInit {
       };
 
       // Отправляем в очередь повтора
-      this.channel.sendToQueue(
-        'posts_queue_retry',
-        msg.content,
-        { headers: newHeaders }
-      );
+      this.channel.sendToQueue('posts_queue_retry', msg.content, {
+        headers: newHeaders,
+      });
       this.channel.ack(msg);
     } else {
       // Отправка в очередь мертвых писем
-      this.channel.sendToQueue(
-        'posts_queue_dead_letter',
-        msg.content,
-        { headers: { ...headers, 'x-death-reason': error.message } }
-      );
+      this.channel.sendToQueue('posts_queue_dead_letter', msg.content, {
+        headers: { ...headers, 'x-death-reason': error.message },
+      });
       this.channel.ack(msg);
     }
   }

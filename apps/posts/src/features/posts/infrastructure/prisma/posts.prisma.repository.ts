@@ -2,15 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 
 import { FileMetadata } from '../../api/model/interfaces/files-uploaded-event.interface';
-import { PhotoUploadStatus, Post } from '../../../../../prisma/generated/post-client';
-
+import {
+  PhotoUploadStatus,
+  Post,
+} from '../../../../../prisma/generated/post-client';
 
 @Injectable()
 export class PostsPrismaRepository {
-  constructor(private prisma: PrismaService) {
-  }
+  constructor(private prisma: PrismaService) {}
 
-  async createPost(userId: string, title: string, status: PhotoUploadStatus): Promise<Post> {
+  async createPost(
+    userId: string,
+    title: string,
+    status: PhotoUploadStatus,
+  ): Promise<Post> {
     return this.prisma.post.create({
       data: {
         userId,
@@ -20,7 +25,10 @@ export class PostsPrismaRepository {
     });
   }
 
-  async updateStatusForPost(postId: string, status: PhotoUploadStatus): Promise<Post> {
+  async updateStatusForPost(
+    postId: string,
+    status: PhotoUploadStatus,
+  ): Promise<Post> {
     return this.prisma.post.update({
       where: { id: postId },
       data: { photoUploadStatus: status },
@@ -33,7 +41,7 @@ export class PostsPrismaRepository {
     });
   }
 
-  async updatePost(param: { id: string, data: Partial<Post> }) {
+  async updatePost(param: { id: string; data: Partial<Post> }) {
     return this.prisma.post.update({
       where: { id: param.id },
       data: param.data,
@@ -50,11 +58,9 @@ export class PostsPrismaRepository {
     try {
       await this.prisma.post.updateMany({
         where: { userId },
-        data: { banned: true }
+        data: { banned: true },
       });
-    } catch (error) {
-
-    }
+    } catch (error) {}
   }
 
   async deletePostWithFiles(param: { id: string }) {
@@ -74,10 +80,8 @@ export class PostsPrismaRepository {
       fileUrl: file.fileUrl,
     }));
 
-
     await this.prisma.file.createMany({
       data,
     });
-
   }
 }

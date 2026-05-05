@@ -6,8 +6,8 @@ import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const { port, env, host, rabbit, grpc_url } = applyAppSettings(app)
-  await app.init()
+  const { port, env, host, rabbit, grpc_url } = applyAppSettings(app);
+  await app.init();
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.GRPC,
     options: {

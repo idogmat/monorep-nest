@@ -9,21 +9,17 @@ export class ContentGetPostsCommand {
     public pageNumber?: number,
     public pageSize?: number,
     public userId?: string,
-  ) {
-  }
+  ) {}
 }
 
-
-
 @CommandHandler(ContentGetPostsCommand)
-export class ContentGetPostsUseCase implements ICommandHandler<ContentGetPostsCommand> {
-  constructor(
-    private postsQueryPrismaRepository: PostsQueryPrismaRepository
-  ) {
-  }
+export class ContentGetPostsUseCase
+  implements ICommandHandler<ContentGetPostsCommand>
+{
+  constructor(private postsQueryPrismaRepository: PostsQueryPrismaRepository) {}
 
   async execute(command: ContentGetPostsCommand): Promise<any> {
-    console.log(command, 'command')
+    console.log(command, 'command');
     const newPosts = await this.postsQueryPrismaRepository.getAllPosts(command);
     console.log(newPosts);
     return { ...newPosts, items: newPosts.items.map(outputMapper) };

@@ -25,7 +25,7 @@ import { MessengerClientService } from './grpc.messenger.service';
                 includeDirs: ['node_modules/google-proto-files'],
               },
             },
-          }
+          };
         },
         inject: [ConfigService],
       },
@@ -43,7 +43,7 @@ import { MessengerClientService } from './grpc.messenger.service';
                 includeDirs: ['node_modules/google-proto-files'],
               },
             },
-          }
+          };
         },
         inject: [ConfigService],
       },
@@ -61,7 +61,7 @@ import { MessengerClientService } from './grpc.messenger.service';
                 includeDirs: ['node_modules/google-proto-files'],
               },
             },
-          }
+          };
         },
         inject: [ConfigService],
       },
@@ -79,7 +79,7 @@ import { MessengerClientService } from './grpc.messenger.service';
                 includeDirs: ['node_modules/google-proto-files'],
               },
             },
-          }
+          };
         },
         inject: [ConfigService],
       },
@@ -93,8 +93,8 @@ import { MessengerClientService } from './grpc.messenger.service';
               package: 'messenger',
               protoPath: join(__dirname, 'messenger.proto'),
               url: configService.get<string>('MESSENGER_GRPC_URL'),
-            }
-          }
+            },
+          };
         },
         inject: [ConfigService],
       },
@@ -106,14 +106,14 @@ import { MessengerClientService } from './grpc.messenger.service';
     PaymentsClientService,
     ContentClientService,
     FilesClientService,
-    MessengerClientService
+    MessengerClientService,
   ],
   exports: [
     ProfileClientService,
     PaymentsClientService,
     ContentClientService,
     FilesClientService,
-    MessengerClientService
+    MessengerClientService,
   ],
 })
-export class GrpcServiceModule { }
+export class GrpcServiceModule {}

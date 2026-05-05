@@ -1,10 +1,10 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsString } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsString } from 'class-validator';
 
 export class VerifyEmailToken {
   @ApiProperty({ type: String })
   @IsString()
-  token: string
+  token: string;
 }
 
 export class EmailVerify {
@@ -20,5 +20,5 @@ export class EmailRecovery {
 
   @ApiProperty({ type: String })
   @IsString()
-  recaptchaToken: string
+  recaptchaToken: string;
 }

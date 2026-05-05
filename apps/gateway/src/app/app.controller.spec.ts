@@ -23,7 +23,7 @@ import { ProfileClientService } from '../support.modules/grpc/grpc.profile.servi
   providers: [ProfileClientService],
   exports: [ProfileClientService],
 })
-export class GrpcServiceModuleMock { }
+export class GrpcServiceModuleMock {}
 
 describe('AppController', () => {
   let appController: AppController;
@@ -38,7 +38,7 @@ describe('AppController', () => {
             transport: Transport.TCP,
             options: {
               host: '127.0.0.1',
-              port: 3001,  // Порт, на который отправляется запрос в Service B
+              port: 3001, // Порт, на который отправляется запрос в Service B
             },
           },
           // {
@@ -50,7 +50,7 @@ describe('AppController', () => {
           //     url: '0.0.0.0',
           //   },
           // }
-        ])
+        ]),
       ],
       controllers: [AppController],
       providers: [],

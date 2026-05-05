@@ -3,5 +3,5 @@ export interface Notify {
   expiresAt: string;
 }
 export class NotifySubscribeEvent {
-  constructor(public readonly notify: Notify) { }
+  constructor(public readonly notify: Notify) {}
 }

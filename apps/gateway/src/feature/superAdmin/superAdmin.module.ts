@@ -1,16 +1,15 @@
-import { Module } from "@nestjs/common";
-import { GraphQLModule } from "@nestjs/graphql";
+import { Module } from '@nestjs/common';
+import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { join } from "path";
-import { SuperAdminService } from "./application/superAdmin.service";
-import { SuperAdminResolver } from "./api/resolvers/superAdmin.resolver";
-import { GrpcServiceModule } from "../../support.modules/grpc/grpc.module";
-import { UsersAccountsModule } from "../user-accounts/users.accounts.module";
-import { ProfileModule } from "../profile/profile.module";
+import { join } from 'path';
+import { SuperAdminService } from './application/superAdmin.service';
+import { SuperAdminResolver } from './api/resolvers/superAdmin.resolver';
+import { GrpcServiceModule } from '../../support.modules/grpc/grpc.module';
+import { UsersAccountsModule } from '../user-accounts/users.accounts.module';
+import { ProfileModule } from '../profile/profile.module';
 import { PostsModule } from '../posts/posts.module';
-import { ClientsModule, Transport } from "@nestjs/microservices";
-import { ConfigModule, ConfigService } from "@nestjs/config";
-
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -42,13 +41,13 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
               queue: 'post_queue',
               queueOptions: { durable: true },
             },
-          }
+          };
         },
         inject: [ConfigService],
       },
-    ])
+    ]),
   ],
   providers: [SuperAdminService, SuperAdminResolver],
-  controllers: []
+  controllers: [],
 })
-export class SuperAdminModule { }
+export class SuperAdminModule {}

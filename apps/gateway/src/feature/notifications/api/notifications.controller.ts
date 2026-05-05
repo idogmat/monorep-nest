@@ -5,16 +5,12 @@ import { Payment } from '../../../../../libs/proto/generated/payments';
 import { NotificationsSocket } from '../applications/notifications.socket';
 import { findDiffDate } from '../applications/date.helper';
 
-
-
 @Controller()
 export class NotificationsController {
   constructor(
     private readonly notificationsRepository: NotificationsRepository,
     private readonly notificationsSocket: NotificationsSocket,
-  ) {
-
-  }
+  ) {}
   // @EventPattern()
   // async handleNewSubscribe2(
   //   @Payload() data: any,

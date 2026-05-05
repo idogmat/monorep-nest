@@ -6,4 +6,4 @@ export const userTestSeeder = {
       password: '1234567',
     };
   },
-}
+};

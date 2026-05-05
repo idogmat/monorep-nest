@@ -1,5 +1,10 @@
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import {
+  Injectable,
+  Logger,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as amqplib from 'amqplib';
 
 @Injectable()
@@ -8,9 +13,7 @@ export class RabbitService implements OnModuleInit, OnModuleDestroy {
   private connection: amqplib.Connection;
   private readonly logger = new Logger(RabbitService.name);
   private amqp: string;
-  constructor(
-    private configService: ConfigService
-  ) {
+  constructor(private configService: ConfigService) {
     this.amqp = this.configService.get('RABBIT_URLS')[0];
   }
 
@@ -34,7 +37,7 @@ export class RabbitService implements OnModuleInit, OnModuleDestroy {
       const success = this.channel.sendToQueue(
         queueName,
         Buffer.from(JSON.stringify(payload)),
-        { persistent: true } // Сохранять сообщения на диске
+        { persistent: true }, // Сохранять сообщения на диске
       );
 
       if (!success) {

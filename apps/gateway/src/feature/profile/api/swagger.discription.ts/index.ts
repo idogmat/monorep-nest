@@ -1,11 +1,21 @@
-import { applyDecorators, Type } from "@nestjs/common";
-import { ApiBody, ApiConsumes, ApiExtraModels, ApiOperation, ApiProperty, ApiResponse } from '@nestjs/swagger';
-import { UserProfileResponse } from "../../../../../../libs/proto/generated/profile";
+import { applyDecorators, Type } from '@nestjs/common';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiExtraModels,
+  ApiOperation,
+  ApiProperty,
+  ApiResponse,
+} from '@nestjs/swagger';
+import { UserProfileResponse } from '../../../../../../libs/proto/generated/profile';
 import { UpdateProfileModel } from '../model/input/update.profile.model';
 import { PostUpdateModel } from '../../../posts/api/model/input/post.update.model';
 
-export const ApiFileWithDto = <TModel extends Type<any>>(model: TModel, fileFieldName = 'file') => {
-  const values = new model().swagger()
+export const ApiFileWithDto = <TModel extends Type<any>>(
+  model: TModel,
+  fileFieldName = 'file',
+) => {
+  const values = new model().swagger();
 
   return applyDecorators(
     ApiConsumes('multipart/form-data'),
@@ -75,7 +85,6 @@ export class UserProfileResponseDto implements UserProfileResponse {
 
   @ApiProperty({ type: String })
   createdAt: string;
-
 }
 export function UpdateProfileApiDecorator() {
   return applyDecorators(
@@ -87,6 +96,6 @@ export function UpdateProfileApiDecorator() {
     ApiResponse({ status: 200, description: 'Профиль успешно обновлен' }),
     ApiResponse({ status: 400, description: 'Некорректные данные' }),
     ApiResponse({ status: 401, description: 'Не авторизован' }),
-    ApiResponse({ status: 500, description: 'Внутренняя ошибка сервера' })
+    ApiResponse({ status: 500, description: 'Внутренняя ошибка сервера' }),
   );
 }

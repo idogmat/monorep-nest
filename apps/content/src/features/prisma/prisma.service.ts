@@ -4,7 +4,8 @@ import { PrismaClient } from '../../../../content/prisma/generated/content-clien
 @Injectable()
 export class PrismaService
   extends PrismaClient
-  implements OnModuleInit, OnModuleDestroy {
+  implements OnModuleInit, OnModuleDestroy
+{
   async onModuleInit() {
     await this.$connect();
   }

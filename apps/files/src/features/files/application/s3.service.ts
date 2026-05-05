@@ -1,7 +1,7 @@
-import { Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as AWS from 'aws-sdk';
-import { ManagedUpload } from "aws-sdk/clients/s3";
+import { ManagedUpload } from 'aws-sdk/clients/s3';
 
 export interface UploadedFileResponse {
   originalName: string;
@@ -28,22 +28,20 @@ export class S3StorageAdapter {
       endpoint: this.configService.get<string>('S3_ENDPOINT'),
       s3ForcePathStyle: true,
     };
-    console.log(bucketName, 'bucketName')
+    console.log(bucketName, 'bucketName');
     this.bucketName = bucketName;
     this.s3 = new AWS.S3(s3Config);
   }
 
-  async uploadFile(file: any, folder: string): Promise<
-    UploadedFileResponse> {
-
-    console.log(this.bucketName, 'bucketName')
+  async uploadFile(file: any, folder: string): Promise<UploadedFileResponse> {
+    console.log(this.bucketName, 'bucketName');
 
     const params: AWS.S3.PutObjectRequest = {
       Bucket: this.bucketName,
       Key: `${folder}/${file.originalname}`,
       Body: file.buffer,
       ContentType: file.mimetype,
-      ACL: 'public-read',  // Важно — публичный доступ
+      ACL: 'public-read', // Важно — публичный доступ
       ContentDisposition: 'inline',
     };
     const uploadResult: ManagedUpload.SendData = await this.s3
@@ -72,13 +70,15 @@ export class S3StorageAdapter {
   }
 
   async getFilesByPath(path: string): Promise<AWS.S3.Object[]> {
-    console.log("this.bucketName---------", this.bucketName);
+    console.log('this.bucketName---------', this.bucketName);
 
     try {
-      const data = await this.s3.listObjectsV2({
-        Bucket: this.bucketName,
-        Prefix: path,
-      }).promise();
+      const data = await this.s3
+        .listObjectsV2({
+          Bucket: this.bucketName,
+          Prefix: path,
+        })
+        .promise();
 
       return data.Contents || [];
     } catch (error) {
@@ -88,10 +88,12 @@ export class S3StorageAdapter {
 
   async deleteFile(key: string): Promise<void> {
     try {
-      await this.s3.deleteObject({
-        Bucket: this.bucketName,
-        Key: key,
-      }).promise();
+      await this.s3
+        .deleteObject({
+          Bucket: this.bucketName,
+          Key: key,
+        })
+        .promise();
     } catch (error) {
       throw new Error(`Failed to delete file: ${error.message}`);
     }
@@ -101,28 +103,27 @@ export class S3StorageAdapter {
     const data: AWS.S3.ObjectList = await new Promise((resolve, reject) => {
       this.s3.listObjectsV2({ Bucket: this.bucketName }, (err, data) => {
         if (data?.Contents) {
-          resolve(data.Contents)
+          resolve(data.Contents);
         } else {
           console.log(err, err.stack);
-          reject()
+          reject();
         }
       });
-    })
+    });
     if (data) {
       const deleteParams = {
         Bucket: this.bucketName,
         Delete: {
-          Objects: data.map(item => ({ Key: item.Key })),
+          Objects: data.map((item) => ({ Key: item.Key })),
         },
       };
       await this.s3.deleteObjects(deleteParams, (err, data) => {
         if (data) {
-          console.log('fin')
+          console.log('fin');
         } else {
           console.log(err, err.stack);
         }
       });
     }
   }
-
 }

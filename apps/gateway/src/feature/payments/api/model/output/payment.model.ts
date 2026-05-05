@@ -42,5 +42,4 @@ export class PaymentsViewModel {
   @ApiProperty({ type: Number })
   @IsNumber()
   amount: number;
-
 }

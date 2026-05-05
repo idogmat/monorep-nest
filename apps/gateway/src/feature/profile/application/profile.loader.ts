@@ -4,7 +4,7 @@ import { ProfileClientService } from '../../../support.modules/grpc/grpc.profile
 
 @Injectable({ scope: Scope.REQUEST })
 export class ProfileLoader {
-  constructor(private readonly profileClientService: ProfileClientService)  {}
+  constructor(private readonly profileClientService: ProfileClientService) {}
 
   public readonly loader = new DataLoader<string, any | null>(
     async (userIds: readonly string[]) => {
@@ -14,9 +14,10 @@ export class ProfileLoader {
       });
 
       if (!response.profiles) return userIds.map(() => null);
-      const profileMap = new Map(response.profiles.map(profile => [profile.userId, profile]));
-      return  userIds.map(id => profileMap.get(id) ?? null);
-    }
+      const profileMap = new Map(
+        response.profiles.map((profile) => [profile.userId, profile]),
+      );
+      return userIds.map((id) => profileMap.get(id) ?? null);
+    },
   );
-
 }

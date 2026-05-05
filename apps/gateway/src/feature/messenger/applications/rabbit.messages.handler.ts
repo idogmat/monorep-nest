@@ -1,6 +1,6 @@
 export const rabbitMessageHandler = async (message: any) => {
   // Реализуйте вашу бизнес-логику здесь
-  console.log(message, 'messageFile')
+  console.log(message, 'messageFile');
   switch (message.type) {
     case 'UPLOAD_CHAT_FILE':
       // console.log(message, 'UPLOAD_CHAT_FILE')
@@ -12,10 +12,10 @@ export const rabbitMessageHandler = async (message: any) => {
       // const notifyUser = await this.commandBus.execute(new SendChatNotifyCommand(
       //   chat
       // ));
-      console.log(message, 'messageFile')
+      console.log(message, 'messageFile');
 
       break;
     default:
       break;
   }
-}
+};

@@ -1,16 +1,29 @@
 // src/files.controller.ts
 import {
-  BadRequestException, Body,
-  Controller, Get,
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
   Headers,
   Param,
   Post,
   Req,
-  Res, UploadedFiles, UseInterceptors,
+  Res,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
 import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { join } from 'path';
-import { createReadStream, createWriteStream, existsSync, mkdirSync, readdirSync, unlinkSync, writeFileSync, WriteStream } from 'fs';
+import {
+  createReadStream,
+  createWriteStream,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  unlinkSync,
+  writeFileSync,
+  WriteStream,
+} from 'fs';
 import { Request } from 'express';
 import { diskStorage } from 'multer';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -26,7 +39,6 @@ import { SavePhotoForProfileCommand } from '../application/use-cases/save.photo.
 import { SaveFileForChatCommand } from '../application/use-cases/save.file.chat.use-case';
 import { UploadChatFileCommand } from '../application/use-cases/upload.chat.file.use-case';
 
-
 @Controller()
 export class FilesController {
   private chunkDir = './uploads/chunks';
@@ -35,7 +47,6 @@ export class FilesController {
     private readonly filesQueryRepository: FilesQueryRepository,
     private readonly commandBus: CommandBus,
     private readonly eventBus: EventBus,
-
   ) {
     if (!existsSync(this.chunkDir)) {
       mkdirSync(this.chunkDir, { recursive: true });
@@ -44,78 +55,85 @@ export class FilesController {
 
   @GrpcStreamMethod('FileService', 'Upload')
   async uploadFiles(
-    stream$: Observable<{ chunkData: Buffer; filename: string; userId: string, postId: string }>
+    stream$: Observable<{
+      chunkData: Buffer;
+      filename: string;
+      userId: string;
+      postId: string;
+    }>,
   ): Promise<{ success: boolean; message: string }> {
-
     const loadedFilesResult = await this.commandBus.execute(
-      new SavePhotoForPostCommand(stream$)
+      new SavePhotoForPostCommand(stream$),
     );
     return loadedFilesResult;
-
   }
 
   @GrpcMethod('FileService', 'LoadOnS3')
-  async LoadOnS3(
-    req: { userId: string, postId: string }
-  ): Promise<any> {
-
+  async LoadOnS3(req: { userId: string; postId: string }): Promise<any> {
     if (req?.userId && req?.postId)
-      this.eventBus.publish(new LoadFilesEvent(
-        req.userId,
-        req.postId
-      ));
-    return { success: true, message: 'Files uploaded successfully' }
+      this.eventBus.publish(new LoadFilesEvent(req.userId, req.postId));
+    return { success: true, message: 'Files uploaded successfully' };
   }
 
   @GrpcStreamMethod('FileService', 'UploadProfile')
   async UploadProfile(
-    stream$: Observable<{ chunkData: Buffer; filename: string; userId: string }>
+    stream$: Observable<{
+      chunkData: Buffer;
+      filename: string;
+      userId: string;
+    }>,
   ): Promise<any> {
     const loadedFilesResult = await this.commandBus.execute(
-      new SavePhotoForProfileCommand(stream$)
+      new SavePhotoForProfileCommand(stream$),
     );
-    if (!loadedFilesResult?.filename) return { success: true, message: 'Files uploaded successfully' }
+    if (!loadedFilesResult?.filename)
+      return { success: true, message: 'Files uploaded successfully' };
     await this.commandBus.execute(
-      new UploadProfilePhotoCommand(loadedFilesResult.userId, loadedFilesResult?.filename)
+      new UploadProfilePhotoCommand(
+        loadedFilesResult.userId,
+        loadedFilesResult?.filename,
+      ),
     );
-    console.log(loadedFilesResult)
+    console.log(loadedFilesResult);
     return loadedFilesResult;
   }
 
   @GrpcStreamMethod('FileService', 'UploadChatFile')
   async UploadFileForChat(
-    stream$: Observable<{ chunkData: Buffer; filename: string; senderId: string, userId: string }>
+    stream$: Observable<{
+      chunkData: Buffer;
+      filename: string;
+      senderId: string;
+      userId: string;
+    }>,
   ): Promise<any> {
     const loadedFilesResult = await this.commandBus.execute(
-      new SaveFileForChatCommand(stream$)
+      new SaveFileForChatCommand(stream$),
     );
-    if (!loadedFilesResult?.filename) return { success: true, message: 'Files uploaded successfully' }
+    if (!loadedFilesResult?.filename)
+      return { success: true, message: 'Files uploaded successfully' };
     await this.commandBus.execute(
       new UploadChatFileCommand(
         loadedFilesResult.senderId,
         loadedFilesResult.userId,
-        loadedFilesResult?.filename
-      )
+        loadedFilesResult?.filename,
+      ),
     );
-    console.log(loadedFilesResult, 'loadedFilesResult')
+    console.log(loadedFilesResult, 'loadedFilesResult');
     return loadedFilesResult;
   }
 
   @Post('postsPhoto')
   async getPostsAndPhotos(
     @Body('postIds') postIds: string[],
-    @Headers('X-UserId',
-    ) userId: string
+    @Headers('X-UserId') userId: string,
   ) {
-
     return this.filesQueryRepository.getPostsMedia(userId, postIds);
-
   }
-
 
   @Get(':postId')
   async getPostPhotos(
-    @Param('postId') postId: string
+    @Param('postId') postId: string,
   ): Promise<LocationViewModel> {
     return this.filesQueryRepository.getLocationByPostId(postId);
   }
@@ -129,19 +147,19 @@ export class FilesController {
           cb(null, `${Date.now()}-${file.originalname}`);
         },
       }),
-    }) as any
+    }) as any,
   )
-  async handleFilesUpload(@UploadedFiles() files: Express.Multer.File[],
+  async handleFilesUpload(
+    @UploadedFiles() files: Express.Multer.File[],
     @Headers('X-UserId') userId: string,
-    @Headers('X-PostId') postId: string) {
-
-
+    @Headers('X-PostId') postId: string,
+  ) {
     if (!files || files.length === 0) {
       throw new BadRequestException('No files received');
     }
 
     return this.commandBus.execute(
-      new CreatePhotoForPostCommand(userId, postId)
+      new CreatePhotoForPostCommand(userId, postId),
     );
   }
 
@@ -165,8 +183,8 @@ export class FilesController {
       res.json({ message: `Chunk ${chunkIndex} received` });
     });
     req.on('finish', () => {
-      console.log('finish file load')
-    })
+      console.log('finish file load');
+    });
 
     writeStream.on('error', (err) => {
       console.error('❌ Ошибка сохранения чанка:', err);
@@ -186,7 +204,6 @@ export class FilesController {
 
     res.json({ message: 'File merge started' });
   }
-
 }
 
 export function mergeChunks(fileId: string, outputFilePath: string) {

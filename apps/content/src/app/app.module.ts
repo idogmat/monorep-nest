@@ -7,10 +7,7 @@ import { ContentController } from './content.controller';
 import { CqrsModule } from '@nestjs/cqrs';
 import { PostsPrismaRepository } from '../features/posts/infrastructure/prisma/posts.prisma.repository';
 import { PrismaService } from '../features/prisma/prisma.service';
-import {
-
-  ContentCreatePostUseCase,
-} from '../features/posts/application/use-cases/content.create.post.use.case';
+import { ContentCreatePostUseCase } from '../features/posts/application/use-cases/content.create.post.use.case';
 import { PostsQueryPrismaRepository } from '../features/posts/infrastructure/prisma/posts.prisma.query-repository';
 import { RabbitConsumerService } from '../features/posts/application/rabbit.consumer.service';
 import { UploadPhotoUseCase } from '../features/posts/application/use-cases/content.upload.photo';
@@ -28,14 +25,14 @@ const useCasesForPost = [
   ContentGetPostsUseCase,
   ContentGetPostUseCase,
   UploadPhotoUseCase,
-  ContentPostLikeUseCase
-]
+  ContentPostLikeUseCase,
+];
 @Module({
   imports: [
     CqrsModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [getConfiguration]
+      load: [getConfiguration],
     }),
     ClientsModule.registerAsync([
       {
@@ -49,7 +46,7 @@ const useCasesForPost = [
               queue: 'content_queue',
               queueOptions: { durable: true },
             },
-          }
+          };
         },
         inject: [ConfigService],
       },
@@ -63,17 +60,14 @@ const useCasesForPost = [
               package: 'content',
               protoPath: join(__dirname, 'content.proto'),
               url: configService.get<string>('CONTENT_GRPC_URL'),
-            }
-          }
+            },
+          };
         },
         inject: [ConfigService],
       },
     ]),
-
   ],
-  controllers: [
-    ContentController
-  ],
+  controllers: [ContentController],
   providers: [
     ...useCasesForPost,
     PostsPrismaRepository,
@@ -83,12 +77,10 @@ const useCasesForPost = [
     {
       provide: 'RABBIT_SERVICE',
       useFactory: (configService: ConfigService) => {
-        return new RabbitService(
-          configService,
-        );
+        return new RabbitService(configService);
       },
       inject: [ConfigService],
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}

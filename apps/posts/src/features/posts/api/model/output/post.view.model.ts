@@ -1,8 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsDate, IsEnum, IsOptional, IsString, IsUUID, Length } from 'class-validator';
+import {
+  IsArray,
+  IsDate,
+  IsEnum,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Length,
+} from 'class-validator';
 import { $Enums } from '../../../../../../prisma/generated/post-client';
 import PhotoUploadStatus = $Enums.PhotoUploadStatus;
-
 
 export class PostViewModel {
   @ApiProperty({ type: String, format: 'uuid' })
@@ -35,9 +42,8 @@ export class PostViewModel {
   @ApiProperty({
     enum: PhotoUploadStatus,
     description: 'Статус загрузки фотографий',
-    example: PhotoUploadStatus.PENDING
+    example: PhotoUploadStatus.PENDING,
   })
-
   @IsEnum(PhotoUploadStatus)
   photoUploadStatus: PhotoUploadStatus;
 }

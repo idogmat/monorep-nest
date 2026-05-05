@@ -11,7 +11,7 @@ export class PostMedia {
   @Prop()
   userId: string;
 
-  @Prop({default: Date.now})
+  @Prop({ default: Date.now })
   createdAt: Date;
 
   @Prop()
@@ -32,11 +32,10 @@ export class PostMedia {
   @Prop()
   bucket: string;
 
-
   static createNewPost(
     PostMediaModel: PostMediaModelType,
     data: createPostMediaType,
-  ): PostMediaDocument{
+  ): PostMediaDocument {
     const newPost = new PostMediaModel({
       userId: data.userId,
       postId: data.postId,
@@ -46,28 +45,30 @@ export class PostMedia {
       location: data.uploadData.Location,
       ETag: data.uploadData.ETag,
       bucket: data.uploadData.Bucket,
-    })
+    });
 
     return newPost;
   }
 }
 
 export type PostMediaModelStaticType = {
-  createNewPost: (PostMediaModel: PostMediaModelType,
-           data: createPostMediaType) => PostMediaDocument;
-}
+  createNewPost: (
+    PostMediaModel: PostMediaModelType,
+    data: createPostMediaType,
+  ) => PostMediaDocument;
+};
 
 export type createPostMediaType = {
-  userId: string,
-  postId: string,
-  mimetype: string,
-  originalName: string,
-  uploadData: UploadPhotoResponse
-}
+  userId: string;
+  postId: string;
+  mimetype: string;
+  originalName: string;
+  uploadData: UploadPhotoResponse;
+};
 export const PostMediaSchema = SchemaFactory.createForClass(PostMedia);
 
 PostMediaSchema.statics = {
-  createNewPost: PostMedia.createNewPost
+  createNewPost: PostMedia.createNewPost,
 } as PostMediaModelStaticType;
 export type PostMediaModelType = Model<PostMediaDocument> &
   PostMediaModelStaticType;

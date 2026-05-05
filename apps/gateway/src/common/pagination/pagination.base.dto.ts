@@ -20,7 +20,7 @@ export class PaginationBaseDto {
   @ApiPropertyOptional({
     example: 'DESC',
     enum: ['ASC', 'DESC', 'asc', 'desc'],
-    description: 'Направление сортировки'
+    description: 'Направление сортировки',
   })
   @IsOptional()
   @IsIn(['ASC', 'DESC', 'asc', 'desc'])

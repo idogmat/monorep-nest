@@ -13,13 +13,13 @@
     REFRESH_TOKEN_EXPIRATION=30d
     RECAPTCHA_SECRET_KEY
 
-  🏃<b>run dev</b>
+🏃<b>run dev</b>
 
     yarn
     yarn prisma generate [service]
     yarn prisma migrate [service]
     yarn start:dev
-    
+
 </details>
 
 ```
@@ -27,7 +27,9 @@ npx prisma migrate dev --name init
 
 npx prisma generate --no-engine
 ```
+
 ```
 sudo docker build -t payments -f ./apps/payments/Dockerfile ./
 ```
+
 cloudflared tunnel --url http://localhost:8080

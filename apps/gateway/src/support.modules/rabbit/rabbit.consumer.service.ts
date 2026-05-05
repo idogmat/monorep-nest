@@ -13,10 +13,13 @@ export class RabbitConsumerService implements OnModuleInit {
   constructor(
     private configService: ConfigService,
     queueName: string,
-    private readonly handler: (msg: any, callback?: any) => Promise<void> | void,
+    private readonly handler: (
+      msg: any,
+      callback?: any,
+    ) => Promise<void> | void,
     private readonly callback?: (callback?: any) => Promise<void> | void,
   ) {
-    this.queueName = queueName
+    this.queueName = queueName;
   }
 
   async onModuleInit() {
@@ -56,7 +59,10 @@ export class RabbitConsumerService implements OnModuleInit {
             // Подтверждение успешной обработки
             this.channel.ack(msg);
           } catch (err) {
-            this.logger.error(`Error processing message: ${err.message}`, err.stack);
+            this.logger.error(
+              `Error processing message: ${err.message}`,
+              err.stack,
+            );
 
             // Обработка ошибок (можно настроить политику повтора)
             this.handleError(msg, err);
@@ -70,8 +76,6 @@ export class RabbitConsumerService implements OnModuleInit {
       setTimeout(() => this.connectAndConsume(), 5000);
     }
   }
-
-
 
   private async handlePostUploadPhoto(postData: any) {
     const { data } = postData;
@@ -98,19 +102,15 @@ export class RabbitConsumerService implements OnModuleInit {
       };
 
       // Отправляем в очередь повтора
-      this.channel.sendToQueue(
-        'posts_queue_retry',
-        msg.content,
-        { headers: newHeaders }
-      );
+      this.channel.sendToQueue('posts_queue_retry', msg.content, {
+        headers: newHeaders,
+      });
       this.channel.ack(msg);
     } else {
       // Отправка в очередь мертвых писем
-      this.channel.sendToQueue(
-        'posts_queue_dead_letter',
-        msg.content,
-        { headers: { ...headers, 'x-death-reason': error.message } }
-      );
+      this.channel.sendToQueue('posts_queue_dead_letter', msg.content, {
+        headers: { ...headers, 'x-death-reason': error.message },
+      });
       this.channel.ack(msg);
     }
   }

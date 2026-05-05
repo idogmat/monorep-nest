@@ -4,23 +4,13 @@ import { PaginationSearchPostGqlTerm } from '../api/utils/pagination';
 
 @Injectable()
 export class PostGraphqlService {
-  constructor(
-
-    private postMicroserviceService: PostMicroserviceService,
-
-  ) { }
-  async findPosts(query: PaginationSearchPostGqlTerm
-  )
-  {
-
+  constructor(private postMicroserviceService: PostMicroserviceService) {}
+  async findPosts(query: PaginationSearchPostGqlTerm) {
     try {
       return await this.postMicroserviceService.getPostsGQL(query);
-
     } catch (e) {
-
-      console.log(e, 'fail')
+      console.log(e, 'fail');
       return { posts: [], totalCount: 0 };
     }
-
   }
 }

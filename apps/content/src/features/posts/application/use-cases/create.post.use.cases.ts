@@ -6,18 +6,19 @@ export class CreatePostCommand {
   constructor(
     public title: string,
     public userId: string,
-    public photoUploadStatus: PhotoUploadStatus) {
-  }
+    public photoUploadStatus: PhotoUploadStatus,
+  ) {}
 }
 @CommandHandler(CreatePostCommand)
 export class CreatePostUseCases implements ICommandHandler<CreatePostCommand> {
-  constructor(private postsPrismaRepository: PostsPrismaRepository) {
-  }
+  constructor(private postsPrismaRepository: PostsPrismaRepository) {}
 
   async execute(command: CreatePostCommand): Promise<string> {
-
-    const newPost = await this.postsPrismaRepository.createPost(command.userId,
-      command.title, command.photoUploadStatus);
+    const newPost = await this.postsPrismaRepository.createPost(
+      command.userId,
+      command.title,
+      command.photoUploadStatus,
+    );
 
     return newPost.id;
   }

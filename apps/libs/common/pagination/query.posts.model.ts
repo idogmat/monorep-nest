@@ -10,16 +10,18 @@ export class PaginationSearchPostTerm extends Pagination {
 
     this.description = query?.description ? query.description.toString() : null;
     this.userId = query?.userId ? query.userId.toString() : null;
-
   }
 
   public toQueryParams(): Record<string, string> {
     const entries = Object.entries(this)
       .filter(([_, value]) => value !== null && value !== undefined)
-      .reduce((acc, [key, value]) => {
-        acc[key] = String(value);
-        return acc;
-      }, {} as Record<string, string>);
+      .reduce(
+        (acc, [key, value]) => {
+          acc[key] = String(value);
+          return acc;
+        },
+        {} as Record<string, string>,
+      );
 
     return entries;
   }

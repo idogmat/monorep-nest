@@ -5,11 +5,11 @@
 // source: messenger.proto
 
 /* eslint-disable */
-import { Metadata } from "@grpc/grpc-js";
-import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
-import { Observable } from "rxjs";
+import { Metadata } from '@grpc/grpc-js';
+import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
+import { Observable } from 'rxjs';
 
-export const protobufPackage = "messenger";
+export const protobufPackage = 'messenger';
 
 export enum ChatType {
   PRIVATE = 0,
@@ -77,36 +77,62 @@ export interface GetChatsResponse {
   chats: Chat[];
 }
 
-export const MESSENGER_PACKAGE_NAME = "messenger";
+export const MESSENGER_PACKAGE_NAME = 'messenger';
 
 export interface MessengerServiceClient {
-  getChats(request: GetChatsRequest, metadata?: Metadata): Observable<GetChatsResponse>;
+  getChats(
+    request: GetChatsRequest,
+    metadata?: Metadata,
+  ): Observable<GetChatsResponse>;
 
-  createMessage(request: SendMessageRequest, metadata?: Metadata): Observable<Chat>;
+  createMessage(
+    request: SendMessageRequest,
+    metadata?: Metadata,
+  ): Observable<Chat>;
 }
 
 export interface MessengerServiceController {
   getChats(
     request: GetChatsRequest,
     metadata?: Metadata,
-  ): Promise<GetChatsResponse> | Observable<GetChatsResponse> | GetChatsResponse;
+  ):
+    | Promise<GetChatsResponse>
+    | Observable<GetChatsResponse>
+    | GetChatsResponse;
 
-  createMessage(request: SendMessageRequest, metadata?: Metadata): Promise<Chat> | Observable<Chat> | Chat;
+  createMessage(
+    request: SendMessageRequest,
+    metadata?: Metadata,
+  ): Promise<Chat> | Observable<Chat> | Chat;
 }
 
 export function MessengerServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["getChats", "createMessage"];
+    const grpcMethods: string[] = ['getChats', 'createMessage'];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod("MessengerService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcMethod('MessengerService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod("MessengerService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcStreamMethod('MessengerService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
   };
 }
 
-export const MESSENGER_SERVICE_NAME = "MessengerService";
+export const MESSENGER_SERVICE_NAME = 'MessengerService';

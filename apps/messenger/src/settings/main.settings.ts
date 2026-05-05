@@ -9,31 +9,36 @@ import { ConfigService } from '@nestjs/config';
 
 const APP_PREFIX = '/api/v1';
 
-export const applyAppSettings = (app: INestApplication): {
+export const applyAppSettings = (
+  app: INestApplication,
+): {
   port: number;
   env: string;
   host: string;
   rabbit: string;
   grpc_url: string;
 } => {
-  const { port, env, host, rabbit, grpc_url } = getEnv(app)
+  const { port, env, host, rabbit, grpc_url } = getEnv(app);
   setAppPrefix(app, APP_PREFIX);
 
   setAppPipes(app);
 
-  return { port, env, host, rabbit, grpc_url }
+  return { port, env, host, rabbit, grpc_url };
 };
 
 const getEnv = (app: INestApplication) => {
   const configService = app.get(ConfigService);
-  const env = configService.get<EnvironmentsTypes>('NODE_ENV')
-  const port = configService.get<number>('PORT') || configService.get<number>('MESSENGER_LOCAL_PORT');
+  const env = configService.get<EnvironmentsTypes>('NODE_ENV');
+  const port =
+    configService.get<number>('PORT') ||
+    configService.get<number>('MESSENGER_LOCAL_PORT');
   const host = env !== 'DEVELOPMENT' ? '0.0.0.0' : 'localhost';
   const rabbit = configService.get<string>('RABBIT_URLS')?.toString() || '';
-  const grpc_url = configService.get<string>('MESSENGER_GRPC_URL')?.toString() || '';
+  const grpc_url =
+    configService.get<string>('MESSENGER_GRPC_URL')?.toString() || '';
 
-  return { port, env, host, rabbit, grpc_url }
-}
+  return { port, env, host, rabbit, grpc_url };
+};
 
 const setAppPrefix = (app: INestApplication, prefix: string) => {
   app.setGlobalPrefix(prefix);
@@ -54,7 +59,6 @@ const setAppPipes = (app: INestApplication) => {
             customErrors.push({ field: e.property, message: msg });
           });
         });
-
 
         throw new BadRequestException(customErrors);
       },

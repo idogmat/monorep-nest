@@ -3,34 +3,25 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 import { Prisma } from '../../../../../../prisma/generated/client';
 import { PaginationSearchUserTerm } from '../../../../../common/pagination';
 
-
 @Injectable()
 export class UsersPrismaQueryRepository {
-  constructor(private prisma: PrismaService) { }
-  async validateUserCred(
-    pagination: PaginationSearchUserTerm,
-
-  ) {
+  constructor(private prisma: PrismaService) {}
+  async validateUserCred(pagination: PaginationSearchUserTerm) {
     const where: Prisma.UserWhereInput = {};
-    const { name, email } = pagination
+    const { name, email } = pagination;
 
     if (name) {
-      where.name = name
+      where.name = name;
     }
     if (email) {
-      where.email = email
+      where.email = email;
     }
-    return await
-      this.prisma.user.findFirst({
-        where,
-      })
+    return await this.prisma.user.findFirst({
+      where,
+    });
   }
 
-
-  async getAll(
-    pagination: PaginationSearchUserTerm,
-
-  ) {
+  async getAll(pagination: PaginationSearchUserTerm) {
     const where: Prisma.UserWhereInput = {};
     const { name, pageNumber, pageSize, sortBy, sortDirection } = pagination;
     if (name) {

@@ -10,15 +10,12 @@ import { PostsQueryRepository } from './infrastructure/prisma/posts-query-reposi
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePostUseCases } from './application/use-cases/create.post.use.cases';
 import { UploadPostPhotosUseCase } from './application/use-cases/upload.post.photos.use-case';
-import {
-  UpdatePostStatusOnFileUploadUseCases
-} from './application/use-cases/update.post.status.on.file.upload.use-case';
+import { UpdatePostStatusOnFileUploadUseCases } from './application/use-cases/update.post.status.on.file.upload.use-case';
 import { GetPostAndPhotoUseCase } from './application/use-cases/get.post.and.photo.use-case';
 import { GetAllPostsUseCase } from './application/use-cases/get.all.posts.use-case';
 import { UpdatePostUseCase } from './application/use-cases/update.post.use-case';
 import { DeletePostUseCase } from './application/use-cases/delete.post.use-case';
 import { GateService } from '../../../../gateway/src/common/gate.service';
-
 
 const useCasesForPost = [
   CreatePostUseCases,
@@ -27,7 +24,8 @@ const useCasesForPost = [
   GetPostAndPhotoUseCase,
   GetAllPostsUseCase,
   UpdatePostUseCase,
-  DeletePostUseCase]
+  DeletePostUseCase,
+];
 @Module({
   imports: [
     HttpModule,
@@ -47,7 +45,7 @@ const useCasesForPost = [
               queue: 'file_queue',
               queueOptions: { durable: true },
             },
-          }
+          };
         },
         inject: [ConfigService],
       },
@@ -58,9 +56,9 @@ const useCasesForPost = [
     PostsPrismaRepository,
     PostsQueryRepository,
     PrismaService,
-    GateService
+    GateService,
   ],
   controllers: [PostsController],
-  exports: [HttpModule]
+  exports: [HttpModule],
 })
-export class PostModule { }
+export class PostModule {}

@@ -19,28 +19,32 @@ export class GithubService {
     private readonly httpService: HttpService,
   ) {
     this.githubClientId = this.configService.get<string>('GITHUB_CLIENT_ID');
-    this.githubClientSecret = this.configService.get<string>('GITHUB_CLIENT_SECRET');
+    this.githubClientSecret = this.configService.get<string>(
+      'GITHUB_CLIENT_SECRET',
+    );
     this.baseUrl = this.configService.get<string>('BASE_URL');
-
   }
 
   githubAuth() {
     const redirectUri = `${this.baseUrl}/api/v1/auth/github/callback`; // URL callback
     return `https://github.com/login/oauth/authorize?client_id=${this.githubClientId}&redirect_uri=${redirectUri}`;
-
   }
 
   async githubAuthCallback(code: string) {
-    const tokenResponse = await axios.post('https://github.com/login/oauth/access_token', null, {
-      params: {
-        client_id: this.githubClientId,
-        client_secret: this.githubClientSecret,
-        code,
+    const tokenResponse = await axios.post(
+      'https://github.com/login/oauth/access_token',
+      null,
+      {
+        params: {
+          client_id: this.githubClientId,
+          client_secret: this.githubClientSecret,
+          code,
+        },
+        headers: {
+          Accept: 'application/json',
+        },
       },
-      headers: {
-        'Accept': 'application/json',
-      },
-    });
+    );
 
     const { access_token } = tokenResponse.data;
 
@@ -54,18 +58,23 @@ export class GithubService {
     const response = await axios.get('https://api.github.com/user', {
       headers: {
         Authorization: `token ${token}`,
-        Accept: 'application/vnd.github.v3+json'
-      }
-    });
-
-    const data = response.data;
-    const emailResponse = await axios.get('https://api.github.com/user/emails', {
-      headers: {
-        'Authorization': `Bearer ${token}`,
+        Accept: 'application/vnd.github.v3+json',
       },
     });
 
-    const email = emailResponse.data.find((emailInfo: any) => emailInfo?.primary)?.email || '';
+    const data = response.data;
+    const emailResponse = await axios.get(
+      'https://api.github.com/user/emails',
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    const email =
+      emailResponse.data.find((emailInfo: any) => emailInfo?.primary)?.email ||
+      '';
     return { login: data.login, providerId: data.id, email };
   }
 }

@@ -6,7 +6,7 @@ import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const { port, env, host, rabbit, grpc_url } = applyAppSettings(app)
+  const { port, env, host, rabbit, grpc_url } = applyAppSettings(app);
 
   await app.init();
 
@@ -34,6 +34,5 @@ async function bootstrap() {
   await app.startAllMicroservices();
 
   console.log(`Service Content is listening on port ${port} , on ${env} mode`);
-
 }
 bootstrap();

@@ -1,5 +1,25 @@
-import { ApiBearerAuth, ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Query, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Inject,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Req,
+  UploadedFiles,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ContentClientService } from '../../../../support.modules/grpc/grpc.content.service';
 import { AuthGuard } from '../../../../common/guard/authGuard';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -12,7 +32,10 @@ import { join } from 'path';
 import { FilesClientService } from '../../../../support.modules/grpc/grpc.files.service';
 import { SendFileService } from '../../../../support.modules/file/file.service';
 import { CommentCreateModel } from '../../comments/api/model/input/comment.create.model';
-import { ApiFileWithDto, GetPostsApiQuery } from './model/input/swagger.discription.ts';
+import {
+  ApiFileWithDto,
+  GetPostsApiQuery,
+} from './model/input/swagger.discription.ts';
 import { PostOutputModel } from './model/output/post.output.model';
 import { Request } from 'express';
 import { AuthGuardOptional } from '../../../../common/guard/authGuardOptional';
@@ -23,34 +46,34 @@ export class ContentPostsController {
   constructor(
     private readonly contentGrpcClient: ContentClientService,
     private readonly filesClientService: FilesClientService,
-    @Inject('SEND_FILE_SERVICE') private readonly sendFileService: SendFileService,
-  ) {
-
-  }
-
+    @Inject('SEND_FILE_SERVICE')
+    private readonly sendFileService: SendFileService,
+  ) {}
 
   @Post()
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
   @ApiFileWithDto(PostCreateModel, 'files')
-  @UseInterceptors(FilesInterceptor('files', 10, {
-    storage: diskStorage({
-      destination: (req, file, cb) => {
-        const uploadDir = join(__dirname, 'tmp', `${req.user.userId}`);
+  @UseInterceptors(
+    FilesInterceptor('files', 10, {
+      storage: diskStorage({
+        destination: (req, file, cb) => {
+          const uploadDir = join(__dirname, 'tmp', `${req.user.userId}`);
 
-        if (!existsSync(uploadDir)) {
-          mkdirSync(uploadDir, { recursive: true });
-        }
+          if (!existsSync(uploadDir)) {
+            mkdirSync(uploadDir, { recursive: true });
+          }
 
-        cb(null, uploadDir);
-      },
-      filename: (req, file, cb) => cb(null, `${file.originalname}`),
+          cb(null, uploadDir);
+        },
+        filename: (req, file, cb) => cb(null, `${file.originalname}`),
+      }),
     }),
-  }))
+  )
   async createPost(
     @Req() req,
     @Body() body: PostCreateModel,
-    @UploadedFiles() files: Express.Multer.File[]
+    @UploadedFiles() files: Express.Multer.File[],
   ) {
     const userId = req.user.userId;
     // console.log(files)
@@ -58,29 +81,30 @@ export class ContentPostsController {
       const post = await this.contentGrpcClient.createPost({
         userId,
         description: body.description,
-        photoUploadStatus: 'PENDING'
+        photoUploadStatus: 'PENDING',
       });
-      console.log(post)
-      const res = await this.sendFileService.uploadFilesGrpc(files, req.user.userId, post.id);
+      console.log(post);
+      const res = await this.sendFileService.uploadFilesGrpc(
+        files,
+        req.user.userId,
+        post.id,
+      );
 
-      console.log(res, 'resupload')
+      console.log(res, 'resupload');
       await this.filesClientService.loadOnS3(userId, post.id);
-      return post
+      return post;
     } catch (error) {
-      console.log(error, 'error')
+      console.log(error, 'error');
     }
   }
 
-  @Patch(":id/like")
+  @Patch(':id/like')
   @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'Successfully like | unlike post',
   })
-  async likePost(
-    @Req() req,
-    @Param('id') postId: string,
-  ) {
+  async likePost(@Req() req, @Param('id') postId: string) {
     const userId = req.user.userId;
     // console.log('ok')
     const res = await this.contentGrpcClient.likePost({ userId, postId });
@@ -90,7 +114,7 @@ export class ContentPostsController {
 
   @ApiBody({ type: CommentCreateModel })
   @ApiBearerAuth()
-  @Post(":id/comments")
+  @Post(':id/comments')
   @UseGuards(AuthGuard)
   async createComment(
     @Param('id') postId: string,
@@ -104,38 +128,32 @@ export class ContentPostsController {
         postId,
         message: body.message,
       });
-      return comment
+      return comment;
     } catch (error) {
-      console.log(error, 'error')
+      console.log(error, 'error');
     }
   }
 
-  @Get(":id")
+  @Get(':id')
   @UseGuards(AuthGuardOptional)
   @ApiResponse({
     status: 200,
     description: 'Successfully fetched post',
-    type: PostOutputModel
+    type: PostOutputModel,
   })
-  async getPost(
-    @Req() req,
-    @Param('id') postId: string,
-  ) {
+  async getPost(@Req() req, @Param('id') postId: string) {
     const res = await this.contentGrpcClient.getPost({ postId });
     console.log(res);
     return res;
   }
 
-  @Delete(":id")
+  @Delete(':id')
   @UseGuards(AuthGuard)
   @ApiResponse({
     status: 200,
     description: 'Successfully delete post',
   })
-  async deletePost(
-    @Req() req: Request,
-    @Param('id') postId: string,
-  ) {
+  async deletePost(@Req() req: Request, @Param('id') postId: string) {
     const userId = req.user.userId;
     // console.log('ok')
     const res = await this.contentGrpcClient.deletePost({ userId, postId });
@@ -146,13 +164,10 @@ export class ContentPostsController {
   @Get()
   @UseGuards(AuthGuardOptional)
   @GetPostsApiQuery()
-  async getPosts(
-    @Req() req,
-    @Query() queryDTO: PaginationContentQueryDto
-  ) {
-    console.log("yo");
+  async getPosts(@Req() req, @Query() queryDTO: PaginationContentQueryDto) {
+    console.log('yo');
     const query = new PaginationSearchContentTerm(queryDTO, ['createdAt']);
-    console.log(query)
+    console.log(query);
     const res = await this.contentGrpcClient.getPosts({ ...query });
     console.log(res);
     return res;

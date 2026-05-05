@@ -26,7 +26,7 @@ const useCases = [
   CreateChatUseCases,
   GetChatByParticipantsUseCases,
   CreateMessageWithFileUseCases,
-  SendChatNotifyUseCases
+  SendChatNotifyUseCases,
 ];
 
 @Module({
@@ -34,7 +34,7 @@ const useCases = [
     CqrsModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [getConfiguration]
+      load: [getConfiguration],
     }),
     ClientsModule.registerAsync([
       {
@@ -47,12 +47,12 @@ const useCases = [
               package: 'messenger',
               protoPath: join(__dirname, 'messenger.proto'),
               url: configService.get<string>('MESSENGER_GRPC_URL'),
-            }
-          }
+            },
+          };
         },
         inject: [ConfigService],
       },
-    ])
+    ]),
   ],
   controllers: [MessengerController],
   providers: [
@@ -65,14 +65,12 @@ const useCases = [
     {
       provide: 'RABBIT_SERVICE',
       useFactory: (configService: ConfigService) => {
-        return new RabbitService(
-          configService,
-        );
+        return new RabbitService(configService);
       },
       inject: [ConfigService],
     },
-    ...useCases
+    ...useCases,
   ],
   exports: [],
 })
-export class AppModule { }
+export class AppModule {}

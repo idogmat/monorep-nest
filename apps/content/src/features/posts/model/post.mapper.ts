@@ -1,4 +1,4 @@
-import { Prisma } from "../../../../../content/prisma/generated/content-client"
+import { Prisma } from '../../../../../content/prisma/generated/content-client';
 
 export const urlsMapping = (urls) => {
   return {
@@ -8,9 +8,9 @@ export const urlsMapping = (urls) => {
     deletedAt: urls?.deletedAt,
     fileName: urls?.fileName,
     fileUrl: urls?.fileUrl,
-    postId: urls?.postId
-  }
-}
+    postId: urls?.postId,
+  };
+};
 
 export const likesMapping = (like) => {
   return {
@@ -19,9 +19,9 @@ export const likesMapping = (like) => {
     updatedAt: like?.updatedAt,
     deletedAt: like?.deletedAt,
     postId: like?.postId,
-    userId: like?.userId
-  }
-}
+    userId: like?.userId,
+  };
+};
 
 export const commentsMapping = (comment) => {
   return {
@@ -31,14 +31,13 @@ export const commentsMapping = (comment) => {
     deletedAt: comment?.deletedAt,
     message: comment?.message,
     postId: comment?.postId,
-    userId: comment?.userId
-  }
-}
+    userId: comment?.userId,
+  };
+};
 
 type PostWithIncludes = Prisma.PostGetPayload<{
-  include: { urls: true, comments: true, likes: true }
+  include: { urls: true; comments: true; likes: true };
 }>;
-
 
 export const outputMapper = (post: PostWithIncludes) => {
   return {
@@ -52,6 +51,6 @@ export const outputMapper = (post: PostWithIncludes) => {
     banned: post.banned,
     photoUploadStatus: post.photoUploadStatus,
     urls: post?.urls?.map(urlsMapping) || [],
-    comments: post?.comments?.map(commentsMapping) || []
+    comments: post?.comments?.map(commentsMapping) || [],
   };
 };

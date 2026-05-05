@@ -1,5 +1,3 @@
-import { PaginationBaseDto } from "../../../../../common/pagination/pagination.base.dto";
+import { PaginationBaseDto } from '../../../../../common/pagination/pagination.base.dto';
 
-export class PaginationPaymentsQueryDto extends PaginationBaseDto {
-
-}
+export class PaginationPaymentsQueryDto extends PaginationBaseDto {}

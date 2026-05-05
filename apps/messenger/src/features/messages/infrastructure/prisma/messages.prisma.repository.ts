@@ -2,31 +2,35 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { Message } from '../../../../../prisma/generated/messenger-client';
 
-
 @Injectable()
 export class MessagesPrismaRepository {
-  constructor(
-    private prisma: PrismaService
-  ) {
-  }
+  constructor(private prisma: PrismaService) {}
 
-  async createMessage(chatId: string, senderId: string, message: string): Promise<Message> {
+  async createMessage(
+    chatId: string,
+    senderId: string,
+    message: string,
+  ): Promise<Message> {
     return this.prisma.message.create({
       data: {
-        chatId,   // ID чата
-        userId: senderId,      // ID автора
+        chatId, // ID чата
+        userId: senderId, // ID автора
         content: {
-          text: message
+          text: message,
         },
       },
     });
   }
 
-  async createMessageFile(chatId: string, senderId: string, file: Express.Multer.File & { location: string, originalName: string }): Promise<Message> {
+  async createMessageFile(
+    chatId: string,
+    senderId: string,
+    file: Express.Multer.File & { location: string; originalName: string },
+  ): Promise<Message> {
     return this.prisma.message.create({
       data: {
-        chatId,   // ID чата
-        userId: senderId,      // ID автора
+        chatId, // ID чата
+        userId: senderId, // ID автора
         content: {
           file: {
             fileName: file.originalName,
@@ -44,5 +48,4 @@ export class MessagesPrismaRepository {
       INSERT INTO messages (user_id, content) VALUES (${userId}, ${content})
     `;
   }
-
 }

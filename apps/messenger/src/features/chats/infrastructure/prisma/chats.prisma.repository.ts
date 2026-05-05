@@ -3,34 +3,33 @@ import { PrismaService } from '../../../prisma/prisma.service';
 import { Chat } from '../../../../../prisma/generated/messenger-client';
 import { ChatWithIncludes } from '../../model/chat.output.model';
 
-
 @Injectable()
 export class ChatsPrismaRepository {
-  constructor(
-    private prisma: PrismaService
-  ) {
-  }
+  constructor(private prisma: PrismaService) {}
 
-  async createChat(senderId: string, userId: string): Promise<ChatWithIncludes> {
+  async createChat(
+    senderId: string,
+    userId: string,
+  ): Promise<ChatWithIncludes> {
     return await this.prisma.chat.create({
       data: {
-        type: "PRIVATE",
+        type: 'PRIVATE',
         participants: {
           create: [
             {
               userId: senderId, // инициатор
-              role: "ADMIN",
+              role: 'ADMIN',
             },
             {
               userId: userId, // второй участник
-              role: "MEMBER",
+              role: 'MEMBER',
             },
           ],
         },
       },
       include: {
         participants: true,
-        messages: true
+        messages: true,
       },
     });
   }
@@ -41,8 +40,10 @@ export class ChatsPrismaRepository {
   //   `
   // }
 
-
-  async getByParticipants(senderId: string, userId: string): Promise<ChatWithIncludes> {
+  async getByParticipants(
+    senderId: string,
+    userId: string,
+  ): Promise<ChatWithIncludes> {
     return await this.prisma.chat.findFirst({
       where: {
         type: 'PRIVATE',
@@ -55,7 +56,7 @@ export class ChatsPrismaRepository {
         participants: true,
         messages: {
           orderBy: {
-            createdAt: "desc", // новые в начале
+            createdAt: 'desc', // новые в начале
           },
           take: 20, // например, только последние 20
         },

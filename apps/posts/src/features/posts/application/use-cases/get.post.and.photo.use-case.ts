@@ -8,35 +8,34 @@ import { ENTITY_POST } from '../../../../../../libs/common/entities.constants';
 import { PostsQueryRepository } from '../../infrastructure/prisma/posts-query-repository.service';
 
 export class GetPostAndPhotoCommand {
-  constructor(
-    public postId: string,
-
-  ) { }
+  constructor(public postId: string) {}
 }
 
 @CommandHandler(GetPostAndPhotoCommand)
-export class GetPostAndPhotoUseCase implements ICommandHandler<GetPostAndPhotoCommand> {
+export class GetPostAndPhotoUseCase
+  implements ICommandHandler<GetPostAndPhotoCommand>
+{
   constructor(
     private readonly postsPrismaRepository: PostsPrismaRepository,
-    private readonly postsQueryRepository: PostsQueryRepository
-  ) { }
+    private readonly postsQueryRepository: PostsQueryRepository,
+  ) {}
 
-  async execute(command: GetPostAndPhotoCommand): Promise<InterlayerNotice<PostViewModel | null>> {
+  async execute(
+    command: GetPostAndPhotoCommand,
+  ): Promise<InterlayerNotice<PostViewModel | null>> {
     const foundPost = await this.postsPrismaRepository.findById(command.postId);
     if (!foundPost) {
       return InterlayerNotice.createErrorNotice(
         PostError.NOT_FOUND_POST,
         ENTITY_POST,
-        404
-      )
-
+        404,
+      );
     }
 
-    const viewModel = await this.postsQueryRepository.getPostById(command.postId)
+    const viewModel = await this.postsQueryRepository.getPostById(
+      command.postId,
+    );
 
     return new InterlayerNotice(viewModel);
-
   }
-
-
 }

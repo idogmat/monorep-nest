@@ -13,7 +13,7 @@ import { findDiffDate } from './date.helper';
 import { RemoteRedisService } from '../../../support.modules/redis/remote.redis.service';
 import { IAuthUser } from '../../../common/guard/authGuard';
 
-const users = new Map()
+const users = new Map();
 
 @WebSocketGateway({
   namespace: 'notifications',
@@ -22,14 +22,15 @@ const users = new Map()
     credentials: true,
   },
 })
-export class NotificationsSocket implements OnGatewayConnection, OnGatewayDisconnect {
+export class NotificationsSocket
+  implements OnGatewayConnection, OnGatewayDisconnect
+{
   constructor(
     private readonly notificationsRepository: NotificationsRepository,
     private readonly redisService: RemoteRedisService,
-  ) { }
+  ) {}
   @WebSocketServer()
   server: Server;
-
 
   async handleConnection(client: Socket) {
     const token = client.handshake.auth.token;
@@ -52,9 +53,7 @@ export class NotificationsSocket implements OnGatewayConnection, OnGatewayDiscon
   }
 
   @SubscribeMessage('test-message')
-  handleMessage(
-    @MessageBody() data: any,
-  ): void {
+  handleMessage(@MessageBody() data: any): void {
     console.log('📩 Received from client:', data);
     this.server.emit('server-response', { msg: 'Message received!' });
   }
@@ -62,33 +61,40 @@ export class NotificationsSocket implements OnGatewayConnection, OnGatewayDiscon
   @SubscribeMessage('notifications')
   async getNotifies(
     @MessageBody() data: any,
-    @ConnectedSocket() client: Socket
+    @ConnectedSocket() client: Socket,
   ): Promise<void> {
     try {
       console.log('📩 Received from client:', client.data.user);
-      const notifications = await this.notificationsRepository.getNotificationsSubscribe(client.data.user)
-      console.log(notifications)
+      const notifications =
+        await this.notificationsRepository.getNotificationsSubscribe(
+          client.data.user,
+        );
+      console.log(notifications);
       if (notifications?.[0]?.expiresAt) {
-        const result = findDiffDate(notifications[0].expiresAt)
+        const result = findDiffDate(notifications[0].expiresAt);
         client.emit('notifications-response', result);
       }
       // this.server.to(users.get(client.data.user)).emit('notifications-response', { result: 'sdsdsddsd' });
     } catch (error) {
-      console.warn('socket content error')
+      console.warn('socket content error');
     }
   }
 
-  async sendPaymentNotifies(userId: string, payload: any, type?: string): Promise<void> {
+  async sendPaymentNotifies(
+    userId: string,
+    payload: any,
+    type?: string,
+  ): Promise<void> {
     try {
-      const clientKey = users.get(userId)
-      if (!clientKey) return
-      const result = { ...payload }
+      const clientKey = users.get(userId);
+      if (!clientKey) return;
+      const result = { ...payload };
       if (type) {
         Object.assign(result, { type });
       }
       this.server.to(clientKey).emit('notifications-response', result);
     } catch (error) {
-      console.warn('socket content error')
+      console.warn('socket content error');
     }
   }
 }

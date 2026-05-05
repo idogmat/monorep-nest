@@ -1,10 +1,26 @@
-import { Body, Controller, Get, Headers, HttpCode, Post, Query, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  HttpCode,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { Request } from 'express';
 import { AuthGuard } from '../../../../src/common/guard/authGuard';
-import { SubscribeDto, SubscribeProductDto } from './model/input/input.subscribe';
+import {
+  SubscribeDto,
+  SubscribeProductDto,
+} from './model/input/input.subscribe';
 import { PaginationPaymentsQueryDto } from './model/input/pagination.query';
 import { PaginationSearchPaymentsTerm } from './model/input/payments.query.model';
-import { mapToViewModel, PagedResponseOfPayments } from './model/output/paged.payments.model';
+import {
+  mapToViewModel,
+  PagedResponseOfPayments,
+} from './model/output/paged.payments.model';
 import { ApiBearerAuth, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { PaymentUrlModel } from './model/output/url.model';
 import { PaymentsClientService } from '../../../support.modules/grpc/grpc.payments.service';
@@ -14,26 +30,27 @@ export class PaymentsController {
   constructor(
     private readonly paymentsClientService: PaymentsClientService,
     private readonly usersService: UsersService,
-  ) { }
+  ) {}
 
   @ApiBearerAuth()
   @ApiResponse({
     status: 201,
     description: 'Create payment url',
-    type: PaymentUrlModel
+    type: PaymentUrlModel,
   })
   @UseGuards(AuthGuard)
   @Post('subscribe')
   async subscribePayment(
     @Req() req: Request,
-    @Body() payload: SubscribeProductDto
-
+    @Body() payload: SubscribeProductDto,
   ) {
-    const userId = req.user?.userId
-    const product = payload.subscribeType
-    const { id, email, name } = await this.usersService.findById(userId)
-    return await this.paymentsClientService.createSubscribe({ id, email, name }, product)
-
+    const userId = req.user?.userId;
+    const product = payload.subscribeType;
+    const { id, email, name } = await this.usersService.findById(userId);
+    return await this.paymentsClientService.createSubscribe(
+      { id, email, name },
+      product,
+    );
   }
 
   @ApiBearerAuth()
@@ -44,15 +61,10 @@ export class PaymentsController {
   @HttpCode(204)
   @UseGuards(AuthGuard)
   @Post('unsubscribe')
-  async unsubscribePayment(
-    @Req() req: Request,
-    @Body() payload: SubscribeDto
-
-  ) {
-    const userId = req.user?.userId
-    const paymentId = payload.paymentId
-    await this.paymentsClientService.unSubscribe({ paymentId, userId })
-
+  async unsubscribePayment(@Req() req: Request, @Body() payload: SubscribeDto) {
+    const userId = req.user?.userId;
+    const paymentId = payload.paymentId;
+    await this.paymentsClientService.unSubscribe({ paymentId, userId });
   }
 
   @ApiBearerAuth()
@@ -69,23 +81,29 @@ export class PaymentsController {
   @Get('subscriptions')
   async getSubscriptions(
     @Req() req,
-    @Query() queryDTO: PaginationPaymentsQueryDto
+    @Query() queryDTO: PaginationPaymentsQueryDto,
   ) {
     const userId = req.user?.userId;
-    const query = new PaginationSearchPaymentsTerm(queryDTO, ['createdAt', 'expiresAt']);
-    const result = await this.paymentsClientService.getSubscribes({ ...query, userId })
-    const { items, totalCount, pageNumber, pageSize } = result
-    return mapToViewModel({ items, totalCount, pageNumber, pageSize })
+    const query = new PaginationSearchPaymentsTerm(queryDTO, [
+      'createdAt',
+      'expiresAt',
+    ]);
+    const result = await this.paymentsClientService.getSubscribes({
+      ...query,
+      userId,
+    });
+    const { items, totalCount, pageNumber, pageSize } = result;
+    return mapToViewModel({ items, totalCount, pageNumber, pageSize });
   }
 
   @Post('webhook')
   @HttpCode(200)
-  async webHook(
-    @Req() req,
-    @Headers('stripe-signature') signature
-  ) {
+  async webHook(@Req() req, @Headers('stripe-signature') signature) {
     if (signature) {
-      const result = await this.paymentsClientService.webhook({ buffer: req.rawBody, signature })
+      const result = await this.paymentsClientService.webhook({
+        buffer: req.rawBody,
+        signature,
+      });
     }
   }
 }

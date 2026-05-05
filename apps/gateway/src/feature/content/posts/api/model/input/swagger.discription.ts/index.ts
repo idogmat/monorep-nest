@@ -1,10 +1,22 @@
-import { applyDecorators, Type } from "@nestjs/common";
-import { ApiBody, ApiConsumes, ApiExtraModels, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
-import { PostOutputModel, PostQueryOutputModel } from "../../output/post.output.model";
+import { applyDecorators, Type } from '@nestjs/common';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiExtraModels,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+} from '@nestjs/swagger';
+import {
+  PostOutputModel,
+  PostQueryOutputModel,
+} from '../../output/post.output.model';
 
-
-export const ApiFileWithDto = <TModel extends Type<any>>(model: TModel, fileFieldName = 'files') => {
-  const dto = new model().swagger()
+export const ApiFileWithDto = <TModel extends Type<any>>(
+  model: TModel,
+  fileFieldName = 'files',
+) => {
+  const dto = new model().swagger();
 
   return applyDecorators(
     ApiConsumes('multipart/form-data'), // <-- обязательно
@@ -38,8 +50,8 @@ export const GetPostsApiQuery = () => {
     ApiResponse({
       status: 200,
       description: 'Successfully fetched post',
-      type: PostQueryOutputModel
-    })
+      type: PostQueryOutputModel,
+    }),
   );
 };
 

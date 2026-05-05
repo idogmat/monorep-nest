@@ -27,16 +27,14 @@ import { GrpcServiceModule } from '../../support.modules/grpc/grpc.module';
               queue: 'profile_queue',
               queueOptions: { durable: true },
             },
-          }
+          };
         },
         inject: [ConfigService],
-      }
-    ])
+      },
+    ]),
   ],
-  providers: [
-    PrismaService,
-  ],
+  providers: [PrismaService],
   controllers: [PaymentsController],
-  exports: []
+  exports: [],
 })
-export class PaymentsModule { }
+export class PaymentsModule {}

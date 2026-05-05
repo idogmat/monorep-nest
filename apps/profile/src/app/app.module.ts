@@ -15,7 +15,7 @@ import { RabbitService } from '../features/rabbit.service';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [getConfiguration]
+      load: [getConfiguration],
     }),
     CqrsModule,
     ClientsModule.registerAsync([
@@ -30,7 +30,7 @@ import { RabbitService } from '../features/rabbit.service';
               queue: 'profile_queue',
               queueOptions: { durable: true },
             },
-          }
+          };
         },
         inject: [ConfigService],
       },
@@ -44,16 +44,14 @@ import { RabbitService } from '../features/rabbit.service';
               package: 'profile',
               protoPath: join(__dirname, 'profile.proto'),
               url: configService.get<string>('PROFILE_GRPC_URL'), //TODO
-            }
-          }
+            },
+          };
         },
         inject: [ConfigService],
       },
     ]),
   ],
-  controllers: [
-    AppController
-  ],
+  controllers: [AppController],
   providers: [
     PrismaService,
     ProfileService,
@@ -61,13 +59,11 @@ import { RabbitService } from '../features/rabbit.service';
     {
       provide: 'RABBIT_SERVICE',
       useFactory: (configService: ConfigService) => {
-        return new RabbitService(
-          configService,
-        );
+        return new RabbitService(configService);
       },
       inject: [ConfigService],
     },
   ],
   exports: [],
 })
-export class AppModule { }
+export class AppModule {}

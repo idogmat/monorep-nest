@@ -7,21 +7,19 @@ import { FileError } from '../../../../../../gateway/src/common/error-handling/f
 import { ENTITY_POST } from '../../../../../../libs/common/entities.constants';
 import { GateService } from '../../../../../../gateway/src/common/gate.service';
 
-
 export class UploadPostPhotosCommand {
   constructor(
     public readonly files: Express.Multer.File[],
     public readonly userId: string,
-    public readonly postId: string
+    public readonly postId: string,
   ) {}
 }
 
 @CommandHandler(UploadPostPhotosCommand)
-export class UploadPostPhotosUseCase implements ICommandHandler<UploadPostPhotosCommand> {
-  constructor(
-    private gateService: GateService,
-  ) {
-  }
+export class UploadPostPhotosUseCase
+  implements ICommandHandler<UploadPostPhotosCommand>
+{
+  constructor(private gateService: GateService) {}
   async execute(command: UploadPostPhotosCommand): Promise<InterlayerNotice> {
     const { files, userId, postId } = command;
 
@@ -29,8 +27,8 @@ export class UploadPostPhotosUseCase implements ICommandHandler<UploadPostPhotos
       return InterlayerNotice.createErrorNotice(
         FileError.NO_FILES_UPLOAD,
         ENTITY_POST,
-        400
-      )
+        400,
+      );
     }
 
     const formData = new FormData();
@@ -40,7 +38,7 @@ export class UploadPostPhotosUseCase implements ICommandHandler<UploadPostPhotos
         return InterlayerNotice.createErrorNotice(
           FileError.INVALID_FORMAT_FILES,
           ENTITY_POST,
-          400
+          400,
         );
       }
       formData.append('files', fs.createReadStream(file.path), {
@@ -55,15 +53,17 @@ export class UploadPostPhotosUseCase implements ICommandHandler<UploadPostPhotos
     headers['X-PostId'] = postId;
 
     try {
-      const response = await this.gateService.filesServicePost('upload_files',
-        formData, headers)
-
+      const response = await this.gateService.filesServicePost(
+        'upload_files',
+        formData,
+        headers,
+      );
     } catch (error) {
       console.error('Error during file upload:', error);
       return InterlayerNotice.createErrorNotice(
         FileError.INVALID_FORMAT_FILES,
         ENTITY_POST,
-        400
+        400,
       );
     } finally {
       for (const file of files) {

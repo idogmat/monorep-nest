@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcryptjs';  // Используем bcryptjs вместо старого bcrypt
+import * as bcrypt from 'bcryptjs'; // Используем bcryptjs вместо старого bcrypt
 @Injectable()
 export class BcryptService {
   async generationHash(password: string): Promise<string> {

@@ -21,9 +21,7 @@ import { ChatService } from '../applications/chat.service';
 @Controller('chat')
 export class ChatController {
   private readonly uploadsDir = './tmp/chunks';
-  constructor(
-    readonly chatService: ChatService
-  ) {
+  constructor(readonly chatService: ChatService) {
     mkdir(this.uploadsDir, { recursive: true });
   }
 
@@ -31,20 +29,27 @@ export class ChatController {
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
   // @ApiFileWithDto(InputProfileModel, 'file')
-  @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: (req, file, cb) => {
-        const uploadDir = join(__dirname, 'tmp', `${req.user.userId}`, 'chat');
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: (req, file, cb) => {
+          const uploadDir = join(
+            __dirname,
+            'tmp',
+            `${req.user.userId}`,
+            'chat',
+          );
 
-        if (!existsSync(uploadDir)) {
-          mkdirSync(uploadDir, { recursive: true });
-        }
+          if (!existsSync(uploadDir)) {
+            mkdirSync(uploadDir, { recursive: true });
+          }
 
-        cb(null, uploadDir);
-      },
-      filename: (req, file, cb) => cb(null, `${file.originalname}`),
+          cb(null, uploadDir);
+        },
+        filename: (req, file, cb) => cb(null, `${file.originalname}`),
+      }),
     }),
-  }))
+  )
   async uploadFileForChat(
     @Req() req,
     @Param('id', new EnhancedParseUUIDPipe()) id: string,

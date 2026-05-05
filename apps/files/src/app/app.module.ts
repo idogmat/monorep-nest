@@ -10,11 +10,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [getConfiguration]
+      load: [getConfiguration],
     }),
-    ClientsModule.registerAsync([  // Здесь правильно используется ClientsModule для регистрации микросервисов
+    ClientsModule.registerAsync([
+      // Здесь правильно используется ClientsModule для регистрации микросервисов
       {
-        name: 'TCP_SERVICE',  // Имя микросервиса
+        name: 'TCP_SERVICE', // Имя микросервиса
         imports: [ConfigModule],
         inject: [ConfigService],
         useFactory: (configService: ConfigService) => {
@@ -28,10 +29,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         },
       },
     ]),
-    FileModule
+    FileModule,
   ],
   controllers: [AppController],
   providers: [],
   exports: [],
 })
-export class AppModule { }
+export class AppModule {}

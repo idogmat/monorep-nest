@@ -1,4 +1,10 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { Request, Response } from 'express';
 
 // https://docs.nestjs.com/exception-filters
@@ -16,10 +22,9 @@ export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
       throw new HttpException(
         {
           statusCode: status,
-          message:
-            Array.isArray(responseBody.message)
-              ? responseBody.message
-              : [responseBody.message],
+          message: Array.isArray(responseBody.message)
+            ? responseBody.message
+            : [responseBody.message],
         },
         status,
       );

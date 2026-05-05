@@ -1,21 +1,21 @@
-import { Inject, Injectable } from "@nestjs/common";
-import { ProfileClientService } from "../../../support.modules/grpc/grpc.profile.service";
+import { Inject, Injectable } from '@nestjs/common';
+import { ProfileClientService } from '../../../support.modules/grpc/grpc.profile.service';
 import { UpdateUserProfileRequest } from 'aws-sdk/clients/opsworks';
-import { SendFileService } from "../../../../../gateway/src/support.modules/file/file.service";
-import { fileExist } from "../../../../../libs/common/helpers/exist.file";
-import { unlink } from "fs/promises";
+import { SendFileService } from '../../../../../gateway/src/support.modules/file/file.service';
+import { fileExist } from '../../../../../libs/common/helpers/exist.file';
+import { unlink } from 'fs/promises';
 
 @Injectable()
 export class ChatService {
   constructor(
-    @Inject('SEND_FILE_SERVICE') private readonly sendFileService: SendFileService,
-  ) { }
-
+    @Inject('SEND_FILE_SERVICE')
+    private readonly sendFileService: SendFileService,
+  ) {}
 
   async uploadFileForChat(
     file: Express.Multer.File,
     senderId: string,
-    userId: string
+    userId: string,
   ) {
     // 1. Сохраняем актуальный путь к файлу
     const filePath = file.path;
@@ -30,8 +30,12 @@ export class ChatService {
 
       // 3. Выполняем операции
 
-      const result = await this.sendFileService.uploadFileForChatGrpc(file, senderId, userId);
-      console.log(result)
+      const result = await this.sendFileService.uploadFileForChatGrpc(
+        file,
+        senderId,
+        userId,
+      );
+      console.log(result);
 
       // 4. Проверяем результаты
       // const errors = results.filter(r => r.status === 'rejected');
@@ -40,13 +44,12 @@ export class ChatService {
       // }
 
       return { success: true, message: 'Profile updated successfully' };
-
     } catch (error) {
       console.error('Profile update error:', error);
       return {
         success: false,
         message: 'Profile update failed',
-        error: error.message
+        error: error.message,
       };
     } finally {
       try {

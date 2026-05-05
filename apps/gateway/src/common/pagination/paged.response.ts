@@ -22,6 +22,5 @@ export class PagedResponse<T> {
     this.page = page;
     this.pageSize = pageSize;
     this.items = items;
-
   }
 }

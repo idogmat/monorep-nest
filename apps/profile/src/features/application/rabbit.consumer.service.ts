@@ -12,9 +12,9 @@ export class RabbitConsumerService implements OnModuleInit {
 
   constructor(
     private configService: ConfigService,
-    private profileService: ProfileService
+    private profileService: ProfileService,
   ) {
-    this.queueName = 'profile_queue'
+    this.queueName = 'profile_queue';
   }
 
   async onModuleInit() {
@@ -54,7 +54,10 @@ export class RabbitConsumerService implements OnModuleInit {
             // Подтверждение успешной обработки
             this.channel.ack(msg);
           } catch (err) {
-            this.logger.error(`Error processing message: ${err.message}`, err.stack);
+            this.logger.error(
+              `Error processing message: ${err.message}`,
+              err.stack,
+            );
 
             // Обработка ошибок (можно настроить политику повтора)
             this.handleError(msg, err);
@@ -73,11 +76,11 @@ export class RabbitConsumerService implements OnModuleInit {
     // Реализуйте вашу бизнес-логику здесь
     switch (message.type) {
       case 'UPLOAD_PROFILE_PHOTO':
-        console.log(message, 'UPLOAD_PROFILE_PHOTO')
+        console.log(message, 'UPLOAD_PROFILE_PHOTO');
         if (message.data?.location)
           await this.profileService.updateProfilePhoto({
             userId: message?.userId,
-            photoUrl: message.data.location
+            photoUrl: message.data.location,
           });
         break;
       case 'POST_UPDATED':
@@ -113,19 +116,15 @@ export class RabbitConsumerService implements OnModuleInit {
       };
 
       // Отправляем в очередь повтора
-      this.channel.sendToQueue(
-        'posts_queue_retry',
-        msg.content,
-        { headers: newHeaders }
-      );
+      this.channel.sendToQueue('posts_queue_retry', msg.content, {
+        headers: newHeaders,
+      });
       this.channel.ack(msg);
     } else {
       // Отправка в очередь мертвых писем
-      this.channel.sendToQueue(
-        'posts_queue_dead_letter',
-        msg.content,
-        { headers: { ...headers, 'x-death-reason': error.message } }
-      );
+      this.channel.sendToQueue('posts_queue_dead_letter', msg.content, {
+        headers: { ...headers, 'x-death-reason': error.message },
+      });
       this.channel.ack(msg);
     }
   }

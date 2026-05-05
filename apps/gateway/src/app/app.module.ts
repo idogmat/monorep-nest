@@ -23,15 +23,18 @@ import { MessengerModule } from '../feature/messenger/messenger.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [getConfiguration]
+      load: [getConfiguration],
     }),
     CqrsModule,
-    ThrottlerModule.forRoot([{
-      ttl: 10000,
-      limit: 5,
-    }]),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 10000,
+        limit: 5,
+      },
+    ]),
     RedisModule,
-    ClientsModule.registerAsync([ // TODO remove
+    ClientsModule.registerAsync([
+      // TODO remove
       {
         imports: [ConfigModule],
         name: 'TCP_SERVICE',
@@ -55,10 +58,9 @@ import { MessengerModule } from '../feature/messenger/messenger.module';
     SuperAdminModule,
     ContentModule,
     FileServiceModule,
-    MessengerModule
-
+    MessengerModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })
-export class AppModule { }
+export class AppModule {}

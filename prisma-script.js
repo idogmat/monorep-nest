@@ -1,12 +1,12 @@
-const { execSync } = require("child_process");
+const { execSync } = require('child_process');
 const type = process.argv[2];
 const service = process.argv[3];
 if (!service || !type) {
-  console.error("Set type and srvice, example: yarn prisma generate gateway");
+  console.error('Set type and srvice, example: yarn prisma generate gateway');
   process.exit(1);
 }
 
-let command = ''
+let command = '';
 switch (type) {
   case 'generate':
     command = `cd apps/${service} && npx prisma generate`;
@@ -19,7 +19,7 @@ switch (type) {
 }
 if (!command) process.exit(1);
 try {
-  execSync(command, { stdio: "inherit" });
+  execSync(command, { stdio: 'inherit' });
 } catch (error) {
   console.error(error.message);
   process.exit(1);

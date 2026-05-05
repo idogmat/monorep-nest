@@ -16,8 +16,7 @@ import { UsersAccountsModule } from '../user-accounts/users.accounts.module';
 import { PostResolver } from '../superAdmin/api/resolvers/post.resolver';
 import { PostFieldResolver } from '../superAdmin/api/resolvers/post-field.resolver';
 
-const useCasesForPost = [
-  CreatePostUseCases]
+const useCasesForPost = [CreatePostUseCases];
 @Module({
   imports: [
     CqrsModule,
@@ -33,7 +32,9 @@ const useCasesForPost = [
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('ACCESS_TOKEN_SECRET'),
         signOptions: {
-          expiresIn: configService.get<string | number>('ACCESS_TOKEN_EXPIRATION'),
+          expiresIn: configService.get<string | number>(
+            'ACCESS_TOKEN_EXPIRATION',
+          ),
         },
       }),
     }),
@@ -46,9 +47,14 @@ const useCasesForPost = [
     PostGraphqlService,
     PostResolver,
     PostFieldResolver,
-    ...useCasesForPost
+    ...useCasesForPost,
   ],
   controllers: [PostsController],
-  exports: [HttpModule, GateService, PostMicroserviceService, PostGraphqlService ]
+  exports: [
+    HttpModule,
+    GateService,
+    PostMicroserviceService,
+    PostGraphqlService,
+  ],
 })
-export class PostsModule { }
+export class PostsModule {}

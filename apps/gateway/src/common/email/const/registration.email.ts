@@ -1,3 +1,1 @@
-export const registrationEmail =
-  'Registration in-gram'
-
+export const registrationEmail = 'Registration in-gram';

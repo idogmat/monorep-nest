@@ -1,4 +1,4 @@
-import { ArgumentMetadata, ParseUUIDPipe } from "@nestjs/common";
+import { ArgumentMetadata, ParseUUIDPipe } from '@nestjs/common';
 
 export class EnhancedParseUUIDPipe extends ParseUUIDPipe {
   constructor(type: number = 404) {

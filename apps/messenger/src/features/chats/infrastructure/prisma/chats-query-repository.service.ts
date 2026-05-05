@@ -2,11 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { ChatWithIncludes } from '../../model/chat.output.model';
 
-
 @Injectable()
 export class ChatsQueryRepository {
-  constructor(private prisma: PrismaService) {
-  }
+  constructor(private prisma: PrismaService) {}
 
   async getChatsBySenderId(senderId: string): Promise<ChatWithIncludes[]> {
     return await this.prisma.chat.findMany({
@@ -18,7 +16,7 @@ export class ChatsQueryRepository {
         participants: true,
         messages: {
           orderBy: {
-            createdAt: "desc", // новые в начале
+            createdAt: 'desc', // новые в начале
           },
           take: 10, // например, только последние 20
         },
@@ -80,5 +78,4 @@ export class ChatsQueryRepository {
     ORDER BY c."createdAt" DESC;
   `;
   }
-
 }

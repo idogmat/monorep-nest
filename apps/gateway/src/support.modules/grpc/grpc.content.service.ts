@@ -8,7 +8,12 @@ import {
   PostService,
 } from './interfaces/content.interface';
 import { lastValueFrom } from 'rxjs';
-import { DeletePostRequest, GetPostRequest, GetPostsQueryRequest, LikePostRequest } from '../../../../libs/proto/generated/content';
+import {
+  DeletePostRequest,
+  GetPostRequest,
+  GetPostsQueryRequest,
+  LikePostRequest,
+} from '../../../../libs/proto/generated/content';
 
 @Injectable()
 export class ContentClientService implements OnModuleInit {
@@ -16,11 +21,10 @@ export class ContentClientService implements OnModuleInit {
   private postService: PostService;
   // private likeService: LikeService;
 
-  constructor(
-    @Inject('CONTENT_SERVICE') private readonly client: ClientGrpc
-  ) { }
+  constructor(@Inject('CONTENT_SERVICE') private readonly client: ClientGrpc) {}
   onModuleInit() {
-    this.commentService = this.client.getService<CommentService>('CommentService');
+    this.commentService =
+      this.client.getService<CommentService>('CommentService');
     this.postService = this.client.getService<PostService>('PostService');
     // this.likeService = this.client.getService<LikeService>('LikeService');
   }

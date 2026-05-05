@@ -1,22 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { Notification, NotifyStatus } from '../../../../prisma/generated/client';
+import {
+  Notification,
+  NotifyStatus,
+} from '../../../../prisma/generated/client';
 
 @Injectable()
 export class NotificationsRepository {
-  constructor(private prisma: PrismaService) {
-  }
+  constructor(private prisma: PrismaService) {}
   // expiresAt
   // usserId
 
-  async createNotificationBySubscribe(userId: string, expiresAt: string): Promise<Notification> {
+  async createNotificationBySubscribe(
+    userId: string,
+    expiresAt: string,
+  ): Promise<Notification> {
     return this.prisma.notification.create({
       data: {
         userId,
         expiresAt,
-        type: NotifyStatus.subscribe
-      }
-    })
+        type: NotifyStatus.subscribe,
+      },
+    });
   }
 
   async getNotificationsSubscribe(userId: string): Promise<Notification[]> {
@@ -24,12 +29,12 @@ export class NotificationsRepository {
       where: {
         userId,
         expiresAt: {
-          gt: new Date()
+          gt: new Date(),
         },
-        type: NotifyStatus.subscribe
+        type: NotifyStatus.subscribe,
       },
-      orderBy: { expiresAt: 'desc' }
-    })
+      orderBy: { expiresAt: 'desc' },
+    });
   }
 
   // async updateStatusForPost(postId: string, status: PhotoUploadStatus): Promise<Post> {

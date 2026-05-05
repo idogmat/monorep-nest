@@ -5,11 +5,11 @@
 // source: content.proto
 
 /* eslint-disable */
-import { Metadata } from "@grpc/grpc-js";
-import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
-import { Observable } from "rxjs";
+import { Metadata } from '@grpc/grpc-js';
+import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
+import { Observable } from 'rxjs';
 
-export const protobufPackage = "content";
+export const protobufPackage = 'content';
 
 export enum PhotoUploadStatus {
   PENDING = 0,
@@ -123,18 +123,33 @@ export interface DeletePostResponse {
   message: string;
 }
 
-export const CONTENT_PACKAGE_NAME = "content";
+export const CONTENT_PACKAGE_NAME = 'content';
 
 export interface PostServiceClient {
-  createPost(request: CreatePostRequest, metadata?: Metadata): Observable<PostResponse>;
+  createPost(
+    request: CreatePostRequest,
+    metadata?: Metadata,
+  ): Observable<PostResponse>;
 
-  getPost(request: GetPostRequest, metadata?: Metadata): Observable<GetPostResponse>;
+  getPost(
+    request: GetPostRequest,
+    metadata?: Metadata,
+  ): Observable<GetPostResponse>;
 
-  getPosts(request: GetPostsQueryRequest, metadata?: Metadata): Observable<GetPostsResponse>;
+  getPosts(
+    request: GetPostsQueryRequest,
+    metadata?: Metadata,
+  ): Observable<GetPostsResponse>;
 
-  deletePost(request: DeletePostRequest, metadata?: Metadata): Observable<DeletePostResponse>;
+  deletePost(
+    request: DeletePostRequest,
+    metadata?: Metadata,
+  ): Observable<DeletePostResponse>;
 
-  likePost(request: LikePostRequest, metadata?: Metadata): Observable<LikePostResponse>;
+  likePost(
+    request: LikePostRequest,
+    metadata?: Metadata,
+  ): Observable<LikePostResponse>;
 }
 
 export interface PostServiceController {
@@ -151,60 +166,109 @@ export interface PostServiceController {
   getPosts(
     request: GetPostsQueryRequest,
     metadata?: Metadata,
-  ): Promise<GetPostsResponse> | Observable<GetPostsResponse> | GetPostsResponse;
+  ):
+    | Promise<GetPostsResponse>
+    | Observable<GetPostsResponse>
+    | GetPostsResponse;
 
   deletePost(
     request: DeletePostRequest,
     metadata?: Metadata,
-  ): Promise<DeletePostResponse> | Observable<DeletePostResponse> | DeletePostResponse;
+  ):
+    | Promise<DeletePostResponse>
+    | Observable<DeletePostResponse>
+    | DeletePostResponse;
 
   likePost(
     request: LikePostRequest,
     metadata?: Metadata,
-  ): Promise<LikePostResponse> | Observable<LikePostResponse> | LikePostResponse;
+  ):
+    | Promise<LikePostResponse>
+    | Observable<LikePostResponse>
+    | LikePostResponse;
 }
 
 export function PostServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createPost", "getPost", "getPosts", "deletePost", "likePost"];
+    const grpcMethods: string[] = [
+      'createPost',
+      'getPost',
+      'getPosts',
+      'deletePost',
+      'likePost',
+    ];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod("PostService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcMethod('PostService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod("PostService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcStreamMethod('PostService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
   };
 }
 
-export const POST_SERVICE_NAME = "PostService";
+export const POST_SERVICE_NAME = 'PostService';
 
 export interface CommentServiceClient {
-  createComment(request: CreateCommentRequest, metadata?: Metadata): Observable<CreateCommentResponse>;
+  createComment(
+    request: CreateCommentRequest,
+    metadata?: Metadata,
+  ): Observable<CreateCommentResponse>;
 }
 
 export interface CommentServiceController {
   createComment(
     request: CreateCommentRequest,
     metadata?: Metadata,
-  ): Promise<CreateCommentResponse> | Observable<CreateCommentResponse> | CreateCommentResponse;
+  ):
+    | Promise<CreateCommentResponse>
+    | Observable<CreateCommentResponse>
+    | CreateCommentResponse;
 }
 
 export function CommentServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createComment"];
+    const grpcMethods: string[] = ['createComment'];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod("CommentService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcMethod('CommentService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod("CommentService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcStreamMethod('CommentService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
   };
 }
 
-export const COMMENT_SERVICE_NAME = "CommentService";
+export const COMMENT_SERVICE_NAME = 'CommentService';

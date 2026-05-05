@@ -5,15 +5,12 @@ import { firstValueFrom } from 'rxjs';
 
 @Controller()
 export class AppController {
-  constructor(
-    @Inject('TCP_SERVICE') private readonly client: ClientProxy,
-
-  ) { }
+  constructor(@Inject('TCP_SERVICE') private readonly client: ClientProxy) {}
 
   @Get()
   getHello() {
     console.log('Hello World route is being called');
-    return 'Hello World!'
+    return 'Hello World!';
   }
 
   @Get('get-data')
@@ -21,7 +18,7 @@ export class AppController {
     console.log('Sending request to Service B via TCP...');
     try {
       const response = await firstValueFrom(
-        this.client.send('get_data', { text: 'Hello, Service B!' })
+        this.client.send('get_data', { text: 'Hello, Service B!' }),
       );
       console.log('Response from Service B:', response);
       return response;
@@ -38,15 +35,8 @@ export class AppController {
   }
 
   @Get('redirect')
-  async loh(
-    @Req() req: Request,
-    @Res() res: Response
-  ) {
-    res.cookie('front', 'ya vertel')
-    res.redirect('http://localhost:5173?tvoyToken=13412312')
-
-
+  async loh(@Req() req: Request, @Res() res: Response) {
+    res.cookie('front', 'ya vertel');
+    res.redirect('http://localhost:5173?tvoyToken=13412312');
   }
-
-
 }

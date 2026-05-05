@@ -19,17 +19,17 @@ import { createRabbitMessageHandler } from './applications/rabbit.messages.handl
       useFactory: (
         configService: ConfigService,
         notificationsRepository: NotificationsRepository,
-        notificationsSocket: NotificationsSocket
+        notificationsSocket: NotificationsSocket,
       ) => {
         const handler = createRabbitMessageHandler(
           notificationsRepository,
-          notificationsSocket.sendPaymentNotifies.bind(notificationsSocket)
+          notificationsSocket.sendPaymentNotifies.bind(notificationsSocket),
         );
 
         return new RabbitConsumerService(
           configService,
           'payments_notify_queue',
-          handler
+          handler,
         );
       },
       inject: [ConfigService, NotificationsRepository, NotificationsSocket],
@@ -38,4 +38,4 @@ import { createRabbitMessageHandler } from './applications/rabbit.messages.handl
   controllers: [NotificationsController],
   exports: [NotificationsSocket],
 })
-export class NotificationsModule { }
+export class NotificationsModule {}

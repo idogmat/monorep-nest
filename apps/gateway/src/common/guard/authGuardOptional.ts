@@ -1,9 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { JwtService } from "@nestjs/jwt";
-import { Request } from "express";
-import { DeviceService } from "../../feature/user-accounts/devices/application/device.service";
-import { RemoteRedisService } from "../../support.modules/redis/remote.redis.service";
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
+import { DeviceService } from '../../feature/user-accounts/devices/application/device.service';
+import { RemoteRedisService } from '../../support.modules/redis/remote.redis.service';
 
 export interface IAuthUser {
   userId: string;
@@ -15,27 +15,22 @@ export interface IAuthUser {
 
 @Injectable()
 export class AuthGuardOptional implements CanActivate {
-  constructor(
-    private readonly redisService: RemoteRedisService,
-
-  ) { }
-  async canActivate(
-    context: ExecutionContext,
-  ): Promise<boolean> {
+  constructor(private readonly redisService: RemoteRedisService) {}
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
     if (!request.headers?.authorization) return true;
     try {
-      const token = request.headers?.authorization?.split(" ");
-      const userInfo: IAuthUser | null = await this.redisService.get(token[1])
+      const token = request.headers?.authorization?.split(' ');
+      const userInfo: IAuthUser | null = await this.redisService.get(token[1]);
       if (userInfo) {
-        Object.assign(request, { user: userInfo })
+        Object.assign(request, { user: userInfo });
         return true;
       } else {
-        return true
+        return true;
       }
     } catch {
       console.log('fail');
-      return true
+      return true;
     }
   }
 }

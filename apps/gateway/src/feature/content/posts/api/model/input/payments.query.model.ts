@@ -1,6 +1,5 @@
-import { Pagination } from "../../../../../../../../libs/common/pagination";
-import { PaginationContentQueryDto } from "./pagination.query";
-
+import { Pagination } from '../../../../../../../../libs/common/pagination';
+import { PaginationContentQueryDto } from './pagination.query';
 
 export class PaginationSearchContentTerm extends Pagination {
   userId: string | null;
@@ -9,4 +8,4 @@ export class PaginationSearchContentTerm extends Pagination {
     super(query, sortProperties);
     this.userId = query?.userId ? query.userId.toString() : null;
   }
-};
+}

@@ -1,5 +1,5 @@
-import { Field, ID, Int, ObjectType, registerEnumType } from "@nestjs/graphql";
-import { Profile } from "./profile.schema";
+import { Field, ID, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Profile } from './profile.schema';
 @ObjectType()
 export class PaginatedPayments {
   @Field(() => [Payment])

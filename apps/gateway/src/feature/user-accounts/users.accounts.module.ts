@@ -33,7 +33,7 @@ const useCasesForAuth = [
   VerifyEmailUseCase,
   LoginUseCase,
   OauthGoogleUseCase,
-  GithubAuthCallbackUseCase
+  GithubAuthCallbackUseCase,
 ];
 @Module({
   imports: [
@@ -44,10 +44,12 @@ const useCasesForAuth = [
       useFactory: (configService: ConfigService) => {
         return {
           secret: configService.get('ACCESS_TOKEN'),
-          signOptions: { expiresIn: configService.get('ACCESS_TOKEN_EXPIRATION') },
+          signOptions: {
+            expiresIn: configService.get('ACCESS_TOKEN_EXPIRATION'),
+          },
         };
       },
-      inject: [ConfigService]
+      inject: [ConfigService],
     }),
   ],
 
@@ -68,9 +70,9 @@ const useCasesForAuth = [
     DeviceQueryRepository,
     GateService,
     UserLoader,
-    ...useCasesForAuth
+    ...useCasesForAuth,
   ],
   controllers: [UsersController, AuthController, DevicesController],
-  exports: [HttpModule, JwtModule, DeviceService, UsersService, UserLoader]
+  exports: [HttpModule, JwtModule, DeviceService, UsersService, UserLoader],
 })
-export class UsersAccountsModule { }
+export class UsersAccountsModule {}

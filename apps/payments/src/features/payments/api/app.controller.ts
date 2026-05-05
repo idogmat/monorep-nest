@@ -1,13 +1,25 @@
 import { Controller, Get, Headers, Inject, Post, Req } from '@nestjs/common';
-import { ClientProxy, Ctx, EventPattern, GrpcMethod, Payload, RmqContext } from '@nestjs/microservices';
+import {
+  ClientProxy,
+  Ctx,
+  EventPattern,
+  GrpcMethod,
+  Payload,
+  RmqContext,
+} from '@nestjs/microservices';
 import { PaymentsService } from '../applications/payments.service';
 import { PaymentsRepository } from '../infrastructure/payments.repository';
 import { CommandBus } from '@nestjs/cqrs';
-import { GetSubscribesGqlQuery, GetSubscribesQuery, UnSubscribeRequest, UserForSubscribe, WebhookRequest } from '../../../../../libs/proto/generated/payments';
+import {
+  GetSubscribesGqlQuery,
+  GetSubscribesQuery,
+  UnSubscribeRequest,
+  UserForSubscribe,
+  WebhookRequest,
+} from '../../../../../libs/proto/generated/payments';
 import { PaymentsQueryRepository } from '../infrastructure/payments.query-repository';
 import { WebHookPaymentCommand } from '../use-cases/webhook.use-case';
 import { SubscribeCommand } from '../use-cases/subscribe.use-case';
-
 
 @Controller()
 export class PaymentsController {
@@ -16,11 +28,9 @@ export class PaymentsController {
     private readonly paymentsRepository: PaymentsRepository,
     private readonly paymentsQueryRepository: PaymentsQueryRepository,
     private readonly commandBus: CommandBus,
-    @Inject('RABBITMQ_PAYMENTS_NOTIFICATIONS_SERVICE') private readonly rabbitClient: ClientProxy,
-  ) {
-
-  }
-
+    @Inject('RABBITMQ_PAYMENTS_NOTIFICATIONS_SERVICE')
+    private readonly rabbitClient: ClientProxy,
+  ) {}
 
   // @EventPattern()
   // handleTest(
@@ -45,59 +55,62 @@ export class PaymentsController {
   // }
 
   @GrpcMethod('PaymentsService', 'CreateSubscribe')
-  async createSubscribe(data: { user: UserForSubscribe, productKey: number }) {
+  async createSubscribe(data: { user: UserForSubscribe; productKey: number }) {
     try {
-      const { user, productKey } = data
+      const { user, productKey } = data;
 
-      return await this.commandBus.execute(new SubscribeCommand(user, productKey))
+      return await this.commandBus.execute(
+        new SubscribeCommand(user, productKey),
+      );
     } catch (error) {
-      console.log(error)
-      return { url: '', status: 'fail' }
+      console.log(error);
+      return { url: '', status: 'fail' };
     }
-
   }
 
   @GrpcMethod('PaymentsService', 'GetSubscribes')
   async getSubscribes(data: GetSubscribesQuery) {
     try {
-      console.log(data)
+      console.log(data);
 
-      const result = await this.paymentsQueryRepository.getAllPayments(data)
-      console.log(result)
-      return result
+      const result = await this.paymentsQueryRepository.getAllPayments(data);
+      console.log(result);
+      return result;
     } catch (error) {
-      console.log(error)
-      return { url: '', status: 'fail' }
+      console.log(error);
+      return { url: '', status: 'fail' };
     }
-
   }
 
   @GrpcMethod('PaymentsService', 'GetSubscribesGql')
   async getSubscribesGql(data: GetSubscribesGqlQuery) {
     try {
-      console.log(data)
+      console.log(data);
 
-      const { items, totalCount } = await this.paymentsQueryRepository.getAllPaymentsGql(data)
-      console.log({ items, totalCount })
-      return { items, totalCount }
+      const { items, totalCount } =
+        await this.paymentsQueryRepository.getAllPaymentsGql(data);
+      console.log({ items, totalCount });
+      return { items, totalCount };
     } catch (error) {
-      console.log(error)
-      return { items: [], totalCount: 0 }
+      console.log(error);
+      return { items: [], totalCount: 0 };
     }
-
   }
 
   @GrpcMethod('PaymentsService', 'UnSubscribe')
   async UnSubscribe(data: UnSubscribeRequest) {
     try {
-      console.log(data)
+      console.log(data);
       const { userId, paymentId } = data;
-      const result = await this.paymentsService.deletePayment(userId, paymentId)
-      console.log(result)
-      return result
+      const result = await this.paymentsService.deletePayment(
+        userId,
+        paymentId,
+      );
+      console.log(result);
+      return result;
     } catch (error) {
-      console.log(error)
-      return { url: '', status: 'fail' }
+      console.log(error);
+      return { url: '', status: 'fail' };
     }
   }
 
@@ -105,13 +118,14 @@ export class PaymentsController {
   async WebHook(data: WebhookRequest) {
     try {
       const { buffer, signature } = data;
-      await this.commandBus.execute(new WebHookPaymentCommand(buffer as any, signature))
+      await this.commandBus.execute(
+        new WebHookPaymentCommand(buffer as any, signature),
+      );
       // console.log(result)
-      return { status: 'ok' }
+      return { status: 'ok' };
     } catch (error) {
-      console.log(error)
-      return { status: 'fail' }
+      console.log(error);
+      return { status: 'fail' };
     }
   }
-
 }

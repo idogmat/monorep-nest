@@ -6,23 +6,24 @@ import { Inject } from '@nestjs/common';
 export class ContentDeletePostCommand {
   constructor(
     public userId: string,
-    public postId: string
-  ) {
-  }
+    public postId: string,
+  ) {}
 }
 
 @CommandHandler(ContentDeletePostCommand)
-export class ContentDeletePostUseCase implements ICommandHandler<ContentDeletePostCommand> {
+export class ContentDeletePostUseCase
+  implements ICommandHandler<ContentDeletePostCommand>
+{
   constructor(
     private postsPrismaRepository: PostsPrismaRepository,
-    @Inject('RABBIT_SERVICE') private readonly rabbitClient: RabbitService
-
-  ) {
-  }
+    @Inject('RABBIT_SERVICE') private readonly rabbitClient: RabbitService,
+  ) {}
 
   async execute(command: ContentDeletePostCommand): Promise<any> {
-    const result = await this.postsPrismaRepository.delete(command.userId,
-      command.postId);
+    const result = await this.postsPrismaRepository.delete(
+      command.userId,
+      command.postId,
+    );
     if (result.success) {
       const rabbit = await this.rabbitClient.publishToQueue('file_queue', {
         type: 'DELETE_POSTS_PHOTO',
@@ -31,7 +32,7 @@ export class ContentDeletePostUseCase implements ICommandHandler<ContentDeletePo
         data: result,
         createdAt: new Date(),
       });
-      console.log(rabbit)
+      console.log(rabbit);
     }
     return result;
   }

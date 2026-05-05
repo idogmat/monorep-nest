@@ -1,9 +1,8 @@
-import { ApiProperty } from "@nestjs/swagger"
-
+import { ApiProperty } from '@nestjs/swagger';
 
 export class ValidationUserModel {
   @ApiProperty({ type: String, nullable: true, required: false })
-  name: string | undefined
+  name: string | undefined;
   @ApiProperty({ type: String, nullable: true, required: false })
-  email: string | undefined
+  email: string | undefined;
 }

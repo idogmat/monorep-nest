@@ -4,22 +4,19 @@ import { RabbitService } from '../rabbit.service';
 import { Inject } from '@nestjs/common';
 
 export class SendChatNotifyCommand {
-  constructor(
-    public chat: string,
-  ) {
-  }
+  constructor(public chat: string) {}
 }
 @CommandHandler(SendChatNotifyCommand)
-export class SendChatNotifyUseCases implements ICommandHandler<SendChatNotifyCommand> {
+export class SendChatNotifyUseCases
+  implements ICommandHandler<SendChatNotifyCommand>
+{
   constructor(
     private postsPrismaRepository: ChatsPrismaRepository,
-    @Inject('RABBIT_SERVICE') private readonly rabbitClient: RabbitService
-
-  ) {
-  }
+    @Inject('RABBIT_SERVICE') private readonly rabbitClient: RabbitService,
+  ) {}
 
   async execute(command: SendChatNotifyCommand): Promise<any> {
-    console.log(command.chat, 'SendChatNotifyCommand')
+    console.log(command.chat, 'SendChatNotifyCommand');
     const rabbit = await this.rabbitClient.publishToQueue('messenger_queue', {
       type: 'UPLOAD_CHAT_FILE',
       data: command.chat,

@@ -6,11 +6,10 @@ import * as AWS from 'aws-sdk';
 export class S3UploadPhotoService {
   constructor(
     @Inject('POST_PHOTO_BUCKET_ADAPTER') private s3Adapter: S3StorageAdapter,
-  ) {
-  }
+  ) {}
 
   async uploadImage(file: any, folder: string): Promise<UploadedFileResponse> {
-    return await this.s3Adapter.uploadFile(file, folder)
+    return await this.s3Adapter.uploadFile(file, folder);
   }
 
   async getFileUrl(key: string): Promise<string> {

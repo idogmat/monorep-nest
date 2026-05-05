@@ -7,12 +7,12 @@ export const EnvironmentMode = {
   DEVELOPMENT: 'DEVELOPMENT',
   STAGING: 'STAGING',
   PRODUCTION: 'PRODUCTION',
-  TESTING: 'TESTING'
-}
+  TESTING: 'TESTING',
+};
 export const Environments = Object.keys(EnvironmentMode);
 
 export const getConfiguration = () => {
-  console.log(process.env.NODE_ENV?.trim(), 'NODE_ENV')
+  console.log(process.env.NODE_ENV?.trim(), 'NODE_ENV');
   return {
     NODE_ENV: (Environments.includes(process.env.NODE_ENV?.trim())
       ? process.env.NODE_ENV.trim()
@@ -29,7 +29,7 @@ export const getConfiguration = () => {
       database: process.env.DB_NAME,
       autoLoadEntities: true,
       synchronize: true,
-      logging: true
-    }
+      logging: true,
+    },
   };
 };

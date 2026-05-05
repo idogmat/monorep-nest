@@ -5,23 +5,23 @@ export class CreateMessageWithFileCommand {
   constructor(
     public chatId: string,
     public senderId: string,
-    public file: Express.Multer.File & { location: string, originalName: string },
-  ) {
-  }
+    public file: Express.Multer.File & {
+      location: string;
+      originalName: string;
+    },
+  ) {}
 }
 @CommandHandler(CreateMessageWithFileCommand)
-export class CreateMessageWithFileUseCases implements ICommandHandler<CreateMessageWithFileCommand> {
-  constructor(
-    private messagesPrismaRepository: MessagesPrismaRepository
-  ) {
-  }
+export class CreateMessageWithFileUseCases
+  implements ICommandHandler<CreateMessageWithFileCommand>
+{
+  constructor(private messagesPrismaRepository: MessagesPrismaRepository) {}
 
   async execute(command: CreateMessageWithFileCommand): Promise<any> {
-
     const newMessage = await this.messagesPrismaRepository.createMessageFile(
       command.chatId,
       command.senderId,
-      command.file
+      command.file,
     );
 
     return newMessage;

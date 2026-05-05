@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
-export type subscribeType = 1 | 2 | 3
+export type subscribeType = 1 | 2 | 3;
 
 @Injectable()
 export class StripeAdapter {
@@ -23,7 +23,9 @@ export class StripeAdapter {
       limit: 100000,
     });
     // console.log(customers.data)
-    const exactMatch = customers.data.find((customer) => customer.email === email);
+    const exactMatch = customers.data.find(
+      (customer) => customer.email === email,
+    );
     return exactMatch || null;
   }
 
@@ -37,7 +39,7 @@ export class StripeAdapter {
   async createCheckoutSession(
     customer: Stripe.Customer,
     product,
-    userId
+    userId,
   ): Promise<Stripe.Checkout.Session> {
     return this.stripe.checkout.sessions.create({
       customer: customer.id,
@@ -51,61 +53,76 @@ export class StripeAdapter {
       success_url: this.successUrl,
       cancel_url: this.cancelUrl,
       client_reference_id: userId,
-
     });
   }
 
   async getCustomer(customerId: string): Promise<Stripe.Customer | undefined> {
-    return this.stripe.customers.retrieve(customerId) as Promise<Stripe.Customer>;
+    return this.stripe.customers.retrieve(
+      customerId,
+    ) as Promise<Stripe.Customer>;
   }
 
   async getSession(sessionId: string): Promise<Stripe.Checkout.Session> {
     return this.stripe.checkout.sessions.retrieve(sessionId);
   }
 
-  async createBillingPortalSession(customerId: string, returnUrl: string): Promise<Stripe.BillingPortal.Session> {
+  async createBillingPortalSession(
+    customerId: string,
+    returnUrl: string,
+  ): Promise<Stripe.BillingPortal.Session> {
     return this.stripe.billingPortal.sessions.create({
       customer: customerId,
       return_url: returnUrl,
     });
   }
 
-  async listCustomerSubscriptions(customerId: string): Promise<Stripe.ApiList<Stripe.Subscription>> {
+  async listCustomerSubscriptions(
+    customerId: string,
+  ): Promise<Stripe.ApiList<Stripe.Subscription>> {
     return this.stripe.subscriptions.list({
       customer: customerId,
       limit: 100,
     });
   }
 
-  async updateSubscriptionToNewPrice(subscriptionId: string, product: string): Promise<Stripe.Subscription> {
-    const subscription = await this.stripe.subscriptions.retrieve(subscriptionId);
+  async updateSubscriptionToNewPrice(
+    subscriptionId: string,
+    product: string,
+  ): Promise<Stripe.Subscription> {
+    const subscription =
+      await this.stripe.subscriptions.retrieve(subscriptionId);
 
-    const updatedSubscription = await this.stripe.subscriptions.update(subscriptionId, {
-      cancel_at_period_end: false,
-      proration_behavior: 'create_prorations',
-      items: [
-        {
-          id: subscription.items.data[0].id,
-          price: product,
-        },
-      ],
-    });
+    const updatedSubscription = await this.stripe.subscriptions.update(
+      subscriptionId,
+      {
+        cancel_at_period_end: false,
+        proration_behavior: 'create_prorations',
+        items: [
+          {
+            id: subscription.items.data[0].id,
+            price: product,
+          },
+        ],
+      },
+    );
     return updatedSubscription;
   }
 
-  async deleteSubscription(subscriptionId: string): Promise<Stripe.Subscription> {
-
-    const cancelSubscription = await this.stripe.subscriptions.cancel(subscriptionId);
+  async deleteSubscription(
+    subscriptionId: string,
+  ): Promise<Stripe.Subscription> {
+    const cancelSubscription =
+      await this.stripe.subscriptions.cancel(subscriptionId);
     return cancelSubscription;
   }
 
   async webHook(buffer: Buffer, signature: string): Promise<Stripe.Event> {
-    const secret = this.configService.get('STRIPE_WEBHOOK_SECRET')
+    const secret = this.configService.get('STRIPE_WEBHOOK_SECRET');
     const event = await this.stripe.webhooks.constructEvent(
       buffer,
       signature,
-      secret
+      secret,
     );
-    return event
+    return event;
   }
 }

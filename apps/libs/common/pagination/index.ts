@@ -1,7 +1,7 @@
 import { PaginationBaseDto } from './pagination.base.dto';
 import { PaginationProfileQueryDto } from '../../../profile/src/features/model/pagination.profile.query.dto';
 
-export type SortDirectionType = "DESC" | "ASC";
+export type SortDirectionType = 'DESC' | 'ASC';
 
 export class Pagination {
   public readonly pageNumber: number;
@@ -21,31 +21,33 @@ export class Pagination {
   }
 
   private getSortDirection(query: PaginationBaseDto): SortDirectionType {
-    if (!query) return "DESC";
-    let sortDirection: SortDirectionType = "DESC";
+    if (!query) return 'DESC';
+    let sortDirection: SortDirectionType = 'DESC';
 
     switch (query.sortDirection) {
-      case "desc": {
-        sortDirection = "DESC";
+      case 'desc': {
+        sortDirection = 'DESC';
         break;
       }
-      case "asc": {
-        sortDirection = "ASC";
+      case 'asc': {
+        sortDirection = 'ASC';
         break;
       }
       default: {
-        sortDirection = "DESC";
+        sortDirection = 'DESC';
         break;
       }
     }
     return sortDirection;
   }
 
-  private getSortBy(query: PaginationBaseDto, sortProperties: string[]): string {
+  private getSortBy(
+    query: PaginationBaseDto,
+    sortProperties: string[],
+  ): string {
+    if (!query) return 'createdAt';
 
-    if (!query) return "createdAt";
-
-    let result = "createdAt";
+    let result = 'createdAt';
 
     const querySortBy = query.sortBy;
 
@@ -55,7 +57,6 @@ export class Pagination {
 
     // If query property sent as Array
     if (Array.isArray(querySortBy)) {
-
       for (let i: number = 0; i < querySortBy.length; i++) {
         const param = querySortBy[i];
 
@@ -82,6 +83,5 @@ export class PaginationSearchUserTerm extends Pagination {
 
     this.name = query.name?.toString() || null;
     this.email = query.email?.toString() || null;
-
   }
 }

@@ -7,31 +7,23 @@ import { ProfileLoader } from '../../../profile/application/profile.loader';
 export class PostFieldResolver {
   constructor(
     private readonly userLoader: UserLoader,
-    private readonly profileLoader: ProfileLoader
-    ) {}
+    private readonly profileLoader: ProfileLoader,
+  ) {}
 
   @ResolveField(() => String, { name: 'userName', nullable: true })
-  async resolveUserName(
-    @Parent() post: Post,
-
-  ): Promise<string | null> {
+  async resolveUserName(@Parent() post: Post): Promise<string | null> {
     const user = await this.userLoader.loader.load(post.userId);
     return user?.name ?? null;
   }
 
   @ResolveField(() => String, { name: 'banned', nullable: true })
-  async resolveUserBanned(
-    @Parent() post: Post,
-
-  ): Promise<boolean | null> {
+  async resolveUserBanned(@Parent() post: Post): Promise<boolean | null> {
     const user = await this.userLoader.loader.load(post.userId);
     return user?.banned ?? null;
   }
   @ResolveField(() => String, { name: 'photoUrlProfile', nullable: true })
-  async resolvePhotoUrlProfile(
-    @Parent() post: Post,
-  ): Promise<string | null> {
-    const profile  = await this.profileLoader.loader.load(post.userId);
+  async resolvePhotoUrlProfile(@Parent() post: Post): Promise<string | null> {
+    const profile = await this.profileLoader.loader.load(post.userId);
     return profile?.photoUrl.value ?? null;
   }
 }

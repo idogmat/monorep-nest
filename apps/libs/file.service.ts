@@ -9,14 +9,17 @@ export class FileService {
   private readonly result = 'result.json';
   constructor() {
     // создаем директорию, если нет
-    fs.mkdir(this.sourcePath, { recursive: true }).catch(() => { });
+    fs.mkdir(this.sourcePath, { recursive: true }).catch(() => {});
   }
   async appendToJsonFile(newItems: any[]) {
     try {
       let existingData: any[] = [];
       await this.exists(join(this.sourcePath, this.source));
       try {
-        const fileContent = await fs.readFile(join(this.sourcePath, this.source), 'utf-8');
+        const fileContent = await fs.readFile(
+          join(this.sourcePath, this.source),
+          'utf-8',
+        );
         existingData = fileContent.trim() ? JSON.parse(fileContent) : [];
       } catch (readError) {
         if ((readError as any).code !== 'ENOENT') {
@@ -27,7 +30,11 @@ export class FileService {
 
       const updatedData = [...existingData, ...newItems];
 
-      await fs.writeFile(join(this.sourcePath, this.source), JSON.stringify(updatedData, null, 2), 'utf-8');
+      await fs.writeFile(
+        join(this.sourcePath, this.source),
+        JSON.stringify(updatedData, null, 2),
+        'utf-8',
+      );
       console.log('✅ Данные успешно добавлены в файл');
     } catch (error) {
       console.error('❌ Ошибка при добавлении данных в файл:', error);
@@ -39,23 +46,31 @@ export class FileService {
       await this.exists(join(this.sourcePath, this.source));
 
       // Копируем файл
-      await fs.copyFile(join(this.sourcePath, this.source), join(this.sourcePath, this.result));
+      await fs.copyFile(
+        join(this.sourcePath, this.source),
+        join(this.sourcePath, this.result),
+      );
 
       // Очищаем исходный буфер
       await fs.writeFile(join(this.sourcePath, this.source), '[]');
 
-      const data = await fs.readFile(join(this.sourcePath, this.result), 'utf-8');
+      const data = await fs.readFile(
+        join(this.sourcePath, this.result),
+        'utf-8',
+      );
       const events = JSON.parse(data);
-      return events
-
+      return events;
     } catch (err) {
       console.error('Error during cron event processing:', err);
     }
   }
 
-
   async writeFile(content: any): Promise<void> {
-    await fs.writeFile(join(this.sourcePath, this.source), JSON.stringify(content, null, 2), 'utf-8');
+    await fs.writeFile(
+      join(this.sourcePath, this.source),
+      JSON.stringify(content, null, 2),
+      'utf-8',
+    );
   }
 
   async readFile(filename: string): Promise<string> {
@@ -65,12 +80,15 @@ export class FileService {
 
   async deleteFileResult(): Promise<void> {
     const filePath = join(this.sourcePath, this.result);
-    await fs.unlink(filePath).catch(() => { });
+    await fs.unlink(filePath).catch(() => {});
   }
 
   async copyFile() {
     try {
-      await fs.copyFile(join(this.sourcePath, this.source), join(this.sourcePath, this.result));
+      await fs.copyFile(
+        join(this.sourcePath, this.source),
+        join(this.sourcePath, this.result),
+      );
       console.log('Файл успешно скопирован');
     } catch (error) {
       console.error('Ошибка при копировании файла:', error);
@@ -84,5 +102,4 @@ export class FileService {
       await fs.writeFile(filePath, JSON.stringify([], null, 2), 'utf-8');
     }
   }
-
 }

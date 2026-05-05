@@ -5,19 +5,19 @@ export class LoadFilesEvent {
   constructor(
     public userId: string,
     public postId: string,
-  ) { }
+  ) {}
 }
 @EventsHandler(LoadFilesEvent)
 export class LoadFilesHandler implements IEventHandler<LoadFilesEvent> {
   constructor(
     private readonly localPathRepository: LocalPathRepository,
     private readonly commandBus: CommandBus,
-  ) { }
+  ) {}
 
   async handle(event: LoadFilesEvent) {
     // paths.forEach(e => this.localPathRepository.deleteLocalPathById(e.id))
     await this.commandBus.execute(
-      new CreatePhotoForPostCommand(event.userId, event.postId)
+      new CreatePhotoForPostCommand(event.userId, event.postId),
     );
     // console.log('Async UserCreatedEvent handler started');
     // console.log(`Sending welcome email to: ${event.userId}`);

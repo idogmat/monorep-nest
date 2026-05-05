@@ -3,11 +3,7 @@ import { PrismaService } from '../../../prisma/prisma.service';
 
 @Injectable()
 export class MessagesQueryRepository {
-  constructor(private prisma: PrismaService) {
-  }
+  constructor(private prisma: PrismaService) {}
 
-
-  async getAllMessages(queryDto?: any) {
-
-  }
+  async getAllMessages(queryDto?: any) {}
 }

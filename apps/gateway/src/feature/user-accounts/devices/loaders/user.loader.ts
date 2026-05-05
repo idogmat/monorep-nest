@@ -6,14 +6,15 @@ import { User } from '../../../superAdmin/api/models/user.schema';
 export class UserLoader {
   constructor(private readonly usersService: UsersService) {}
 
-  public readonly loader  = new DataLoader<string, User | null>(async (userIds) => {
+  public readonly loader = new DataLoader<string, User | null>(
+    async (userIds) => {
+      console.log('BATCHING FOR IDS:', userIds);
 
-    console.log('BATCHING FOR IDS:', userIds);
+      const users = await this.usersService.getUsersByIds(userIds as string[]);
 
-    const users = await this.usersService.getUsersByIds(userIds as string[]);
+      const usersMap = new Map(users.map((user) => [user.id, user]));
 
-    const usersMap = new Map(users.map(user => [user.id, user]));
-
-    return userIds.map(id => usersMap.get(id) ?? null);
-  })
+      return userIds.map((id) => usersMap.get(id) ?? null);
+    },
+  );
 }

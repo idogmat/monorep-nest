@@ -107,11 +107,42 @@ type Profile {
 }
 
 type Query {
-  followers(limit: Int, offset: Int, sortBy: String, sortDirection: String, userId: String): PaginatedFollowers!
-  following(limit: Int, offset: Int, sortBy: String, sortDirection: String, userId: String): PaginatedFollowing!
-  payments(limit: Int, offset: Int, sortBy: String, sortDirection: String, userId: String): PaginatedPayments!
-  posts(description: String, limit: Int, offset: Int, sortBy: String, sortDirection: String, userId: String): PaginatedPost!
-  users(limit: Int, name: String, offset: Int, sortBy: String, sortDirection: String): PaginatedUsers!
+  followers(
+    limit: Int
+    offset: Int
+    sortBy: String
+    sortDirection: String
+    userId: String
+  ): PaginatedFollowers!
+  following(
+    limit: Int
+    offset: Int
+    sortBy: String
+    sortDirection: String
+    userId: String
+  ): PaginatedFollowing!
+  payments(
+    limit: Int
+    offset: Int
+    sortBy: String
+    sortDirection: String
+    userId: String
+  ): PaginatedPayments!
+  posts(
+    description: String
+    limit: Int
+    offset: Int
+    sortBy: String
+    sortDirection: String
+    userId: String
+  ): PaginatedPost!
+  users(
+    limit: Int
+    name: String
+    offset: Int
+    sortBy: String
+    sortDirection: String
+  ): PaginatedUsers!
 }
 
 type User {

@@ -9,28 +9,32 @@ import { ConfigService } from '@nestjs/config';
 
 const APP_PREFIX = '/api/v1';
 
-export const applyAppSettings = (app: INestApplication): {
+export const applyAppSettings = (
+  app: INestApplication,
+): {
   port: number;
   env: string;
   host: string;
-  rabbit: string
+  rabbit: string;
 } => {
-  const { port, env, host, rabbit } = getEnv(app)
+  const { port, env, host, rabbit } = getEnv(app);
   setAppPrefix(app, APP_PREFIX);
 
   setAppPipes(app);
 
-  return { port, env, host, rabbit }
+  return { port, env, host, rabbit };
 };
 
 const getEnv = (app: INestApplication) => {
   const configService = app.get(ConfigService);
-  const env = configService.get<EnvironmentsTypes>('NODE_ENV')
-  const port = configService.get<number>('PORT') || configService.get<number>('POST_LOCAL_PORT');
+  const env = configService.get<EnvironmentsTypes>('NODE_ENV');
+  const port =
+    configService.get<number>('PORT') ||
+    configService.get<number>('POST_LOCAL_PORT');
   const host = env !== 'DEVELOPMENT' ? '0.0.0.0' : 'localhost';
   const rabbit = configService.get<string>('RABBIT_URLS')?.toString() || '';
-  return { port, env, host, rabbit }
-}
+  return { port, env, host, rabbit };
+};
 
 const setAppPrefix = (app: INestApplication, prefix: string) => {
   app.setGlobalPrefix(prefix);
@@ -51,7 +55,6 @@ const setAppPipes = (app: INestApplication) => {
             customErrors.push({ field: e.property, message: msg });
           });
         });
-
 
         throw new BadRequestException(customErrors);
       },

@@ -7,7 +7,7 @@ export class EmailService {
   constructor(
     private emailRouter: EmailRouter,
     private emailAdapter: EmailAdapter,
-  ) { }
+  ) {}
   async sendRegisrtationEmail(email: string, confirmationCode: string) {
     const dataMail = this.emailRouter.getDataMailForRegisrtation(
       email,

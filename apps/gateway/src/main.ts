@@ -19,11 +19,11 @@ async function bootstrap() {
       'http://localhost:5173',
       'https://localhost:3000',
       'http://localhost:3001',
-      'http://localhost:3000'
+      'http://localhost:3000',
     ],
-    credentials: true
+    credentials: true,
   });
-  const { port, env, rabbit } = applyAppSettings(app)
+  const { port, env, rabbit } = applyAppSettings(app);
 
   // app.connectMicroservice<MicroserviceOptions>({
   //   transport: Transport.RMQ,
@@ -34,14 +34,13 @@ async function bootstrap() {
   //   },
   // });
 
-
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
       urls: [rabbit],
       queue: 'payments_notification_queue',
       queueOptions: { durable: true },
-      noAck: false
+      noAck: false,
     },
   });
 
@@ -51,7 +50,7 @@ async function bootstrap() {
       urls: [rabbit],
       queue: 'messenger_queue',
       queueOptions: { durable: true },
-      noAck: false
+      noAck: false,
     },
   });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
@@ -65,6 +64,5 @@ async function bootstrap() {
     // intervalRunner.start(() => console.log(process.memoryUsage()), 5000, true)
     // intervalRunner.start(() => console.log(v8.getHeapStatistics()), 5000, true)
   });
-
 }
 bootstrap();

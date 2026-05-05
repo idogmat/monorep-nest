@@ -8,10 +8,9 @@ import { json, urlencoded } from 'express';
 import { join } from 'path';
 // TODO take out services to settings
 async function bootstrap() {
-
-  const app = await NestFactory.create<INestApplication>(AppModule)
-  const { port, env, host, rabbit, grpc_url } = applyAppSettings(app)
-  await app.init()
+  const app = await NestFactory.create<INestApplication>(AppModule);
+  const { port, env, host, rabbit, grpc_url } = applyAppSettings(app);
+  await app.init();
 
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,

@@ -13,8 +13,8 @@ export class RabbitConsumerService implements OnModuleInit {
 
   constructor(
     private configService: ConfigService,
-    private commandBus: CommandBus
-  ) { }
+    private commandBus: CommandBus,
+  ) {}
 
   async onModuleInit() {
     await this.connectAndConsume();
@@ -53,7 +53,10 @@ export class RabbitConsumerService implements OnModuleInit {
             // Подтверждение успешной обработки
             this.channel.ack(msg);
           } catch (err) {
-            this.logger.error(`Error processing message: ${err.message}`, err.stack);
+            this.logger.error(
+              `Error processing message: ${err.message}`,
+              err.stack,
+            );
 
             // Обработка ошибок (можно настроить политику повтора)
             this.handleError(msg, err);
@@ -73,12 +76,16 @@ export class RabbitConsumerService implements OnModuleInit {
     switch (message.type) {
       case 'DELETE_POSTS_PHOTO':
         if (message?.userId && message?.postId) {
-          await this.commandBus.execute(new DeletePhotoMediaCommand(message.userId, message.postId));
+          await this.commandBus.execute(
+            new DeletePhotoMediaCommand(message.userId, message.postId),
+          );
         }
         break;
       case 'DELETE_PROFILE_PHOTO':
         if (message?.userId) {
-          await this.commandBus.execute(new DeleteProfileMediaCommand(message.userId));
+          await this.commandBus.execute(
+            new DeleteProfileMediaCommand(message.userId),
+          );
         }
         // await this.handlePostUpdated(message.data);
         break;
@@ -106,19 +113,15 @@ export class RabbitConsumerService implements OnModuleInit {
       };
 
       // Отправляем в очередь повтора
-      this.channel.sendToQueue(
-        'file_queue_retry',
-        msg.content,
-        { headers: newHeaders }
-      );
+      this.channel.sendToQueue('file_queue_retry', msg.content, {
+        headers: newHeaders,
+      });
       this.channel.ack(msg);
     } else {
       // Отправка в очередь мертвых писем
-      this.channel.sendToQueue(
-        'file_queue_dead_letter',
-        msg.content,
-        { headers: { ...headers, 'x-death-reason': error.message } }
-      );
+      this.channel.sendToQueue('file_queue_dead_letter', msg.content, {
+        headers: { ...headers, 'x-death-reason': error.message },
+      });
       this.channel.ack(msg);
     }
   }

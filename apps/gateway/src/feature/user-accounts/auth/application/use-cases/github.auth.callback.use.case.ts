@@ -7,7 +7,11 @@ import { ENTITY_USER } from '../../../../../common/entities.constants';
 import { AuthService } from '../auth.service';
 import { ConfigService } from '@nestjs/config';
 import { GithubAuthResponseModel } from '../../api/models/shared/github.auth.response.model';
-import { Device, Provider, User } from '../../../../../../prisma/generated/client';
+import {
+  Device,
+  Provider,
+  User,
+} from '../../../../../../prisma/generated/client';
 import { UsersPrismaRepository } from '../../../users/infrastructure/prisma/users.prisma.repository';
 import { GateService } from '../../../../../common/gate.service';
 import { DeviceInfoDto } from '../../api/models/shared/device.info.dto';
@@ -19,13 +23,14 @@ import { ProfileClientService } from '../../../../../support.modules/grpc/grpc.p
 export class GithubAuthCallbackCommand {
   constructor(
     public queryDto: GithubTokenModel,
-    public deviceInfo: DeviceInfoDto) {
-  }
-
+    public deviceInfo: DeviceInfoDto,
+  ) {}
 }
 
 @CommandHandler(GithubAuthCallbackCommand)
-export class GithubAuthCallbackUseCase implements ICommandHandler<GithubAuthCallbackCommand> {
+export class GithubAuthCallbackUseCase
+  implements ICommandHandler<GithubAuthCallbackCommand>
+{
   constructor(
     private githubService: GithubService,
     private userPrismaRepository: UsersPrismaRepository,
@@ -35,74 +40,111 @@ export class GithubAuthCallbackUseCase implements ICommandHandler<GithubAuthCall
     private deviceService: DeviceService,
     private readonly redisService: RemoteRedisService,
     private readonly profileClientService: ProfileClientService,
-
-  ) {
-  }
-  async execute(command: GithubAuthCallbackCommand): Promise<InterlayerNotice<GithubAuthResponseModel>> {
-
+  ) {}
+  async execute(
+    command: GithubAuthCallbackCommand,
+  ): Promise<InterlayerNotice<GithubAuthResponseModel>> {
     try {
-
-      const result = await this.githubService.githubAuthCallback(command.queryDto.code as string);
-      const userInfo = await this.githubService.getGitHubUserInfo(result.access_token);
+      const result = await this.githubService.githubAuthCallback(
+        command.queryDto.code as string,
+      );
+      const userInfo = await this.githubService.getGitHubUserInfo(
+        result.access_token,
+      );
 
       if (!userInfo.email) {
         return InterlayerNotice.createErrorNotice(
           AuthError.GITHUB_USER_DOESNT_HAVE_EMAIL,
           ENTITY_USER,
-          404
-        )
+          404,
+        );
       }
       //find user by provider Id or email Id
-      let user = await this.userPrismaRepository.findUserByProviderIdOrEmail({ providerId: userInfo.providerId.toString(), email: userInfo.email });
+      let user = await this.userPrismaRepository.findUserByProviderIdOrEmail({
+        providerId: userInfo.providerId.toString(),
+        email: userInfo.email,
+      });
 
       if (!user) {
         //create user and provider from google
-        user = await this.userPrismaRepository.createUserWithProvider(userInfo.email, userInfo.email.split('@')[0], { githubId: userInfo.providerId.toString() });
-        const profile = await this.profileClientService.createUserProfile(user.id, user.name, user.email)
+        user = await this.userPrismaRepository.createUserWithProvider(
+          userInfo.email,
+          userInfo.email.split('@')[0],
+          { githubId: userInfo.providerId.toString() },
+        );
+        const profile = await this.profileClientService.createUserProfile(
+          user.id,
+          user.name,
+          user.email,
+        );
       } else {
         await this.linkGithubProvider(user, userInfo.providerId.toString());
       }
 
       const updatedAt = new Date();
-      const d = await this.createOrUpdateDevice(user.id, command.deviceInfo, updatedAt);
+      const d = await this.createOrUpdateDevice(
+        user.id,
+        command.deviceInfo,
+        updatedAt,
+      );
 
-      const [accessToken, refreshToken] = await this.authService.createPairTokens({
-        userId: user.id,
-        deviceId: d.id,
-        updatedAt
-      });
+      const [accessToken, refreshToken] =
+        await this.authService.createPairTokens({
+          userId: user.id,
+          deviceId: d.id,
+          updatedAt,
+        });
 
-      const exp = await this.authService.getExpiration('ACCESS')
-      const expSeconds = parseTimeToSeconds(exp)
-      await this.redisService.set(accessToken, d, expSeconds)
+      const exp = await this.authService.getExpiration('ACCESS');
+      const expSeconds = parseTimeToSeconds(exp);
+      await this.redisService.set(accessToken, d, expSeconds);
 
-      const baseURL = this.configService.get<string>('BASE_URL')
+      const baseURL = this.configService.get<string>('BASE_URL');
 
-      return new InterlayerNotice(new GithubAuthResponseModel(accessToken, refreshToken, baseURL));
-
+      return new InterlayerNotice(
+        new GithubAuthResponseModel(accessToken, refreshToken, baseURL),
+      );
     } catch (error) {
       console.error('Error during Github OAuth execution:', error);
       throw new Error('Failed to authenticate with GitHub');
     }
-
-
   }
-  private async linkGithubProvider(user: User & { providers: Provider | null }, providerId: string) {
+  private async linkGithubProvider(
+    user: User & { providers: Provider | null },
+    providerId: string,
+  ) {
     if (!user.providers) {
-      await this.userPrismaRepository.createProvider(user.id, { githubId: providerId });
+      await this.userPrismaRepository.createProvider(user.id, {
+        githubId: providerId,
+      });
     } else if (!user.providers.githubId) {
-      await this.userPrismaRepository.updateProvider(user.providers.id, { githubId: providerId });
+      await this.userPrismaRepository.updateProvider(user.providers.id, {
+        githubId: providerId,
+      });
     }
   }
 
-  private async createOrUpdateDevice(userId: string, deviceInfo: DeviceInfoDto, updatedAt: Date): Promise<Device> {
-    let d = null
+  private async createOrUpdateDevice(
+    userId: string,
+    deviceInfo: DeviceInfoDto,
+    updatedAt: Date,
+  ): Promise<Device> {
+    let d = null;
 
-    d = await this.deviceService.find({ ip: deviceInfo.ip, title: deviceInfo.title, userId, updatedAt })
+    d = await this.deviceService.find({
+      ip: deviceInfo.ip,
+      title: deviceInfo.title,
+      userId,
+      updatedAt,
+    });
     if (!d) {
-      d = await this.deviceService.createDevice({ ip: deviceInfo.ip, title: deviceInfo.title, userId })
+      d = await this.deviceService.createDevice({
+        ip: deviceInfo.ip,
+        title: deviceInfo.title,
+        userId,
+      });
     }
-    d = await this.deviceService.update({ ...d, updatedAt })
+    d = await this.deviceService.update({ ...d, updatedAt });
 
     return d;
   }

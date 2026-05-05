@@ -20,9 +20,8 @@ export class PostMicroserviceService {
     postDto: PostCreateModel,
     files: Express.Multer.File[],
     userId: string,
-  )
+  ) {
     // : Promise<InterlayerNotice>
-  {
     const formData = new FormData();
     files.forEach((file) => {
       if (!file.path) {
@@ -30,7 +29,7 @@ export class PostMicroserviceService {
         return InterlayerNotice.createErrorNotice(
           FileError.INVALID_FORMAT_FILES,
           ENTITY_POST,
-          400
+          400,
         );
       }
       formData.append('files', fs.createReadStream(file.path), {
@@ -45,16 +44,19 @@ export class PostMicroserviceService {
     headers['Content-Type'] = 'multipart/form-data';
     headers['X-UserId'] = userId;
 
-
     try {
-      const response = await this.gateService.postServicePost('create-post', formData, headers);
+      const response = await this.gateService.postServicePost(
+        'create-post',
+        formData,
+        headers,
+      );
       return new InterlayerNotice(response.data);
     } catch (error) {
-      console.error("error send to post", error);
+      console.error('error send to post', error);
       return InterlayerNotice.createErrorNotice(
         FileError.SEND_ERROR,
         ENTITY_POST,
-        500
+        500,
       );
     } finally {
       for (const file of files) {
@@ -68,36 +70,44 @@ export class PostMicroserviceService {
     }
   }
 
-  async getPostById(postId: string): Promise<InterlayerNotice<PostViewModel|null>> {
-
+  async getPostById(
+    postId: string,
+  ): Promise<InterlayerNotice<PostViewModel | null>> {
     const headers = {
       'X-PostId': postId,
-    }
+    };
 
-    return  await this.gateService.postServiceGet<InterlayerNotice<PostViewModel|null>>('get-post-by-id',  headers, {});
-
+    return await this.gateService.postServiceGet<
+      InterlayerNotice<PostViewModel | null>
+    >('get-post-by-id', headers, {});
   }
 
   async getPosts(queryDto: PaginationSearchPostTerm) {
-
-    return await this.gateService.postServiceGet<InterlayerNotice<PagedResponse<PostViewModel>>>('get-posts', {}, queryDto.toQueryParams());
-
+    return await this.gateService.postServiceGet<
+      InterlayerNotice<PagedResponse<PostViewModel>>
+    >('get-posts', {}, queryDto.toQueryParams());
   }
 
   async getPostsGQL(queryDto: PaginationSearchPostGqlTerm) {
-
-    return this.gateService.postServiceGet<InterlayerNotice<PagedResponse<PostViewModel>>>('get-posts-gql', {}, queryDto.toQueryParams());
-
+    return this.gateService.postServiceGet<
+      InterlayerNotice<PagedResponse<PostViewModel>>
+    >('get-posts-gql', {}, queryDto.toQueryParams());
   }
 
-  async updatePost(param: { updateDto: PostUpdateModel; postId: string; userId: string }) {
+  async updatePost(param: {
+    updateDto: PostUpdateModel;
+    postId: string;
+    userId: string;
+  }) {
     const headers = {
       'X-PostId': param.postId,
       'X-UserId': param.userId,
     };
-    const result = await this.gateService.postServicePut('update-post',
+    const result = await this.gateService.postServicePut(
+      'update-post',
       param.updateDto,
-      headers);
+      headers,
+    );
 
     return result;
   }
@@ -108,7 +118,10 @@ export class PostMicroserviceService {
       'X-UserId': param.userId,
     };
 
-    const result = await this.gateService.postServiceDelete('delete-post', headers);
+    const result = await this.gateService.postServiceDelete(
+      'delete-post',
+      headers,
+    );
 
     return result;
   }

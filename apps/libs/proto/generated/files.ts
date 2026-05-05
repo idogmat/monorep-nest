@@ -5,11 +5,11 @@
 // source: files.proto
 
 /* eslint-disable */
-import { Metadata } from "@grpc/grpc-js";
-import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
-import { Observable } from "rxjs";
+import { Metadata } from '@grpc/grpc-js';
+import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
+import { Observable } from 'rxjs';
 
-export const protobufPackage = "files";
+export const protobufPackage = 'files';
 
 /** import "google/protobuf/wrappers.proto"; */
 export interface FileChunk {
@@ -56,16 +56,28 @@ export interface ProfileUploadResponse {
   message: string;
 }
 
-export const FILES_PACKAGE_NAME = "files";
+export const FILES_PACKAGE_NAME = 'files';
 
 export interface FileServiceClient {
-  upload(request: Observable<FileChunk>, metadata?: Metadata): Observable<UploadResponse>;
+  upload(
+    request: Observable<FileChunk>,
+    metadata?: Metadata,
+  ): Observable<UploadResponse>;
 
-  uploadProfile(request: Observable<ProfileFileChunk>, metadata?: Metadata): Observable<ProfileUploadResponse>;
+  uploadProfile(
+    request: Observable<ProfileFileChunk>,
+    metadata?: Metadata,
+  ): Observable<ProfileUploadResponse>;
 
-  loadOnS3(request: LoadOnS3Request, metadata?: Metadata): Observable<LoadOnS3Response>;
+  loadOnS3(
+    request: LoadOnS3Request,
+    metadata?: Metadata,
+  ): Observable<LoadOnS3Response>;
 
-  uploadChatFile(request: Observable<ChatFileChunk>, metadata?: Metadata): Observable<UploadResponse>;
+  uploadChatFile(
+    request: Observable<ChatFileChunk>,
+    metadata?: Metadata,
+  ): Observable<UploadResponse>;
 }
 
 export interface FileServiceController {
@@ -77,12 +89,18 @@ export interface FileServiceController {
   uploadProfile(
     request: Observable<ProfileFileChunk>,
     metadata?: Metadata,
-  ): Promise<ProfileUploadResponse> | Observable<ProfileUploadResponse> | ProfileUploadResponse;
+  ):
+    | Promise<ProfileUploadResponse>
+    | Observable<ProfileUploadResponse>
+    | ProfileUploadResponse;
 
   loadOnS3(
     request: LoadOnS3Request,
     metadata?: Metadata,
-  ): Promise<LoadOnS3Response> | Observable<LoadOnS3Response> | LoadOnS3Response;
+  ):
+    | Promise<LoadOnS3Response>
+    | Observable<LoadOnS3Response>
+    | LoadOnS3Response;
 
   uploadChatFile(
     request: Observable<ChatFileChunk>,
@@ -92,17 +110,35 @@ export interface FileServiceController {
 
 export function FileServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["loadOnS3"];
+    const grpcMethods: string[] = ['loadOnS3'];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod("FileService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcMethod('FileService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
-    const grpcStreamMethods: string[] = ["upload", "uploadProfile", "uploadChatFile"];
+    const grpcStreamMethods: string[] = [
+      'upload',
+      'uploadProfile',
+      'uploadChatFile',
+    ];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod("FileService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcStreamMethod('FileService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
   };
 }
 
-export const FILE_SERVICE_NAME = "FileService";
+export const FILE_SERVICE_NAME = 'FileService';

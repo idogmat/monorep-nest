@@ -5,10 +5,8 @@ import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class EmailAdapter {
-  constructor(private configService: ConfigService) { }
+  constructor(private configService: ConfigService) {}
   async sandMail(dataMail: DataMailType) {
-
-
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       host: 'smtp.gmail.com',
@@ -19,7 +17,6 @@ export class EmailAdapter {
         pass: this.configService.get('PASSWORD_FOR_EMAIL'),
       },
     });
-
 
     return await transporter.sendMail(dataMail);
   }

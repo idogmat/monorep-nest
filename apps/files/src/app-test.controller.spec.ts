@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AppTestController } from './app-test.controller';
 
-
 describe('AppController', () => {
   let appController: AppTestController;
 

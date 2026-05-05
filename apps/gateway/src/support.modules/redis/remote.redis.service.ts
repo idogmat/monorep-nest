@@ -6,7 +6,7 @@ import { createClient, RedisClientType, RedisDefaultModules } from 'redis';
 export class RemoteRedisService implements OnModuleInit, OnModuleDestroy {
   private client: RedisClientType<RedisDefaultModules>;
 
-  constructor(private configService: ConfigService) { }
+  constructor(private configService: ConfigService) {}
 
   async onModuleInit() {
     this.client = createClient({
@@ -20,7 +20,7 @@ export class RemoteRedisService implements OnModuleInit, OnModuleDestroy {
     this.client.on('error', (err) => console.error('Redis Client Error', err));
 
     await this.client.connect();
-    console.log(this.client, 'redis client')
+    console.log(this.client, 'redis client');
   }
 
   async onModuleDestroy() {

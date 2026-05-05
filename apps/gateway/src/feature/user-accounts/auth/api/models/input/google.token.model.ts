@@ -6,6 +6,6 @@ export class GoogleTokenModel {
   @IsString()
   token: string;
 
-  ip: string
-  title: string
+  ip: string;
+  title: string;
 }

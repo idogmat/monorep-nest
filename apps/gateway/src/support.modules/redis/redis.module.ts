@@ -1,10 +1,11 @@
 import { Module, Global } from '@nestjs/common';
 import { RemoteRedisService } from './remote.redis.service';
-import { ConfigModule, } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 
 @Global()
 @Module({
-  imports: [ConfigModule
+  imports: [
+    ConfigModule,
     // CacheModule.registerAsync({
     //   isGlobal: true,
     //   imports: [ConfigModule],
@@ -30,5 +31,4 @@ import { ConfigModule, } from '@nestjs/config';
   providers: [RemoteRedisService],
   exports: [RemoteRedisService],
 })
-
-export class RedisModule { }
+export class RedisModule {}

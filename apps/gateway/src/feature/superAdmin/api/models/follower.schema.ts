@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { Field, ObjectType } from '@nestjs/graphql';
 @ObjectType()
 export class PaginatedFollowers {
   @Field(() => [Follower])
@@ -10,7 +10,6 @@ export class PaginatedFollowers {
 
 @ObjectType()
 export class Follower {
-
   @Field({ nullable: true })
   subscriberId?: string;
 

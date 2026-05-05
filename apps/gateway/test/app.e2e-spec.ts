@@ -56,33 +56,35 @@ class BaseGrpcMock {
     FilesClientService,
   ],
 })
-export class GrpcServiceModuleMock { }
+export class GrpcServiceModuleMock {}
 
-export class SendFileServiceMock { }
+export class SendFileServiceMock {}
 
-export class MessengerModuleMock { }
+export class MessengerModuleMock {}
 
-export class RemoteRedisServiceMock { }
+export class RemoteRedisServiceMock {}
 
 @Global()
 @Module({
   imports: [],
   controllers: [],
-  providers: [{
-    provide: 'SEND_FILE_SERVICE',
-    useFactory: () => {
-      return new SendFileServiceMock();
+  providers: [
+    {
+      provide: 'SEND_FILE_SERVICE',
+      useFactory: () => {
+        return new SendFileServiceMock();
+      },
+      inject: [],
     },
-    inject: [],
-  }],
+  ],
   exports: ['SEND_FILE_SERVICE'],
 })
-export class FileServiceModuleMock { }
+export class FileServiceModuleMock {}
 describe('AppController (e2e)', () => {
   let app: INestApplication;
   let authTestManager: AuthTestManager;
-  const globalPrefix = "/api/v1";
-  let prisma: PrismaService;  // Служба Prisma
+  const globalPrefix = '/api/v1';
+  let prisma: PrismaService; // Служба Prisma
 
   beforeAll(async () => {
     dotenv.config({ path: '.env.test' });
@@ -109,10 +111,9 @@ describe('AppController (e2e)', () => {
     await app.init();
 
     authTestManager = new AuthTestManager(app);
-  })
+  });
 
   beforeEach(async () => {
-
     await clearDatabase(prisma);
   });
   it.skip('/ (GET)', async () => {
@@ -139,5 +140,4 @@ describe('AppController (e2e)', () => {
     }
     jest.clearAllTimers();
   });
-
 });

@@ -1,9 +1,9 @@
 interface ParsedDate {
-  days: number
-  hours: number
-  minutes: number
-  seconds: number
-  milliseconds: number
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+  milliseconds: number;
 }
 export function findDiffDate(expires: Date | string) {
   const date1: Date = new Date();
@@ -17,14 +17,12 @@ export function findDiffDate(expires: Date | string) {
     hours: Math.floor((diffInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
     minutes: Math.floor((diffInMs % (1000 * 60 * 60)) / (1000 * 60)),
     seconds: Math.floor((diffInMs % (1000 * 60)) / 1000),
-    milliseconds: diffInMs % 1000
+    milliseconds: diffInMs % 1000,
   };
-  return diff
+  return diff;
 }
 
 // export function messageNotify(date: ParsedDate) {
 //   if(date.days < 7)
 //   if(date.days < 1)
 // }
-
-

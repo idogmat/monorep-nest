@@ -1,14 +1,13 @@
-import { Injectable } from "@nestjs/common";
-import { UserProfileResponse } from "../../../../../libs/proto/generated/profile";
-
+import { Injectable } from '@nestjs/common';
+import { UserProfileResponse } from '../../../../../libs/proto/generated/profile';
 
 const chekNestValue = (o: string | { value: string }) => {
-  return typeof o === 'object' ? o?.value : o
-}
+  return typeof o === 'object' ? o?.value : o;
+};
 
 @Injectable()
 export class ProfileMappingService {
-  constructor() { }
+  constructor() {}
 
   profileMapping(profile: UserProfileResponse) {
     return {
@@ -20,6 +19,6 @@ export class ProfileMappingService {
       country: chekNestValue(profile.country),
       city: chekNestValue(profile.city),
       aboutMe: chekNestValue(profile.aboutMe),
-    }
+    };
   }
 }

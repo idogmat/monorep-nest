@@ -7,46 +7,38 @@ import { GetChatsCommand } from '../chats/application/use-cases/get.chats.use.ca
 
 @Controller()
 export class MessengerController {
-  constructor(
-    private commandBus: CommandBus,
-
-  ) {
-  }
+  constructor(private commandBus: CommandBus) {}
   @GrpcMethod('MessengerService', 'GetChats')
-  async getChats(
-    data: {
-      senderId: string,
-    }
-  ) {
-    console.log(data, 'data')
+  async getChats(data: { senderId: string }) {
+    console.log(data, 'data');
     try {
-      const chats = await this.commandBus.execute(new GetChatsCommand(data.senderId))
-      console.log(chats)
+      const chats = await this.commandBus.execute(
+        new GetChatsCommand(data.senderId),
+      );
+      console.log(chats);
 
-      return { chats }
-    } catch (error) {
-
-    }
+      return { chats };
+    } catch (error) {}
   }
 
   @GrpcMethod('MessengerService', 'CreateMessage')
-  async createMessage(
-    data: {
-      senderId: string,
-      userId: string,
-      message: string
-    }
-  ) {
-    console.log(data, 'data')
+  async createMessage(data: {
+    senderId: string;
+    userId: string;
+    message: string;
+  }) {
+    console.log(data, 'data');
     try {
-      const chat = await this.commandBus.execute(new GetChatByParticipantsCommand(data.senderId, data.userId))
-      const message = await this.commandBus.execute(new CreateMessageCommand(chat.id, data.senderId, data.message))
-      chat.messages.unshift(message)
-      console.log(chat)
+      const chat = await this.commandBus.execute(
+        new GetChatByParticipantsCommand(data.senderId, data.userId),
+      );
+      const message = await this.commandBus.execute(
+        new CreateMessageCommand(chat.id, data.senderId, data.message),
+      );
+      chat.messages.unshift(message);
+      console.log(chat);
 
-      return chat
-    } catch (error) {
-
-    }
+      return chat;
+    } catch (error) {}
   }
 }

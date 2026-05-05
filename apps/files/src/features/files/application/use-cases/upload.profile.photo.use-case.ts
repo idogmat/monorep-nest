@@ -9,17 +9,19 @@ export class UploadProfilePhotoCommand {
   constructor(
     public userId: string,
     public filename: string,
-  ) { }
+  ) {}
 }
 
 @CommandHandler(UploadProfilePhotoCommand)
-export class UploadProfilePhotoUseCase implements ICommandHandler<UploadProfilePhotoCommand> {
+export class UploadProfilePhotoUseCase
+  implements ICommandHandler<UploadProfilePhotoCommand>
+{
   private readonly logger = new Logger(UploadProfilePhotoUseCase.name);
 
   constructor(
     @Inject('PROFILE_BUCKET_ADAPTER') private s3Adapter: S3StorageAdapter,
-    @Inject('RABBIT_SERVICE') private readonly rabbitClient: RabbitService
-  ) { }
+    @Inject('RABBIT_SERVICE') private readonly rabbitClient: RabbitService,
+  ) {}
 
   async execute(command: UploadProfilePhotoCommand) {
     const { userId, filename } = command;
@@ -44,7 +46,7 @@ export class UploadProfilePhotoUseCase implements ICommandHandler<UploadProfileP
           buffer,
           mimetype: this.getMimeType(filename),
         },
-        s3Path
+        s3Path,
       );
 
       // 4. Публикация в RabbitMQ
@@ -56,28 +58,38 @@ export class UploadProfilePhotoUseCase implements ICommandHandler<UploadProfileP
       });
 
       return uploadResult;
-
     } catch (error) {
-      this.logger.error(`Failed to upload profile photo for user ${userId}: ${error.message}`, error.stack);
+      this.logger.error(
+        `Failed to upload profile photo for user ${userId}: ${error.message}`,
+        error.stack,
+      );
       throw error;
     } finally {
       // 5. Удаление файла только после завершения всех операций
       if (filename) {
-        await this.safeDeleteFile(join(folder, filename)).catch(error => {
+        await this.safeDeleteFile(join(folder, filename)).catch((error) => {
           this.logger.warn(`Failed to delete temporary file: ${error.message}`);
         });
       }
     }
   }
 
-  private async readFileWithRetry(filePath: string, maxRetries: number, delayMs: number): Promise<Buffer> {
+  private async readFileWithRetry(
+    filePath: string,
+    maxRetries: number,
+    delayMs: number,
+  ): Promise<Buffer> {
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         return await this.readFileAsync(filePath);
       } catch (error) {
         if (error.code === 'ENOENT' && attempt < maxRetries) {
-          this.logger.warn(`File not found (attempt ${attempt}/${maxRetries}), retrying...`);
-          await new Promise(resolve => setTimeout(resolve, delayMs * attempt));
+          this.logger.warn(
+            `File not found (attempt ${attempt}/${maxRetries}), retrying...`,
+          );
+          await new Promise((resolve) =>
+            setTimeout(resolve, delayMs * attempt),
+          );
         } else {
           throw error;
         }
@@ -117,7 +129,9 @@ export class UploadProfilePhotoUseCase implements ICommandHandler<UploadProfileP
       }
     } catch (error) {
       if (error.code !== 'ENOENT') {
-        this.logger.error(`Failed to delete file ${filePath}: ${error.message}`);
+        this.logger.error(
+          `Failed to delete file ${filePath}: ${error.message}`,
+        );
       }
     }
   }

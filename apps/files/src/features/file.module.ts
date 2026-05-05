@@ -32,11 +32,9 @@ const useCases = [
   SavePhotoForPostUseCase,
   SavePhotoForProfileUseCase,
   SaveFileForChatUseCase,
-  UploadChatFileUseCase
+  UploadChatFileUseCase,
 ];
-const eventCases = [
-  LoadFilesHandler
-];
+const eventCases = [LoadFilesHandler];
 
 @Module({
   imports: [
@@ -44,7 +42,7 @@ const eventCases = [
     MulterModule.register(),
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [getConfiguration]
+      load: [getConfiguration],
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
@@ -58,7 +56,7 @@ const eventCases = [
     }),
     MongooseModule.forFeature([
       { name: PostMedia.name, schema: PostMediaSchema },
-      { name: LocalPath.name, schema: LocalPathSchema }
+      { name: LocalPath.name, schema: LocalPathSchema },
     ]),
   ],
   providers: [
@@ -72,20 +70,14 @@ const eventCases = [
     {
       provide: 'PROFILE_BUCKET_ADAPTER',
       useFactory: (configService: ConfigService) => {
-        return new S3StorageAdapter(
-          configService,
-          'profile',
-        );
+        return new S3StorageAdapter(configService, 'profile');
       },
       inject: [ConfigService],
     },
     {
       provide: 'CHAT_BUCKET_ADAPTER',
       useFactory: (configService: ConfigService) => {
-        return new S3StorageAdapter(
-          configService,
-          'bucket-chat',
-        );
+        return new S3StorageAdapter(configService, 'bucket-chat');
       },
       inject: [ConfigService],
     },
@@ -102,15 +94,12 @@ const eventCases = [
     {
       provide: 'RABBIT_SERVICE',
       useFactory: (configService: ConfigService) => {
-        return new RabbitService(
-          configService,
-        );
+        return new RabbitService(configService);
       },
       inject: [ConfigService],
     },
   ],
   controllers: [FilesController],
-  exports: []
+  exports: [],
 })
-
-export class FileModule { }
+export class FileModule {}

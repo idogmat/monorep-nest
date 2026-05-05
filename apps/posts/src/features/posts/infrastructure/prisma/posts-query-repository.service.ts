@@ -11,13 +11,17 @@ type PostWithUrls = Prisma.PostGetPayload<{
 
 @Injectable()
 export class PostsQueryRepository {
-  constructor(private prisma: PrismaService) {
-  }
-
+  constructor(private prisma: PrismaService) {}
 
   async getAllPosts(queryDto?: PaginationSearchPostTerm) {
-
-    const { pageNumber, pageSize, sortBy, sortDirection, userId: queryUserId, description } = queryDto;
+    const {
+      pageNumber,
+      pageSize,
+      sortBy,
+      sortDirection,
+      userId: queryUserId,
+      description,
+    } = queryDto;
 
     const effectiveUserId = queryUserId;
 
@@ -40,9 +44,10 @@ export class PostsQueryRepository {
       'userId',
     ];
 
-    const orderBy: Prisma.PostOrderByWithRelationInput = allowedSortFields.includes(sortBy as any)
-      ? { [sortBy]: sortDirection.toLowerCase() as 'asc' | 'desc' }
-      : { createdAt: 'desc' };
+    const orderBy: Prisma.PostOrderByWithRelationInput =
+      allowedSortFields.includes(sortBy as any)
+        ? { [sortBy]: sortDirection.toLowerCase() as 'asc' | 'desc' }
+        : { createdAt: 'desc' };
 
     const [items, totalCount] = await this.prisma.$transaction([
       this.prisma.post.findMany({
@@ -55,14 +60,15 @@ export class PostsQueryRepository {
       this.prisma.post.count({ where }),
     ]);
 
-    const mappedItems = items.map(post => this.mapPostToViewModel(post as PostWithUrls));
+    const mappedItems = items.map((post) =>
+      this.mapPostToViewModel(post as PostWithUrls),
+    );
     return { mappedItems, totalCount, pageNumber, pageSize };
-
   }
 
   async getAllPostsGQL(queryDto?: PaginationSearchPostGqlTerm) {
-
-    const { offset, limit, sortBy, sortDirection, userId, description } = queryDto;
+    const { offset, limit, sortBy, sortDirection, userId, description } =
+      queryDto;
 
     const effectiveUserId = userId;
 
@@ -85,9 +91,10 @@ export class PostsQueryRepository {
       'userId',
     ];
 
-    const orderBy: Prisma.PostOrderByWithRelationInput = allowedSortFields.includes(sortBy as any)
-      ? { [sortBy]: sortDirection.toLowerCase() as 'asc' | 'desc' }
-      : { createdAt: 'desc' };
+    const orderBy: Prisma.PostOrderByWithRelationInput =
+      allowedSortFields.includes(sortBy as any)
+        ? { [sortBy]: sortDirection.toLowerCase() as 'asc' | 'desc' }
+        : { createdAt: 'desc' };
 
     const [items, totalCount] = await this.prisma.$transaction([
       this.prisma.post.findMany({
@@ -100,34 +107,32 @@ export class PostsQueryRepository {
       this.prisma.post.count({ where }),
     ]);
 
-    const mappedItems = items.map(post => this.mapPostToViewModel(post as PostWithUrls));
+    const mappedItems = items.map((post) =>
+      this.mapPostToViewModel(post as PostWithUrls),
+    );
     return { posts: mappedItems, totalCount: totalCount };
-
   }
 
-  async getPostById( id: string) {
-    const post = await this.prisma.post.findFirst({
+  async getPostById(id: string) {
+    const post = (await this.prisma.post.findFirst({
       where: { id },
       include: { urls: true },
-    }) as PostWithUrls;
+    })) as PostWithUrls;
 
     if (!post) {
       return null;
     }
 
     return this.mapPostToViewModel(post);
-
   }
 
-  mapPostToViewModel(
-    post: PostWithUrls
-  ): PostViewModel {
+  mapPostToViewModel(post: PostWithUrls): PostViewModel {
     return {
       id: post.id,
       userId: post.userId,
       description: post.title,
       photoUploadStatus: post.photoUploadStatus,
-      photoUrls: (post.urls as File[]).map(file => file.fileUrl),
+      photoUrls: (post.urls as File[]).map((file) => file.fileUrl),
       createdAt: post.createdAt.toISOString(),
       updatedAt: post.updatedAt.toISOString(),
     };

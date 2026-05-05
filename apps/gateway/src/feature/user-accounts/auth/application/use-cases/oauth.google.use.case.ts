@@ -13,9 +13,7 @@ import { RemoteRedisService } from '../../../../../support.modules/redis/remote.
 import { ProfileClientService } from '../../../../../support.modules/grpc/grpc.profile.service';
 
 export class OauthGoogleCommand {
-  constructor(public googleTokenModel: GoogleTokenModel) {
-  }
-
+  constructor(public googleTokenModel: GoogleTokenModel) {}
 }
 
 @CommandHandler(OauthGoogleCommand)
@@ -28,13 +26,11 @@ export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
     readonly gateService: GateService,
     private readonly redisService: RemoteRedisService,
     private readonly profileClientService: ProfileClientService,
+  ) {}
 
-  ) {
-  }
-
-
-  async execute(command: OauthGoogleCommand): Promise<InterlayerNotice<GoogleAuthResponseModel>> {
-
+  async execute(
+    command: OauthGoogleCommand,
+  ): Promise<InterlayerNotice<GoogleAuthResponseModel>> {
     const { token, ip, title } = command.googleTokenModel;
 
     try {
@@ -42,43 +38,72 @@ export class OauthGoogleUseCase implements ICommandHandler<OauthGoogleCommand> {
       const { sub, email } = payload;
 
       //find user by provider Id or email Id
-      let user = await this.userPrismaRepository.findUserByProviderIdOrEmail({ providerId: sub, email });
-      let d = null
+      let user = await this.userPrismaRepository.findUserByProviderIdOrEmail({
+        providerId: sub,
+        email,
+      });
+      let d = null;
       if (!user) {
         //create user and provider from google
-        user = await this.userPrismaRepository.createUserWithProvider(email, email.split('@')[0], { googleId: sub });
-        const profile = await this.profileClientService.createUserProfile(user.id, user.name, user.email)
+        user = await this.userPrismaRepository.createUserWithProvider(
+          email,
+          email.split('@')[0],
+          { googleId: sub },
+        );
+        const profile = await this.profileClientService.createUserProfile(
+          user.id,
+          user.name,
+          user.email,
+        );
       } else {
         await this.linkGoogleProvider(user, sub);
       }
 
-      const updatedAt = new Date()
-      d = await this.deviceService.find({ ip, title, userId: user.id, updatedAt })
-      if (!d) {
-        d = await this.deviceService.createDevice({ ip, title, userId: user.id })
-      }
-      d = await this.deviceService.update({ ...d, updatedAt })
-      const [accessToken, refreshToken] = await this.authService.createPairTokens({
+      const updatedAt = new Date();
+      d = await this.deviceService.find({
+        ip,
+        title,
         userId: user.id,
-        deviceId: d.id,
-        updatedAt
+        updatedAt,
       });
-      const exp = await this.authService.getExpiration('ACCESS')
-      const expSeconds = parseTimeToSeconds(exp)
-      await this.redisService.set(accessToken, d, expSeconds)
+      if (!d) {
+        d = await this.deviceService.createDevice({
+          ip,
+          title,
+          userId: user.id,
+        });
+      }
+      d = await this.deviceService.update({ ...d, updatedAt });
+      const [accessToken, refreshToken] =
+        await this.authService.createPairTokens({
+          userId: user.id,
+          deviceId: d.id,
+          updatedAt,
+        });
+      const exp = await this.authService.getExpiration('ACCESS');
+      const expSeconds = parseTimeToSeconds(exp);
+      await this.redisService.set(accessToken, d, expSeconds);
 
-      return new InterlayerNotice(new GoogleAuthResponseModel(accessToken, refreshToken));
+      return new InterlayerNotice(
+        new GoogleAuthResponseModel(accessToken, refreshToken),
+      );
     } catch (error) {
       console.error('Error during Google OAuth execution:', error);
       throw new Error('Failed to authenticate with Google');
     }
-
   }
-  private async linkGoogleProvider(user: User & { providers: Provider | null }, providerId: string) {
+  private async linkGoogleProvider(
+    user: User & { providers: Provider | null },
+    providerId: string,
+  ) {
     if (!user.providers) {
-      await this.userPrismaRepository.createProvider(user.id, { googleId: providerId });
+      await this.userPrismaRepository.createProvider(user.id, {
+        googleId: providerId,
+      });
     } else if (!user.providers.googleId) {
-      await this.userPrismaRepository.updateProvider(user.providers.id, { googleId: providerId });
+      await this.userPrismaRepository.updateProvider(user.providers.id, {
+        googleId: providerId,
+      });
     }
   }
 }

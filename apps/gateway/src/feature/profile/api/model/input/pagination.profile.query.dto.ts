@@ -3,10 +3,8 @@ import { PaginationBaseDto } from '../../../../../common/pagination/pagination.b
 import { IsOptional, IsString } from 'class-validator';
 
 export class PaginationProfileQueryDto extends PaginationBaseDto {
-
   @ApiPropertyOptional({ example: 'Jack', description: 'Поиск по userName' })
   @IsOptional()
   @IsString()
   userName?: string;
-
 }

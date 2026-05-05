@@ -13,18 +13,16 @@ import { HttpModule } from '@nestjs/axios';
       useFactory: (configService: ConfigService) => {
         return {
           secret: configService.get('ACCESS_TOKEN'),
-          signOptions: { expiresIn: configService.get('ACCESS_TOKEN_EXPIRATION') },
+          signOptions: {
+            expiresIn: configService.get('ACCESS_TOKEN_EXPIRATION'),
+          },
         };
       },
-      inject: [ConfigService]
+      inject: [ConfigService],
     }),
   ],
-  providers: [
-
-  ],
-  controllers: [
-    ContentPostsController
-  ],
-  exports: []
+  providers: [],
+  controllers: [ContentPostsController],
+  exports: [],
 })
-export class ContentModule { }
+export class ContentModule {}

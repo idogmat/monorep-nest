@@ -1,7 +1,7 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class DeviceModel {
-  @ApiProperty({ type: String, })
+  @ApiProperty({ type: String })
   id: string;
   @ApiProperty({ type: String })
   userId: string;
@@ -11,5 +11,4 @@ export class DeviceModel {
   title: string;
   @ApiProperty({ type: String })
   updatedAt: Date;
-
 }

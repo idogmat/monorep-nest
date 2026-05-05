@@ -5,9 +5,9 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class EmailRouter {
-  readonly baseUrl: string
+  readonly baseUrl: string;
   constructor(private readonly configService: ConfigService) {
-    this.baseUrl = this.configService.get<string>('BASE_URL')
+    this.baseUrl = this.configService.get<string>('BASE_URL');
   }
   getDataMailForRegisrtation(
     email: string,
@@ -25,10 +25,7 @@ export class EmailRouter {
       html: textMessage,
     };
   }
-  getDataMailVerify(
-    email: string,
-    confirmationCode: string,
-  ): DataMailType {
+  getDataMailVerify(email: string, confirmationCode: string): DataMailType {
     const textMessage = `
     <h1>Your new Verify code</h1>
     <p>To finish registration please follow the link below:
@@ -41,10 +38,7 @@ export class EmailRouter {
       html: textMessage,
     };
   }
-  getDataRecoveryPassword(
-    email: string,
-    recoveryCode: string,
-  ): DataMailType {
+  getDataRecoveryPassword(email: string, recoveryCode: string): DataMailType {
     const textMessage = `
     <h1>Your new Recovery link </h1>
     <p>For recovery password follow the link below:

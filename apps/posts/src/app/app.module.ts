@@ -9,12 +9,12 @@ import { PostModule } from '../features/posts/posts.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [getConfiguration]
+      load: [getConfiguration],
     }),
-    PostModule
+    PostModule,
   ],
   controllers: [],
   providers: [],
   exports: [],
 })
-export class AppModule { }
+export class AppModule {}

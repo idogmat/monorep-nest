@@ -1,17 +1,41 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { BanProfileGQLRequest, DeleteProfileGQLRequest, DeleteProfilePhotoRequest, GetFollowersGqlQuery, UpdateUserProfileRequest, UserProfileQueryRequest, UserProfileResponse, UserProfilesGQLRequest } from '../../../../libs/proto/generated/profile';
+import {
+  BanProfileGQLRequest,
+  DeleteProfileGQLRequest,
+  DeleteProfilePhotoRequest,
+  GetFollowersGqlQuery,
+  UpdateUserProfileRequest,
+  UserProfileQueryRequest,
+  UserProfileResponse,
+  UserProfilesGQLRequest,
+} from '../../../../libs/proto/generated/profile';
 import { firstValueFrom, lastValueFrom, Observable } from 'rxjs';
 
 interface ProfileService {
-  GetUserProfile(data: { userId: string, profileUserId: string }): Observable<UserProfileResponse>;
+  GetUserProfile(data: {
+    userId: string;
+    profileUserId: string;
+  }): Observable<UserProfileResponse>;
   GetUserProfiles(data: UserProfileQueryRequest): Observable<any>;
   UpdateUserProfile(data: UpdateUserProfileRequest): Observable<any>;
-  UpdateUserProfileData(data: Partial<UpdateUserProfileRequest>): Observable<any>;
+  UpdateUserProfileData(
+    data: Partial<UpdateUserProfileRequest>,
+  ): Observable<any>;
   DeleteProfilePhoto(data: DeleteProfilePhotoRequest): Observable<any>;
-  SubscribeUserProfile(data: { userId: string, profileUserId: string }): Observable<any>;
-  CreateUserProfile(data: { userId: string, userName: string, email: string }): Observable<any>;
-  UpdateUserProfileSubscribe(data: { userId: string, paymentAccount: boolean }): Observable<any>;
+  SubscribeUserProfile(data: {
+    userId: string;
+    profileUserId: string;
+  }): Observable<any>;
+  CreateUserProfile(data: {
+    userId: string;
+    userName: string;
+    email: string;
+  }): Observable<any>;
+  UpdateUserProfileSubscribe(data: {
+    userId: string;
+    paymentAccount: boolean;
+  }): Observable<any>;
   GetUserProfilesGQL(data: UserProfilesGQLRequest): Observable<any>;
   DeleteProfilesGQL(data: DeleteProfileGQLRequest): Observable<any>;
   BanProfileGQL(data: BanProfileGQLRequest): Observable<any>;
@@ -23,18 +47,17 @@ interface ProfileService {
 export class ProfileClientService implements OnModuleInit {
   private profileService: ProfileService;
 
-  constructor(
-    @Inject('PROFILE_SERVICE') private client: ClientGrpc,
-  ) { }
+  constructor(@Inject('PROFILE_SERVICE') private client: ClientGrpc) {}
 
   onModuleInit() {
-    this.profileService = this.client.getService<ProfileService>('ProfileService');
+    this.profileService =
+      this.client.getService<ProfileService>('ProfileService');
   }
 
-
   async getProfile(userId: string, profileUserId: string) {
-    return firstValueFrom(await this.profileService.GetUserProfile({ userId, profileUserId }));
-
+    return firstValueFrom(
+      await this.profileService.GetUserProfile({ userId, profileUserId }),
+    );
   }
 
   async getProfiles(data: UserProfileQueryRequest) {
@@ -57,15 +80,24 @@ export class ProfileClientService implements OnModuleInit {
     return lastValueFrom(await this.profileService.UpdateUserProfileData(data));
   }
   async subscribeProfile(userId: string, profileUserId: string) {
-    return lastValueFrom(await this.profileService.SubscribeUserProfile({ userId, profileUserId }));
+    return lastValueFrom(
+      await this.profileService.SubscribeUserProfile({ userId, profileUserId }),
+    );
   }
 
   async createUserProfile(userId: string, userName: string, email: string) {
-    return lastValueFrom(await this.profileService.CreateUserProfile({ userId, userName, email }));
+    return lastValueFrom(
+      await this.profileService.CreateUserProfile({ userId, userName, email }),
+    );
   }
 
   async updateUserProfileSubscribe(userId: string, paymentAccount: boolean) {
-    return lastValueFrom(await this.profileService.UpdateUserProfileSubscribe({ userId, paymentAccount }));
+    return lastValueFrom(
+      await this.profileService.UpdateUserProfileSubscribe({
+        userId,
+        paymentAccount,
+      }),
+    );
   }
 
   async deleteProfilesGQL(data: DeleteProfileGQLRequest) {

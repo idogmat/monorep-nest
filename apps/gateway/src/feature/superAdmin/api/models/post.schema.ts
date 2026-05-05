@@ -2,7 +2,6 @@ import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class PaginatedPost {
-
   @Field(() => Int)
   totalCount: number;
 
@@ -44,5 +43,4 @@ export class Post {
 
   @Field()
   updatedAt: Date;
-
 }

@@ -16,10 +16,8 @@ export class RabbitConsumerService implements OnModuleInit {
   constructor(
     private configService: ConfigService,
     private commandBus: CommandBus,
-
-
   ) {
-    this.queueName = 'chat_queue'
+    this.queueName = 'chat_queue';
   }
 
   async onModuleInit() {
@@ -59,7 +57,10 @@ export class RabbitConsumerService implements OnModuleInit {
             // Подтверждение успешной обработки
             this.channel.ack(msg);
           } catch (err) {
-            this.logger.error(`Error processing message: ${err.message}`, err.stack);
+            this.logger.error(
+              `Error processing message: ${err.message}`,
+              err.stack,
+            );
 
             // Обработка ошибок (можно настроить политику повтора)
             this.handleError(msg, err);
@@ -78,16 +79,22 @@ export class RabbitConsumerService implements OnModuleInit {
     // Реализуйте вашу бизнес-логику здесь
     switch (message.type) {
       case 'UPLOAD_CHAT_FILE':
-        console.log(message, 'UPLOAD_CHAT_FILE')
-        const chat = await this.commandBus.execute(new GetChatByParticipantsCommand(message.senderId, message.userId))
-        console.log(chat, 'chat')
-        const messageFile = await this.commandBus.execute(new CreateMessageWithFileCommand(
-          chat.id, message.senderId, message.data
-        ));
-        const notifyUser = await this.commandBus.execute(new SendChatNotifyCommand(
-          chat
-        ));
-        console.log(messageFile, 'messageFile')
+        console.log(message, 'UPLOAD_CHAT_FILE');
+        const chat = await this.commandBus.execute(
+          new GetChatByParticipantsCommand(message.senderId, message.userId),
+        );
+        console.log(chat, 'chat');
+        const messageFile = await this.commandBus.execute(
+          new CreateMessageWithFileCommand(
+            chat.id,
+            message.senderId,
+            message.data,
+          ),
+        );
+        const notifyUser = await this.commandBus.execute(
+          new SendChatNotifyCommand(chat),
+        );
+        console.log(messageFile, 'messageFile');
 
         break;
       default:
@@ -120,19 +127,15 @@ export class RabbitConsumerService implements OnModuleInit {
       };
 
       // Отправляем в очередь повтора
-      this.channel.sendToQueue(
-        'posts_queue_retry',
-        msg.content,
-        { headers: newHeaders }
-      );
+      this.channel.sendToQueue('posts_queue_retry', msg.content, {
+        headers: newHeaders,
+      });
       this.channel.ack(msg);
     } else {
       // Отправка в очередь мертвых писем
-      this.channel.sendToQueue(
-        'posts_queue_dead_letter',
-        msg.content,
-        { headers: { ...headers, 'x-death-reason': error.message } }
-      );
+      this.channel.sendToQueue('posts_queue_dead_letter', msg.content, {
+        headers: { ...headers, 'x-death-reason': error.message },
+      });
       this.channel.ack(msg);
     }
   }

@@ -7,10 +7,9 @@ import { useContainer } from 'class-validator';
 import { applyAppSettings } from './settings/main.settings';
 import { join } from 'path';
 
-
 async function bootstrap() {
   const app = await NestFactory.create<INestApplication>(AppModule);
-  const { port, env, host, rabbit, grpc_url } = applyAppSettings(app)
+  const { port, env, host, rabbit, grpc_url } = applyAppSettings(app);
 
   app.use(json({ limit: '10gb' }));
   app.use(urlencoded({ extended: true, limit: '10gb' }));

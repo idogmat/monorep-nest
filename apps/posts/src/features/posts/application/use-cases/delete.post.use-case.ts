@@ -6,43 +6,41 @@ import { InterlayerNotice } from '../../../../../../libs/common/error-handling/i
 import { PostError } from '../../../../../../libs/common/error-handling/post.error';
 import { ENTITY_POST } from '../../../../../../libs/common/entities.constants';
 
-export class DeletePostCommand{
+export class DeletePostCommand {
   constructor(
     public postId: string,
     public userId: string,
-  ) {
-  }
+  ) {}
 }
 
 @CommandHandler(DeletePostCommand)
-export class DeletePostUseCase implements ICommandHandler<DeletePostCommand>{
-
+export class DeletePostUseCase implements ICommandHandler<DeletePostCommand> {
   constructor(
     private postsPrismaRepository: PostsPrismaRepository,
     @Inject('RABBITMQ_POST_SERVICE') private readonly rabbitClient: ClientProxy,
-    ) {
-  }
+  ) {}
 
-  async execute(command: DeletePostCommand){
-
+  async execute(command: DeletePostCommand) {
     const foundPost = await this.postsPrismaRepository.findById(command.postId);
-    if(!foundPost){
+    if (!foundPost) {
       return InterlayerNotice.createErrorNotice(
         PostError.NOT_FOUND_POST,
         ENTITY_POST,
-        404
-      )
+        404,
+      );
     }
 
-    if(foundPost.userId!== command.userId){
+    if (foundPost.userId !== command.userId) {
       return InterlayerNotice.createErrorNotice(
         PostError.FORBIDDEN_UPDATE,
         ENTITY_POST,
-        403
-      )
+        403,
+      );
     }
 
-    await this.postsPrismaRepository.deletePostWithFiles({id: command.postId});
+    await this.postsPrismaRepository.deletePostWithFiles({
+      id: command.postId,
+    });
 
     const message = { postId: command.postId };
     this.rabbitClient.emit('post_deleted', message);

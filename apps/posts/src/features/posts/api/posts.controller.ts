@@ -1,8 +1,14 @@
 import {
-  BadRequestException, Body,
-  Controller, Delete, Get,
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
   Headers,
-  Post, Put, Query, Req,
+  Post,
+  Put,
+  Query,
+  Req,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
@@ -12,10 +18,15 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { CreatePostCommand } from '../application/use-cases/create.post.use.cases';
 import { UploadPostPhotosCommand } from '../application/use-cases/upload.post.photos.use-case';
-import { Ctx, EventPattern, MessagePattern, Payload, RmqContext, RpcException } from '@nestjs/microservices';
 import {
-  UpdatePostStatusOnFileUploadCommand
-} from '../application/use-cases/update.post.status.on.file.upload.use-case';
+  Ctx,
+  EventPattern,
+  MessagePattern,
+  Payload,
+  RmqContext,
+  RpcException,
+} from '@nestjs/microservices';
+import { UpdatePostStatusOnFileUploadCommand } from '../application/use-cases/update.post.status.on.file.upload.use-case';
 import { FilesUploadedEvent } from './model/interfaces/files-uploaded-event.interface';
 import { PostsQueryRepository } from '../infrastructure/prisma/posts-query-repository.service';
 import { GetPostAndPhotoCommand } from '../application/use-cases/get.post.and.photo.use-case';
@@ -34,8 +45,7 @@ export class PostsController {
     private commandBus: CommandBus,
     private postsQueryRepository: PostsQueryRepository,
     private readonly postsPrismaRepository: PostsPrismaRepository,
-  ) {
-  }
+  ) {}
 
   @Post('create-post')
   @UseInterceptors(
@@ -51,8 +61,8 @@ export class PostsController {
   async createPost(
     @UploadedFiles() files: Express.Multer.File[],
     @Headers('X-UserId') userId: string,
-    @Req() req) {
-
+    @Req() req,
+  ) {
     if (!files || files.length === 0) {
       throw new BadRequestException('No files received');
     }
@@ -74,13 +84,10 @@ export class PostsController {
     );
 
     return this.postsQueryRepository.getPostById(postId);
-
   }
 
   @Get('get-post-by-id')
-  async getPostById(
-    @Headers('X-PostId') postId: string,
-  ) {
+  async getPostById(@Headers('X-PostId') postId: string) {
     const result = await this.commandBus.execute(
       new GetPostAndPhotoCommand(postId),
     );
@@ -90,7 +97,6 @@ export class PostsController {
     }
 
     return result.data;
-
   }
 
   @Get('get-posts')
@@ -98,29 +104,22 @@ export class PostsController {
     @Query()
     queryDTO: PaginationSearchPostTerm,
   ) {
-
-    return this.commandBus.execute(
-      new GetAllPostsCommand(queryDTO),
-    );
-
+    return this.commandBus.execute(new GetAllPostsCommand(queryDTO));
   }
 
   @Get('get-posts-gql')
   async getPostsGQL(
     @Query()
-      queryDTO: PaginationSearchPostGqlTerm,
+    queryDTO: PaginationSearchPostGqlTerm,
   ) {
-
     return this.postsQueryRepository.getAllPostsGQL(queryDTO);
-
   }
   @Put('update-post')
   async updatePost(
     @Headers('X-PostId') postId: string,
     @Headers('X-UserId') userId: string,
-    @Body() updateModel: PostUpdateModel
+    @Body() updateModel: PostUpdateModel,
   ) {
-
     const result = await this.commandBus.execute(
       new UpdatePostCommand(postId, userId, updateModel),
     );
@@ -135,7 +134,6 @@ export class PostsController {
     @Headers('X-PostId') postId: string,
     @Headers('X-UserId') userId: string,
   ) {
-
     const result = await this.commandBus.execute(
       new DeletePostCommand(postId, userId),
     );
@@ -144,27 +142,26 @@ export class PostsController {
     }
   }
   @EventPattern('files_uploaded')
-  async handleFileUploaded(@Payload() data: FilesUploadedEvent,
+  async handleFileUploaded(
+    @Payload() data: FilesUploadedEvent,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    @Ctx() context: any) {
+    @Ctx() context: any,
+  ) {
     console.log('Received file uploaded message:', data);
     const { postId, files } = data;
     try {
       await this.commandBus.execute(
-        new UpdatePostStatusOnFileUploadCommand(postId, files)
-      )
+        new UpdatePostStatusOnFileUploadCommand(postId, files),
+      );
     } catch (error) {
       console.error('Ошибка в команде:', error);
     }
-
   }
 
   @EventPattern('ban_posts')
-  async handleBanPost(
-    @Payload() userId: string,
-  ) {
+  async handleBanPost(@Payload() userId: string) {
     try {
-      await this.postsPrismaRepository.markAsBanned(userId)
+      await this.postsPrismaRepository.markAsBanned(userId);
     } catch (error) {
       console.error('fail', error);
     }

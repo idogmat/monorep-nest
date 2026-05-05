@@ -13,15 +13,15 @@ import { parseTimeToSeconds } from '../../../../../common/utils/parseTime';
 const throwError = InterlayerNotice.createErrorNotice(
   AuthError.WRONG_CRED,
   ENTITY_USER,
-  400
-)
+  400,
+);
 interface LoginWithDevice extends LoginModel {
-  ip: string,
-  title: string
+  ip: string;
+  title: string;
 }
 
 export class LoginCommand {
-  constructor(public loginModel: LoginWithDevice) { }
+  constructor(public loginModel: LoginWithDevice) {}
 }
 
 @CommandHandler(LoginCommand)
@@ -32,44 +32,48 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
     private authService: AuthService,
     private deviceService: DeviceService,
     private readonly redisService: RemoteRedisService,
-
-  ) {
-  }
+  ) {}
 
   async execute(command: LoginCommand) {
     const { email, password, ip, title } = command.loginModel;
     const u = await this.userPrismaRepository.findUserByEmail(email);
-    if (!u) return throwError
-    const checkPassword = await this.bcryptService.checkPassword(password, u.passwordHash)
+    if (!u) return throwError;
+    const checkPassword = await this.bcryptService.checkPassword(
+      password,
+      u.passwordHash,
+    );
     if (!checkPassword) return throwError;
-    let d = null
-    const updatedAt = new Date()
-    d = await this.deviceService.find({ ip, title, userId: u.id, updatedAt })
+    let d = null;
+    const updatedAt = new Date();
+    d = await this.deviceService.find({ ip, title, userId: u.id, updatedAt });
     if (!d) {
-      d = await this.deviceService.createDevice({ ip, title, userId: u.id })
+      d = await this.deviceService.createDevice({ ip, title, userId: u.id });
     }
 
-    d = await this.deviceService.update({ ...d, updatedAt })
-    console.log(d)
-    const [accessToken, refreshToken] = await Promise.all(
-      [
-        await this.authService.createToken({
+    d = await this.deviceService.update({ ...d, updatedAt });
+    console.log(d);
+    const [accessToken, refreshToken] = await Promise.all([
+      await this.authService.createToken(
+        {
           userId: u.id,
           deviceId: d.id,
-          updatedAt
-        }, 'ACCESS'),
-        await this.authService.createToken({
+          updatedAt,
+        },
+        'ACCESS',
+      ),
+      await this.authService.createToken(
+        {
           userId: u.id,
           deviceId: d.id,
-          updatedAt
-        }, 'REFRESH')
-      ])
-    const exp = await this.authService.getExpiration('ACCESS')
-    const expSeconds = parseTimeToSeconds(exp)
-    await this.redisService.set(accessToken, d, expSeconds)
+          updatedAt,
+        },
+        'REFRESH',
+      ),
+    ]);
+    const exp = await this.authService.getExpiration('ACCESS');
+    const expSeconds = parseTimeToSeconds(exp);
+    await this.redisService.set(accessToken, d, expSeconds);
 
     return { accessToken, refreshToken };
-
   }
-
 }

@@ -6,10 +6,9 @@ import { json, urlencoded } from 'express';
 import { useContainer } from 'class-validator';
 import { applyAppSettings } from './settings/main.settings';
 
-
 async function bootstrap() {
   const app = await NestFactory.create<INestApplication>(AppModule);
-  const { port, env, host, rabbit } = applyAppSettings(app)
+  const { port, env, host, rabbit } = applyAppSettings(app);
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {

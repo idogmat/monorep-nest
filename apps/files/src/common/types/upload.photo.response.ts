@@ -21,7 +21,7 @@ interface UploadResult {
   error: boolean;
 }
 
-export interface UploadPhotoResponse{
+export interface UploadPhotoResponse {
   key: string;
   Location: string;
   ETag: string;

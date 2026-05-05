@@ -1,4 +1,4 @@
-export type SortDirectionType = "desc" | "asc";
+export type SortDirectionType = 'desc' | 'asc';
 
 export class PaginationGqlDto {
   offset?: number = 1;
@@ -21,20 +21,20 @@ export class Pagination {
   }
 
   private getSortDirection(params: PaginationGqlDto): SortDirectionType {
-    if (!params) return "desc";
-    let sortDirection: SortDirectionType = "desc";
+    if (!params) return 'desc';
+    let sortDirection: SortDirectionType = 'desc';
 
     switch (params.sortDirection?.toLocaleLowerCase()) {
-      case "desc": {
-        sortDirection = "desc";
+      case 'desc': {
+        sortDirection = 'desc';
         break;
       }
-      case "asc": {
-        sortDirection = "asc";
+      case 'asc': {
+        sortDirection = 'asc';
         break;
       }
       default: {
-        sortDirection = "desc";
+        sortDirection = 'desc';
         break;
       }
     }
@@ -42,10 +42,9 @@ export class Pagination {
   }
 
   private getSortBy(query: PaginationGqlDto, sortProperties: string[]): string {
+    if (!query) return 'createdAt';
 
-    if (!query) return "createdAt";
-
-    let result = "createdAt";
+    let result = 'createdAt';
 
     const querySortBy = query.sortBy;
 
@@ -54,7 +53,6 @@ export class Pagination {
     }
 
     if (Array.isArray(querySortBy)) {
-
       for (let i: number = 0; i < querySortBy.length; i++) {
         const param = querySortBy[i];
 
@@ -73,25 +71,18 @@ export class Pagination {
   }
 }
 
-
-
 export class PaginationUserQueryDto extends PaginationGqlDto {
-
   name?: string;
 }
 export class PaginationPaymentsQueryDto extends PaginationGqlDto {
-
   userId?: string;
 }
 
 export class PaginationFollowersQueryDto extends PaginationGqlDto {
-
   userId?: string;
 }
 
-
 export class PaginationPostQueryDto extends PaginationGqlDto {
-
   userId?: string;
   description?: string;
 }
@@ -103,7 +94,6 @@ export class PaginationSearchUserGqlTerm extends Pagination {
     super(query, sortProperties);
 
     this.name = query?.name ? query.name.toString() : null;
-
   }
 }
 
@@ -113,7 +103,6 @@ export class PaginationSearchPaymentGqlTerm extends Pagination {
   constructor(query: PaginationPaymentsQueryDto, sortProperties: string[]) {
     super(query, sortProperties);
     this.userId = query?.userId ? query.userId.toString() : null;
-
   }
 }
 
@@ -123,7 +112,6 @@ export class PaginationSearchFollowersGqlTerm extends Pagination {
   constructor(query: PaginationFollowersQueryDto, sortProperties: string[]) {
     super(query, sortProperties);
     this.userId = query?.userId ? query.userId.toString() : null;
-
   }
 }
 
@@ -136,16 +124,18 @@ export class PaginationSearchPostGqlTerm extends Pagination {
 
     this.userId = query?.userId ? query.userId.toString() : null;
     this.description = query?.description ? query.description.toString() : null;
-
   }
 
   public toQueryParams(): Record<string, string> {
     const entries = Object.entries(this)
       .filter(([_, value]) => value !== null && value !== undefined)
-      .reduce((acc, [key, value]) => {
-        acc[key] = String(value);
-        return acc;
-      }, {} as Record<string, string>);
+      .reduce(
+        (acc, [key, value]) => {
+          acc[key] = String(value);
+          return acc;
+        },
+        {} as Record<string, string>,
+      );
 
     return entries;
   }

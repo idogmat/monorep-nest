@@ -1,31 +1,26 @@
-import { Module } from "@nestjs/common";
-import { ConfigModule, ConfigService } from "@nestjs/config";
-import { CqrsModule } from "@nestjs/cqrs";
-import { ClientsModule, Transport } from "@nestjs/microservices";
-import { SubscribeUseCase } from "./use-cases/subscribe.use-case";
-import { WebHookPaymentUseCase } from "./use-cases/webhook.use-case";
-import { getConfiguration } from "../../settings/getConfiguration";
-import { StripeAdapter } from "./applications/stripe.adapter";
-import { PrismaService } from "../prisma/prisma.service";
-import { PaymentsRepository } from "./infrastructure/payments.repository";
-import { PaymentsQueryRepository } from "./infrastructure/payments.query-repository";
-import { PaymentsService } from "./applications/payments.service";
-import { PaymentsController } from "./api/app.controller";
-import { PaymentsCronService } from "./applications/payment.cron";
-import { ScheduleModule } from "@nestjs/schedule";
-import { DelayRabbitService } from "./applications/delay.rabbit.service";
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CqrsModule } from '@nestjs/cqrs';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { SubscribeUseCase } from './use-cases/subscribe.use-case';
+import { WebHookPaymentUseCase } from './use-cases/webhook.use-case';
+import { getConfiguration } from '../../settings/getConfiguration';
+import { StripeAdapter } from './applications/stripe.adapter';
+import { PrismaService } from '../prisma/prisma.service';
+import { PaymentsRepository } from './infrastructure/payments.repository';
+import { PaymentsQueryRepository } from './infrastructure/payments.query-repository';
+import { PaymentsService } from './applications/payments.service';
+import { PaymentsController } from './api/app.controller';
+import { PaymentsCronService } from './applications/payment.cron';
+import { ScheduleModule } from '@nestjs/schedule';
+import { DelayRabbitService } from './applications/delay.rabbit.service';
 
-
-
-const useCases = [
-  SubscribeUseCase,
-  WebHookPaymentUseCase
-]
+const useCases = [SubscribeUseCase, WebHookPaymentUseCase];
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [getConfiguration]
+      load: [getConfiguration],
     }),
     CqrsModule,
     ScheduleModule.forRoot(),
@@ -41,7 +36,7 @@ const useCases = [
               queue: 'payments_queue',
               queueOptions: { durable: true },
             },
-          }
+          };
         },
         inject: [ConfigService],
       },
@@ -56,7 +51,7 @@ const useCases = [
               queue: 'payments_notification_queue',
               queueOptions: { durable: true },
             },
-          }
+          };
         },
         inject: [ConfigService],
       },
@@ -71,28 +66,24 @@ const useCases = [
               queue: 'profile_queue',
               queueOptions: { durable: true },
             },
-          }
+          };
         },
         inject: [ConfigService],
-      }
-    ])
+      },
+    ]),
   ],
   providers: [
     {
       provide: 'STRIPE_ADAPTER',
       useFactory: (configService: ConfigService) => {
-        return new StripeAdapter(
-          configService,
-        );
+        return new StripeAdapter(configService);
       },
       inject: [ConfigService],
     },
     {
       provide: 'DELAY_RABBIT_SERVICE',
       useFactory: (configService: ConfigService) => {
-        return new DelayRabbitService(
-          configService,
-        );
+        return new DelayRabbitService(configService);
       },
       inject: [ConfigService],
     },
@@ -103,8 +94,7 @@ const useCases = [
     PaymentsCronService,
     DelayRabbitService,
     ...useCases,
-
   ],
   controllers: [PaymentsController],
 })
-export class PaymentsModule { }
+export class PaymentsModule {}
